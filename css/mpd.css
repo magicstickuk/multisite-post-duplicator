@@ -1,0 +1,35 @@
+.spinner-container img{
+	padding-left: 10px;
+	display: none;
+
+}
+.spinner-container {
+	width:30px;
+	clear: right;
+	display: inline-block;
+}
+.mpd-greentick{
+	background-image: url('../images/tick.png');
+	background-repeat: no-repeat;
+	background-position: 10px 4px;
+	padding-right:30px;
+	overflow: hidden;
+	height:20px;
+	width:16px;
+}
+.mpd-greentick img{
+	display: none!important;
+}
+.metabox {
+  padding: 0 10px 20px 10px;
+  background-color: #fff;
+  border: 1px solid #cdcdcd;
+  margin:20px 0;
+}
+.mdp-updated{
+  background-color: mintcream;
+  border: 1px solid green;
+}
+.main-dup-button{
+	margin-top: 22px !important;
+}
