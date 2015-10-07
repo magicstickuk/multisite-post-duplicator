@@ -6,33 +6,6 @@ function mpd_admin_pages(){
 
 	add_submenu_page('tools.php','Multisite Post Duplicator','Multisite Post Duplicator', 'manage_options', 'mpd','mpd_admin_menu_markup');
 
-	add_options_page('MPD Options', 'Multisite Post Duplicator Options', 'manage_options', 'mpd-options', 'mpd_options');
-
-}
-function register_mpd_setting() {
-	register_setting( 'mdp_options_group', 'mdp_default_prefix'); 
-} 
-add_action( 'admin_init', 'register_mpd_setting' );
-
-function mpd_options(){
-
-	ob_start()?>
-
-		<div class="wrap">
-			<h2>Multisite Post Duplicator Options</h2>
-			
-			<form method="post" action="options.php"> 
-				<?php settings_fields( 'mdp_options_group' ); ?>
-				<?php do_settings_sections( 'mdp_options_group' );?>
-				<?php submit_button(); ?>
-			</form>
-			
-		</div>
-
-	<?php 
-}
-function my_custom_menu_page(){
-	echo "yo!";
 }
 
 function mpd_admin_menu_markup(){
