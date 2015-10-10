@@ -16,7 +16,7 @@ function mpd_metaboxes()
 
 function mpd_publish_top_right()
 {
-    $post_statuses = array('publish', 'future', 'draft', 'pending', 'private');
+    $post_statuses = get_post_statuses(); 
     $sites = wp_get_sites();
 
     ?>
@@ -46,7 +46,8 @@ function mpd_publish_top_right()
                             <?php $blog_details = get_blog_details($site['blog_id']); ?>
                             
                                 <li id="mpd_blog_<?php echo $site['blog_id']; ?>" class="popular-category">
-                                    <label class="selectit"><input value="<?php echo $site['blog_id']; ?>" type="checkbox" name="mpd_blogs[]" id="in_blog_<?php echo $site['blog_id']; ?>"> <?php echo $blog_details->blogname; ?>
+                                    <label class="selectit">
+                                        <input value="<?php echo $site['blog_id']; ?>" type="checkbox" name="mpd_blogs[]" id="in_blog_<?php echo $site['blog_id']; ?>"> <?php echo $blog_details->blogname; ?>
                                     </label>
                                 </li>
                             

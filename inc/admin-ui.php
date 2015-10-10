@@ -68,7 +68,7 @@ function mpd_admin_menu_markup(){
 
     			<h3>Select the status of the new post that will be created</h3>
 
-    			<?php $post_statuses = array('publish', 'future', 'draft', 'pending', 'private');?>
+    			<?php $post_statuses = get_post_statuses(); ?>
 
     			<?php  foreach ($post_statuses as $post_status):?>
 
