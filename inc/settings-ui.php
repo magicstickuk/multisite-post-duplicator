@@ -12,58 +12,58 @@ function mdp_add_admin_menu(  ) {
 
 function mdp_settings_init(  ) { 
 
-	register_setting( 'pluginPage', 'mdp_settings' );
+	register_setting( 'mdp_plugin_setting_page', 'mdp_settings' );
 
 	add_settings_section(
-		'mdp_pluginPage_section', 
+		'mdp_mdp_plugin_setting_page_section', 
 		__( 'Your section description', 'mdp' ), 
 		'mdp_settings_section_callback', 
-		'pluginPage'
+		'mdp_plugin_setting_page'
 	);
 
 	add_settings_field( 
-		'mdp_checkbox_field_0', 
-		__( 'Settings field description', 'mdp' ), 
-		'mdp_checkbox_field_0_render', 
-		'pluginPage', 
-		'mdp_pluginPage_section' 
+		'meta_box_show', 
+		__( 'Show Multisite Post Duplicator box in posts?', 'mdp' ), 
+		'meta_box_show_render', 
+		'mdp_plugin_setting_page', 
+		'mdp_mdp_plugin_setting_page_section' 
 	);
 
 	add_settings_field( 
-		'mdp_text_field_1', 
-		__( 'Settings field description', 'mdp' ), 
-		'mdp_text_field_1_render', 
-		'pluginPage', 
-		'mdp_pluginPage_section' 
+		'mdp_default_prefix', 
+		__( 'Default Prefix', 'mdp' ), 
+		'mdp_default_prefix_render', 
+		'mdp_plugin_setting_page', 
+		'mdp_mdp_plugin_setting_page_section' 
 	);
 
 	add_settings_field( 
 		'mdp_checkbox_field_2', 
 		__( 'Settings field description', 'mdp' ), 
 		'mdp_checkbox_field_2_render', 
-		'pluginPage', 
-		'mdp_pluginPage_section' 
+		'mdp_plugin_setting_page', 
+		'mdp_mdp_plugin_setting_page_section' 
 	);
 
 
 }
 
 
-function mdp_checkbox_field_0_render(  ) { 
+function meta_box_show_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
 	?>
-	<input type='checkbox' name='mdp_settings[mdp_checkbox_field_0]' <?php checked( $options['mdp_checkbox_field_0'], 1 ); ?> value='1'>
+	<input type='checkbox' name='mdp_settings[meta_box_show]' <?php checked( $options['meta_box_show'], 1 ); ?> value='1'>
 	<?php
 
 }
 
 
-function mdp_text_field_1_render(  ) { 
+function mdp_default_prefix_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
 	?>
-	<input type='text' name='mdp_settings[mdp_text_field_1]' value='<?php echo $options['mdp_text_field_1']; ?>'>
+	<input type='text' name='mdp_settings[mdp_default_prefix]' value='<?php echo $options ? $options['mdp_default_prefix'] : "Copy of"; ?>'>
 	<?php
 
 }
@@ -94,8 +94,8 @@ function mdp_options_page(  ) {
 		<h2>Multisite Post Duplicator Settings Page</h2>
 		
 		<?php
-		settings_fields( 'pluginPage' );
-		do_settings_sections( 'pluginPage' );
+		settings_fields( 'mdp_plugin_setting_page' );
+		do_settings_sections( 'mdp_plugin_setting_page' );
 		submit_button();
 		?>
 		
