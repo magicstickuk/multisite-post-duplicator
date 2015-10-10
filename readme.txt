@@ -1,5 +1,5 @@
 === Multisite Post Duplicator ===
-Contributors: MagicStick
+Contributors: MagicStick & SergiAmbel
 Tags: multisite, duplicate, copy, post, page, meta, individual, one
 Requires at least: 3.0.1
 Tested up to: 4.2.1
@@ -52,6 +52,9 @@ Yes. However, you have to have the same custom fields defined in each of your si
 1. User Interface
 
 == Changelog ==
+
+= 0.4 =
+* You can now duplicate posts from the edit post screen at the same time that you create or update one.
 
 = 0.3.1 =
 * Fixed Activation errors.

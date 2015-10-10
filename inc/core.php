@@ -3,7 +3,7 @@
 function duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $post_author, $prefix, $post_status) {
 
     $mdp_post = get_post($post_id_to_copy);
- 	
+
     $title =  get_the_title($mdp_post);
 
     if($prefix != ''){
@@ -21,16 +21,16 @@ function duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $p
  			'post_content'=> $mdp_post->post_content
 
     );
-    
+
     $data = get_post_custom($mdp_post);
  
     $meta_values = get_post_meta($post_id_to_copy);
 
- 
+
     switch_to_blog($new_blog_id);
- 
+
     $post_id = wp_insert_post( $mdp_post);
- 
+
        foreach ( $data as $key => $values) {
 
            foreach ($values as $value) {
