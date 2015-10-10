@@ -37,24 +37,26 @@ function mpd_publish_top_right()
                 <input type="text" name="mpd-prefix" value=""/>
             </p>
 
-            <p>Sites where you want duplicate to:
+            <p>Site(s) you want duplicate to:
                 <ul id="mpd_blogschecklist" data-wp-lists="list:category" class="mpd_blogschecklist" style="padding-left: 5px;margin-top: -8px;">
-                <?php foreach ($sites as $site):
+                    
+                    <?php foreach ($sites as $site): ?>
 
-                    if (current_user_can_for_blog($site['blog_id'], 'publish_posts') ) {
-                        ?>
-                        <?php $blog_details = get_blog_details($site['blog_id']); ?>
-                        <li id="mpd_blog_<?php echo $site['blog_id']; ?>" class="popular-category"><label
-                                class="selectit"><input value="<?php echo $site['blog_id']; ?>" type="checkbox"
-                                                        name="mpd_blogs[]"
-                                                        id="in_blog_<?php echo $site['blog_id']; ?>"> <?php echo $blog_details->blogname; ?>
-                            </label></li>
-                    <?php
-                    }
-                    endforeach ?>
+                        <?php if (current_user_can_for_blog($site['blog_id'], 'publish_posts') ) : ?>
+                            <?php $blog_details = get_blog_details($site['blog_id']); ?>
+                            
+                                <li id="mpd_blog_<?php echo $site['blog_id']; ?>" class="popular-category">
+                                    <label class="selectit"><input value="<?php echo $site['blog_id']; ?>" type="checkbox" name="mpd_blogs[]" id="in_blog_<?php echo $site['blog_id']; ?>"> <?php echo $blog_details->blogname; ?>
+                                    </label>
+                                </li>
+                            
+                        <?php endif; ?>
+
+                    <?php endforeach; ?>
+
                 </ul>
             </p>
-            <p>This post will be duplicate after you save.</p>
+            <p><em>This post will be duplicated after you save.</em></p>
         </div>
 
     </div>
