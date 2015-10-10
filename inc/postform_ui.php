@@ -6,8 +6,10 @@ add_action( 'add_meta_boxes', 'mpd_metaboxes' );
 
 function mpd_metaboxes()
 {
+  $post_types = get_post_types('','names');
+  foreach ( $post_types as $page )
     if ( current_user_can( 'publish_posts' ) )  {
-        add_meta_box( 'multisite_clone_metabox', 'Multisite Post Duplicate', 'mpd_publish_top_right', 'post', 'side', 'high' );
+        add_meta_box( 'multisite_clone_metabox', 'Multisite Post Duplicator', 'mpd_publish_top_right', $page, 'side', 'high' );
     }
 
 }
@@ -38,19 +40,21 @@ function mpd_publish_top_right()
             <p>Sites where you want duplicate to:
                 <ul id="mpd_blogschecklist" data-wp-lists="list:category" class="mpd_blogschecklist" style="padding-left: 5px;margin-top: -8px;">
                 <?php foreach ($sites as $site):
-                    if (current_user_can_for_blog($site['blog_id'], publish_posts) ) {
+
+                    if (current_user_can_for_blog($site['blog_id'], 'publish_posts') ) {
                         ?>
+                        <?php $blog_details = get_blog_details($site['blog_id']); ?>
                         <li id="mpd_blog_<?php echo $site['blog_id']; ?>" class="popular-category"><label
                                 class="selectit"><input value="<?php echo $site['blog_id']; ?>" type="checkbox"
                                                         name="mpd_blogs[]"
-                                                        id="in_blog_<?php echo $site['blog_id']; ?>"> <?php echo $site['domain']; ?>
+                                                        id="in_blog_<?php echo $site['blog_id']; ?>"> <?php echo $blog_details->blogname; ?>
                             </label></li>
                     <?php
                     }
                     endforeach ?>
                 </ul>
             </p>
-            <p>(*) The new post will be created after this has been saved.</p>
+            <p>This post will be duplicate after you save.</p>
         </div>
 
     </div>
