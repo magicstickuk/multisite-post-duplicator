@@ -1,10 +1,11 @@
 <?php
 
-add_action( 'admin_menu', 'mpd_admin_page' );
+add_action( 'admin_menu', 'mpd_admin_pages' );
 
-function mpd_admin_page(){
+function mpd_admin_pages(){
 
 	add_submenu_page('tools.php','Multisite Post Duplicator','Multisite Post Duplicator', 'manage_options', 'mpd','mpd_admin_menu_markup');
+
 }
 
 function mpd_admin_menu_markup(){

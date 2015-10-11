@@ -33,3 +33,9 @@
 .main-dup-button{
 	margin-top: 22px !important;
 }
+.mdp_radio_label{
+	padding: 0 7px
+}
+.form-table th{
+	width: 35%%;
+}
