@@ -1,7 +1,5 @@
 jQuery(document).ready(function($) {
 
-	 
-
 	jQuery(".el0").select2({
 
 		placeholder: "Select a post post type to duplicate",

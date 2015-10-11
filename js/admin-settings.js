@@ -1,7 +1,8 @@
 jQuery(document).ready(function() {
   
-  jQuery('input[type="checkbox"]').parent().parent().hide();
-
+  if(!jQuery('#meta_box_show_choice_some').is(':checked') ){
+      jQuery('input[type="checkbox"]').parent().parent().hide();
+  }
   jQuery('#mpd_radio_choice_wrap .mdp_radio').change(function() {
   		
   		if (jQuery(this).val() == 'some') {

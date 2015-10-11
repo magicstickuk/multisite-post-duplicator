@@ -2,21 +2,63 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit('You\'re not allowed to see this page'); // Exit if accessed directly
 
-add_action( 'add_meta_boxes', 'mpd_metaboxes' );
+if ( is_multisite() ) {
+    add_action( 'add_meta_boxes', 'mpd_metaboxes' );
+}
 
 function mpd_metaboxes()
 {
-  $post_types = get_post_types('','names');
-  foreach ( $post_types as $page )
-    if ( current_user_can( 'publish_posts' ) )  {
-        add_meta_box( 'multisite_clone_metabox', 'Multisite Post Duplicator', 'mpd_publish_top_right', $page, 'side', 'high' );
+  
+  $options = get_option( 'mdp_settings' ); 
+  $post_types = $options['meta_box_show_radio'] ? $options['meta_box_show_radio'] : get_post_types('','names');
+    
+    if($options['meta_box_show_radio']){
+
+        if($options['meta_box_show_radio'] == 'all'){
+
+            $post_types = get_post_types('','names');
+
+        }elseif($options['meta_box_show_radio'] == 'none'){
+
+            $post_types = null;
+
+        }elseif($options['meta_box_show_radio'] == 'some'){
+
+            $post_types = array();
+
+            foreach ($options as $key => $value) {
+                if (substr($key, 0, 28) == "meta_box_post_type_selector_") {
+                    $post_types[] = $value;
+                }
+            }
+
+        }
+        
+
+    }else{
+
+        $post_types  = get_post_types('','names');
+
     }
+
+    if($post_types){
+
+        foreach ($post_types as $page ){
+
+            if ( current_user_can( 'publish_posts' ) )  {
+                    add_meta_box( 'multisite_clone_metabox', 'Multisite Post Duplicator', 'mpd_publish_top_right', $page, 'side', 'high' );
+            }
+
+        } 
+
+    }
+    
 
 }
 
 function mpd_publish_top_right()
 {
-    $post_statuses = get_post_statuses(); 
+    $post_statuses = array('publish', 'future', 'draft', 'pending', 'private');
     $sites = wp_get_sites();
 
     ?>
@@ -27,14 +69,19 @@ function mpd_publish_top_right()
             <p>Duplicated post status:
 
                 <select id="mpd-new-status" name="mpd-new-status">
-                <?php foreach ($post_statuses as $post_status): ?>
-                        <option value="<?php echo $post_status?>" <?php echo $post_status == 'draft' ? 'selected' : '' ?>><?php echo $post_status?></option>
-                <?php endforeach ?>
+             <?php foreach ($post_statuses as $post_status): ?>
+                      <option value="<?php echo $post_status?>" <?php echo $post_status == 'draft' ? 'selected' : '' ?>><?php echo $post_status?></option>
+               <?php endforeach ?>
+            </select>
                 </select>
             </p>
 
             <p>Title prefix for new post:
-                <input type="text" name="mpd-prefix" value=""/>
+               <?php 
+                     $options = get_option( 'mdp_settings' ); 
+                     $default_prefix = $options['mdp_default_prefix'] ? $options['mdp_default_prefix'] : 'Copy of'   
+               ?>
+                <input type="text" name="mpd-prefix" value="<?php echo $default_prefix; ?>"/>
             </p>
 
             <p>Site(s) you want duplicate to:
@@ -57,7 +104,14 @@ function mpd_publish_top_right()
 
                 </ul>
             </p>
-            <p><em>This post will be duplicated after you save.</em></p>
+            <p>
+                <em>
+                    If you have checked any of the checkboxes above then this post will be duplicated on save.
+                </em>
+            </p>
+            <p style="font-size: 80%; text-align:right; font-style:italic">
+                <a target="_blank" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>">Settings</a>
+            </p>
         </div>
 
     </div>

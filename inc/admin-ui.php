@@ -78,8 +78,12 @@ function mpd_admin_menu_markup(){
     			<?php endforeach?>
 
     			<h3>Select a prefix, if any, for the new post/page to be created:</h3>
-
-    			<input type="text" name="mdp-prefix" value="Copy of"/>
+				
+				<?php 
+                     $options = get_option( 'mdp_settings' ); 
+                     $default_prefix = $options['mdp_default_prefix'] ? $options['mdp_default_prefix'] : 'Copy of'   
+               ?>
+    			<input type="text" name="mdp-prefix" value="<?php echo $default_prefix; ?>"/>
     		
 			</div>
 
