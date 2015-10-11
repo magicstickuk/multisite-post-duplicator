@@ -1,8 +1,8 @@
 === Multisite Post Duplicator ===
 Contributors: MagicStick & SergiAmbel
-Tags: multisite, duplicate, copy, post, page, meta, individual, one
+Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, one
 Requires at least: 3.0.1
-Tested up to: 4.2.1
+Tested up to: 4.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,7 @@ Features:
 *   Includes any custom post type on your network as long as the post type exists in your destination site
 *   Copies all custom fields
 *   Copies all related post meta
+*   Automatically copy your post/page/custom post type from one site to another from within your workflow 
 *   Works with Advance Custom Fields
 *   Clean and friendly User Interface
 *   Select what status you want your new copies post to be i.e Published, Draft etc
@@ -28,6 +29,7 @@ Features:
 1. Upload `multisite-post-duplicator` folder to your `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. In WordPress admin on any of your sites within your multisite network go to Tools > Multisite Post Duplicator
+4. Customise the default behaviour by going to Setting > Multisite Post Duplicator Settings
 
 == Frequently Asked Questions ==
 
@@ -50,11 +52,13 @@ Yes. However, you have to have the same custom fields defined in each of your si
 == Screenshots ==
 
 1. User Interface
+2. Meta Box
 
 == Changelog ==
 
 = 0.4 =
-* You can now duplicate posts from the edit post screen at the same time that you create or update one.
+* Added Meta Box within the post type so you can now duplicate your post to another site on your network as you work (Thanks to Sergi Ambel!).
+* Added settings page to customise default behaviour.
 
 = 0.3.1 =
 * Fixed Activation errors.

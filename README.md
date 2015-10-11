@@ -1,5 +1,5 @@
 === Multisite Post Duplicator ===
-Contributors: MagicStick
+Contributors: MagicStick & SergiAmbel
 Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, one
 Requires at least: 3.0.1
 Tested up to: 4.3.1
@@ -58,7 +58,6 @@ Yes. However, you have to have the same custom fields defined in each of your si
 = 0.4 =
 * Added Meta Box within the post type so you can now duplicate your post to another site on your network as you work (Thanks to Sergi Ambel!).
 * Added settings page to customise default behaviour.
-* Now works with custom post statuses.
 
 = 0.3.1 =
 * Fixed Activation errors.
