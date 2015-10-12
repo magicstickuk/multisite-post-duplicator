@@ -71,11 +71,11 @@ function mpd_admin_menu_markup(){
 
     			<?php $post_statuses = get_post_statuses(); ?>
 
-    			<?php  foreach ($post_statuses as $post_status):?>
+    			<?php  foreach ($post_statuses as $post_status_key => $post_status_value):?>
 
-    				<input type="radio" name="mpd-post-status" value="<?php echo $post_status ?>" <?php echo $post_status == 'draft' ? 'checked' : '' ?>/><?php echo ucfirst($post_status)?>
+    				<input type="radio" name="mpd-post-status" value="<?php echo $post_status_key ?>" <?php echo $post_status_key == 'draft' ? 'checked' : '' ?>/><?php echo $post_status_value; ?>
 
-    			<?php endforeach?>
+    			<?php endforeach; ?>
 
     			<h3>Select a prefix, if any, for the new post/page to be created:</h3>
 				
