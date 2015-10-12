@@ -1,5 +1,6 @@
 === Multisite Post Duplicator ===
-Contributors: MagicStick & SergiAmbel
+
+Contributors: MagicStick, SergiAmbel
 Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, one
 Requires at least: 3.0.1
 Tested up to: 4.3.1
