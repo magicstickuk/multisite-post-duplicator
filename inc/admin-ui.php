@@ -16,16 +16,16 @@ function mpd_admin_menu_markup(){
 
 	if(isset($_POST['duplicate-submit'])){
 
-			$mdp_PostType = $_POST['el0'];
-			$mdp_PostID = $_POST['el1'];
-			$mdp_NewBlog = $_POST['el2'];
-			$mdp_userID = $_POST['el3'];
-			$mdp_prefix = $_POST['mdp-prefix'];
+			$mdp_PostType 	= $_POST['el0'];
+			$mdp_PostID 	= $_POST['el1'];
+			$mdp_NewBlog 	= $_POST['el2'];
+			$mdp_userID 	= $_POST['el3'];
+			$mdp_prefix 	= $_POST['mdp-prefix'];
 			$mdp_postStatus = $_POST['mpd-post-status'];
 
-			$new_postid = duplicate_over_multisite($mdp_PostID, $mdp_NewBlog, $mdp_PostType, $mdp_userID, $mdp_prefix, $mdp_postStatus);
+			$new_postid 	= duplicate_over_multisite($mdp_PostID, $mdp_NewBlog, $mdp_PostType, $mdp_userID, $mdp_prefix, $mdp_postStatus);
 
-			$success = true;
+			$success 		= true;
 
 	}
 
@@ -79,11 +79,7 @@ function mpd_admin_menu_markup(){
 
     			<h3>Select a prefix, if any, for the new post/page to be created:</h3>
 				
-				<?php 
-                     $options = get_option( 'mdp_settings' ); 
-                     $default_prefix = $options['mdp_default_prefix'] ? $options['mdp_default_prefix'] : 'Copy of'   
-               ?>
-    			<input type="text" name="mdp-prefix" value="<?php echo $default_prefix; ?>"/>
+    			<input type="text" name="mdp-prefix" value="<?php echo mpd_get_prefix(); ?>"/>
     		
 			</div>
 

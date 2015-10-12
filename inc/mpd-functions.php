@@ -48,3 +48,12 @@ function mpd_get_postype_decision_from_options(){
 
     return $post_types;
 }
+
+function mpd_get_prefix(){
+
+      $options  = get_option( 'mdp_settings' ); 
+      $prefix   = $options['mdp_default_prefix'] ? $options['mdp_default_prefix'] : 'Copy of';
+
+      return $prefix;
+      
+}

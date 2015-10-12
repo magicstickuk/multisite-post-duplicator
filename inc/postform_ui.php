@@ -29,15 +29,9 @@ function mpd_metaboxes()
 
 function mpd_publish_top_right()
 {
-    $post_statuses = array('publish', 'future', 'draft', 'pending', 'private');
+    $post_statuses = get_post_statuses();
     $sites = wp_get_sites();
 
-    echo 'Old Way:';
-    var_dump($post_statuses);
-
-    $post_statuses = get_post_statuses();
-    echo '<br><br>New Way:';
-    var_dump($post_statuses);
     ?>
     <div id="clone_multisite_box">
 
@@ -45,20 +39,18 @@ function mpd_publish_top_right()
 
             <p>Duplicated post status:
 
-                <select id="mpd-new-status" name="mpd-new-status">
+            <select id="mpd-new-status" name="mpd-new-status">
              <?php foreach ($post_statuses as $post_status_key => $post_status_value): ?>
                       <option value="<?php echo $post_status_key;?>" <?php echo $post_status_key == 'draft' ? 'selected' : '' ?>><?php echo $post_status_value;?></option>
                <?php endforeach ?>
             </select>
-                </select>
+               
             </p>
 
             <p>Title prefix for new post:
-               <?php 
-                     $options = get_option( 'mdp_settings' ); 
-                     $default_prefix = $options['mdp_default_prefix'] ? $options['mdp_default_prefix'] : 'Copy of'   
-               ?>
-                <input type="text" name="mpd-prefix" value="<?php echo $default_prefix; ?>"/>
+            
+                <input type="text" name="mpd-prefix" value="<?php echo mpd_get_prefix(); ?>"/>
+                
             </p>
 
             <p>Site(s) you want duplicate to:
