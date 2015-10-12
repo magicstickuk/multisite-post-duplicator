@@ -15,7 +15,6 @@ function mdp_load_admin_styles(){
 			wp_enqueue_script( 'admin-scripts', plugins_url( '../js/admin-scripts.js', __FILE__ ), array( 'mdp-select2-core' ), '1.0' );
 		}
 
-
 		if($screenid == 'tools_page_mpd' || $screenid == 'settings_page_multisite_post_duplicator'){
 
 			wp_register_style( 'mdp-styles', plugins_url( '../css/mpd.css', __FILE__ ) , false, '1.0.0' );
@@ -23,6 +22,7 @@ function mdp_load_admin_styles(){
 			wp_enqueue_style( 'mdp-styles');
 
 		}
+		
 		if($screenid == 'settings_page_multisite_post_duplicator'){
 
 			wp_enqueue_script( 'mdp-admin-seetings-scripts', plugins_url( '../js/admin-settings.js', __FILE__ ), array( 'jquery' ), '1.0' );
