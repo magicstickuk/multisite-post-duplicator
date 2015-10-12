@@ -52,6 +52,7 @@ Yes. However, you have to have the same custom fields defined in each of your si
 == Screenshots ==
 
 1. User Interface
+2. Meta Box
 
 == Changelog ==
 

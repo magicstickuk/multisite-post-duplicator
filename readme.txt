@@ -1,6 +1,7 @@
 === Multisite Post Duplicator ===
-Contributors: MagicStick & SergiAmbel
-Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, one
+
+Contributors: MagicStick, SergiAmbel
+Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, clone
 Requires at least: 3.0.1
 Tested up to: 4.3.1
 License: GPLv2 or later
