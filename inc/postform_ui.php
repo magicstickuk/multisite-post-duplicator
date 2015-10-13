@@ -8,8 +8,7 @@ if ( is_multisite() ) {
 
 }
 
-function mpd_metaboxes()
-{
+function mpd_metaboxes(){
     
     $post_types = mpd_get_postype_decision_from_options();
 
@@ -27,10 +26,10 @@ function mpd_metaboxes()
     
 }
 
-function mpd_publish_top_right()
-{
-    $post_statuses = get_post_statuses();
-    $sites = wp_get_sites();
+function mpd_publish_top_right(){
+
+    $post_statuses  = get_post_statuses();
+    $sites          = wp_get_sites();
 
     ?>
     <div id="clone_multisite_box">
@@ -54,17 +53,22 @@ function mpd_publish_top_right()
             </p>
 
             <p>Site(s) you want duplicate to:
+
                 <ul id="mpd_blogschecklist" data-wp-lists="list:category" class="mpd_blogschecklist" style="padding-left: 5px;margin-top: -8px;">
                     
                     <?php foreach ($sites as $site): ?>
 
                         <?php if (current_user_can_for_blog($site['blog_id'], 'publish_posts') ) : ?>
+
                             <?php $blog_details = get_blog_details($site['blog_id']); ?>
                             
                                 <li id="mpd_blog_<?php echo $site['blog_id']; ?>" class="popular-category">
+
                                     <label class="selectit">
                                         <input value="<?php echo $site['blog_id']; ?>" type="checkbox" name="mpd_blogs[]" id="in_blog_<?php echo $site['blog_id']; ?>"> <?php echo $blog_details->blogname; ?>
+
                                     </label>
+
                                 </li>
                             
                         <?php endif; ?>
@@ -73,14 +77,19 @@ function mpd_publish_top_right()
 
                 </ul>
             </p>
+
             <p>
                 <em>
                     If you have checked any of the checkboxes above then this post will be duplicated on save.
                 </em>
             </p>
+
             <p style="font-size: 80%; text-align:right; font-style:italic">
+
                 <a target="_blank" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>">Settings</a>
+                
             </p>
+
         </div>
 
     </div>
@@ -93,9 +102,7 @@ add_filter( 'save_post', 'mpd_clone_post' );
 function mpd_clone_post($data )
 {
 
-    // Other "don't save" operations as remove or create new one:
-    if (!count($_POST))
-    {
+    if (!count($_POST)){
         return $data;
     }
 
@@ -103,14 +110,18 @@ function mpd_clone_post($data )
         && ( isset($_POST['mpd_blogs'] ) )
         && ( count( $_POST['mpd_blogs'] ) )
         && ( $_POST["post_ID"] == $data ) //hack to avoid execution in cloning process
-    )
-    {
+    ){
+
         $mpd_blogs = $_POST['mpd_blogs'];
-        foreach( $mpd_blogs as $mpd_blog_id )
-        {
+
+        foreach( $mpd_blogs as $mpd_blog_id ){
+
             duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], $_POST["post_author"], $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
+
         }
+
     }
 
     return $data;
+
 }
