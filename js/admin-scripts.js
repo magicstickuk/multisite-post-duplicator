@@ -4,33 +4,25 @@ function get_selection_value(target){
 }
 
 function set_placeholder(target, placeholder_text){
-
 	jQuery(target).select2({
-
-		placeholder: placeholder_text,
-		
+		placeholder: placeholder_text,	
 	});
 }
 
 function mark_as_success(target){
-
 	jQuery(target).addClass('mpd-greentick');
-
 }
 
 function do_the_responce(response_ident, placeholdertext, response){
-
 	jQuery(".el" + response_ident + "-container").html(response);
 	set_placeholder(".el" + response_ident , placeholdertext);
 	mark_as_success('.el' + (response_ident - 1) + 'sc.spinner-container');
-
 }
 
 jQuery(document).ready(function($) {
 
 	set_placeholder(".el0", "Select a post post type to duplicate");
 
-	//EL0 Start
 	$( ".el0" ).change(function() {
 
 		var post_type_name = get_selection_value(this);
@@ -46,7 +38,6 @@ jQuery(document).ready(function($) {
 
 			do_the_responce("1", "Select a post to duplicate", response);
 
-			//EL1 START
 			$( ".el1" ).change(function() {
 
 				var post__name = get_selection_value(this);
@@ -62,7 +53,6 @@ jQuery(document).ready(function($) {
 
 							do_the_responce("2", "Select a site to duplicate to", response);
 
-							//EL2 START
 							$( ".el2" ).change(function() {
 
 								var blog_id = $(this).find(":selected").val();
@@ -79,7 +69,6 @@ jQuery(document).ready(function($) {
 
 											do_the_responce("3", "Select a user to atribute this to", response);
 
-											//EL3 START
 											$( ".el3" ).change(function() {
 													$('.el3sc.spinner-container img').show();
 													$('.el3sc.spinner-container').addClass('mpd-greentick');
@@ -90,27 +79,18 @@ jQuery(document).ready(function($) {
 
 									return false;
 
-							//EL2 END
 							});
 
 					})
 
 					return false;
 
-			//EL1 END
 			});
 
 		})
 
 		return false;
 
-	// EL0 END
 	});
-
-	
-
-	
-
-
 
 });
