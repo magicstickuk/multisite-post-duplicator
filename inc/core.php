@@ -4,6 +4,7 @@ function duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $p
 
     $mdp_post   = get_post($post_id_to_copy);
     $title      = get_the_title($mdp_post);
+    $sourcetags = wp_get_post_tags( $post_id_to_copy, array( 'fields' => 'names' ) );
 
     if($prefix != ''){
 
@@ -56,6 +57,12 @@ function duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $p
 
          }
 
+    if($sourcetags){
+
+        wp_set_post_tags( $post_id, $sourcetags); 
+        
+    }
+     
      restore_current_blog();
      
      return $post_id;
