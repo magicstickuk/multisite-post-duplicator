@@ -1,6 +1,6 @@
 <?php
 
-function duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $post_author, $prefix, $post_status) {
+function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $post_author, $prefix, $post_status) {
 
     $mdp_post   = get_post($post_id_to_copy);
     $title      = get_the_title($mdp_post);
@@ -18,14 +18,14 @@ function duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $p
             'post_status'   => $post_status,
             'post_type'     => $post_type,
             'post_author'   => $post_author,
- 			      'post_content'  => $mdp_post->post_content
+ 			'post_content'  => $mdp_post->post_content
 
     );
 
     $data           = get_post_custom($mdp_post);
     $meta_values    = get_post_meta($post_id_to_copy);
 
-    $featured_image = get_featured_image_from_source($post_id);
+    $featured_image = mpd_get_featured_image_from_source($post_id);
 
     switch_to_blog($new_blog_id);
 
@@ -61,7 +61,7 @@ function duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $p
 
     if($featured_image){
 
-        set_featured_image_to_destination($post_id, $featured_image['url'], $featured_image['alt'] );
+        mpd_set_featured_image_to_destination($post_id, $featured_image);
 
     }
 

@@ -58,28 +58,33 @@ function mpd_get_prefix(){
       
 }
 
-function get_featured_image_from_source($post_id){
+function mpd_get_featured_image_from_source($post_id){
 
-    $image_details  = array();
-
-    $image                  = wp_get_attachment_image_src( get_post_thumbnail_id($post_id), 'full' );
-    $image_details['url']   = $image[0];
-    $image_details['alt']   = get_post_meta( get_post_thumbnail_id($post_id), '_wp_attachment_image_alt', true );
+    $image_details                  = array();
+    $image                          = wp_get_attachment_image_src( get_post_thumbnail_id($post_id), 'full' );
+    $image_details['url']           = $image[0];
+    $image_details['alt']           = get_post_meta( get_post_thumbnail_id($post_id), '_wp_attachment_image_alt', true );
+    $image_details['description']   = get_post_field('post_content', get_post_thumbnail_id($post_id));
+    $image_details['caption']       = get_post_field('post_excerpt', get_post_thumbnail_id($post_id));
 
     return $image_details;
 
 }
 
-function set_featured_image_to_destination($destination_id, $image_url,  $image_alt_text){
+function mpd_set_featured_image_to_destination($destination_id, $image_details){
 
     $upload_dir = wp_upload_dir();
-    $image_data = file_get_contents($image_url);
-    $filename   = basename($image_url);
+    $image_data = file_get_contents($image_details['url']);
+    $filename   = basename($image_details['url']);
 
     if( wp_mkdir_p( $upload_dir['path'] ) ) {
+
         $file = $upload_dir['path'] . '/' . $filename;
+
     } else {
+
         $file = $upload_dir['basedir'] . '/' . $filename;
+
     }
 
     file_put_contents( $file, $image_data );
@@ -87,25 +92,25 @@ function set_featured_image_to_destination($destination_id, $image_url,  $image_
     $wp_filetype = wp_check_filetype( $filename, null );
 
     $attachment = array(
+
         'post_mime_type' => $wp_filetype['type'],
         'post_title'     => sanitize_file_name( $filename ),
-        'post_content'   => '', //Image Description
+        'post_content'   => $image_details['description'],
         'post_status'    => 'inherit',
-        'post_excerpt'    => '' // Caption
+        'post_excerpt'   => $image_details['caption']
+
     );
 
     // Create the attachment
     $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
 
     // Add any alt text;
-    if($image_alt_text){
+    if($image_details['alt']){
 
-         $image_alt = update_post_meta($destination_id,'_wp_attachment_image_alt', $image_alt_text);
+         update_post_meta($destination_id,'_wp_attachment_image_alt', $image_details['alt']);
 
     }
    
-    
-
     // Include image.php
     require_once(ABSPATH . 'wp-admin/includes/image.php');
 
@@ -118,4 +123,22 @@ function set_featured_image_to_destination($destination_id, $image_url,  $image_
     // And finally assign featured image to post
     set_post_thumbnail( $destination_id, $attach_id );
     
+}
+
+function mpd_get_images_form_the_content(){
+
+    
+    $html = '<a href="http://localhost/BasicWP/wp-content/uploads/2014/12/15438283902_3fa37934b5_o.jpg"><img class="alignnone size-medium wp-image-16" src="http://localhost/BasicWP/wp-content/uploads/2014/12/15438283902_3fa37934b5_o-300x214.jpg" alt="15438283902_3fa37934b5_o" width="300" height="214" /></a><a href="http://localhost/BasicWP/wp-content/uploads/2014/12/15438283902_3fa37934b5_o.jpg"><img class="alignnone size-medium wp-image-16" src="http://localhost/BasicWP/wp-content/uploads/2014/12/15438283902_3fa37934b5_o-300x214.jpg" alt="15438283902_3fa37934b5_o" width="300" height="214" /></a>';
+    echo $html;
+    $doc = new DOMDocument();
+    @$doc->loadHTML($html);
+
+    $tags = $doc->getElementsByTagName('img');
+
+    foreach ($tags as $tag) {
+           echo $tag->getAttribute('src') ."<br>";
+           echo $tag->getAttribute('class')."<br>";
+           echo $tag->getAttribute('width')."<br>";
+    }
+
 }

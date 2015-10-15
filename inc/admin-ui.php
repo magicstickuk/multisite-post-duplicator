@@ -23,7 +23,7 @@ function mpd_admin_menu_markup(){
 			$mdp_prefix 	= $_POST['mdp-prefix'];
 			$mdp_postStatus = $_POST['mpd-post-status'];
 
-			$new_postid 	= duplicate_over_multisite($mdp_PostID, $mdp_NewBlog, $mdp_PostType, $mdp_userID, $mdp_prefix, $mdp_postStatus);
+			$new_postid 	= mpd_duplicate_over_multisite($mdp_PostID, $mdp_NewBlog, $mdp_PostType, $mdp_userID, $mdp_prefix, $mdp_postStatus);
 
 			$success 		= true;
 
