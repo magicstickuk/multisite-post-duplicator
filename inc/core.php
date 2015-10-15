@@ -18,12 +18,14 @@ function duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $p
             'post_status'   => $post_status,
             'post_type'     => $post_type,
             'post_author'   => $post_author,
- 			'post_content'  => $mdp_post->post_content
+ 			      'post_content'  => $mdp_post->post_content
 
     );
 
     $data           = get_post_custom($mdp_post);
     $meta_values    = get_post_meta($post_id_to_copy);
+
+    $featured_image_url = get_featured_image_from_source($post_id);
 
     switch_to_blog($new_blog_id);
 
@@ -55,7 +57,13 @@ function duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $p
                
             }
 
-         }
+    }
+
+    if($featured_image_url){
+
+        set_featured_image_to_destination($featured_image_url, $post_id);
+        
+    }
 
     if($sourcetags){
 
