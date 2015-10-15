@@ -125,11 +125,10 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
     
 }
 
-function mpd_get_images_form_the_content(){
+function mpd_get_images_form_the_content($post_id){
 
     
-    $html = '<a href="http://localhost/BasicWP/wp-content/uploads/2014/12/15438283902_3fa37934b5_o.jpg"><img class="alignnone size-medium wp-image-16" src="http://localhost/BasicWP/wp-content/uploads/2014/12/15438283902_3fa37934b5_o-300x214.jpg" alt="15438283902_3fa37934b5_o" width="300" height="214" /></a><a href="http://localhost/BasicWP/wp-content/uploads/2014/12/15438283902_3fa37934b5_o.jpg"><img class="alignnone size-medium wp-image-16" src="http://localhost/BasicWP/wp-content/uploads/2014/12/15438283902_3fa37934b5_o-300x214.jpg" alt="15438283902_3fa37934b5_o" width="300" height="214" /></a>';
-    echo $html;
+    $html = get_post_field( 'post_content', $post_id );
     $doc = new DOMDocument();
     @$doc->loadHTML($html);
 
@@ -139,6 +138,14 @@ function mpd_get_images_form_the_content(){
            echo $tag->getAttribute('src') ."<br>";
            echo $tag->getAttribute('class')."<br>";
            echo $tag->getAttribute('width')."<br>";
+           preg_match("/(?<=wp-image-)\d+/", $tag->getAttribute('class'),$matches);
+           echo $matches[0];
+           $image_obj = get_post($matches[0]);
+           var_dump($image_obj);
+           echo "<br><br><br>";
+           var_dump(wp_get_attachment_metadata($image_obj));
     }
 
 }
+
+
