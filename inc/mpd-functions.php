@@ -60,13 +60,17 @@ function mpd_get_prefix(){
 
 function get_featured_image_from_source($post_id){
 
-    $image = wp_get_attachment_image_src( get_post_thumbnail_id($post_id), 'full' );
+    $image_details  = array();
 
-    return $image[0];
+    $image                  = wp_get_attachment_image_src( get_post_thumbnail_id($post_id), 'full' );
+    $image_details['url']   = $image[0];
+    $image_details['alt']   = get_post_meta( get_post_thumbnail_id($post_id), '_wp_attachment_image_alt', true );
+
+    return $image_details;
 
 }
 
-function set_featured_image_to_destination($image_url, $destination_id){
+function set_featured_image_to_destination($destination_id, $image_url,  $image_alt_text){
 
     $upload_dir = wp_upload_dir();
     $image_data = file_get_contents($image_url);
@@ -82,16 +86,25 @@ function set_featured_image_to_destination($image_url, $destination_id){
 
     $wp_filetype = wp_check_filetype( $filename, null );
 
-
     $attachment = array(
         'post_mime_type' => $wp_filetype['type'],
         'post_title'     => sanitize_file_name( $filename ),
-        'post_content'   => '',
-        'post_status'    => 'inherit'
+        'post_content'   => '', //Image Description
+        'post_status'    => 'inherit',
+        'post_excerpt'    => '' // Caption
     );
 
     // Create the attachment
     $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
+
+    // Add any alt text;
+    if($image_alt_text){
+
+         $image_alt = update_post_meta($destination_id,'_wp_attachment_image_alt', $image_alt_text);
+
+    }
+   
+    
 
     // Include image.php
     require_once(ABSPATH . 'wp-admin/includes/image.php');
