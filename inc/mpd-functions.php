@@ -149,4 +149,25 @@ function mpd_get_images_form_the_content($post_id){
 
 }
 
+function mpd_checked_lookup($options, $option_key, $option_value){
+
+    if(isset($options)){
+
+        $checkedLookup = checked( $options[$option_key], $option_value, false);
+
+    }elseif(!$options){
+
+        $checkedLookup = 'checked="checked"';
+
+    }else{
+
+        $checkedLookup = '';
+
+    };
+
+    echo $checkedLookup;
+
+
+}
+
 
