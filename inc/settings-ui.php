@@ -29,21 +29,27 @@ function mdp_settings_init(  ) {
 		'mdp_mdp_plugin_setting_page_section' 
 	);
 
-	$mpd_post_types = get_post_types();
-	$loopcount = 1;
-	$post_types_to_ignore = array('revision', 'nav_menu_item');
+	$mpd_post_types 		= get_post_types();
+	$loopcount 				= 1;
+	$post_types_to_ignore 	= array('revision', 'nav_menu_item');
 
 	foreach ($mpd_post_types as $mpd_post_type){
-		if(!in_array($mpd_post_type, $post_types_to_ignore)){
+
+		if( !in_array( $mpd_post_type, $post_types_to_ignore ) ){
+
 			add_settings_field( 
-			'meta_box_post_type_selector_' . $mpd_post_type, 
-			$loopcount == 1 ? "Select post types to show the MPD Meta Box on" : "" , 
-			'meta_box_post_type_selector_render', 
-			'mdp_plugin_setting_page', 
-			'mdp_mdp_plugin_setting_page_section',
-			array('mdpposttype' => $mpd_post_type)
+				'meta_box_post_type_selector_' . $mpd_post_type, 
+				$loopcount == 1 ? "Select post types to show the MPD Meta Box on" : "" , 
+				'meta_box_post_type_selector_render', 
+				'mdp_plugin_setting_page', 
+				'mdp_mdp_plugin_setting_page_section',
+				array(
+					'mdpposttype' => $mpd_post_type
+				)
 			);
+
 			$loopcount++;
+
 		}
 
 	}
@@ -52,6 +58,14 @@ function mdp_settings_init(  ) {
 		'mdp_default_prefix', 
 		__( 'Default Prefix', 'mdp' ), 
 		'mdp_default_prefix_render', 
+		'mdp_plugin_setting_page', 
+		'mdp_mdp_plugin_setting_page_section' 
+	);
+
+	add_settings_field( 
+		'mdp_default_tags_copy', 
+		__( 'Copy post tags when duplicating?', 'mdp' ), 
+		'mdp_default_tags_copy_render', 
 		'mdp_plugin_setting_page', 
 		'mdp_mdp_plugin_setting_page_section' 
 	);
@@ -91,36 +105,32 @@ function meta_box_post_type_selector_render($args) {
 	$options = get_option( 'mdp_settings' );
 	$mpd_post_type = $args['mdpposttype'];
 	$the_name = "mdp_settings[meta_box_post_type_selector_" . $mpd_post_type . "]";
-
-	if(isset($options['meta_box_post_type_selector_' . $mpd_post_type ])){
-
-		$checkedLookup = checked( $options['meta_box_post_type_selector_' . $mpd_post_type ], $mpd_post_type, false);
-
-	}elseif(!$options){
-
-		$checkedLookup = 'checked="checked"';
-
-	}else{
-
-		$checkedLookup = '';
-
-	};
+	$the_selector = 'meta_box_post_type_selector_' . $mpd_post_type;
 
 	?>
 
-		<input type='checkbox' name='<?php echo $the_name; ?>' <?php echo $checkedLookup;?> value='<?php echo $mpd_post_type; ?>'> <?php echo $mpd_post_type; ?> <br >
-
+		<input type='checkbox' name='<?php echo $the_name; ?>' <?php mpd_checked_lookup($options, $the_selector, $mpd_post_type) ;?> value='<?php echo $mpd_post_type; ?>'> <?php echo $mpd_post_type; ?> <br >
 
 	<?php
 
 }
-
 
 function mdp_default_prefix_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
 	?>
 	<input type='text' name='mdp_settings[mdp_default_prefix]' value='<?php echo $options ? $options['mdp_default_prefix'] : "Copy of"; ?>'>
+	<?php
+
+}
+
+function mdp_default_tags_copy_render(  ) { 
+
+	$options = get_option( 'mdp_settings' );
+
+	?>
+	<input type='checkbox' name='mdp_settings[mdp_default_tags_copy]' <?php mpd_checked_lookup($options, 'mdp_default_tags_copy', 'tags') ;?> value='tags'> 
+
 	<?php
 
 }
