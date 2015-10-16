@@ -143,7 +143,8 @@ function mpd_get_images_form_the_content($post_id){
            $image_obj = get_post($matches[0]);
            var_dump($image_obj);
            echo "<br><br><br>";
-           var_dump(wp_get_attachment_metadata($image_obj));
+           $media = get_attached_media( 'image', $post_id );
+           var_dump($media);
     }
 
 }
