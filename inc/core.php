@@ -26,7 +26,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $data           = get_post_custom($mdp_post);
     $meta_values    = get_post_meta($post_id_to_copy);
 
-    $featured_image = mpd_get_featured_image_from_source($post_id);
+    $featured_image = mpd_get_featured_image_from_source($post_id_to_copy);
 
     switch_to_blog($new_blog_id);
 
@@ -81,7 +81,15 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
      $notice = mdp_make_admin_notice($site_name, $site_edit_url);
 
      update_option('mpd_admin_notice', $notice );
+
+     $createdPostObject = array(
+
+         'id'           => $post_id,
+         'edit_url'     => $site_edit_url,
+         'site_name'    => $site_name
+
+    );
      
-     return $post_id;
+     return $createdPostObject;
  
 }

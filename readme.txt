@@ -61,6 +61,7 @@ Yes. However, you have to have the same custom fields defined in each of your si
 * Now copies post tags
 * Now copies featured images from posts
 * Admin notice apon dupication with link to go straight to new post
+* Prepared site for localisation (any translators welcome to contact me please!)
 * Cleaned code for improved efficiency
 
 = 0.4 =

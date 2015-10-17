@@ -6,7 +6,7 @@ if ( is_multisite() ) {
 
 function mdp_add_admin_menu(  ) { 
 
-	add_submenu_page( 'options-general.php', 'Multisite Post Duplicator Settings', 'Multisite Post Duplicator Settings', 'manage_options', 'multisite_post_duplicator', 'mdp_options_page' );
+	add_submenu_page( 'options-general.php', __('Multisite Post Duplicator Settings','mpd'), __('Multisite Post Duplicator Settings', 'mpd'), 'manage_options', 'multisite_post_duplicator', 'mdp_options_page' );
 
 }
 
@@ -16,14 +16,14 @@ function mdp_settings_init(  ) {
 
 	add_settings_section(
 		'mdp_mdp_plugin_setting_page_section', 
-		'<h2>'. __( 'Multisite Post Duplicator Settings Page' . '</h2>', 'mdp' ), 
+		'<h2>'. __( 'Multisite Post Duplicator Settings Page' . '</h2>', 'mpd' ), 
 		'mdp_settings_section_callback', 
 		'mdp_plugin_setting_page'
 	);
 
 	add_settings_field( 
 		'meta_box_show_radio', 
-		__( 'What Post Types you want to show the MPD Meta Box?', 'mdp' ), 
+		__( 'What Post Types you want to show the MPD Meta Box?', 'mpd' ), 
 		'meta_box_show_radio_render', 
 		'mdp_plugin_setting_page', 
 		'mdp_mdp_plugin_setting_page_section' 
@@ -39,7 +39,7 @@ function mdp_settings_init(  ) {
 
 			add_settings_field( 
 				'meta_box_post_type_selector_' . $mpd_post_type, 
-				$loopcount == 1 ? "Select post types to show the MPD Meta Box on" : "" , 
+				$loopcount == 1 ? __("Select post types to show the MPD Meta Box on", 'mpd') : "" , 
 				'meta_box_post_type_selector_render', 
 				'mdp_plugin_setting_page', 
 				'mdp_mdp_plugin_setting_page_section',
@@ -93,15 +93,15 @@ function meta_box_show_radio_render(){
 
 		<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_all" <?php checked( $mdp_radio_label_value, 'all'); ?> value="all">
 
-		<label class="mdp_radio_label" for="radio-choice-1">All post types</label>
+		<label class="mdp_radio_label" for="radio-choice-1"><?php _e('All post types', 'mpd') ?></label>
 	    
 		<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_some" <?php checked( $mdp_radio_label_value, 'some'); ?> value="some">
 
-	    <label class="mdp_radio_label" for="radio-choice-2">Some post types</label>
+	    <label class="mdp_radio_label" for="radio-choice-2"><?php _e('Some post types','mpd') ?></label>
 
 	    <input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_none" <?php checked( $mdp_radio_label_value, 'none'); ?> value="none">
 
-	    <label class="mdp_radio_label" for="radio-choice-2">No post types</label>
+	    <label class="mdp_radio_label" for="radio-choice-2"><?php _e('No post types','mpd') ?></label>
 
     </div>
 	<?php
@@ -156,7 +156,7 @@ function mdp_default_feat_image_copy_render(  ) {
 
 function mdp_settings_section_callback(  ) { 
 
-	echo __( 'Here you can change the default settings for Multisite Post Duplicator. Note that any changes to these setting here are specific to this site only.', 'mdp' );
+	_e( 'Here you can change the default settings for Multisite Post Duplicator. Note that any changes to these settings are specific to this site only.', 'mdp' );
 
 }
 

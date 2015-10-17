@@ -17,7 +17,7 @@ function mpd_metaboxes(){
         foreach ($post_types as $page ){
 
             if ( current_user_can( 'publish_posts' ) )  {
-                    add_meta_box( 'multisite_clone_metabox', 'Multisite Post Duplicator', 'mpd_publish_top_right', $page, 'side', 'high' );
+                    add_meta_box( 'multisite_clone_metabox', __('Multisite Post Duplicator','mpd'), 'mpd_publish_top_right', $page, 'side', 'high' );
             }
 
         } 
@@ -38,7 +38,7 @@ function mpd_publish_top_right(){
 
         <div class="metabox">
 
-            <p>Duplicated post status:
+            <p><?php _e('Duplicated post status', 'mpd'); ?>:
 
             <select id="mpd-new-status" name="mpd-new-status">
              <?php foreach ($post_statuses as $post_status_key => $post_status_value): ?>
@@ -48,13 +48,13 @@ function mpd_publish_top_right(){
                
             </p>
 
-            <p>Title prefix for new post:
+            <p><?php _e('Title prefix for new post', 'mpd'); ?>:
             
                 <input type="text" name="mpd-prefix" value="<?php echo mpd_get_prefix(); ?>"/>
                 
             </p>
 
-            <p>Site(s) you want duplicate to:
+            <p><?php _e('Site(s) you want duplicate to', 'mpd'); ?>:
 
                 <ul id="mpd_blogschecklist" data-wp-lists="list:category" class="mpd_blogschecklist" style="padding-left: 5px;margin-top: -8px;">
                     
@@ -82,13 +82,13 @@ function mpd_publish_top_right(){
 
             <p>
                 <em>
-                    If you have checked any of the checkboxes above then this post will be duplicated on save.
+                    <?php _e('If you have checked any of the checkboxes above then this post will be duplicated on save.','mpd');?>
                 </em>
             </p>
 
             <p style="font-size: 80%; text-align:right; font-style:italic">
 
-                <a target="_blank" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>">Settings</a>
+                <a target="_blank" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"><?php _e('Settings','mpd'); ?></a>
                 
             </p>
 

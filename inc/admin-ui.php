@@ -4,7 +4,7 @@ add_action( 'admin_menu', 'mpd_admin_pages' );
 
 function mpd_admin_pages(){
 
-	add_submenu_page('tools.php','Multisite Post Duplicator','Multisite Post Duplicator', 'manage_options', 'mpd','mpd_admin_menu_markup');
+	add_submenu_page('tools.php', __('Multisite Post Duplicator','mpd'),__('Multisite Post Duplicator','mpd'), 'manage_options', 'mpd','mpd_admin_menu_markup');
 
 }
 
@@ -23,7 +23,7 @@ function mpd_admin_menu_markup(){
 			$mdp_prefix 	= $_POST['mdp-prefix'];
 			$mdp_postStatus = $_POST['mpd-post-status'];
 
-			$new_postid 	= mpd_duplicate_over_multisite($mdp_PostID, $mdp_NewBlog, $mdp_PostType, $mdp_userID, $mdp_prefix, $mdp_postStatus);
+			$new_post_obj 	= mpd_duplicate_over_multisite($mdp_PostID, $mdp_NewBlog, $mdp_PostType, $mdp_userID, $mdp_prefix, $mdp_postStatus);
 
 			$success 		= true;
 
@@ -37,13 +37,13 @@ function mpd_admin_menu_markup(){
 
 	<div class="wrap">
 
-    	<h2>Multisite Post Duplicator</h2>
+    	<h2><?php _e('Multisite Post Duplicator','mpd'); ?></h2>
 
     	<?php if(!is_multisite()):?>
 
-    		<h2>Attention!</h2>
+    		<h2><?php _e('Attention!','mpd'); ?></h2>
 
-    		<p>At the moment this plugin is solely for funtioning on a mulitisite. It appears this site doees not have multisite enabled.</p>
+    		<p><?php _e('At the moment this plugin is solely for funtioning on a mulitisite. It appears this site doees not have multisite enabled','mpd'); ?></p>
 			
 			<?php return; ?>
 
@@ -51,9 +51,9 @@ function mpd_admin_menu_markup(){
 
     	<?php if($success):?>
 
-    		<div class="updated mdp-updated">
+    		<div class="updated">
 
-    			<h3><strong>Congratuations. The page/post was duplicated successfully.</strong></h3>
+    			<p><?php _e('Congratulations. The page/post was duplicated successfully.','mpd'); ?> <a href="<?php echo $new_post_obj['edit_url']; ?>"><?php _e('Edit this post','mpd'); ?></a></p>
 
     		</div>
 
@@ -63,11 +63,11 @@ function mpd_admin_menu_markup(){
 
     		<div class="metabox">
 
-    			<h2>Options</h2>
+    			<h2><?php _e('Options','mpd'); ?></h2>
 
-    			<p>Select your preferences for the duplication.</p>
+    			<p><?php _e('Select your preferences for the duplication.','mpd'); ?></p>
 
-    			<h3>Select the status of the new post that will be created</h3>
+    			<h3><?php _e('Select the status of the new post that will be created.','mpd'); ?></h3>
 
     			<?php $post_statuses = get_post_statuses(); ?>
 
@@ -77,7 +77,7 @@ function mpd_admin_menu_markup(){
 
     			<?php endforeach;?>
 
-    			<h3>Select a prefix, if any, for the new post/page to be created:</h3>
+    			<h3><?php _e('Select a prefix, if any, for the new post/page to be created','mpd'); ?>:</h3>
 				
     			<input type="text" name="mdp-prefix" value="<?php echo mpd_get_prefix(); ?>"/>
     		
@@ -85,9 +85,9 @@ function mpd_admin_menu_markup(){
 
 			<div class="metabox">
 
-				<h2>Process the duplication</h2>
+				<h2><?php _e('Process the duplication','mpd'); ?></h2>
 
-	    		<h3>1. Select the post type of the post you want to duplicate</h3>
+	    		<h3>1. <?php _e('Select the post type of the post you want to duplicate','mpd'); ?></h3>
 	    		
 	    		<input type="hidden" name="action" value="add_foobar">
 
@@ -95,7 +95,7 @@ function mpd_admin_menu_markup(){
 
 		    		<option></option>
 
-		    		<option value="any" > - All Post Types -</option>
+		    		<option value="any" > - <?php _e('All Post Types','mpd'); ?> -</option>
 
 		    		<?php foreach ($post_types as $post_type):?>
 
@@ -147,7 +147,7 @@ function mdp_get_posts_for_type(){
 
 	ob_start()?>
 
-	<h3>2. Select the page you want to duplicate</h3>
+	<h3>2. <?php _e('Select the page you want to duplicate','mpd'); ?></h3>
 
 	<select name="el1" class="el1" style="width:300px;">
 
@@ -179,7 +179,7 @@ function mdp_get_site_on_network(){
 
 	ob_start()?>
 
-	<h3>3. Select the site on this network you want to duplicate to</h3>
+	<h3>3. <?php _e('Select the site on this network you want to duplicate to','mpd'); ?></h3>
 	
 	<select name="el2" class="el2" style="width:300px;">
 
@@ -215,7 +215,7 @@ function mdp_get_users_on_site(){
 
 	ob_start()?>
 
-	<h3>4. Select the user on this site you want to atribute this action to</h3>
+	<h3>4. <?php _e('Select the user on this site you want to atribute this action to','mpd'); ?></h3>
 	
 	<select name="el3" class="el3" style="width:300px;">
 
@@ -231,7 +231,7 @@ function mdp_get_users_on_site(){
 
 	<p>
 
-		<input type="submit" value="Duplicate" style="display:none;" class="button-primary main-dup-button" name="duplicate-submit">
+		<input type="submit" value="<?php _e('Duplicate','mpd'); ?>" style="display:none;" class="button-primary main-dup-button" name="duplicate-submit">
 	
 	</p>
 	
