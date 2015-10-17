@@ -70,6 +70,7 @@ function mdp_settings_init(  ) {
 		'mdp_mdp_plugin_setting_page_section' 
 	);
 
+<<<<<<< HEAD
 	add_settings_field( 
 		'mdp_default_featured_image', 
 		__( 'Copy featured image when duplicating?', 'mdp' ), 
@@ -78,6 +79,8 @@ function mdp_settings_init(  ) {
 		'mdp_mdp_plugin_setting_page_section' 
 	);
 
+=======
+>>>>>>> 2d3193dd096f2a634848c29b9d83697c0bde0849
 }
 
 function meta_box_show_radio_render(){
@@ -116,6 +119,7 @@ function meta_box_post_type_selector_render($args) {
 	$the_selector = 'meta_box_post_type_selector_' . $mpd_post_type;
 
 	?>
+<<<<<<< HEAD
 
 		<input type='checkbox' class="posttypecb" name='<?php echo $the_name; ?>' <?php mpd_checked_lookup($options, $the_selector, $mpd_post_type) ;?> value='<?php echo $mpd_post_type; ?>'> <?php echo $mpd_post_type; ?> <br >
 
@@ -139,16 +143,38 @@ function mdp_default_tags_copy_render(  ) {
 	?>
 	<input type='checkbox' name='mdp_settings[mdp_default_tags_copy]' <?php mpd_checked_lookup($options, 'mdp_default_tags_copy', 'tags') ;?> value='tags'> 
 
+=======
+
+		<input type='checkbox' class="posttypecb" name='<?php echo $the_name; ?>' <?php mpd_checked_lookup($options, $the_selector, $mpd_post_type) ;?> value='<?php echo $mpd_post_type; ?>'> <?php echo $mpd_post_type; ?> <br >
+
 	<?php
 
 }
 
+function mdp_default_prefix_render(  ) { 
+
+	$options = get_option( 'mdp_settings' );
+	?>
+	<input type='text' name='mdp_settings[mdp_default_prefix]' value='<?php echo $options ? $options['mdp_default_prefix'] : "Copy of"; ?>'>
+>>>>>>> 2d3193dd096f2a634848c29b9d83697c0bde0849
+	<?php
+
+}
+
+<<<<<<< HEAD
 function mdp_default_feat_image_copy_render(  ) { 
+=======
+function mdp_default_tags_copy_render(  ) { 
+>>>>>>> 2d3193dd096f2a634848c29b9d83697c0bde0849
 
 	$options = get_option( 'mdp_settings' );
 
 	?>
+<<<<<<< HEAD
 	<input type='checkbox' name='mdp_settings[mdp_default_featured_image]' <?php mpd_checked_lookup($options, 'mdp_default_featured_image', 'feat') ;?> value='feat'>
+=======
+	<input type='checkbox' name='mdp_settings[mdp_default_tags_copy]' <?php mpd_checked_lookup($options, 'mdp_default_tags_copy', 'tags') ;?> value='tags'> 
+>>>>>>> 2d3193dd096f2a634848c29b9d83697c0bde0849
 
 	<?php
 

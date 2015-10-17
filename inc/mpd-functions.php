@@ -151,7 +151,11 @@ function mpd_get_images_form_the_content($post_id){
 
 function mpd_checked_lookup($options, $option_key, $option_value){
 
+<<<<<<< HEAD
     if(isset($options[$option_key])){
+=======
+    if(isset($options)){
+>>>>>>> 2d3193dd096f2a634848c29b9d83697c0bde0849
 
         $checkedLookup = checked( $options[$option_key], $option_value, false);
 
@@ -170,6 +174,7 @@ function mpd_checked_lookup($options, $option_key, $option_value){
 
 }
 
+<<<<<<< HEAD
 function mdp_make_admin_notice($site_name, $site_url){
 
         $message ='<div class="updated">
@@ -199,4 +204,6 @@ function mpd_plugin_admin_notices(){
     delete_option('mpd_admin_notice');
 
 }
+=======
+>>>>>>> 2d3193dd096f2a634848c29b9d83697c0bde0849
 
