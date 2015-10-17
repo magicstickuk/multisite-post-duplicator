@@ -9,7 +9,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     if($prefix != ''){
 
-    	$prefix = $prefix . ' ';
+        $prefix = trim($prefix) . ' ';
 
     }
 
