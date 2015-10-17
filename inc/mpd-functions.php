@@ -151,7 +151,7 @@ function mpd_get_images_form_the_content($post_id){
 
 function mpd_checked_lookup($options, $option_key, $option_value){
 
-    if(isset($options)){
+    if(isset($options[$option_key])){
 
         $checkedLookup = checked( $options[$option_key], $option_value, false);
 
@@ -170,4 +170,33 @@ function mpd_checked_lookup($options, $option_key, $option_value){
 
 }
 
+function mdp_make_admin_notice($site_name, $site_url){
+
+        $message ='<div class="updated">
+             <p>You succesfully duplicated this post to '. $site_name.'. <a href="'.$site_url.'">Edit duplicated post</a></p>
+         </div>';
+
+        $option_value = get_option('mpd_admin_notice');
+
+        if($option_value){
+
+            $message = $option_value . $message;
+            
+        }      
+
+        return $message;
+    
+}
+
+function mpd_plugin_admin_notices(){
+
+    if($notices= get_option('mpd_admin_notice')){
+
+         echo $notices;
+
+    }
+
+    delete_option('mpd_admin_notice');
+
+}
 

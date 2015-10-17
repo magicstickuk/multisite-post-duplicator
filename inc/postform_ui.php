@@ -23,6 +23,8 @@ function mpd_metaboxes(){
         } 
 
     }
+
+    add_action('admin_notices', 'mpd_plugin_admin_notices');
     
 }
 

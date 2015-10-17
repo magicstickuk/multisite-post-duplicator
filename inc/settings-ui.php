@@ -70,6 +70,14 @@ function mdp_settings_init(  ) {
 		'mdp_mdp_plugin_setting_page_section' 
 	);
 
+	add_settings_field( 
+		'mdp_default_featured_image', 
+		__( 'Copy featured image when duplicating?', 'mdp' ), 
+		'mdp_default_feat_image_copy_render', 
+		'mdp_plugin_setting_page', 
+		'mdp_mdp_plugin_setting_page_section' 
+	);
+
 }
 
 function meta_box_show_radio_render(){
@@ -130,6 +138,17 @@ function mdp_default_tags_copy_render(  ) {
 
 	?>
 	<input type='checkbox' name='mdp_settings[mdp_default_tags_copy]' <?php mpd_checked_lookup($options, 'mdp_default_tags_copy', 'tags') ;?> value='tags'> 
+
+	<?php
+
+}
+
+function mdp_default_feat_image_copy_render(  ) { 
+
+	$options = get_option( 'mdp_settings' );
+
+	?>
+	<input type='checkbox' name='mdp_settings[mdp_default_featured_image]' <?php mpd_checked_lookup($options, 'mdp_default_featured_image', 'feat') ;?> value='feat'>
 
 	<?php
 
