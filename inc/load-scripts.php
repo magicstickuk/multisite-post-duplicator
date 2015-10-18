@@ -29,6 +29,7 @@ function mdp_load_admin_styles(){
 
 		}
 
+		wp_enqueue_script( 'mdp-admin-seetings-scripts', plugins_url( '../js/admin.js', __FILE__ ), array( 'jquery' ), '1.0' );
 
 		
 }

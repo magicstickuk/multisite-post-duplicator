@@ -61,9 +61,10 @@ Yes. However, you have to have the same custom fields defined in each of your si
 == Changelog ==
 
 = 0.5 =
-* NEW: Now copies post tags
-* NEW: Now copies featured images from posts
-* NEW: Admin notice apon dupication with link to go straight to new post
+* NEW: Now copies post tags (can be turned off in Settings page)
+* NEW: Now copies featured images from posts (can be turned off in Settings page)
+* NEW: Now copies any image media within the post content to the desination site (can be turned off in Settings page).
+* NEW: Admin notice apon success of dupication with a link to go straight to new post if you wish
 * FIXED: Fixed User prefix having unintentional double space in some senarios
 * Prepared plugin for localisation (any translators welcome to contact me please!)
 * Cleaned code for improved efficiency

@@ -61,16 +61,17 @@ Yes. However, you have to have the same custom fields defined in each of your si
 == Changelog ==
 
 = 0.5 =
-* NEW: Now copies post tags
-* NEW: Now copies featured images from posts
-* NEW: Admin notice apon dupication with link to go straight to new post
+* NEW: Now copies post tags (can be turned off in Settings page)
+* NEW: Now copies featured images from posts (can be turned off in Settings page)
+* NEW: Now copies any image media within the post content to the desination site (can be turned off in Settings page).
+* NEW: Admin notice apon success of dupication with a link to go straight to new post if you wish
 * FIXED: Fixed User prefix having unintentional double space in some senarios
 * Prepared plugin for localisation (any translators welcome to contact me please!)
 * Cleaned code for improved efficiency
 
 = 0.4 =
 * Added Meta Box within the post type so you can now duplicate your post to another site on your network as you work (Thanks to Sergi Ambel!).
-* Added settings page to customise default behaviour.
+* Added Settings page to customise default behaviour.
 
 = 0.3.1 =
 * Fixed Activation errors.
