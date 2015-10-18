@@ -25,8 +25,8 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     $data           = get_post_custom($mdp_post);
     $meta_values    = get_post_meta($post_id_to_copy);
-
     $featured_image = mpd_get_featured_image_from_source($post_id_to_copy);
+    $attached_images= mpd_get_images_from_the_content($post_id_to_copy);
 
     switch_to_blog($new_blog_id);
 
@@ -59,16 +59,25 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
             }
 
     }
+    mpd_process_post_media_attachements($post_id, $attached_images);
 
-    if($featured_image && ( isset($options['mdp_default_featured_image']) || !$options )){
+    if($featured_image){
         
-            mpd_set_featured_image_to_destination( $post_id, $featured_image );  
+        if(isset($options['mdp_default_featured_image']) || !$options ){
+
+            mpd_set_featured_image_to_destination( $post_id, $featured_image ); 
+
+        }
 
     }
 
-    if($sourcetags && ( isset($options['mdp_default_tags_copy']) || !$options )){
+    if($sourcetags){
+
+        if(isset($options['mdp_default_tags_copy']) || !$options ){
 
             wp_set_post_tags( $post_id, $sourcetags );
+
+        }
         
     }
      

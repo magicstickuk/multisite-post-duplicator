@@ -67,7 +67,10 @@ function mpd_get_featured_image_from_source($post_id){
     $image_details['description']   = get_post_field('post_content', get_post_thumbnail_id($post_id));
     $image_details['caption']       = get_post_field('post_excerpt', get_post_thumbnail_id($post_id));
 
-    return $image_details;
+    if($image){
+        return $image_details;
+    }
+    
 
 }
 
@@ -125,26 +128,128 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
     
 }
 
-function mpd_get_images_form_the_content($post_id){
+function mpd_get_images_from_the_content($post_id){
 
-    
-    $html = get_post_field( 'post_content', $post_id );
+    $html = get_post_field( 'post_content', $post_id);
+
     $doc = new DOMDocument();
     @$doc->loadHTML($html);
 
     $tags = $doc->getElementsByTagName('img');
 
+    $images_objects_from_post = array();
+
     foreach ($tags as $tag) {
-           echo $tag->getAttribute('src') ."<br>";
-           echo $tag->getAttribute('class')."<br>";
-           echo $tag->getAttribute('width')."<br>";
+
+            preg_match("/(?<=wp-image-)\d+/", $tag->getAttribute('class'),$matches);
+            $image_obj = get_post($matches[0]);
+            $images_objects_from_post[] = $image_obj;
+
+    }
+    
+    return $images_objects_from_post;
+
+}
+
+function mpd_process_post_media_attachements($destination_id, $post_media_attachments ){
+   
+   foreach ($post_media_attachments as $post_media_attachment) {
+
+            $image_data             = file_get_contents($post_media_attachment->guid);
+            $image_URL_info         = pathinfo($post_media_attachment->guid);
+            $image_URL_without_EXT  = $image_URL_info['dirname'] ."/". $image_URL_info['filename'];
+            $filename               = basename($post_media_attachment->guid);
+
+
+            $upload_dir = wp_upload_dir();
+
+            if( wp_mkdir_p( $upload_dir['path'] ) ) {
+
+                $file = $upload_dir['path'] . '/' . $filename;
+
+            } else {
+
+                $file = $upload_dir['basedir'] . '/' . $filename;
+
+            }
+
+            file_put_contents( $file, $image_data );
+
+            $wp_filetype = wp_check_filetype( $filename, null );
+
+            $attachment = array(
+
+                'post_mime_type' => 'image/jpeg',
+                'post_title'     => sanitize_file_name( $filename ),
+                'post_content'   => $post_media_attachment->post_content,
+                'post_status'    => 'inherit',
+                'post_excerpt'   => $post_media_attachment->post_excerpt
+
+            );
+
+            // Create the attachment
+            $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
+
+            //Add any alt text;
+            // if($image_details['alt']){
+
+            //      update_post_meta($destination_id,'_wp_attachment_image_alt', $image_details['alt']);
+
+            // }
+           
+            // Include image.php
+            require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+            // Define attachment metadata
+            $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+
+            // Assign metadata to attachment
+            wp_update_attachment_metadata( $attach_id, $attach_data );
+
+            $new_image_URL              = wp_get_attachment_url($attach_id);
+            $new_image_URL_info         = pathinfo($new_image_URL);
+            $new_image_URL_without_EXT  = $new_image_URL_info['dirname'] ."/". $new_image_URL_info['filename'];
+
+            $old_content        = get_post_field('post_content', $destination_id);
+            $update_content     = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT,  $old_content);
+
+            $post_update = array(
+                'ID'           => $destination_id,
+                'post_content' => $update_content,
+
+            );
+            wp_update_post( $post_update );
+
+
+   }
+}
+
+function mpd_get_images_form_the_content(){
+
+    
+    $html = get_post_field( 'post_content', 108);
+    $doc = new DOMDocument();
+    @$doc->loadHTML($html);
+
+    $tags = $doc->getElementsByTagName('img');
+    $images = get_children( 'post_type=attachment&post_mime_type=image&post_parent=108' );
+    foreach ( $images as $attachment_id) {
+        var_dump($attachment_id);
+    }
+    var_dump(get_intermediate_image_sizes()); 
+    //$media = get_attached_media( 'image', 108 );
+   // var_dump($media);
+    foreach ($tags as $tag) {
+           //echo $tag->getAttribute('src') ."<br>";
+           //echo $tag->getAttribute('class')."<br>";
+           //echo $tag->getAttribute('width')."<br>";
            preg_match("/(?<=wp-image-)\d+/", $tag->getAttribute('class'),$matches);
-           echo $matches[0];
+           //echo $matches[0];
            $image_obj = get_post($matches[0]);
-           var_dump($image_obj);
+           //var_dump($image_obj);
            echo "<br><br><br>";
-           $media = get_attached_media( 'image', $post_id );
-           var_dump($media);
+           
+           
     }
 
 }
@@ -172,19 +277,17 @@ function mpd_checked_lookup($options, $option_key, $option_value){
 
 function mdp_make_admin_notice($site_name, $site_url){
 
-        $message ='<div class="updated">
-             <p>'. __('You succesfully duplicated this post to','mpd') ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post','mpd').'</a></p>
-         </div>';
+    $message ='<div class="updated"><p>'. __('You succesfully duplicated this post to','mpd') ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post','mpd').'</a></p></div>';
 
-        $option_value = get_option('mpd_admin_notice');
+    $option_value = get_option('mpd_admin_notice');
 
-        if($option_value){
+    if($option_value){
 
-            $message = $option_value . $message;
+        $message = $option_value . $message;
 
-        }      
+    }      
 
-        return $message;
+    return $message;
     
 }
 

@@ -18,12 +18,15 @@ Features:
 *   Includes any custom post type on your network as long as the post type exists in your destination site
 *   Copies all custom fields
 *   Copies all related post meta
+*	Copies any featurd image
+*	Copies assiciated tags
 *   Automatically copy your post/page/custom post type from one site to another from within your workflow 
 *   Works with Advance Custom Fields
 *   Clean and friendly User Interface
 *   Select what status you want your new copies post to be i.e Published, Draft etc
 *   Specify a prefix for the new post to avoid confusion
 *   Works with Contact Form 7
+*	Settings page to customise the default behaviour
 
 == Installation ==
 
@@ -56,6 +59,14 @@ Yes. However, you have to have the same custom fields defined in each of your si
 2. Meta Box
 
 == Changelog ==
+
+= 0.5 =
+* NEW: Now copies post tags
+* NEW: Now copies featured images from posts
+* NEW: Admin notice apon dupication with link to go straight to new post
+* FIXED: Fixed User prefix having unintentional double space in some senarios
+* Prepared plugin for localisation (any translators welcome to contact me please!)
+* Cleaned code for improved efficiency
 
 = 0.4 =
 * Added Meta Box within the post type so you can now duplicate your post to another site on your network as you work (Thanks to Sergi Ambel!).
