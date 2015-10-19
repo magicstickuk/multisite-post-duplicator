@@ -78,6 +78,14 @@ function mdp_settings_init(  ) {
 		'mdp_mdp_plugin_setting_page_section' 
 	);
 
+	add_settings_field( 
+		'mdp_copy_content_images', 
+		__( 'Copy post content images to destination media library?', 'mdp' ), 
+		'mdp_copy_content_image_render', 
+		'mdp_plugin_setting_page', 
+		'mdp_mdp_plugin_setting_page_section' 
+	);
+
 }
 
 function meta_box_show_radio_render(){
@@ -149,6 +157,17 @@ function mdp_default_feat_image_copy_render(  ) {
 
 	?>
 	<input type='checkbox' name='mdp_settings[mdp_default_featured_image]' <?php mpd_checked_lookup($options, 'mdp_default_featured_image', 'feat') ;?> value='feat'>
+
+	<?php
+
+}
+
+function mdp_copy_content_image_render(  ) { 
+
+	$options = get_option( 'mdp_settings' );
+
+	?>
+	<input type='checkbox' name='mdp_settings[mdp_copy_content_images]' <?php mpd_checked_lookup($options, 'mdp_copy_content_images', 'content-image') ;?> value='content-image'>
 
 	<?php
 
