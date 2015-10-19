@@ -16,11 +16,12 @@ Duplicate any page, post or custom post type from one site on your multisite net
 Features:
 
 *   Includes any custom post type on your network as long as the post type exists in your destination site
+*   Automatically copy your post/page/custom post type from one site to another from within your workflow 
 *   Copies all custom fields
 *   Copies all related post meta
-*	Copies any featurd image
-*	Copies assiciated tags
-*   Automatically copy your post/page/custom post type from one site to another from within your workflow 
+*	Copies any featured image (Can be turned on or off in Settings)
+*	Copies all image media within post content to the new site's media library for exclusive use in the destination site (Can be turned on or off in Settings)
+*	Copies assiciated tags (Can be turned on or off in Settings)
 *   Works with Advance Custom Fields
 *   Clean and friendly User Interface
 *   Select what status you want your new copies post to be i.e Published, Draft etc
