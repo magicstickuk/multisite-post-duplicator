@@ -21,7 +21,7 @@ Features:
 *   Copies all related post meta
 *	Copies any featured image (Can be turned on or off in Settings)
 *	Copies all image media within post content to the new site's media library for exclusive use in the destination site (Can be turned on or off in Settings)
-*	Copies assiciated tags (Can be turned on or off in Settings)
+*	Copies associated tags (Can be turned on or off in Settings)
 *   Works with Advance Custom Fields
 *   Clean and friendly User Interface
 *   Select what status you want your new copies post to be i.e Published, Draft etc
