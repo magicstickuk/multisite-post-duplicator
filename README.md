@@ -65,6 +65,7 @@ Yes. However, you have to have the same custom fields defined in each of your si
 * NEW: Now copies featured images from posts (can be turned off in Settings page)
 * NEW: Now copies any image media within the post content to the desination site (can be turned off in Settings page).
 * NEW: Admin notice apon success of dupication with a link to go straight to new post if you wish
+* NEW: Submit button on WordPress post edit page will now update to show that a duplication has been requested
 * FIXED: Fixed User prefix having unintentional double space in some senarios
 * Prepared plugin for localisation (any translators welcome to contact me please!)
 * Cleaned code for improved efficiency
