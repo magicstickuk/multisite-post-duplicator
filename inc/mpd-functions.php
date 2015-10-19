@@ -112,7 +112,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
     // Add any alt text;
     if($image_details['alt']){
 
-         update_post_meta($destination_id,'_wp_attachment_image_alt', $image_details['alt']);
+         update_post_meta($attach_id,'_wp_attachment_image_alt', $image_details['alt']);
 
     }
    
@@ -156,8 +156,10 @@ function mpd_get_images_from_the_content($post_id){
 
 }
 
-function mpd_process_post_media_attachements($destination_id, $post_media_attachments ){
+function mpd_process_post_media_attachements($destination_id, $post_media_attachments, $attached_images_alt_tags ){
    
+   $image_count = 0;
+
    foreach ($post_media_attachments as $post_media_attachment) {
 
             $image_data             = file_get_contents($post_media_attachment->guid);
@@ -195,12 +197,13 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
             // Create the attachment
             $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
 
+
             //Add any alt text;
-            // if($image_details['alt']){
+            if($attached_images_alt_tags){
 
-            //      update_post_meta($destination_id,'_wp_attachment_image_alt', $image_details['alt']);
+                  update_post_meta($attach_id,'_wp_attachment_image_alt', $attached_images_alt_tags[$image_count]);
 
-            // }
+            }
            
             // Include image.php
             require_once(ABSPATH . 'wp-admin/includes/image.php');
@@ -219,42 +222,38 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
             $update_content     = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT,  $old_content);
 
             $post_update = array(
+
                 'ID'           => $destination_id,
                 'post_content' => $update_content,
 
             );
+
             wp_update_post( $post_update );
 
-
+            $image_count++;
    }
 }
 
-function mpd_get_images_form_the_content(){
+function mpd_get_image_alt_tags($post_media_attachments){
 
-    
-    $html = get_post_field( 'post_content', 108);
-    $doc = new DOMDocument();
-    @$doc->loadHTML($html);
+    if($post_media_attachments){
 
-    $tags = $doc->getElementsByTagName('img');
-    $images = get_children( 'post_type=attachment&post_mime_type=image&post_parent=108' );
-    foreach ( $images as $attachment_id) {
-        var_dump($attachment_id);
-    }
-    var_dump(get_intermediate_image_sizes()); 
-    //$media = get_attached_media( 'image', 108 );
-   // var_dump($media);
-    foreach ($tags as $tag) {
-           //echo $tag->getAttribute('src') ."<br>";
-           //echo $tag->getAttribute('class')."<br>";
-           //echo $tag->getAttribute('width')."<br>";
-           preg_match("/(?<=wp-image-)\d+/", $tag->getAttribute('class'),$matches);
-           //echo $matches[0];
-           $image_obj = get_post($matches[0]);
-           //var_dump($image_obj);
-           echo "<br><br><br>";
-           
-           
+        $alt_tags_to_be_copied = array();
+
+        $attachement_count = 0;
+
+        foreach ($post_media_attachments as $post_media_attachment) {
+
+            $alt_tag = get_post_meta($post_media_attachment->ID, '_wp_attachment_image_alt', true);
+
+            $alt_tags_to_be_copied[$attachement_count] = $alt_tag;
+
+            $attachement_count++;
+
+        }
+
+        return $alt_tags_to_be_copied;
+
     }
 
 }

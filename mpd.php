@@ -43,6 +43,7 @@ function mdp_plugin_activate() {
 		   		update_option( 'mdp_settings', $options);
 
 		   }else{
+		   	
 		   		//Add default option for exsisting users with new checkboxes
 		   		$options = get_option( 'mdp_settings' );
 		   		$options['mdp_copy_content_images'] 		= 'content-image';
