@@ -59,7 +59,16 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
             }
 
     }
-    mpd_process_post_media_attachements($post_id, $attached_images);
+
+    if($attached_images){
+        
+        if(isset($options['mdp_copy_content_images']) || !$options ){
+            
+            mpd_process_post_media_attachements($post_id, $attached_images);
+
+        }
+
+    }
 
     if($featured_image){
         

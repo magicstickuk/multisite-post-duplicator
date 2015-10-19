@@ -31,7 +31,8 @@ function mpd_metaboxes(){
 function mpd_publish_top_right(){
 
     $post_statuses  = get_post_statuses();
-    $sites          = wp_get_sites();
+    $args           = array('network_id' => null);
+    $sites          = wp_get_sites($args);
 
     ?>
     <div id="clone_multisite_box">

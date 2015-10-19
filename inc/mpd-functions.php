@@ -60,14 +60,16 @@ function mpd_get_prefix(){
 
 function mpd_get_featured_image_from_source($post_id){
 
-    $image_details                  = array();
-    $image                          = wp_get_attachment_image_src( get_post_thumbnail_id($post_id), 'full' );
-    $image_details['url']           = $image[0];
-    $image_details['alt']           = get_post_meta( get_post_thumbnail_id($post_id), '_wp_attachment_image_alt', true );
-    $image_details['description']   = get_post_field('post_content', get_post_thumbnail_id($post_id));
-    $image_details['caption']       = get_post_field('post_excerpt', get_post_thumbnail_id($post_id));
+    $image = wp_get_attachment_image_src( get_post_thumbnail_id($post_id), 'full' );
 
     if($image){
+
+        $image_details                  = array();
+        $image_details['url']           = $image[0];
+        $image_details['alt']           = get_post_meta( get_post_thumbnail_id($post_id), '_wp_attachment_image_alt', true );
+        $image_details['description']   = get_post_field('post_content', get_post_thumbnail_id($post_id));
+        $image_details['caption']       = get_post_field('post_excerpt', get_post_thumbnail_id($post_id));
+
         return $image_details;
     }
     
@@ -136,15 +138,18 @@ function mpd_get_images_from_the_content($post_id){
     @$doc->loadHTML($html);
 
     $tags = $doc->getElementsByTagName('img');
+    
+    if($tags){
 
-    $images_objects_from_post = array();
+        $images_objects_from_post = array();
 
-    foreach ($tags as $tag) {
+        foreach ($tags as $tag) {
 
             preg_match("/(?<=wp-image-)\d+/", $tag->getAttribute('class'),$matches);
             $image_obj = get_post($matches[0]);
             $images_objects_from_post[] = $image_obj;
 
+        }
     }
     
     return $images_objects_from_post;
@@ -302,4 +307,3 @@ function mpd_plugin_admin_notices(){
     delete_option('mpd_admin_notice');
 
 }
-

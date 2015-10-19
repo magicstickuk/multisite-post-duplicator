@@ -26,10 +26,6 @@
   border: 1px solid #cdcdcd;
   margin:20px 0;
 }
-.mdp-updated{
-  background-color: mintcream;
-  border: 1px solid green;
-}
 .main-dup-button{
 	margin-top: 22px !important;
 }
@@ -37,5 +33,5 @@
 	padding: 0 7px
 }
 .form-table th{
-	width: 35%%;
+	width: 35%;
 }
