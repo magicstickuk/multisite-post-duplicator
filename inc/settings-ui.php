@@ -175,8 +175,28 @@ function mdp_copy_content_image_render(  ) {
 
 function mdp_settings_section_callback(  ) { 
 
-	_e( 'Here you can change the default settings for Multisite Post Duplicator. Note that any changes to these settings are specific to this site only.', 'mdp' );
+	_e( 'Here you can change the default settings for Multisite Post Duplicator. Note that these settings are used for every site in your network.', 'mdp' );
 
+}
+
+add_action( 'update_option_mdp_settings', 'mpd_gobalise_settings', 10, 2 );
+
+function mpd_gobalise_settings( $old_value, $new_value ){
+    
+    $options = get_option( 'mdp_settings' );
+    $args 	= array('network_id' => null);
+	$sites 	= wp_get_sites($args);
+
+	foreach ($sites as $site) {
+
+		switch_to_blog($site['blog_id']);
+
+			update_option( 'mdp_settings', $options);
+
+		restore_current_blog();
+
+	}
+    	
 }
 
 
