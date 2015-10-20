@@ -150,9 +150,11 @@ function mpd_get_images_from_the_content($post_id){
             $images_objects_from_post[] = $image_obj;
 
         }
+
+        return $images_objects_from_post;
     }
     
-    return $images_objects_from_post;
+    
 
 }
 

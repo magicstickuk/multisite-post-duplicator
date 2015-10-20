@@ -27,7 +27,9 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $meta_values                = get_post_meta($post_id_to_copy);
     $featured_image             = mpd_get_featured_image_from_source($post_id_to_copy);
     $attached_images            = mpd_get_images_from_the_content($post_id_to_copy);
-    $attached_images_alt_tags   = mpd_get_image_alt_tags($attached_images);
+    if($attached_images){
+        $attached_images_alt_tags   = mpd_get_image_alt_tags($attached_images);
+    }
 
     switch_to_blog($new_blog_id);
 
