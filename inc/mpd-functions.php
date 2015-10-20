@@ -147,7 +147,7 @@ function mpd_get_images_from_the_content($post_id){
 
             preg_match("/(?<=wp-image-)\d+/", $tag->getAttribute('class'),$matches);
             $image_obj = get_post($matches[0]);
-            $images_objects_from_post[] = $image_obj;
+            $images_objects_from_post[$matches[0]] = $image_obj;
 
         }
 
@@ -161,6 +161,7 @@ function mpd_get_images_from_the_content($post_id){
 function mpd_process_post_media_attachements($destination_id, $post_media_attachments, $attached_images_alt_tags ){
    
    $image_count = 0;
+   $old_image_ids = array_keys($post_media_attachments);
 
    foreach ($post_media_attachments as $post_media_attachment) {
 
@@ -221,7 +222,9 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
             $new_image_URL_without_EXT  = $new_image_URL_info['dirname'] ."/". $new_image_URL_info['filename'];
 
             $old_content        = get_post_field('post_content', $destination_id);
-            $update_content     = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT,  $old_content);
+            $middle_content     = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT,  $old_content);
+
+            $update_content     = str_replace('wp-image-'. $old_image_ids[$image_count], 'wp-image-' . $attach_id, $middle_content);
 
             $post_update = array(
 

@@ -45,7 +45,7 @@ jQuery(document).ready(function($) {
 					$('.el1sc.spinner-container img').show();
 
 					data =  {
-								action : 'mpd_get_sites',
+								action : 'mdp_get_sites',
 								post_name : post__name 
 							};
 
@@ -60,7 +60,7 @@ jQuery(document).ready(function($) {
 									$('.el2sc.spinner-container img').show();
 
 									data =  {
-												action : 'mpd_site_users',
+												action : 'mdp_site_users',
 												el2blogid : blog_id,
 												sourceblog : post_type_name
 											};
