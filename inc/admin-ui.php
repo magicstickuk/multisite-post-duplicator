@@ -128,7 +128,7 @@ function mpd_admin_menu_markup(){
 	<?php 
 }
 
-function mdp_get_posts_for_type(){
+function mpd_get_posts_for_type(){
 
 	if($_POST['post_type'] == ' - All Post Types -' ){
 			$mpd_posttype_query = 'any';
@@ -171,9 +171,9 @@ function mdp_get_posts_for_type(){
 	die();
 }
 
-add_action( 'wp_ajax_mdp_get_posts', 'mdp_get_posts_for_type');
+add_action( 'wp_ajax_mdp_get_posts', 'mpd_get_posts_for_type');
 
-function mdp_get_site_on_network(){
+function mpd_get_site_on_network(){
 
 	$args 	= array('network_id' => null);
 	$sites 	= wp_get_sites($args);
@@ -202,9 +202,9 @@ function mdp_get_site_on_network(){
 	die();
 
 }
-add_action( 'wp_ajax_mdp_get_sites', 'mdp_get_site_on_network');
+add_action( 'wp_ajax_mpd_get_sites', 'mpd_get_site_on_network');
 
-function mdp_get_users_on_site(){
+function mpd_get_users_on_site(){
 
 	$args = array(
 
@@ -241,4 +241,4 @@ function mdp_get_users_on_site(){
 	die();
 
 }
-add_action( 'wp_ajax_mdp_site_users', 'mdp_get_users_on_site');
+add_action( 'wp_ajax_mpd_site_users', 'mpd_get_users_on_site');
