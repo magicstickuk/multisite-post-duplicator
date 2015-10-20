@@ -99,17 +99,21 @@ function meta_box_show_radio_render(){
 	?>
 	<div id="mpd_radio_choice_wrap">
 
-		<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_all" <?php checked( $mdp_radio_label_value, 'all'); ?> value="all">
+		<div class="mdp-inputcontainer">
+			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_all" <?php checked( $mdp_radio_label_value, 'all'); ?> value="all">
+		
+			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('All post types', 'mpd') ?></label>
+			    
+			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_some" <?php checked( $mdp_radio_label_value, 'some'); ?> value="some">
+		
+			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Some post types','mpd') ?></label>
+		
+			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_none" <?php checked( $mdp_radio_label_value, 'none'); ?> value="none">
+		
+			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('No post types','mpd') ?></label>
+	    </div>
 
-		<label class="mdp_radio_label" for="radio-choice-1"><?php _e('All post types', 'mpd') ?></label>
-	    
-		<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_some" <?php checked( $mdp_radio_label_value, 'some'); ?> value="some">
-
-	    <label class="mdp_radio_label" for="radio-choice-2"><?php _e('Some post types','mpd') ?></label>
-
-	    <input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_none" <?php checked( $mdp_radio_label_value, 'none'); ?> value="none">
-
-	    <label class="mdp_radio_label" for="radio-choice-2"><?php _e('No post types','mpd') ?></label>
+	    <p class="mpdtip"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.') ?></p>
 
     </div>
 	<?php
@@ -136,6 +140,8 @@ function mdp_default_prefix_render(  ) {
 	$options = get_option( 'mdp_settings' );
 	?>
 	<input type='text' name='mdp_settings[mdp_default_prefix]' value='<?php echo $options ? $options['mdp_default_prefix'] : "Copy of"; ?>'>
+
+	<p class="mpdtip"><?php _e('Change the default prefix for your duplication across the network ')?></p>
 	<?php
 
 }
@@ -146,6 +152,8 @@ function mdp_default_tags_copy_render(  ) {
 
 	?>
 	<input type='checkbox' name='mdp_settings[mdp_default_tags_copy]' <?php mpd_checked_lookup($options, 'mdp_default_tags_copy', 'tags') ;?> value='tags'> 
+
+	<p class="mpdtip"><?php _e('This plugin will automatically copy the tags associated with the post. You can turn off this activity here')?></p>
 
 	<?php
 
@@ -158,6 +166,7 @@ function mdp_default_feat_image_copy_render(  ) {
 	?>
 	<input type='checkbox' name='mdp_settings[mdp_default_featured_image]' <?php mpd_checked_lookup($options, 'mdp_default_featured_image', 'feat') ;?> value='feat'>
 
+	<p class="mpdtip"><?php _e('This plugin will automatically copy any featured image associated with the post. You can turn off this activity here.')?></p>
 	<?php
 
 }
@@ -169,6 +178,7 @@ function mdp_copy_content_image_render(  ) {
 	?>
 	<input type='checkbox' name='mdp_settings[mdp_copy_content_images]' <?php mpd_checked_lookup($options, 'mdp_copy_content_images', 'content-image') ;?> value='content-image'>
 
+	<p class="mpdtip"><?php _e('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It was also change the urls in the duplicated post to reference the new media file. You can turn of this activity here')?></p>
 	<?php
 
 }

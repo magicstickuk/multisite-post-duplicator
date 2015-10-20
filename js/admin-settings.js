@@ -14,4 +14,7 @@ jQuery(document).ready(function() {
   		
   });
 
+  jQuery('.posttypecb').parent().parent().css('border-bottom','0');
+  jQuery('.posttypecb').last().parent().parent().css('border-bottom','1px solid #cdcdcd');
+
 });

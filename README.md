@@ -69,6 +69,7 @@ Yes. However, you have to have the same custom fields defined in each of your si
 * NEW: Submit button on WordPress post edit page will now update to show that a duplication has been requested
 * FIXED: Fixed User prefix having unintentional double space in some senarios
 * Settings page now global for all sites in the multisite network
+* Cleaned up Settings page and added tooltips
 * Prepared plugin for localisation (any translators welcome to contact me please!)
 * Cleaned code for improved efficiency
 
