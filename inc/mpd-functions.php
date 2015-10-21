@@ -1,12 +1,26 @@
 <?php
 
+function mpd_get_post_types_to_ignore(){
+
+    $post_types_to_ignore   = array(
+
+        'revision',
+        'nav_menu_item', 
+        'attachment'
+
+    );
+
+    return $post_types_to_ignore;
+}
 function mpd_get_some_postypes_to_show_options(){
 	
-	$options  	= get_option( 'mdp_settings' ); 
-	$post_types = array();
+    $post_types             = array();
+	$options  	            = get_option( 'mdp_settings' );
+    $post_types_to_ignore   = mpd_get_post_types_to_ignore();
 
 	foreach ($options as $key => $value) {
-        if (substr($key, 0, 28) == "meta_box_post_type_selector_") {
+
+        if (substr($key, 0, 28) == "meta_box_post_type_selector_" && !in_array($value, $post_types_to_ignore)) {
 
             $post_types[] = $value;
 

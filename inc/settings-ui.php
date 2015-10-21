@@ -31,7 +31,7 @@ function mdp_settings_init(  ) {
 
 	$mpd_post_types 		= get_post_types();
 	$loopcount 				= 1;
-	$post_types_to_ignore 	= array('revision', 'nav_menu_item');
+	$post_types_to_ignore 	= mpd_get_post_types_to_ignore();
 
 	foreach ($mpd_post_types as $mpd_post_type){
 

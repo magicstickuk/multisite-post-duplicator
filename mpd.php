@@ -75,7 +75,7 @@ function mdp_get_default_options(){
 	);
 
 	$mpd_post_types 		= get_post_types();
-	$post_types_to_ignore 	= array('revision', 'nav_menu_item');
+	$post_types_to_ignore  	= mpd_get_post_types_to_ignore();
 
 	foreach ($mpd_post_types as $mpd_post_type){
 

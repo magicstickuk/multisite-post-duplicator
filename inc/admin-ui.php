@@ -31,7 +31,8 @@ function mpd_admin_menu_markup(){
 
 	
 
-	$post_types = get_post_types();
+	$post_types 			= get_post_types();
+	$post_types_to_ignore 	= mpd_get_post_types_to_ignore();
 		
 	ob_start()?>
 
@@ -99,11 +100,15 @@ function mpd_admin_menu_markup(){
 
 		    		<?php foreach ($post_types as $post_type):?>
 
-		    			<option value="<?php echo $post_type; ?>">
+		    			<?php if(!in_array($post_type, $post_types_to_ignore)): ?>
 
-		    				<?php echo ucfirst($post_type)?>
+			    			<option value="<?php echo $post_type; ?>">
 
-		    			</option>
+			    				<?php echo ucfirst($post_type)?>
+
+			    			</option>
+		    			
+		    			<?php endif; ?>
 
 					<?php endforeach; ?>
 
