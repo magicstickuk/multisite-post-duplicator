@@ -11,23 +11,23 @@ Duplicate any individual page, post or custom post type from one site on your mu
 
 == Description ==
 
-Duplicate any page, post or custom post type from one site on your multisite network to another.
+Duplicate any individual page, post or custom post type from one site on your multisite network to another.
 
 Features:
 
-*   Includes any custom post type on your network as long as the post type exists in your destination site
-*   Automatically copy your post/page/custom post type from one site to another from within your workflow 
 *   Copies all custom fields
 *   Copies all related post meta
-*	Copies any featured image (Can be turned on or off in Settings)
-*	Copies all image media within post content to the new site's media library for exclusive use in the destination site (Can be turned on or off in Settings)
-*	Copies associated tags (Can be turned on or off in Settings)
-*   Works with Advance Custom Fields
+*   Includes any custom post type on your network as long as the post type exists in your destination site
+*   Automatically copy your post/page/custom post type from one site to another from within your workflow 
+*   Copies any featured image (Can be turned on or off in Settings)
+*   Copies all image media within post content to the new site's media library for exclusive use in the destination site (Can be turned on or off in Settings)
+*   Copies associated tags (Can be turned on or off in Settings)
+*	Settings page to customise the default behaviour
 *   Clean and friendly User Interface
 *   Select what status you want your new copies post to be i.e Published, Draft etc
 *   Specify a prefix for the new post to avoid confusion
 *   Works with Contact Form 7
-*	Settings page to customise the default behaviour
+*   Works with Advance Custom Fields
 
 == Installation ==
 
@@ -58,16 +58,17 @@ Yes. However, you have to have the same custom fields defined in each of your si
 
 1. User Interface
 2. Meta Box
+3. Setting Page
 
 == Changelog ==
 
 = 0.5 =
 * NEW: Now copies featured images from posts (can be turned off in Settings page)
-* NEW: Now copies any image media within the post content to the desination site (can be turned off in Settings page).
+* NEW: Now copies any image media within the post content to the destination site (can be turned off in Settings page).
 * NEW: Now copies post tags (can be turned off in Settings page)
-* NEW: Admin notice on success of dupication. Has a link to go straight to the new post
+* NEW: Admin notice on success of duplication. Has a link to go straight to the new post
 * NEW: Submit button on WordPress post edit page will now update to show that a duplication has been requested
-* FIXED: Fixed User prefix having unintentional double space in some senarios
+* FIXED: Fixed User prefix having unintentional double space in some scenarios
 * Settings page now global for all sites in the multisite network
 * Cleaned up Settings page and added tooltips
 * Prepared plugin for localisation (any translators welcome to contact me please!)

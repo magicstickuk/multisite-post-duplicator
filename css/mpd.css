@@ -1,7 +1,6 @@
 .spinner-container img{
 	padding-left: 10px;
 	display: none;
-
 }
 .spinner-container {
 	width:30px;
@@ -21,10 +20,10 @@
 	display: none!important;
 }
 .metabox {
-  padding: 0 10px 20px 10px;
-  background-color: #fff;
-  border: 1px solid #cdcdcd;
-  margin:20px 0;
+  	padding: 0 10px 20px 10px;
+  	background-color: #fff;
+  	border: 1px solid #cdcdcd;
+  	margin:20px 0;
 }
 .main-dup-button{
 	margin-top: 22px !important;

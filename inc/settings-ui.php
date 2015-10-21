@@ -122,10 +122,10 @@ function meta_box_show_radio_render(){
 
 function meta_box_post_type_selector_render($args) { 
 
-	$options = get_option( 'mdp_settings' );
-	$mpd_post_type = $args['mdpposttype'];
-	$the_name = "mdp_settings[meta_box_post_type_selector_" . $mpd_post_type . "]";
-	$the_selector = 'meta_box_post_type_selector_' . $mpd_post_type;
+	$options 		= get_option( 'mdp_settings' );
+	$mpd_post_type 	= $args['mdpposttype'];
+	$the_name 		= "mdp_settings[meta_box_post_type_selector_" . $mpd_post_type . "]";
+	$the_selector 	= 'meta_box_post_type_selector_' . $mpd_post_type;
 
 	?>
 
@@ -209,7 +209,6 @@ function mpd_gobalise_settings( $old_value, $new_value ){
     	
 }
 
-
 function mdp_options_page(  ) { 
 
 	?>
@@ -223,6 +222,7 @@ function mdp_options_page(  ) {
 		?>
 		
 	</form>
+	
 	<?php
 
 }

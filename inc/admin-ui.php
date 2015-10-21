@@ -29,8 +29,6 @@ function mpd_admin_menu_markup(){
 
 	}
 
-	
-
 	$post_types 			= get_post_types();
 	$post_types_to_ignore 	= mpd_get_post_types_to_ignore();
 		
@@ -136,11 +134,15 @@ function mpd_admin_menu_markup(){
 function mdp_get_posts_for_type(){
 
 	if($_POST['post_type'] == ' - All Post Types -' ){
+
 			$mpd_posttype_query = 'any';
 			$all= true;
+
 	}else{
+
 			$mpd_posttype_query = $_POST['post_type'];
 			$all= false;
+			
 	}
 
 	$args = array(
