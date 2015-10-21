@@ -154,8 +154,6 @@ function mpd_get_images_from_the_content($post_id){
         return $images_objects_from_post;
     }
     
-    
-
 }
 
 function mpd_process_post_media_attachements($destination_id, $post_media_attachments, $attached_images_alt_tags ){
@@ -223,13 +221,12 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
 
             $old_content        = get_post_field('post_content', $destination_id);
             $middle_content     = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT,  $old_content);
-
             $update_content     = str_replace('wp-image-'. $old_image_ids[$image_count], 'wp-image-' . $attach_id, $middle_content);
 
             $post_update = array(
 
                 'ID'           => $destination_id,
-                'post_content' => $update_content,
+                'post_content' => $update_content
 
             );
 
