@@ -1,14 +1,31 @@
+function get_selection_value(target){
+	var selected_value = jQuery(target).find(":selected").text();
+	return selected_value;
+}
+
+function set_placeholder(target, placeholder_text){
+	jQuery(target).select2({
+		placeholder: placeholder_text,	
+	});
+}
+
+function mark_as_success(target){
+	jQuery(target).addClass('mpd-greentick');
+}
+
+function do_the_responce(response_ident, placeholdertext, response){
+	jQuery(".el" + response_ident + "-container").html(response);
+	set_placeholder(".el" + response_ident , placeholdertext);
+	mark_as_success('.el' + (response_ident - 1) + 'sc.spinner-container');
+}
+
 jQuery(document).ready(function($) {
 
-	jQuery(".el0").select2({
-
-		placeholder: "Select a post post type to duplicate",
-		
-	});
+	set_placeholder(".el0", "Select a post post type to duplicate");
 
 	$( ".el0" ).change(function() {
 
-		var post_type_name = $('.el0').find(":selected").text();
+		var post_type_name = get_selection_value(this);
 
 		$('.el0sc.spinner-container img').show();
 
@@ -19,20 +36,11 @@ jQuery(document).ready(function($) {
 
 		$.post(ajaxurl,data,function(response) {
 
-			$(".el1-container").html(response);
-
-			jQuery(".el1").select2({
-				placeholder: "Select a post to duplicate",
-
-			});
-
-			$('.el0sc.spinner-container').addClass('mpd-greentick');
-
-			//Call function to control the new .el1 select box
+			do_the_responce("1", "Select a post to duplicate", response);
 
 			$( ".el1" ).change(function() {
 
-				var post__name = $('.el1').find(":selected").text();
+				var post__name = get_selection_value(this);
 					
 					$('.el1sc.spinner-container img').show();
 
@@ -43,40 +51,23 @@ jQuery(document).ready(function($) {
 
 					$.post(ajaxurl,data,function(response) {
 
-						$(".el2-container").html(response);
-
-							jQuery(".el2").select2({
-								placeholder: "Select a site to duplicate to",
-
-							});
-
-							$('.el1sc.spinner-container').addClass('mpd-greentick');
-
-							//Call function to control the new .el2 select box
+							do_the_responce("2", "Select a site to duplicate to", response);
 
 							$( ".el2" ).change(function() {
 
-								var blog_id = $('.el2').find(":selected").val();
-								var source_postype = $('.el0').find(":selected").text();
+								var blog_id = $(this).find(":selected").val();
 									
 									$('.el2sc.spinner-container img').show();
 
 									data =  {
 												action : 'mdp_site_users',
 												el2blogid : blog_id,
-												sourceblog : source_postype
+												sourceblog : post_type_name
 											};
 
 									$.post(ajaxurl,data,function(response) {
 
-										$(".el3-container").html(response);
-
-											jQuery(".el3").select2({
-												placeholder: "Select a user to atribute this to",
-
-											});
-
-											$('.el2sc.spinner-container').addClass('mpd-greentick');
+											do_the_responce("3", "Select a user to atribute this to", response);
 
 											$( ".el3" ).change(function() {
 													$('.el3sc.spinner-container img').show();
@@ -96,18 +87,10 @@ jQuery(document).ready(function($) {
 
 			});
 
-			// End call function to control the new .el1 select box
-
 		})
 
 		return false;
 
 	});
-
-	
-
-	
-
-
 
 });

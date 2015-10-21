@@ -1,7 +1,7 @@
 === Multisite Post Duplicator ===
 
-Contributors: MagicStick, SergiAmbel
-Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, one
+Contributors: MagicStick, sergiambel
+Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, clone
 Requires at least: 3.0.1
 Tested up to: 4.3.1
 License: GPLv2 or later
@@ -11,19 +11,23 @@ Duplicate any individual page, post or custom post type from one site on your mu
 
 == Description ==
 
-Duplicate any page, post or custom post type from one site on your multisite network to another.
+Duplicate any individual page, post or custom post type from one site on your multisite network to another.
 
 Features:
 
-*   Includes any custom post type on your network as long as the post type exists in your destination site
 *   Copies all custom fields
 *   Copies all related post meta
+*   Includes any custom post type on your network as long as the post type exists in your destination site
 *   Automatically copy your post/page/custom post type from one site to another from within your workflow 
-*   Works with Advance Custom Fields
+*   Copies any featured image (Can be turned on or off in Settings)
+*   Copies all image media within post content to the new site's media library for exclusive use in the destination site (Can be turned on or off in Settings)
+*   Copies associated tags (Can be turned on or off in Settings)
+*	Settings page to customise the default behaviour
 *   Clean and friendly User Interface
 *   Select what status you want your new copies post to be i.e Published, Draft etc
 *   Specify a prefix for the new post to avoid confusion
 *   Works with Contact Form 7
+*   Works with Advance Custom Fields
 
 == Installation ==
 
@@ -54,12 +58,25 @@ Yes. However, you have to have the same custom fields defined in each of your si
 
 1. User Interface
 2. Meta Box
+3. Setting Page
 
 == Changelog ==
 
+= 0.5 =
+* NEW: Now copies featured images from posts (can be turned off in Settings page)
+* NEW: Now copies any image media within the post content to the destination site (can be turned off in Settings page).
+* NEW: Now copies post tags (can be turned off in Settings page)
+* NEW: Admin notice on success of duplication. Has a link to go straight to the new post
+* NEW: Submit button on WordPress post edit page will now update to show that a duplication has been requested
+* FIXED: Fixed User prefix having unintentional double space in some scenarios
+* Settings page now global for all sites in the multisite network
+* Cleaned up Settings page and added tooltips
+* Prepared plugin for localisation (any translators welcome to contact me please!)
+* Cleaned code for improved efficiency
+
 = 0.4 =
 * Added Meta Box within the post type so you can now duplicate your post to another site on your network as you work (Thanks to Sergi Ambel!).
-* Added settings page to customise default behaviour.
+* Added Settings page to customise default behaviour.
 
 = 0.3.1 =
 * Fixed Activation errors.

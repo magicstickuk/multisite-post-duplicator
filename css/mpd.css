@@ -1,7 +1,6 @@
 .spinner-container img{
 	padding-left: 10px;
 	display: none;
-
 }
 .spinner-container {
 	width:30px;
@@ -21,14 +20,10 @@
 	display: none!important;
 }
 .metabox {
-  padding: 0 10px 20px 10px;
-  background-color: #fff;
-  border: 1px solid #cdcdcd;
-  margin:20px 0;
-}
-.mdp-updated{
-  background-color: mintcream;
-  border: 1px solid green;
+  	padding: 0 10px 20px 10px;
+  	background-color: #fff;
+  	border: 1px solid #cdcdcd;
+  	margin:20px 0;
 }
 .main-dup-button{
 	margin-top: 22px !important;
@@ -37,5 +32,21 @@
 	padding: 0 7px
 }
 .form-table th{
-	width: 35%%;
+	width: 35%;
+}
+.form-table tr{
+	border-bottom: 1px solid #cdcdcd;
+}
+.mpdtip{
+	font-size: 84% !important;
+    padding: 9px;
+    border: 1px solid #cdcdcd;
+    margin-top: 16px!important;
+    width: 80%;
+    background-color: #f5f5f5;
+}
+.mdp-inputcontainer{
+	clear: both;
+	display: block;
+	margin-top: 5px;
 }
