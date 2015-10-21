@@ -32,7 +32,9 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
         $attached_images = mpd_get_images_from_the_content($post_id_to_copy);
 
         if($attached_images){
+
             $attached_images_alt_tags   = mpd_get_image_alt_tags($attached_images);
+            
         }
 
     }else{

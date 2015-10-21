@@ -8,7 +8,7 @@ jQuery(document).ready(function() {
   		
   		if (jQuery(this).val() == 'some') {
   			jQuery(cb).parent().parent().show('slow');
-  		} else if(jQuery(this).val() != 'some'){
+  		}else{
   			jQuery(cb).parent().parent().hide('slow');
   		};
   		

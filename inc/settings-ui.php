@@ -141,7 +141,7 @@ function mdp_default_prefix_render(  ) {
 	?>
 	<input type='text' name='mdp_settings[mdp_default_prefix]' value='<?php echo $options ? $options['mdp_default_prefix'] : "Copy of"; ?>'>
 
-	<p class="mpdtip"><?php _e('Change the default prefix for your duplication across the network ')?></p>
+	<p class="mpdtip"><?php _e('Change the default prefix for your duplication across the network.')?></p>
 	<?php
 
 }
@@ -153,7 +153,7 @@ function mdp_default_tags_copy_render(  ) {
 	?>
 	<input type='checkbox' name='mdp_settings[mdp_default_tags_copy]' <?php mpd_checked_lookup($options, 'mdp_default_tags_copy', 'tags') ;?> value='tags'> 
 
-	<p class="mpdtip"><?php _e('This plugin will automatically copy the tags associated with the post. You can turn off this activity here')?></p>
+	<p class="mpdtip"><?php _e('This plugin will automatically copy the tags associated with the post. You can turn off this activity by unchecking the box.')?></p>
 
 	<?php
 
@@ -166,7 +166,7 @@ function mdp_default_feat_image_copy_render(  ) {
 	?>
 	<input type='checkbox' name='mdp_settings[mdp_default_featured_image]' <?php mpd_checked_lookup($options, 'mdp_default_featured_image', 'feat') ;?> value='feat'>
 
-	<p class="mpdtip"><?php _e('This plugin will automatically copy any featured image associated with the post. You can turn off this activity here.')?></p>
+	<p class="mpdtip"><?php _e('This plugin will automatically copy any featured image associated with the post.You can turn off this activity by unchecking the box.')?></p>
 	<?php
 
 }
@@ -178,7 +178,7 @@ function mdp_copy_content_image_render(  ) {
 	?>
 	<input type='checkbox' name='mdp_settings[mdp_copy_content_images]' <?php mpd_checked_lookup($options, 'mdp_copy_content_images', 'content-image') ;?> value='content-image'>
 
-	<p class="mpdtip"><?php _e('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It was also change the urls in the duplicated post to reference the new media file. You can turn of this activity here')?></p>
+	<p class="mpdtip"><?php _e('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It will also change the urls in the duplicated post to reference the new media file. You can turn off this activity by unchecking the box')?></p>
 	<?php
 
 }

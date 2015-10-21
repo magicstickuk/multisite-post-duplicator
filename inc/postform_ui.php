@@ -106,16 +106,19 @@ function mpd_clone_post($data )
 {
 
     if (!count($_POST)){
+
         return $data;
+        
     }
 
-    if( ($_POST["post_status"] != "auto-draft")
+    if(    ( isset($_POST["post_status"] ) )
+        && ( $_POST["post_status"] != "auto-draft" )
         && ( isset($_POST['mpd_blogs'] ) )
         && ( count( $_POST['mpd_blogs'] ) )
         && ( $_POST["post_ID"] == $data ) //hack to avoid execution in cloning process
     ){
 
-        $mpd_blogs = $_POST['mpd_blogs'];
+    $mpd_blogs = $_POST['mpd_blogs'];
 
         foreach( $mpd_blogs as $mpd_blog_id ){
 
