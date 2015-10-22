@@ -6,6 +6,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $mdp_post   = get_post($post_id_to_copy);
     $title      = get_the_title($mdp_post);
     $sourcetags = wp_get_post_tags( $post_id_to_copy, array( 'fields' => 'names' ) );
+    $source_id  = get_current_blog_id();
 
     if($prefix != ''){
 
@@ -79,7 +80,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
         
         if(isset($options['mdp_copy_content_images']) || !$options ){
             
-            mpd_process_post_media_attachements($post_id, $attached_images, $attached_images_alt_tags);
+            mpd_process_post_media_attachements($post_id, $attached_images, $attached_images_alt_tags, $source_id);
 
         }
 

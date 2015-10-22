@@ -170,7 +170,7 @@ function mpd_get_images_from_the_content($post_id){
     
 }
 
-function mpd_process_post_media_attachements($destination_id, $post_media_attachments, $attached_images_alt_tags ){
+function mpd_process_post_media_attachements($destination_id, $post_media_attachments, $attached_images_alt_tags, $source_id ){
    
    $image_count = 0;
    $old_image_ids = array_keys($post_media_attachments);
@@ -229,19 +229,22 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
             // Assign metadata to attachment
             wp_update_attachment_metadata( $attach_id, $attach_data );
 
+            $old_blog_details           = get_blog_details($source_id);
+            $new_blog_details           = get_blog_details(get_current_blog_id());
             $new_image_URL              = wp_get_attachment_url($attach_id);
             $new_image_URL_info         = pathinfo($new_image_URL);
-            $new_image_URL_without_EXT  = $new_image_URL_info['dirname'] ."/". $new_image_URL_info['filename'];
+            $new_image_URL_with_old_path= $new_image_URL_info['dirname'] ."/". $new_image_URL_info['filename'];
+            $new_image_URL_without_EXT  = str_replace($old_blog_details->path,  $new_blog_details->path, $new_image_URL_with_old_path);
 
-            $old_content        = get_post_field('post_content', $destination_id);
-            $middle_content     = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT,  $old_content);
-            $update_content     = str_replace('wp-image-'. $old_image_ids[$image_count], 'wp-image-' . $attach_id, $middle_content);
+            $old_content                = get_post_field('post_content', $destination_id);
+            $middle_content             = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT,  $old_content);
+            $update_content             = str_replace('wp-image-'. $old_image_ids[$image_count], 'wp-image-' . $attach_id, $middle_content);
 
             $post_update = array(
 
                 'ID'           => $destination_id,
-                'post_content' => $update_content
-
+                'post_content' => $update_content       
+             
             );
 
             wp_update_post( $post_update );
@@ -320,5 +323,10 @@ function mpd_plugin_admin_notices(){
     }
 
     delete_option('mpd_admin_notice');
+
+}
+
+function mpd_multisite_get_attached_url(){
+
 
 }
