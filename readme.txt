@@ -63,7 +63,7 @@ Yes. However, you have to have the same custom fields defined in each of your si
 == Changelog ==
 
 = 0.5.1 =
-* Fixed site path showing correctly in new desintation URL (cosmetic change to avoid confusion)
+* Fixed site path showing incorrectly in new image url (cosmetic change to avoid confusion, both resolve to same location)
 
 = 0.5 =
 * NEW: Now copies featured images from posts (can be turned off in Settings page)
