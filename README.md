@@ -62,6 +62,9 @@ Yes. However, you have to have the same custom fields defined in each of your si
 
 == Changelog ==
 
+= 0.5.1 =
+* Fixed site path showing correctly in new desintation URL (cosmetic change to avoid confusion)
+
 = 0.5 =
 * NEW: Now copies featured images from posts (can be turned off in Settings page)
 * NEW: Now copies any image media within the post content to the destination site (can be turned off in Settings page).

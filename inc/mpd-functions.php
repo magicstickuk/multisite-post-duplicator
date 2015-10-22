@@ -229,12 +229,7 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
             // Assign metadata to attachment
             wp_update_attachment_metadata( $attach_id, $attach_data );
 
-            $old_blog_details           = get_blog_details($source_id);
-            $new_blog_details           = get_blog_details(get_current_blog_id());
-            $new_image_URL              = wp_get_attachment_url($attach_id);
-            $new_image_URL_info         = pathinfo($new_image_URL);
-            $new_image_URL_with_old_path= $new_image_URL_info['dirname'] ."/". $new_image_URL_info['filename'];
-            $new_image_URL_without_EXT  = str_replace($old_blog_details->path,  $new_blog_details->path, $new_image_URL_with_old_path);
+            $new_image_URL_without_EXT  = mpd_get_image_new_url_without_extension($attach_id, $source_id);
 
             $old_content                = get_post_field('post_content', $destination_id);
             $middle_content             = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT,  $old_content);
@@ -251,6 +246,19 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
 
             $image_count++;
    }
+}
+
+function mpd_get_image_new_url_without_extension($attach_id, $source_id){
+
+        $old_blog_details           = get_blog_details($source_id);
+        $new_blog_details           = get_blog_details(get_current_blog_id());
+        $new_image_URL              = wp_get_attachment_url($attach_id);
+        $new_image_URL_info         = pathinfo($new_image_URL);
+        $new_image_URL_with_old_path= $new_image_URL_info['dirname'] ."/". $new_image_URL_info['filename'];
+        $new_image_URL_without_EXT  = str_replace($old_blog_details->path,  $new_blog_details->path, $new_image_URL_with_old_path);
+
+        return $new_image_URL_without_EXT;
+        
 }
 
 function mpd_get_image_alt_tags($post_media_attachments){
@@ -325,3 +333,4 @@ function mpd_plugin_admin_notices(){
     delete_option('mpd_admin_notice');
 
 }
+
