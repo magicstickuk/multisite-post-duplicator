@@ -325,8 +325,3 @@ function mpd_plugin_admin_notices(){
     delete_option('mpd_admin_notice');
 
 }
-
-function mpd_multisite_get_attached_url(){
-
-
-}
