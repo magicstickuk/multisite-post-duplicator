@@ -62,10 +62,6 @@ Yes. However, you have to have the same custom fields defined in each of your si
 
 == Changelog ==
 
-<<<<<<< HEAD
-= 0.4.1 =
-* Now handles custom post statuses.
-=======
 = 0.5 =
 * NEW: Now copies featured images from posts (can be turned off in Settings page)
 * NEW: Now copies any image media within the post content to the destination site (can be turned off in Settings page).
@@ -77,7 +73,9 @@ Yes. However, you have to have the same custom fields defined in each of your si
 * Cleaned up Settings page and added tooltips
 * Prepared plugin for localisation (any translators welcome to contact me please!)
 * Cleaned code for improved efficiency
->>>>>>> v0.5
+
+= 0.4.1 =
+* Now handles custom post statuses.
 
 = 0.4 =
 * Added Meta Box within the post type so you can now duplicate your post to another site on your network as you work (Thanks to Sergi Ambel!).

@@ -74,11 +74,8 @@ function mpd_admin_menu_markup(){
 
     				<input type="radio" name="mpd-post-status" value="<?php echo $post_status_key ?>" <?php echo $post_status_key == 'draft' ? 'checked' : '' ?>/><?php echo $post_status_value; ?>
 
-<<<<<<< HEAD
+
     			<?php endforeach; ?>
-=======
-    			<?php endforeach;?>
->>>>>>> v0.5
 
     			<h3><?php _e('Select a prefix, if any, for the new post/page to be created','mpd'); ?>:</h3>
 				

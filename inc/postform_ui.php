@@ -28,18 +28,12 @@ function mpd_metaboxes(){
     
 }
 
-<<<<<<< HEAD
-function mpd_publish_top_right()
-{
-    $post_statuses = get_post_statuses(); 
-    $sites = wp_get_sites();
-=======
+
 function mpd_publish_top_right(){
 
     $post_statuses  = get_post_statuses();
     $args           = array('network_id' => null);
     $sites          = wp_get_sites($args);
->>>>>>> v0.5
 
     ?>
     <div id="clone_multisite_box">
@@ -48,15 +42,9 @@ function mpd_publish_top_right(){
 
             <p><?php _e('Duplicated post status', 'mpd'); ?>:
 
-<<<<<<< HEAD
-                <select id="mpd-new-status" name="mpd-new-status">
-             <?php foreach ($post_statuses as $post_status_key => $post_status_value): ?>
-                      <option value="<?php echo $post_status_key; ?>" <?php echo $post_status_key == 'draft' ? 'selected' : '' ?>><?php echo $post_status_value; ?></option>
-=======
             <select id="mpd-new-status" name="mpd-new-status">
              <?php foreach ($post_statuses as $post_status_key => $post_status_value): ?>
                       <option value="<?php echo $post_status_key;?>" <?php echo $post_status_key == 'draft' ? 'selected' : '' ?>><?php echo $post_status_value;?></option>
->>>>>>> v0.5
                <?php endforeach ?>
             </select>
                

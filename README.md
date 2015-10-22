@@ -74,6 +74,9 @@ Yes. However, you have to have the same custom fields defined in each of your si
 * Prepared plugin for localisation (any translators welcome to contact me please!)
 * Cleaned code for improved efficiency
 
+= 0.4.1 =
+* Now handles custom post statuses.
+
 = 0.4 =
 * Added Meta Box within the post type so you can now duplicate your post to another site on your network as you work (Thanks to Sergi Ambel!).
 * Added Settings page to customise default behaviour.
