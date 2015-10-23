@@ -2,16 +2,19 @@
 
 function mpd_get_post_types_to_ignore(){
 
-    $post_types_to_ignore   = array(
+    $post_types_to_ignore   = apply_filters('mpd_ignore_post_types', array(
 
-        'revision',
-        'nav_menu_item', 
-        'attachment'
+            'revision',
+            'nav_menu_item',
+            'attachment'
 
+        )
     );
 
     return $post_types_to_ignore;
+
 }
+
 function mpd_get_some_postypes_to_show_options(){
 	
     $post_types             = array();
@@ -66,7 +69,7 @@ function mpd_get_postype_decision_from_options(){
 function mpd_get_prefix(){
 
       $options  = get_option( 'mdp_settings' ); 
-      $prefix   = $options['mdp_default_prefix'] ? $options['mdp_default_prefix'] : 'Copy of';
+      $prefix   = $options['mdp_default_prefix'] ? $options['mdp_default_prefix'] : mdp_get_default_options('mdp_default_prefix');
 
       return $prefix;
       
@@ -84,7 +87,10 @@ function mpd_get_featured_image_from_source($post_id){
         $image_details['description']   = get_post_field('post_content', get_post_thumbnail_id($post_id));
         $image_details['caption']       = get_post_field('post_excerpt', get_post_thumbnail_id($post_id));
 
+        $image_details = apply_filters( 'mpd_featured_image', $image_details );
+
         return $image_details;
+        
     }
     
 
