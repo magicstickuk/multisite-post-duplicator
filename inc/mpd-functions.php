@@ -1,5 +1,14 @@
 <?php
-
+/**
+  * Get the value of the post types that we don't want to use in Multisite Post Duplicator
+  *
+  * WordPress has some post types that are not applicable to MPD's behaviour. This is where
+  * we have defined these post types for reference throughout MPD
+  *
+  * @since 0.5
+  * @param none
+  * @return array Containing all post types to be ingnored. 
+  */        
 function mpd_get_post_types_to_ignore(){
 
     $post_types_to_ignore   = apply_filters('mpd_ignore_post_types', array(
@@ -15,6 +24,13 @@ function mpd_get_post_types_to_ignore(){
 
 }
 
+/**
+ * Get a list of post types the user has selected they want to show the MPD Metabox (if the 'Some Post Types' option was slected in settings)
+ * 
+ * This function checks the settings for MPD and returns all the values that are associated with post types
+ * 
+ * @return array Containing post types for use with MPD Metabox
+*/
 function mpd_get_some_postypes_to_show_options(){
 	
     $post_types             = array();
@@ -35,6 +51,13 @@ function mpd_get_some_postypes_to_show_options(){
 
 }
 
+/**
+ * This function returns the post types that MPD has to show the metabox on based on the user desicion on settings
+ * 
+ * @since 0.5
+ * @param none
+ * @return array Containing post types that will show a MPD Metabox. 
+*/
 function mpd_get_postype_decision_from_options(){
 
 	$options      = get_option( 'mdp_settings' ); 
@@ -65,7 +88,15 @@ function mpd_get_postype_decision_from_options(){
 
     return $post_types;
 }
-
+/**
+ * This function returns the current default prefix for the duplication.
+ * 
+ * Returns either the core default value or the value of prefix save in settings
+ * 
+ * @since 0.5
+ * @param none
+ * @return string
+*/
 function mpd_get_prefix(){
 
       $options  = get_option( 'mdp_settings' ); 
@@ -77,11 +108,13 @@ function mpd_get_prefix(){
 
 function mpd_get_featured_image_from_source($post_id){
 
-    $image = wp_get_attachment_image_src( get_post_thumbnail_id($post_id), 'full' );
+    $image_id   = get_post_thumbnail_id($post_id);
+    $image      = wp_get_attachment_image_src($image_id, 'full' );
 
     if($image){
 
         $image_details                  = array();
+        $image_details['id']            = $image_id;
         $image_details['url']           = $image[0];
         $image_details['alt']           = get_post_meta( get_post_thumbnail_id($post_id), '_wp_attachment_image_alt', true );
         $image_details['description']   = get_post_field('post_content', get_post_thumbnail_id($post_id));
@@ -100,7 +133,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
 
     $upload_dir = wp_upload_dir();
     $image_data = file_get_contents($image_details['url']);
-    $filename   = basename($image_details['url']);
+    $filename   = apply_filters('mpd_featured_image_filename', basename($image_details['url']), $image_details);
 
     if( wp_mkdir_p( $upload_dir['path'] ) ) {
 
@@ -116,7 +149,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
 
     $wp_filetype = wp_check_filetype( $filename, null );
 
-    $attachment = array(
+    $attachment = apply_filters('mpd_featured_image_attachement_details', array(
 
         'post_mime_type' => $wp_filetype['type'],
         'post_title'     => sanitize_file_name( $filename ),
@@ -124,7 +157,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
         'post_status'    => 'inherit',
         'post_excerpt'   => $image_details['caption']
 
-    );
+    ));
 
     // Create the attachment
     $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
@@ -205,7 +238,7 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
 
             $wp_filetype = wp_check_filetype( $filename, null );
 
-            $attachment = array(
+            $attachment = apply_filters('mpd_post_media_attachments', array(
 
                 'post_mime_type' => 'image/jpeg',
                 'post_title'     => sanitize_file_name( $filename ),
@@ -213,7 +246,7 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
                 'post_status'    => 'inherit',
                 'post_excerpt'   => $post_media_attachment->post_excerpt
 
-            );
+            ), $post_media_attachment);
 
             // Create the attachment
             $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
@@ -285,6 +318,8 @@ function mpd_get_image_alt_tags($post_media_attachments){
 
         }
 
+        $alt_tags_to_be_copied = apply_filters('mpd_alt_tag_array_from_post_content', $alt_tags_to_be_copied, $post_media_attachments);
+
         return $alt_tags_to_be_copied;
 
     }
@@ -312,9 +347,9 @@ function mpd_checked_lookup($options, $option_key, $option_value){
 
 }
 
-function mdp_make_admin_notice($site_name, $site_url){
+function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details){
 
-    $message ='<div class="updated"><p>'. __('You succesfully duplicated this post to','mpd') ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post','mpd').'</a></p></div>';
+    $message = apply_filters('mpd_admin_notice_text', '<div class="updated"><p>'. __('You succesfully duplicated this post to','mpd') ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post','mpd').'</a></p></div>', $site_name, $site_url, $destination_blog_details);
 
     $option_value = get_option('mpd_admin_notice');
 

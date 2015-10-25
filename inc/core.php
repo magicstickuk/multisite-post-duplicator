@@ -2,35 +2,46 @@
 
 function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $post_author, $prefix, $post_status) {
 
-    $options    = get_option( 'mdp_settings' );
-    $mdp_post   = get_post($post_id_to_copy);
-    $title      = get_the_title($mdp_post);
-    $sourcetags = wp_get_post_tags( $post_id_to_copy, array( 'fields' => 'names' ) );
-    $source_id  = get_current_blog_id();
+    $mpd_process_info = array(
 
-    if($prefix != ''){
-
-        $prefix = trim($prefix) . ' ';
-
-    }
-
-    $mdp_post = array(
-
-            'post_title'    => $prefix . $title,
-            'post_status'   => $post_status,
-            'post_type'     => $post_type,
-            'post_author'   => $post_author,
- 			'post_content'  => $mdp_post->post_content
+        'source_id'             => $post_id_to_copy,
+        'destination_id'        => $new_blog_id,
+        'post_type'             => $post_type,
+        'post_author'           => $post_author,
+        'prefix'                => $prefix,
+        'requested_post_status' => $post_status
 
     );
 
+    $options    = get_option( 'mdp_settings' );
+    $mdp_post   = get_post($mpd_process_info['source_id']);
+    $title      = get_the_title($mdp_post);
+    $sourcetags = wp_get_post_tags( $mpd_process_info['source_id'], array( 'fields' => 'names' ) );
+    $source_id  = get_current_blog_id();
+
+    if($mpd_process_info['prefix'] != ''){
+
+        $mpd_process_info['prefix'] = trim($mpd_process_info['prefix']) . ' ';
+
+    }
+
+    $mdp_post = apply_filters('mpd_setup_destination_data', array(
+
+            'post_title'    => $mpd_process_info['prefix'] . $title,
+            'post_status'   => $mpd_process_info['requested_post_status'],
+            'post_type'     => $mpd_process_info['post_type'],
+            'post_author'   => $mpd_process_info['post_author'],
+ 			'post_content'  => $mdp_post->post_content
+
+    ), $mpd_process_info);
+
     $data                       = get_post_custom($mdp_post);
-    $meta_values                = get_post_meta($post_id_to_copy);
-    $featured_image             = mpd_get_featured_image_from_source($post_id_to_copy);
+    $meta_values                = get_post_meta($mpd_process_info['source_id']);
+    $featured_image             = mpd_get_featured_image_from_source($mpd_process_info['source_id']);
 
-    if($new_blog_id != get_current_blog_id()){
+    if($mpd_process_info['destination_id'] != get_current_blog_id()){
 
-        $attached_images = mpd_get_images_from_the_content($post_id_to_copy);
+        $attached_images = mpd_get_images_from_the_content($mpd_process_info['source_id']);
 
         if($attached_images){
 
@@ -44,7 +55,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     }
 
-    switch_to_blog($new_blog_id);
+    switch_to_blog($mpd_process_info['destination_id']);
 
     $post_id = wp_insert_post($mdp_post);
 
@@ -107,12 +118,12 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     }
      
      $site_edit_url = get_edit_post_link( $post_id );
-     $blog_details  = get_blog_details($new_blog_id);
+     $blog_details  = get_blog_details($mpd_process_info['destination_id']);
      $site_name     = $blog_details->blogname;
 
      restore_current_blog();
 
-     $notice = mdp_make_admin_notice($site_name, $site_edit_url);
+     $notice = mdp_make_admin_notice($site_name, $site_edit_url, $blog_details);
 
      update_option('mpd_admin_notice', $notice );
 
