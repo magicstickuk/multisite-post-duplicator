@@ -7,7 +7,7 @@
   *
   * @since 0.5
   * @param none
-  * @return array Containing all post types to be ingnored. 
+  * @return array Containing all post types to be ignored. 
   */        
 function mpd_get_post_types_to_ignore(){
 
@@ -25,7 +25,7 @@ function mpd_get_post_types_to_ignore(){
 }
 
 /**
- * Get a list of post types the user has selected they want to show the MPD Metabox (if the 'Some Post Types' option was slected in settings)
+ * Get a list of post types the user has selected they want to show the MPD Metabox (if the 'Some Post Types' option was selected in settings)
  * 
  * This function checks the settings for MPD and returns all the values that are associated with post types
  * 
