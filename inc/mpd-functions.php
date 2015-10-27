@@ -9,7 +9,8 @@
   * @param none
   * @return array Containing all post types to be ignored.
   * 
-  *  * Example : ['revision', 'nav_menu_item', 'attachment']  
+  * Example : ['revision', 'nav_menu_item', 'attachment']  
+  * 
   */        
 function mpd_get_post_types_to_ignore(){
 
@@ -369,7 +370,7 @@ function mpd_get_image_new_url_without_extension($attach_id, $source_id){
  * array of image objects
  * 
  * @since 0.5
- * @param obj $post_media_attachments Probably generated from mpd_get_images_from_the_content()
+ * @param object $post_media_attachments Probably generated from mpd_get_images_from_the_content()
  * @return array List of alt tags to be copied in core matching the array order of mpd_get_images_from_the_content()
  * 
  */

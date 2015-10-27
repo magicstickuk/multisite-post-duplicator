@@ -189,13 +189,13 @@ function mdp_settings_section_callback(  ) {
 
 }
 
-add_action( 'update_option_mdp_settings', 'mpd_gobalise_settings', 10, 2 );
+add_action( 'update_option_mdp_settings', 'mpd_globalise_settings', 10, 2 );
 
-function mpd_gobalise_settings( $old_value, $new_value ){
+function mpd_globalise_settings( $old_value, $new_value ){
     
-    $options = get_option( 'mdp_settings' );
-    $args 	= array('network_id' => null);
-	$sites 	= wp_get_sites($args);
+    $options 	= get_option( 'mdp_settings' );
+    $args 		= array('network_id' => null);
+	$sites 		= wp_get_sites($args);
 
 	foreach ($sites as $site) {
 

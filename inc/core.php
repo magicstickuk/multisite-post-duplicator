@@ -14,13 +14,11 @@
  * 
  * @return array An array containing information about the newly created post
  * 
- * Example [
- * 
- *      'id'           => 20,
- *      'edit_url'     => 'http://www.example.com/site1/wp-admin/post.php?post=20&action=edit',
- *      'site_name'    => 'Another Site'
- *  
- * ];
+ *      Example [
+ *          'id'           => 20,
+ *          'edit_url'     => 'http://[...]/site1/wp-admin/post.php?post=20&action=edit',
+ *          'site_name'    => 'Another Site'
+ *      ];
  */
 function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $post_author, $prefix, $post_status) {
 
@@ -55,7 +53,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
             'post_status'   => $mpd_process_info['requested_post_status'],
             'post_type'     => $mpd_process_info['post_type'],
             'post_author'   => $mpd_process_info['post_author'],
- 			      'post_content'  => $mdp_post->post_content
+ 			'post_content'  => $mdp_post->post_content
 
     ), $mpd_process_info);
 
