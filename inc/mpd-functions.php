@@ -7,7 +7,9 @@
   *
   * @since 0.5
   * @param none
-  * @return array Containing all post types to be ignored. 
+  * @return array Containing all post types to be ignored.
+  * 
+  *  * Example : ['revision', 'nav_menu_item', 'attachment']  
   */        
 function mpd_get_post_types_to_ignore(){
 
@@ -56,7 +58,9 @@ function mpd_get_some_postypes_to_show_options(){
  * 
  * @since 0.5
  * @param none
- * @return array Containing post types that will show a MPD Metabox. 
+ * @return array Containing post types that will show a MPD Metabox.
+ * 
+ * Example : ['post', 'page'] 
 */
 function mpd_get_postype_decision_from_options(){
 
@@ -91,7 +95,7 @@ function mpd_get_postype_decision_from_options(){
 /**
  * This function returns the current default prefix for the duplication.
  * 
- * Returns either the core default value or the value of prefix save in settings
+ * Returns either the core default value or the value of prefix saved by user in settings
  * 
  * @since 0.5
  * @param none
@@ -106,6 +110,20 @@ function mpd_get_prefix(){
       
 }
 
+/**
+ * Gets information on the featured image attached to a post
+ * 
+ * This function will get the meta data and other information on the posts featured image including the url
+ * to the full size version of the image.
+ * 
+ * @since 0.5
+ * @param int $post_id The ID of the post with that the featured image is attached to. 
+ * @return array Keys 'id', 'url', 'alt', 'description' and 'caption'.
+ * 
+ * Example {[id] => '23', [url] => ['http://www.example.com/image/image.jpg'], ['alt'] => 'Image Alt Tag', ['description'] => 'Probably a big string of text
+ * here', ['caption'] => 'A nice caption for the image hopefully'}
+ * 
+ */
 function mpd_get_featured_image_from_source($post_id){
 
     $image_id   = get_post_thumbnail_id($post_id);
@@ -128,7 +146,17 @@ function mpd_get_featured_image_from_source($post_id){
     
 
 }
-
+/**
+ * This function performs the action of copying the featured image to the newly created post in 
+ * the core function.
+ * 
+ * @since 0.5
+ * @param int $destination_id The ID of the newly created post
+ * @param array $image_details The details of the featured image to be copied. Linked to: mpd_get_featured_image_from_source()
+ * which will generate the correct array structure for use here.
+ * @return null
+ * 
+ */
 function mpd_set_featured_image_to_destination($destination_id, $image_details){
 
     $upload_dir = wp_upload_dir();
@@ -183,6 +211,20 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
     
 }
 
+/**
+ * This function looks at the post_content of a post attempts to return all the id's of images used in the content
+ * 
+ * When adding an image to your post content from WordPress it will give the image a class of wp-image-{image id}
+ * This function anticipates this behaviour and searchs the content of any intaces of this class structure and grabs
+ * the {image id} and collects these id's into an array.
+ * 
+ * @since 0.5
+ * @param int $post_id The ID of the post to analise
+ * @return array 
+ * 
+ * Example: ['20', '30', '1', '456']
+ * 
+ */
 function mpd_get_images_from_the_content($post_id){
 
     $html = get_post_field( 'post_content', $post_id);
@@ -209,6 +251,19 @@ function mpd_get_images_from_the_content($post_id){
     
 }
 
+/**
+ * This function performs the action of copying the attached media image to the newly created post in 
+ * the core function.
+ * 
+ * @since 0.5
+ * @param int $destination_id The ID of the bog we are copying the media to
+ * @param array $post_media_attachments array of media library ids to copy. Probably generated from mpd_get_images_from_the_content()
+ * @param array $attached_images_alt_tags array of alt tags associated with the images in $post_media_attachments array. Mirrors the array order for association.
+ * Probably generated from mpd_get_image_alt_tags()
+ * @param int $source_id The id of the blog these images are being copied from.
+ * @return null
+ * 
+ */
 function mpd_process_post_media_attachements($destination_id, $post_media_attachments, $attached_images_alt_tags, $source_id ){
    
    $image_count = 0;
@@ -287,6 +342,15 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
    }
 }
 
+/**
+ * This function is to generate the image URL from the newly created media libray object for use in the core functions 'find and replace' action
+ * 
+ * @since 0.5
+ * @param int $attach_id The id or the new image
+ * @param int $source_id The id of the blog the image has come from
+ * @return string
+ * 
+ */
 function mpd_get_image_new_url_without_extension($attach_id, $source_id){
 
         $old_blog_details           = get_blog_details($source_id);
@@ -300,6 +364,15 @@ function mpd_get_image_new_url_without_extension($attach_id, $source_id){
         
 }
 
+/**
+ * This function works with mpd_get_images_from_the_content() and produces alt tags associated with a matching
+ * array of image objects
+ * 
+ * @since 0.5
+ * @param obj $post_media_attachments Probably generated from mpd_get_images_from_the_content()
+ * @return array List of alt tags to be copied in core matching the array order of mpd_get_images_from_the_content()
+ * 
+ */
 function mpd_get_image_alt_tags($post_media_attachments){
 
     if($post_media_attachments){
@@ -325,7 +398,16 @@ function mpd_get_image_alt_tags($post_media_attachments){
     }
 
 }
-
+/**
+ * A helper function to help display the default state of a settings page checkbox
+ * 
+ * @since 0.4
+ * @param array $options The option from the database
+ * @param string $option_key The key from the options array you are checking
+ * @param string $option_value The value you are checking against
+ * @return string The markup to be added to the checkbox
+ * 
+ */
 function mpd_checked_lookup($options, $option_key, $option_value){
 
     if(isset($options[$option_key])){
@@ -346,7 +428,19 @@ function mpd_checked_lookup($options, $option_key, $option_value){
 
 
 }
-
+/**
+ * Generates markup for the 'Success Notice' once the MDP core function has been run.
+ * 
+ * Once the markup has been generated it is then saved as an option in wp_options database for use once the page updates.
+ * 
+ * @since 0.5
+ * @param string $site_name The site name of the destination blog
+ * @param string $site_url The edit URL link of the destination blog
+ * @param array $destination_blog_details An array of information about the detination blog. Passed over so the details can be used in
+ * filter
+ * @return string The markup to be added to the success notice
+ * 
+ */
 function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details){
 
     $message = apply_filters('mpd_admin_notice_text', '<div class="updated"><p>'. __('You succesfully duplicated this post to','mpd') ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post','mpd').'</a></p></div>', $site_name, $site_url, $destination_blog_details);
@@ -362,7 +456,16 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
     return $message;
     
 }
-
+/**
+ * Displays the admin notice.
+ * 
+ * Once the notice has been displayed on the screen it is then delted form the database
+ * 
+ * @since 0.5
+ * @param none
+ * @return none
+ * 
+ */
 function mpd_plugin_admin_notices(){
 
     if($notices= get_option('mpd_admin_notice')){
