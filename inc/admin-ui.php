@@ -1,13 +1,23 @@
 <?php
 
-add_action( 'admin_menu', 'mpd_admin_pages' );
-
+/**
+ *
+ * Add Multisite Post Duplucator Tool Page to WordPress Navigation
+ * 
+ */
 function mpd_admin_pages(){
 
 	add_submenu_page('tools.php', __('Multisite Post Duplicator','mpd'),__('Multisite Post Duplicator','mpd'), 'manage_options', 'mpd','mpd_admin_menu_markup');
 
 }
 
+add_action( 'admin_menu', 'mpd_admin_pages' );
+
+/**
+ *
+ * This is the markup to display in the Multisite Post Duplicator Tools page
+ * 
+ */
 function mpd_admin_menu_markup(){
 
 	global $wp_post_types;
@@ -132,6 +142,12 @@ function mpd_admin_menu_markup(){
 	<?php 
 }
 
+/**
+ *
+ * This is the markup to display once the user has selected Question 2 in the Tools admin
+ * 
+ */
+
 function mdp_get_posts_for_type(){
 
 	if($_POST['post_type'] == ' - All Post Types -' ){
@@ -181,6 +197,12 @@ function mdp_get_posts_for_type(){
 
 add_action( 'wp_ajax_mdp_get_posts', 'mdp_get_posts_for_type');
 
+/**
+ *
+ * This is the markup to display once the user has selected Question 3 in the Tools admin
+ * 
+ */
+
 function mdp_get_site_on_network(){
 
 	$args 	= array('network_id' => null);
@@ -212,6 +234,11 @@ function mdp_get_site_on_network(){
 }
 add_action( 'wp_ajax_mdp_get_sites', 'mdp_get_site_on_network');
 
+/**
+ *
+ * This is the markup to display once the user has selected Question 4 in the Tools admin
+ * 
+ */
 function mdp_get_users_on_site(){
 
 	$args = array(

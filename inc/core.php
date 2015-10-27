@@ -1,5 +1,27 @@
 <?php
 
+/**
+ *
+ * This main core function on Multisite Post Duplicator that processes the duplication of a post on a network from one
+ * site to another
+ * 
+ * @param int $post_id_to_copy The ID of the source post to copy
+ * @param int $new_blog_id The ID of the destination blog to copy to.
+ * @param string $post_type The destination post type.
+ * @param int $post_author The id of the requested post author from the destination site.
+ * @param string $prefix Optional prefix to be used on the destination post.
+ * @param string $post_status a post status for the destination id. Has to be one of the values returned from WordPress's get_post_statuses() function
+ * 
+ * @return array An array containing information about the newly created post
+ * 
+ * Example [
+ * 
+ *      'id'           => 20,
+ *      'edit_url'     => 'http://www.example.com/site1/wp-admin/post.php?post=20&action=edit',
+ *      'site_name'    => 'Another Site'
+ *  
+ * ];
+ */
 function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $post_author, $prefix, $post_status) {
 
     $mpd_process_info = array(
@@ -31,7 +53,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
             'post_status'   => $mpd_process_info['requested_post_status'],
             'post_type'     => $mpd_process_info['post_type'],
             'post_author'   => $mpd_process_info['post_author'],
- 			'post_content'  => $mdp_post->post_content
+ 			      'post_content'  => $mdp_post->post_content
 
     ), $mpd_process_info);
 

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *
+ * Load scripts and CSS to be used in this plugin
+ *
+ */
 function mdp_load_admin_styles(){
 
 		$screenid = get_current_screen()->id;
