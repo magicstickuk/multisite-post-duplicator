@@ -8,6 +8,17 @@ if ( is_multisite() ) {
 
 }
 
+/**
+ * 
+ * This function initialises the MPD Metabox on the WordPress Post
+ * 
+ * Before displaying this function will check the plugin settings option to make sure the use wants to
+ * display the metabox or not depending on the post type.
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function mpd_metaboxes(){
     
     $post_types = mpd_get_postype_decision_from_options();
@@ -28,7 +39,14 @@ function mpd_metaboxes(){
     
 }
 
-
+/**
+ * 
+ * This function generates the markup for the MPD Metabox
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function mpd_publish_top_right(){
 
     $post_statuses  = get_post_statuses();
@@ -100,11 +118,16 @@ function mpd_publish_top_right(){
 
 <?php
 }
+/**
+ * 
+ * This function sets up the MPD core function and calls it based on values added by the user in the MPD metabox
+ * 
+ * @since 0.4
+ * @return object Post Object
+ * 
+ */
 
-add_filter( 'save_post', 'mpd_clone_post' );
-
-function mpd_clone_post($data )
-{
+function mpd_clone_post($data){
 
     if (!count($_POST)){
 
@@ -132,3 +155,5 @@ function mpd_clone_post($data )
     return $data;
 
 }
+
+add_filter( 'save_post', 'mpd_clone_post' );
