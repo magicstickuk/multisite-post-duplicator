@@ -54,9 +54,13 @@ function mpd_publish_top_right(){
     $sites          = wp_get_sites($args);
 
     ?>
+
+
     <div id="clone_multisite_box">
 
         <div class="metabox">
+
+            <?php do_action('mpd_before_metabox_content'); ?>
 
             <p><?php _e('Duplicated post status', 'mpd'); ?>:
 
@@ -112,6 +116,8 @@ function mpd_publish_top_right(){
                 
             </p>
 
+            <?php do_action('mpd_after_metabox_content'); ?>
+            
         </div>
 
     </div>

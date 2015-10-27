@@ -35,6 +35,8 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     );
 
+    do_action('mpd_before_core');
+
     $options    = get_option( 'mdp_settings' );
     $mdp_post   = get_post($mpd_process_info['source_id']);
     $title      = get_the_title($mdp_post);
@@ -77,7 +79,11 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     }
 
+    do_action('mpd_during_core_in_source');
+
     switch_to_blog($mpd_process_info['destination_id']);
+
+    do_action('mpd_during_core_in_destination');
 
     $post_id = wp_insert_post($mdp_post);
 
@@ -156,7 +162,9 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
          'site_name'    => $site_name
 
     );
+
+    do_action('mpd_end_of_core');
      
-     return $createdPostObject;
+    return $createdPostObject;
  
 }
