@@ -1,8 +1,16 @@
 <?php
+/**
+ * 
+ * This controls the markup and functionality of the MPD Tools page
+ * @since 0.1
+ * @author Mario Jaconelli <mariojaconelli@gmail.com>
+ * 
+ */
 
 /**
- *
+ * 
  * Add Multisite Post Duplucator Tool Page to WordPress Navigation
+ * @since 0.1
  * 
  */
 function mpd_admin_pages(){
@@ -16,6 +24,7 @@ add_action( 'admin_menu', 'mpd_admin_pages' );
 /**
  *
  * This is the markup to display in the Multisite Post Duplicator Tools page
+ * @since 0.1
  * 
  */
 function mpd_admin_menu_markup(){
@@ -146,6 +155,8 @@ function mpd_admin_menu_markup(){
  *
  * This is the markup to display once the user has selected Question 2 in the Tools admin
  * 
+ * @since 0.1
+ * 
  */
 
 function mdp_get_posts_for_type(){
@@ -201,6 +212,8 @@ add_action( 'wp_ajax_mdp_get_posts', 'mdp_get_posts_for_type');
  *
  * This is the markup to display once the user has selected Question 3 in the Tools admin
  * 
+ * @since 0.1
+ * 
  */
 
 function mdp_get_site_on_network(){
@@ -237,6 +250,8 @@ add_action( 'wp_ajax_mdp_get_sites', 'mdp_get_site_on_network');
 /**
  *
  * This is the markup to display once the user has selected Question 4 in the Tools admin
+ * 
+ * @since 0.1
  * 
  */
 function mdp_get_users_on_site(){

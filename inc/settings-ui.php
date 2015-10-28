@@ -1,18 +1,44 @@
 <?php
+/**
+ * 
+ * This file controls arte generation of the MPD Settings page
+ * @since 0.4
+ * @author Mario Jaconelli <mariojaconelli@gmail.com>
+ * 
+ */
+
+
 if ( is_multisite() ) {
 	add_action( 'admin_menu', 'mdp_add_admin_menu' );
 	add_action( 'admin_init', 'mdp_settings_init' );
 }
 
+/**
+ * 
+ * Add MDP Settings navigation to WordPress navigation
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function mdp_add_admin_menu(  ) { 
 
 	add_submenu_page( 'options-general.php', __('Multisite Post Duplicator Settings','mpd'), __('Multisite Post Duplicator Settings', 'mpd'), 'manage_options', 'multisite_post_duplicator', 'mdp_options_page' );
 
 }
-
+/**
+ * 
+ * Register the settings for MPD
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function mdp_settings_init(  ) { 
 
 	register_setting( 'mdp_plugin_setting_page', 'mdp_settings' );
+
+	do_action( 'mdp_start_plugin_setting_page' );
 
 	add_settings_section(
 		'mdp_mdp_plugin_setting_page_section', 
@@ -86,8 +112,17 @@ function mdp_settings_init(  ) {
 		'mdp_mdp_plugin_setting_page_section' 
 	);
 
-}
+	do_action( 'mdp_end_plugin_setting_page' );
 
+}
+/**
+ * 
+ * Create the UI for the Post Type Selector in Settings
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function meta_box_show_radio_render(){
 
 	if($options = get_option( 'mdp_settings' )){
@@ -119,7 +154,14 @@ function meta_box_show_radio_render(){
 	<?php
 }
 
-
+/**
+ * 
+ * Create the UI for the Post Type chexboxes
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function meta_box_post_type_selector_render($args) { 
 
 	$options 		= get_option( 'mdp_settings' );
@@ -135,6 +177,14 @@ function meta_box_post_type_selector_render($args) {
 
 }
 
+/**
+ * 
+ * Create the UI for the Prefix Setting
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function mdp_default_prefix_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
@@ -146,6 +196,14 @@ function mdp_default_prefix_render(  ) {
 
 }
 
+/**
+ * 
+ * Create the UI for the Tag Copy Selection Setting
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function mdp_default_tags_copy_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
@@ -159,6 +217,14 @@ function mdp_default_tags_copy_render(  ) {
 
 }
 
+/**
+ * 
+ * Create the UI for the Featured Image Copy Selection Setting
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function mdp_default_feat_image_copy_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
@@ -171,6 +237,14 @@ function mdp_default_feat_image_copy_render(  ) {
 
 }
 
+/**
+ * 
+ * Create the UI for the Inline Image Copy Selection setting
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function mdp_copy_content_image_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
@@ -191,6 +265,15 @@ function mdp_settings_section_callback(  ) {
 
 add_action( 'update_option_mdp_settings', 'mpd_globalise_settings', 10, 2 );
 
+/**
+ * 
+ * This function is used to copy the saved settings to all other sites options table,
+ * therefore globalising the MPD settings arcroos all sites.
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function mpd_globalise_settings( $old_value, $new_value ){
     
     $options 	= get_option( 'mdp_settings' );
@@ -208,7 +291,15 @@ function mpd_globalise_settings( $old_value, $new_value ){
 	}
     	
 }
-
+/**
+ * 
+ * Generate the complete Settings page.
+ * See https://codex.wordpress.org/Creating_Options_Pages for info.
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function mdp_options_page(  ) { 
 
 	?>

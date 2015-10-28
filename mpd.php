@@ -16,6 +16,13 @@ include('inc/admin-ui.php');
 include('inc/settings-ui.php');
 include('inc/core.php');
 
+/**
+ * 
+ * Set the default options in WordPress on activation of the plugin
+ * 
+ * @since 0.5
+ * 
+ */
 function mdp_plugin_activate() {
 
    $type_of_activation 	= mpd_do_version_log();
@@ -62,6 +69,14 @@ function mdp_plugin_activate() {
 
 register_activation_hook( __FILE__, 'mdp_plugin_activate' );
 
+/**
+ * 
+ * Static function to allow MDP to be referenced globally
+ * 
+ * @since 0.5
+ * @return array
+ * 
+ */
 function mdp_get_default_options(){
 
 	$mdp_default_options = array(
@@ -93,6 +108,18 @@ function mdp_get_default_options(){
 
 }
 
+/**
+ * 
+ * Log current version in WordPress Options. This is to allow logical upgrade scripts depending on current version
+ * in future updates
+ * 
+ * 
+ * @since 0.5
+ * @return string A string that informs mpd of the type of upgrate that has orrured on activation
+ * 
+ * Values can be either 'new_install', 'had_before' or 'change_of_version'
+ * 
+ */
 function mpd_do_version_log(){
 
    $plugin_data = get_plugin_data(__FILE__);

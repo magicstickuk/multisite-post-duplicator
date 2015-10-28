@@ -1,9 +1,16 @@
 <?php
+/**
+ * 
+ * Load scripts and CSS to be used in this plugin
+ * 
+ */
 
 /**
- *
- * Load scripts and CSS to be used in this plugin
- *
+ * 
+ * @since 0.1
+ * @author Mario Jaconelli <mariojaconelli@gmail.com>
+ * @author Sergi Ambel
+ * 
  */
 function mdp_load_admin_styles(){
 

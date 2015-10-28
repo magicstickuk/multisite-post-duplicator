@@ -1,4 +1,13 @@
 <?php
+/**
+ * 
+ * This file controls the generation and functionality  of the MPD Metabox.
+ * 
+ * @since 0.4
+ * @author Mario Jaconelli <mariojaconelli@gmail.com>
+ * @author Sergi Ambel
+ * 
+ */
 
 if ( ! defined( 'ABSPATH' ) ) exit('You\'re not allowed to see this page');
 
@@ -124,6 +133,7 @@ function mpd_publish_top_right(){
 
 <?php
 }
+
 /**
  * 
  * This function sets up the MPD core function and calls it based on values added by the user in the MPD metabox

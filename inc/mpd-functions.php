@@ -1,5 +1,13 @@
 <?php
 /**
+ * 
+ * This file is a collection all functions that are referred to other files
+ * @since 0.1
+ * @author Mario Jaconelli <mariojaconelli@gmail.com>
+ * 
+ */
+
+/**
   * Get the value of the post types that we don't want to use in Multisite Post Duplicator
   *
   * WordPress has some post types that are not applicable to MPD's behaviour. This is where
@@ -9,7 +17,9 @@
   * @param none
   * @return array Containing all post types to be ignored.
   * 
-  * Example : ['revision', 'nav_menu_item', 'attachment']  
+  * Example : 
+  * 
+  *     ['revision', 'nav_menu_item', 'attachment']  
   * 
   */        
 function mpd_get_post_types_to_ignore(){
@@ -32,7 +42,9 @@ function mpd_get_post_types_to_ignore(){
  * 
  * This function checks the settings for MPD and returns all the values that are associated with post types
  * 
+ * @since 0.4
  * @return array Containing post types for use with MPD Metabox
+ * 
 */
 function mpd_get_some_postypes_to_show_options(){
 	
@@ -57,11 +69,14 @@ function mpd_get_some_postypes_to_show_options(){
 /**
  * This function returns the post types that MPD has to show the metabox on based on the user desicion on settings
  * 
- * @since 0.5
+ * @since 0.4
  * @param none
  * @return array Containing post types that will show a MPD Metabox.
  * 
- * Example : ['post', 'page'] 
+ * Example : 
+ * 
+ *      ['post', 'page']
+ *  
 */
 function mpd_get_postype_decision_from_options(){
 
@@ -104,8 +119,9 @@ function mpd_get_postype_decision_from_options(){
 */
 function mpd_get_prefix(){
 
-      $options  = get_option( 'mdp_settings' ); 
-      $prefix   = $options['mdp_default_prefix'] ? $options['mdp_default_prefix'] : mdp_get_default_options('mdp_default_prefix');
+      $options          = get_option( 'mdp_settings' );
+      $defaultOptions   = mdp_get_default_options();
+      $prefix   = $options['mdp_default_prefix'] ? $options['mdp_default_prefix'] : $defaultOptions['mdp_default_prefix'];
 
       return $prefix;
       
@@ -119,10 +135,15 @@ function mpd_get_prefix(){
  * 
  * @since 0.5
  * @param int $post_id The ID of the post with that the featured image is attached to. 
- * @return array Keys 'id', 'url', 'alt', 'description' and 'caption'.
+ * @return array
  * 
- * Example {[id] => '23', [url] => ['http://www.example.com/image/image.jpg'], ['alt'] => 'Image Alt Tag', ['description'] => 'Probably a big string of text
- * here', ['caption'] => 'A nice caption for the image hopefully'}
+ * Example 
+ * 
+ *          id => '23', 
+ *          url => 'http://www.example.com/image/image.jpg',
+ *          alt => 'Image Alt Tag', 
+ *          description => 'Probably a big string of text here',
+ *          caption => 'A nice caption for the image hopefully'
  * 
  */
 function mpd_get_featured_image_from_source($post_id){
@@ -223,7 +244,9 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
  * @param int $post_id The ID of the post to analise
  * @return array 
  * 
- * Example: ['20', '30', '1', '456']
+ * Example: 
+ * 
+ *         ['20', '30', '1', '456']
  * 
  */
 function mpd_get_images_from_the_content($post_id){
@@ -272,74 +295,74 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
 
    foreach ($post_media_attachments as $post_media_attachment) {
 
-            $image_data             = file_get_contents($post_media_attachment->guid);
-            $image_URL_info         = pathinfo($post_media_attachment->guid);
-            $image_URL_without_EXT  = $image_URL_info['dirname'] ."/". $image_URL_info['filename'];
-            $filename               = basename($post_media_attachment->guid);
+        $image_data             = file_get_contents($post_media_attachment->guid);
+        $image_URL_info         = pathinfo($post_media_attachment->guid);
+        $image_URL_without_EXT  = $image_URL_info['dirname'] ."/". $image_URL_info['filename'];
+        $filename               = basename($post_media_attachment->guid);
 
 
-            $upload_dir = wp_upload_dir();
+        $upload_dir = wp_upload_dir();
 
-            if( wp_mkdir_p( $upload_dir['path'] ) ) {
+        if( wp_mkdir_p( $upload_dir['path'] ) ) {
 
-                $file = $upload_dir['path'] . '/' . $filename;
+            $file = $upload_dir['path'] . '/' . $filename;
 
-            } else {
+        } else {
 
-                $file = $upload_dir['basedir'] . '/' . $filename;
+            $file = $upload_dir['basedir'] . '/' . $filename;
 
-            }
+        }
 
-            file_put_contents( $file, $image_data );
+        file_put_contents( $file, $image_data );
 
-            $wp_filetype = wp_check_filetype( $filename, null );
+        $wp_filetype = wp_check_filetype( $filename, null );
 
-            $attachment = apply_filters('mpd_post_media_attachments', array(
+        $attachment = apply_filters('mpd_post_media_attachments', array(
 
-                'post_mime_type' => 'image/jpeg',
-                'post_title'     => sanitize_file_name( $filename ),
-                'post_content'   => $post_media_attachment->post_content,
-                'post_status'    => 'inherit',
-                'post_excerpt'   => $post_media_attachment->post_excerpt
+            'post_mime_type' => 'image/jpeg',
+            'post_title'     => sanitize_file_name( $filename ),
+            'post_content'   => $post_media_attachment->post_content,
+            'post_status'    => 'inherit',
+            'post_excerpt'   => $post_media_attachment->post_excerpt
 
-            ), $post_media_attachment);
+        ), $post_media_attachment);
 
-            // Create the attachment
-            $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
+        // Create the attachment
+        $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
 
 
-            //Add any alt text;
-            if($attached_images_alt_tags){
+        //Add any alt text;
+        if($attached_images_alt_tags){
 
-                  update_post_meta($attach_id,'_wp_attachment_image_alt', $attached_images_alt_tags[$image_count]);
+              update_post_meta($attach_id,'_wp_attachment_image_alt', $attached_images_alt_tags[$image_count]);
 
-            }
-           
-            // Include image.php
-            require_once(ABSPATH . 'wp-admin/includes/image.php');
+        }
+       
+        // Include image.php
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
 
-            // Define attachment metadata
-            $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+        // Define attachment metadata
+        $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
 
-            // Assign metadata to attachment
-            wp_update_attachment_metadata( $attach_id, $attach_data );
+        // Assign metadata to attachment
+        wp_update_attachment_metadata( $attach_id, $attach_data );
 
-            $new_image_URL_without_EXT  = mpd_get_image_new_url_without_extension($attach_id, $source_id);
+        $new_image_URL_without_EXT  = mpd_get_image_new_url_without_extension($attach_id, $source_id);
 
-            $old_content                = get_post_field('post_content', $destination_id);
-            $middle_content             = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT,  $old_content);
-            $update_content             = str_replace('wp-image-'. $old_image_ids[$image_count], 'wp-image-' . $attach_id, $middle_content);
+        $old_content                = get_post_field('post_content', $destination_id);
+        $middle_content             = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT,  $old_content);
+        $update_content             = str_replace('wp-image-'. $old_image_ids[$image_count], 'wp-image-' . $attach_id, $middle_content);
 
-            $post_update = array(
+        $post_update = array(
 
-                'ID'           => $destination_id,
-                'post_content' => $update_content       
-             
-            );
+            'ID'           => $destination_id,
+            'post_content' => $update_content       
+         
+        );
 
-            wp_update_post( $post_update );
+        wp_update_post( $post_update );
 
-            $image_count++;
+        $image_count++;
    }
 }
 

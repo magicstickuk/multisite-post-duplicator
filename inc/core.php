@@ -1,4 +1,10 @@
 <?php
+/**
+ * 
+ * This file contains the main function that processes any requested duplication
+ * @since 0.1
+ * @author Mario Jaconelli <mariojaconelli@gmail.com>
+ */
 
 /**
  *
@@ -14,11 +20,12 @@
  * 
  * @return array An array containing information about the newly created post
  * 
- *      Example [
- *          'id'           => 20,
- *          'edit_url'     => 'http://[...]/site1/wp-admin/post.php?post=20&action=edit',
- *          'site_name'    => 'Another Site'
- *      ];
+ * Example:
+ * 
+ *          id           => 20,
+ *          edit_url     => 'http://[...]/site1/wp-admin/post.php?post=20&action=edit',
+ *          site_name    => 'Another Site'
+ * 
  */
 function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $post_author, $prefix, $post_status) {
 
@@ -33,7 +40,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     );
 
-    do_action('mpd_before_core');
+    do_action('mpd_before_core', $mpd_process_info);
 
     $options    = get_option( 'mdp_settings' );
     $mdp_post   = get_post($mpd_process_info['source_id']);
@@ -77,11 +84,9 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     }
 
-    do_action('mpd_during_core_in_source');
+    do_action('mpd_during_core_in_source', $mdp_post, $attached_images, $attached_images_alt_tags);
 
     switch_to_blog($mpd_process_info['destination_id']);
-
-    do_action('mpd_during_core_in_destination');
 
     $post_id = wp_insert_post($mdp_post);
 
@@ -94,6 +99,8 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
             }
 
         }
+
+    do_action('mpd_during_core_in_destination', $post_id, $mdp_post, $attached_images, $attached_images_alt_tags );
 
   	 foreach ($meta_values as $key => $values) {
 
@@ -153,15 +160,15 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
      update_option('mpd_admin_notice', $notice );
 
-     $createdPostObject = array(
+     $createdPostObject = apply_filters('mpd_returned_information', array(
 
          'id'           => $post_id,
          'edit_url'     => $site_edit_url,
          'site_name'    => $site_name
 
-    );
+    ));
 
-    do_action('mpd_end_of_core');
+    do_action('mpd_end_of_core', $createdPostObject);
      
     return $createdPostObject;
  
