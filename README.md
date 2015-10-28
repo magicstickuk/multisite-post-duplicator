@@ -52,7 +52,7 @@ Yes.
 
 = Does this work with advanced custom fields? =
 
-Yes. However, you have to have the same custom fields defined in each of your site on your network. See to help keep the fields in sync https://wordpress.org/plugins/acf-multisite-sync/
+Yes. However, you have to have the same custom fields defined in each of the sites on your network. To help keep the fields in sync try: https://wordpress.org/plugins/acf-multisite-sync/
 
 == Screenshots ==
 
