@@ -191,7 +191,7 @@ function mdp_default_prefix_render(  ) {
 
 	$options = get_option( 'mdp_settings' );
 	?>
-	<input type='text' name='mdp_settings[mdp_default_prefix]' value='<?php echo $options ? $options['mdp_default_prefix'] : "Copy of"; ?>'>
+	<input type='text' name='mdp_settings[mdp_default_prefix]' value='<?php echo mpd_get_prefix(); ?>'>
 
 	<p class="mpdtip"><?php _e('Change the default prefix for your duplication across the network.')?></p>
 	<?php
