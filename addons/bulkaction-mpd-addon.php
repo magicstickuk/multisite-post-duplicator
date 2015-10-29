@@ -1,74 +1,63 @@
 <?php
 
-add_action('admin_footer-edit.php', 'custom_bulk_admin_footer');
+add_action('admin_footer-edit.php', 'mpd_bulk_admin_script');
  
-function custom_bulk_admin_footer() {
- 
-  global $post_type;
- 
-  if($post_type == 'post') {
+function mpd_bulk_admin_script() {
+
+    $args           = array('network_id' => null);
+    $sites          = wp_get_sites($args);
+
     ?>
     <script type="text/javascript">
       jQuery(document).ready(function() {
-        jQuery('<option>').val('dup-1').text('<?php _e('Duplicate to site 1')?>').appendTo("select[name='action']");
-        jQuery('<option>').val('dup-1').text('<?php _e('Duplicate to site 1')?>').appendTo("select[name='action2']");
-        jQuery('<option>').val('dup-2').text('<?php _e('Duplicate to site 2')?>').appendTo("select[name='action']");
-        jQuery('<option>').val('dup-2').text('<?php _e('Duplicate to site 2')?>').appendTo("select[name='action2']");
+        <?php foreach ($sites as $site) :?>
+          <?php $blog_details = get_blog_details($site['blog_id']); ?> 
+            <?php if($site['blog_id'] != get_current_blog_id()):?> 
+              jQuery('<option>').val("dup-<?php echo $site['blog_id'] ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action']");
+              jQuery('<option>').val("dup-<?php echo $site['blog_id'] ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action2']");
+            <?php endif; ?>
+          <?php endforeach; ?>
       });
     </script>
-    <?php
-  }
+    <?php 
 }
 
-add_action('load-edit.php', 'custom_bulk_action');
+add_action('load-edit.php', 'mpd_bulk_action');
  
-function custom_bulk_action() {
+function mpd_bulk_action() {
  
-  // ...
- 
-  // 1. get the action
   $wp_list_table = _get_list_table('WP_Posts_List_Table');
   $action = $wp_list_table->current_action();
   if($action){
-  	 // var_dump($action);
-  	 //  var_dump($wp_list_table);
-  	 //  if(isset($_REQUEST['post'])) {
-    //         $post_ids = array_map('intval', $_REQUEST['post']);
-    //     }
-    //     var_dump($post_ids);
+
+      preg_match("/(?<=dup-)\d+/", $action, $get_site);
+      //echo $get_site[0];
+  	 //var_dump($action);
+  	 //var_dump($wp_list_table);
+  	  if(isset($_REQUEST['post'])) {
+            $post_ids = array_map('intval', $_REQUEST['post']);
+           // var_dump($post_ids);
+      }
+
+      $results = array();
+      foreach($post_ids as $post_id){
+          
+          $results[] = mpd_duplicate_over_multisite(
+            $post_id, 
+            $get_site[0],
+            $_REQUEST['post_type'],
+            1,
+            mpd_get_prefix(),
+            'draft'
+          );
+
+      } 
   }
 
-  // ...
-
-  
-  //check_admin_referer('bulk-posts');
- 
-  // ...
- 
-  switch($action) {
-    // 3. Perform the action
-    case 'export-1':
-      // if we set up user permissions/capabilities, the code might look like:
-      //if ( !current_user_can($post_type_object->cap->export_post, $post_id) )
-      //  pp_die( __('You are not allowed to export this post.') );
- 
-      $exported = 0;
- 
-      // foreach( $post_ids as $post_id ) {
-      //   	var_dump($action);
-      // }
- 
-      // build the redirect url
-      //$sendback = add_query_arg( array('exported' => $exported, 'ids' => join(',', $post_ids) ), $sendback );
- 
-    break;
-    default: return;
-  }
  
   // ...
  
   // 4. Redirect client
   //wp_redirect($sendback);
  
-  exit();
 }
