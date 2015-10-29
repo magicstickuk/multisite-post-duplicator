@@ -159,6 +159,8 @@ function meta_box_show_radio_render(){
  * Create the UI for the Post Type chexboxes
  * 
  * @since 0.4
+ * @param array $args The post type checkbox to render. Probably generated in mdp_settings_init()
+ * 
  * @return null
  * 
  */

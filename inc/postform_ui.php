@@ -139,15 +139,16 @@ function mpd_publish_top_right(){
  * This function sets up the MPD core function and calls it based on values added by the user in the MPD metabox
  * 
  * @since 0.4
- * @return object Post Object
+ * @param int $post_id The post ID of the post currently being viewed.
+ * @return int The post ID of the post currently being viewed.
  * 
  */
 
-function mpd_clone_post($data){
+function mpd_clone_post($post_id){
 
     if (!count($_POST)){
 
-        return $data;
+        return $post_id;
         
     }
 
@@ -155,7 +156,7 @@ function mpd_clone_post($data){
         && ( $_POST["post_status"] != "auto-draft" )
         && ( isset($_POST['mpd_blogs'] ) )
         && ( count( $_POST['mpd_blogs'] ) )
-        && ( $_POST["post_ID"] == $data ) //hack to avoid execution in cloning process
+        && ( $_POST["post_ID"] == $post_id ) //hack to avoid execution in cloning process
     ){
 
     $mpd_blogs = $_POST['mpd_blogs'];
@@ -168,7 +169,7 @@ function mpd_clone_post($data){
 
     }
 
-    return $data;
+    return $post_id;
 
 }
 
