@@ -15,6 +15,7 @@ include('inc/postform_ui.php');
 include('inc/admin-ui.php');
 include('inc/settings-ui.php');
 include('inc/core.php');
+include('addons/bulkaction-mpd-addon.php');
 
 /**
  * 
