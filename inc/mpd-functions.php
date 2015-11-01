@@ -74,20 +74,26 @@ function mpd_get_prefix(){
 
 function mpd_get_featured_image_from_source($post_id){
 
-    $image = wp_get_attachment_image_src( get_post_thumbnail_id($post_id), 'full' );
+    $thumbnail_id   = get_post_thumbnail_id($post_id);
+    $image          = wp_get_attachment_image_src($thumbnail_id, 'full' );
 
     if($image){
 
-        $image_details                  = array();
-        $image_details['url']           = $image[0];
-        $image_details['alt']           = get_post_meta( get_post_thumbnail_id($post_id), '_wp_attachment_image_alt', true );
-        $image_details['description']   = get_post_field('post_content', get_post_thumbnail_id($post_id));
-        $image_details['caption']       = get_post_field('post_excerpt', get_post_thumbnail_id($post_id));
+        $image_details = array(
+
+            'url'           => $image[0],
+            'alt'           => get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true ),
+            'post_title'    => get_post_field('post_title', $thumbnail_id),
+            'description'   => get_post_field('post_content', $thumbnail_id),
+            'caption'       => get_post_field('post_excerpt', $thumbnail_id),
+            'post_name'     => get_post_field('post_name', $thumbnail_id)
+
+        );
 
         return $image_details;
+
     }
     
-
 }
 
 function mpd_set_featured_image_to_destination($destination_id, $image_details){
@@ -110,13 +116,17 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
 
     $wp_filetype = wp_check_filetype( $filename, null );
 
+    $new_file_url = $upload_dir['url'] . '/' . $filename;
+
     $attachment = array(
 
         'post_mime_type' => $wp_filetype['type'],
-        'post_title'     => sanitize_file_name( $filename ),
+        'post_title'     => $image_details['post_title'],
         'post_content'   => $image_details['description'],
         'post_status'    => 'inherit',
-        'post_excerpt'   => $image_details['caption']
+        'post_excerpt'   => $image_details['caption'],
+        'post_name'      => $image_details['post_name'],
+        //'guid'           => $new_file_url
 
     );
 
