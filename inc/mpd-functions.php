@@ -148,25 +148,29 @@ function mpd_get_prefix(){
  */
 function mpd_get_featured_image_from_source($post_id){
 
-    $image_id   = get_post_thumbnail_id($post_id);
-    $image      = wp_get_attachment_image_src($image_id, 'full' );
+    $thumbnail_id   = get_post_thumbnail_id($post_id);
+    $image          = wp_get_attachment_image_src($thumbnail_id, 'full' );
 
     if($image){
 
-        $image_details                  = array();
-        $image_details['id']            = $image_id;
-        $image_details['url']           = $image[0];
-        $image_details['alt']           = get_post_meta( get_post_thumbnail_id($post_id), '_wp_attachment_image_alt', true );
-        $image_details['description']   = get_post_field('post_content', get_post_thumbnail_id($post_id));
-        $image_details['caption']       = get_post_field('post_excerpt', get_post_thumbnail_id($post_id));
+        $image_details = array(
+
+            'url'           => $image[0],
+            'alt'           => get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true ),
+            'post_title'    => get_post_field('post_title', $thumbnail_id),
+            'description'   => get_post_field('post_content', $thumbnail_id),
+            'caption'       => get_post_field('post_excerpt', $thumbnail_id),
+            'post_name'     => get_post_field('post_name', $thumbnail_id)
+
+        );
+
 
         $image_details = apply_filters( 'mpd_featured_image', $image_details );
 
         return $image_details;
-        
+
     }
     
-
 }
 /**
  * This function performs the action of copying the featured image to the newly created post in 
@@ -199,13 +203,17 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
 
     $wp_filetype = wp_check_filetype( $filename, null );
 
-    $attachment = apply_filters('mpd_featured_image_attachement_details', array(
+    $new_file_url = $upload_dir['url'] . '/' . $filename;
+
+    $attachment = array(
 
         'post_mime_type' => $wp_filetype['type'],
-        'post_title'     => sanitize_file_name( $filename ),
+        'post_title'     => $image_details['post_title'],
         'post_content'   => $image_details['description'],
         'post_status'    => 'inherit',
-        'post_excerpt'   => $image_details['caption']
+        'post_excerpt'   => $image_details['caption'],
+        'post_name'      => $image_details['post_name'],
+        //'guid'           => $new_file_url
 
     ));
 
@@ -275,6 +283,7 @@ function mpd_get_images_from_the_content($post_id){
     
 }
 
+
 /**
  * This function performs the action of copying the attached media image to the newly created post in 
  * the core function.
@@ -288,8 +297,8 @@ function mpd_get_images_from_the_content($post_id){
  * @return null
  * 
  */
-function mpd_process_post_media_attachements($destination_id, $post_media_attachments, $attached_images_alt_tags, $source_id ){
-   
+function mpd_process_post_media_attachements($destination_id, $post_media_attachments, $attached_images_alt_tags, $source_id, $new_blog_id ){
+
    $image_count = 0;
    $old_image_ids = array_keys($post_media_attachments);
 
@@ -298,8 +307,8 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
         $image_data             = file_get_contents($post_media_attachment->guid);
         $image_URL_info         = pathinfo($post_media_attachment->guid);
         $image_URL_without_EXT  = $image_URL_info['dirname'] ."/". $image_URL_info['filename'];
+        $image_URL_without_EXT  = str_replace(get_blog_details($new_blog_id)->path, get_blog_details($source_id)->path, $image_URL_without_EXT);
         $filename               = basename($post_media_attachment->guid);
-
 
         $upload_dir = wp_upload_dir();
 
@@ -313,6 +322,8 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
 
         }
 
+        $new_file_url = $upload_dir['url'] . '/' . $filename;
+
         file_put_contents( $file, $image_data );
 
         $wp_filetype = wp_check_filetype( $filename, null );
@@ -323,7 +334,10 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
             'post_title'     => sanitize_file_name( $filename ),
             'post_content'   => $post_media_attachment->post_content,
             'post_status'    => 'inherit',
-            'post_excerpt'   => $post_media_attachment->post_excerpt
+            'post_excerpt'   => $post_media_attachment->post_excerpt,
+            'post_name'      => $post_media_attachment->post_name,
+            'guid'           => $new_file_url
+
 
         ), $post_media_attachment);
 
@@ -347,17 +361,15 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
         // Assign metadata to attachment
         wp_update_attachment_metadata( $attach_id, $attach_data );
 
-        $new_image_URL_without_EXT  = mpd_get_image_new_url_without_extension($attach_id, $source_id);
+        $new_image_URL_without_EXT  = mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_blog_id, $new_file_url);
 
         $old_content                = get_post_field('post_content', $destination_id);
-        $middle_content             = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT,  $old_content);
+        $middle_content             = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT, $old_content);
         $update_content             = str_replace('wp-image-'. $old_image_ids[$image_count], 'wp-image-' . $attach_id, $middle_content);
 
         $post_update = array(
-
             'ID'           => $destination_id,
             'post_content' => $update_content       
-         
         );
 
         wp_update_post( $post_update );
@@ -365,6 +377,7 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
         $image_count++;
    }
 }
+
 
 /**
  * This function is to generate the image URL from the newly created media libray object for use in the core functions 'find and replace' action
@@ -375,14 +388,12 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
  * @return string
  * 
  */
-function mpd_get_image_new_url_without_extension($attach_id, $source_id){
+function mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_blog_id, $new_file_url){
 
-        $old_blog_details           = get_blog_details($source_id);
-        $new_blog_details           = get_blog_details(get_current_blog_id());
-        $new_image_URL              = wp_get_attachment_url($attach_id);
-        $new_image_URL_info         = pathinfo($new_image_URL);
-        $new_image_URL_with_old_path= $new_image_URL_info['dirname'] ."/". $new_image_URL_info['filename'];
-        $new_image_URL_without_EXT  = str_replace($old_blog_details->path,  $new_blog_details->path, $new_image_URL_with_old_path);
+
+        $new_image_URL_with_EXT     = pathinfo($new_file_url);
+        $new_image_URL_without_EXT  = $new_image_URL_with_EXT['dirname'] ."/". $new_image_URL_with_EXT['filename'];
+        $new_image_URL_without_EXT  = str_replace(get_blog_details($source_id)->path, get_blog_details($new_blog_id)->path, $new_image_URL_without_EXT);
 
         return $new_image_URL_without_EXT;
         
@@ -409,9 +420,10 @@ function mpd_get_image_alt_tags($post_media_attachments){
 
             $alt_tag = get_post_meta($post_media_attachment->ID, '_wp_attachment_image_alt', true);
 
-            $alt_tags_to_be_copied[$attachement_count] = $alt_tag;
-
-            $attachement_count++;
+            if($alt_tag){
+                $alt_tags_to_be_copied[$attachement_count] = $alt_tag;
+                $attachement_count++;
+            }
 
         }
 
