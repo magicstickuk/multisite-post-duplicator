@@ -215,7 +215,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
         'post_name'      => $image_details['post_name'],
         //'guid'           => $new_file_url
 
-    ));
+    );
 
     // Create the attachment
     $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
