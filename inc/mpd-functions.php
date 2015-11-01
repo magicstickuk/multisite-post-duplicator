@@ -196,7 +196,7 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
 
             }
 
-            $new_file_url = $upload_dir['url'] . '/' . $filename;
+            $new_file_url = $ ['url'] . '/' . $filename;
 
             file_put_contents( $file, $image_data );
 

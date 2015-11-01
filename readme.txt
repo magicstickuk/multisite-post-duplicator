@@ -62,6 +62,9 @@ Yes. However, you have to have the same custom fields defined in each of your si
 
 == Changelog ==
 
+= 0.5.2 =
+* Fixed issues with attached media files when duplicating a page that has aleady been duplicated
+
 = 0.5.1 =
 * Fixed site path showing incorrectly in new image url (cosmetic change to avoid confusion, both resolve to same location)
 
