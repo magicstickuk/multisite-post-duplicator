@@ -51,6 +51,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $title      = get_the_title($mdp_post);
     //Get the tags from the post we are copying
     $sourcetags = wp_get_post_tags( $mpd_process_info['source_id'], array( 'fields' => 'names' ) );
+    $source_id  = get_current_blog_id();
 
     //Format the prefix into the correct format if the user adds their own whitespace
     if($mpd_process_info['prefix'] != ''){
@@ -138,7 +139,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
         //Check that the users plugin settings actually want this process to happen
         if(isset($options['mdp_copy_content_images']) || !$options ){
             
-            mpd_process_post_media_attachements($post_id, $attached_images, $attached_images_alt_tags, $mpd_process_info['source_id'], $new_blog_id);
+            mpd_process_post_media_attachements($post_id, $attached_images, $attached_images_alt_tags, $source_id, $new_blog_id);
 
         }
 
