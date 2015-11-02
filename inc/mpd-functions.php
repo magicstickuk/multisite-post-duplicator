@@ -392,9 +392,15 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
  */
 function mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_blog_id, $new_file_url){
 
-
+        //Break the of the new image into segments
         $new_image_URL_with_EXT     = pathinfo($new_file_url);
+        //Just get the url without the filename extension...we are doing this because this will be the standard URL
+        //for all the thumbnails attached to this image and we can therefore change find and replace all the possible
+        //intermediate image sizes later down the line. See: https://codex.wordpress.org/Function_Reference/get_intermediate_image_sizes
         $new_image_URL_without_EXT  = $new_image_URL_with_EXT['dirname'] ."/". $new_image_URL_with_EXT['filename'];
+        //Do the find and replace for the site path
+        // ie   http://www.somesite.com/source_blog_path/uploads/10/10/file... will become
+        //      http://www.somesite.com/destination_blog_path/uploads/10/10/file...
         $new_image_URL_without_EXT  = str_replace(get_blog_details($source_id)->path, get_blog_details($new_blog_id)->path, $new_image_URL_without_EXT);
 
         return $new_image_URL_without_EXT;
