@@ -516,3 +516,28 @@ function mpd_plugin_admin_notices(){
 
 }
 
+/**
+ * Helper function to create setting field in mpd.
+ * 
+ * Uses 'add settings field'. See https://codex.wordpress.org/Function_Reference/add_settings_field
+ * 
+ * @since 0.6
+ * @param $tag string Unique name for settings field
+ * @param $settings_title string Title for the settings field in on the settings page. (accepts markup)
+ * @param $callback_function_to_markup string The name of the function to render setting markup
+ * 
+ * @return none
+ * 
+ */
+function mpd_settings_field($tag, $settings_title, $callback_function_to_markup, $args = null){
+
+  add_settings_field( 
+      $tag, 
+      __( $settings_title, MPD_DOMAIN ), 
+      $callback_function_to_markup,
+      MPD_SETTING_PAGE, 
+      MPD_SETTING_SECTION,
+      $args
+  );
+
+}

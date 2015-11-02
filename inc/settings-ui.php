@@ -47,13 +47,7 @@ function mdp_settings_init(  ) {
 		MPD_SETTING_PAGE
 	);
 
-	add_settings_field( 
-		'meta_box_show_radio', 
-		__( 'What Post Types you want to show the MPD Meta Box?', MPD_DOMAIN ), 
-		'meta_box_show_radio_render', 
-		MPD_SETTING_PAGE, 
-		MPD_SETTING_SECTION 
-	);
+	mpd_settings_field('meta_box_show_radio', __( 'What Post Types you want to show the MPD Meta Box?', MPD_DOMAIN ), 'meta_box_show_radio_render');
 
 	$mpd_post_types 		= get_post_types();
 	$loopcount 				= 1;
@@ -63,54 +57,27 @@ function mdp_settings_init(  ) {
 
 		if( !in_array( $mpd_post_type, $post_types_to_ignore ) ){
 
-			add_settings_field( 
-				'meta_box_post_type_selector_' . $mpd_post_type, 
-				$loopcount == 1 ? __("Select post types to show the MPD Meta Box on", MPD_DOMAIN ) : "" , 
-				'meta_box_post_type_selector_render', 
-				MPD_SETTING_PAGE, 
-				MPD_SETTING_SECTION,
-				array(
-					'mdpposttype' => $mpd_post_type
-				)
-			);
+			mpd_settings_field(
 
+					'meta_box_post_type_selector_' . $mpd_post_type,
+					$loopcount == 1 ? __("Select post types to show the MPD Meta Box on", MPD_DOMAIN ) : "",
+					'meta_box_post_type_selector_render',
+					array(
+						'mdpposttype' => $mpd_post_type
+					)
+
+			);
+			
 			$loopcount++;
 
 		}
 
 	}
 	
-	add_settings_field( 
-		'mdp_default_prefix', 
-		__( 'Default Prefix', MPD_DOMAIN ), 
-		'mdp_default_prefix_render', 
-		MPD_SETTING_PAGE, 
-		MPD_SETTING_SECTION 
-	);
-
-	add_settings_field( 
-		'mdp_default_tags_copy', 
-		__( 'Copy post tags when duplicating?', MPD_DOMAIN ), 
-		'mdp_default_tags_copy_render', 
-		MPD_SETTING_PAGE, 
-		MPD_SETTING_SECTION 
-	);
-
-	add_settings_field( 
-		'mdp_default_featured_image', 
-		__( 'Copy featured image when duplicating?', MPD_DOMAIN ), 
-		'mdp_default_feat_image_copy_render', 
-		MPD_SETTING_PAGE, 
-		MPD_SETTING_SECTION
-	);
-
-	add_settings_field( 
-		'mdp_copy_content_images', 
-		__( 'Copy post content images to destination media library?', MPD_DOMAIN ), 
-		'mdp_copy_content_image_render', 
-		MPD_SETTING_PAGE, 
-		MPD_SETTING_SECTION
-	);
+	mpd_settings_field('mdp_default_prefix', __( 'Default Prefix', MPD_DOMAIN ), 'mdp_default_prefix_render');
+	mpd_settings_field('mdp_default_tags_copy', __( 'Copy post tags when duplicating?', MPD_DOMAIN ), 'mdp_default_tags_copy_render');
+	mpd_settings_field('mdp_default_featured_image', __( 'Copy featured image when duplicating?', MPD_DOMAIN ), 'mdp_default_feat_image_copy_render');
+	mpd_settings_field('mdp_copy_content_images', __( 'Copy post content images to destination media library?', MPD_DOMAIN ), 'mdp_copy_content_image_render');
 
 	do_action( 'mdp_end_plugin_setting_page' );
 
@@ -234,7 +201,7 @@ function mdp_default_feat_image_copy_render(  ) {
 	?>
 	<input type='checkbox' name='mdp_settings[mdp_default_featured_image]' <?php mpd_checked_lookup($options, 'mdp_default_featured_image', 'feat') ;?> value='feat'>
 
-	<p class="mpdtip"><?php _e('This plugin will automatically copy any featured image associated with the post.You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
+	<p class="mpdtip"><?php _e('This plugin will automatically copy any featured image associated with the post. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
 	<?php
 
 }
