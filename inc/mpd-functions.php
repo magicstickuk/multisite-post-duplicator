@@ -481,7 +481,7 @@ function mpd_checked_lookup($options, $option_key, $option_value){
  */
 function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details){
 
-    $message = apply_filters('mpd_admin_notice_text', '<div class="updated"><p>'. __('You succesfully duplicated this post to','mpd') ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post','mpd').'</a></p></div>', $site_name, $site_url, $destination_blog_details);
+    $message = apply_filters('mpd_admin_notice_text', '<div class="updated"><p>'. __('You succesfully duplicated this post to', MPD_DOMAIN ) ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post', MPD_DOMAIN ).'</a></p></div>', $site_name, $site_url, $destination_blog_details);
 
     $option_value = get_option('mpd_admin_notice');
 

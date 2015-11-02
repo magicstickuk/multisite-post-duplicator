@@ -23,7 +23,7 @@ if ( is_multisite() ) {
  */
 function mdp_add_admin_menu(  ) { 
 
-	add_submenu_page( 'options-general.php', __('Multisite Post Duplicator Settings','mpd'), __('Multisite Post Duplicator Settings', 'mpd'), 'manage_options', 'multisite_post_duplicator', 'mdp_options_page' );
+	add_submenu_page( 'options-general.php', __('Multisite Post Duplicator Settings', MPD_DOMAIN ), __('Multisite Post Duplicator Settings', MPD_DOMAIN), 'manage_options', 'multisite_post_duplicator', 'mdp_options_page' );
 
 }
 /**
@@ -36,23 +36,23 @@ function mdp_add_admin_menu(  ) {
  */
 function mdp_settings_init(  ) { 
 
-	register_setting( 'mdp_plugin_setting_page', 'mdp_settings' );
+	register_setting( MPD_SETTING_PAGE, 'mdp_settings' );
 
 	do_action( 'mdp_start_plugin_setting_page' );
 
 	add_settings_section(
-		'mdp_mdp_plugin_setting_page_section', 
-		'<h2>'. __( 'Multisite Post Duplicator Settings Page' . '</h2>', 'mpd' ), 
+		MPD_SETTING_SECTION, 
+		'<h2>'. __( 'Multisite Post Duplicator Settings Page' . '</h2>', MPD_DOMAIN ), 
 		'mdp_settings_section_callback', 
-		'mdp_plugin_setting_page'
+		MPD_SETTING_PAGE
 	);
 
 	add_settings_field( 
 		'meta_box_show_radio', 
-		__( 'What Post Types you want to show the MPD Meta Box?', 'mpd' ), 
+		__( 'What Post Types you want to show the MPD Meta Box?', MPD_DOMAIN ), 
 		'meta_box_show_radio_render', 
-		'mdp_plugin_setting_page', 
-		'mdp_mdp_plugin_setting_page_section' 
+		MPD_SETTING_PAGE, 
+		MPD_SETTING_SECTION 
 	);
 
 	$mpd_post_types 		= get_post_types();
@@ -65,10 +65,10 @@ function mdp_settings_init(  ) {
 
 			add_settings_field( 
 				'meta_box_post_type_selector_' . $mpd_post_type, 
-				$loopcount == 1 ? __("Select post types to show the MPD Meta Box on", 'mpd') : "" , 
+				$loopcount == 1 ? __("Select post types to show the MPD Meta Box on", MPD_DOMAIN ) : "" , 
 				'meta_box_post_type_selector_render', 
-				'mdp_plugin_setting_page', 
-				'mdp_mdp_plugin_setting_page_section',
+				MPD_SETTING_PAGE, 
+				MPD_SETTING_SECTION,
 				array(
 					'mdpposttype' => $mpd_post_type
 				)
@@ -82,34 +82,34 @@ function mdp_settings_init(  ) {
 	
 	add_settings_field( 
 		'mdp_default_prefix', 
-		__( 'Default Prefix', 'mdp' ), 
+		__( 'Default Prefix', MPD_DOMAIN ), 
 		'mdp_default_prefix_render', 
-		'mdp_plugin_setting_page', 
-		'mdp_mdp_plugin_setting_page_section' 
+		MPD_SETTING_PAGE, 
+		MPD_SETTING_SECTION 
 	);
 
 	add_settings_field( 
 		'mdp_default_tags_copy', 
-		__( 'Copy post tags when duplicating?', 'mdp' ), 
+		__( 'Copy post tags when duplicating?', MPD_DOMAIN ), 
 		'mdp_default_tags_copy_render', 
-		'mdp_plugin_setting_page', 
-		'mdp_mdp_plugin_setting_page_section' 
+		MPD_SETTING_PAGE, 
+		MPD_SETTING_SECTION 
 	);
 
 	add_settings_field( 
 		'mdp_default_featured_image', 
-		__( 'Copy featured image when duplicating?', 'mdp' ), 
+		__( 'Copy featured image when duplicating?', MPD_DOMAIN ), 
 		'mdp_default_feat_image_copy_render', 
-		'mdp_plugin_setting_page', 
-		'mdp_mdp_plugin_setting_page_section' 
+		MPD_SETTING_PAGE, 
+		MPD_SETTING_SECTION
 	);
 
 	add_settings_field( 
 		'mdp_copy_content_images', 
-		__( 'Copy post content images to destination media library?', 'mdp' ), 
+		__( 'Copy post content images to destination media library?', MPD_DOMAIN ), 
 		'mdp_copy_content_image_render', 
-		'mdp_plugin_setting_page', 
-		'mdp_mdp_plugin_setting_page_section' 
+		MPD_SETTING_PAGE, 
+		MPD_SETTING_SECTION
 	);
 
 	do_action( 'mdp_end_plugin_setting_page' );
@@ -137,18 +137,18 @@ function meta_box_show_radio_render(){
 		<div class="mdp-inputcontainer">
 			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_all" <?php checked( $mdp_radio_label_value, 'all'); ?> value="all">
 		
-			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('All post types', 'mpd') ?></label>
+			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('All post types', MPD_DOMAIN ) ?></label>
 			    
 			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_some" <?php checked( $mdp_radio_label_value, 'some'); ?> value="some">
 		
-			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Some post types','mpd') ?></label>
+			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Some post types', MPD_DOMAIN ) ?></label>
 		
 			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_none" <?php checked( $mdp_radio_label_value, 'none'); ?> value="none">
 		
-			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('No post types','mpd') ?></label>
+			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('No post types', MPD_DOMAIN) ?></label>
 	    </div>
 
-	    <p class="mpdtip"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.') ?></p>
+	    <p class="mpdtip"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
 
     </div>
 	<?php
@@ -193,7 +193,7 @@ function mdp_default_prefix_render(  ) {
 	?>
 	<input type='text' name='mdp_settings[mdp_default_prefix]' value='<?php echo mpd_get_prefix(); ?>'>
 
-	<p class="mpdtip"><?php _e('Change the default prefix for your duplication across the network.')?></p>
+	<p class="mpdtip"><?php _e('Change the default prefix for your duplication across the network.', MPD_DOMAIN )?></p>
 	<?php
 
 }
@@ -213,7 +213,7 @@ function mdp_default_tags_copy_render(  ) {
 	?>
 	<input type='checkbox' name='mdp_settings[mdp_default_tags_copy]' <?php mpd_checked_lookup($options, 'mdp_default_tags_copy', 'tags') ;?> value='tags'> 
 
-	<p class="mpdtip"><?php _e('This plugin will automatically copy the tags associated with the post. You can turn off this activity by unchecking the box.')?></p>
+	<p class="mpdtip"><?php _e('This plugin will automatically copy the tags associated with the post. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
 
 	<?php
 
@@ -234,7 +234,7 @@ function mdp_default_feat_image_copy_render(  ) {
 	?>
 	<input type='checkbox' name='mdp_settings[mdp_default_featured_image]' <?php mpd_checked_lookup($options, 'mdp_default_featured_image', 'feat') ;?> value='feat'>
 
-	<p class="mpdtip"><?php _e('This plugin will automatically copy any featured image associated with the post.You can turn off this activity by unchecking the box.')?></p>
+	<p class="mpdtip"><?php _e('This plugin will automatically copy any featured image associated with the post.You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
 	<?php
 
 }
@@ -254,14 +254,14 @@ function mdp_copy_content_image_render(  ) {
 	?>
 	<input type='checkbox' name='mdp_settings[mdp_copy_content_images]' <?php mpd_checked_lookup($options, 'mdp_copy_content_images', 'content-image') ;?> value='content-image'>
 
-	<p class="mpdtip"><?php _e('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It will also change the urls in the duplicated post to reference the new media file. You can turn off this activity by unchecking the box')?></p>
+	<p class="mpdtip"><?php _e('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It will also change the urls in the duplicated post to reference the new media file. You can turn off this activity by unchecking the box', MPD_DOMAIN)?></p>
 	<?php
 
 }
 
 function mdp_settings_section_callback(  ) { 
 
-	_e( 'Here you can change the default settings for Multisite Post Duplicator. Note that these settings are used for every site in your network.', 'mdp' );
+	_e( 'Here you can change the default settings for Multisite Post Duplicator. Note that these settings are used for every site in your network.', MPD_DOMAIN );
 
 }
 
@@ -309,8 +309,8 @@ function mdp_options_page(  ) {
 	<form action='options.php' method='post'>
 		
 		<?php
-		settings_fields( 'mdp_plugin_setting_page' );
-		do_settings_sections( 'mdp_plugin_setting_page' );
+		settings_fields( MPD_SETTING_PAGE );
+		do_settings_sections( MPD_SETTING_PAGE );
 		submit_button();
 		?>
 		

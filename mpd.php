@@ -9,6 +9,10 @@ Author: 		Mario Jaconelli
 Author URI:  	http://www.wpmaz.uk
 */
 
+define('MPD_SETTING_PAGE', 'mpd_sp');
+define('MPD_SETTING_SECTION', 'mpd_sps');
+define('MPD_DOMAIN', 'mpd');
+
 include('inc/mpd-functions.php');
 include('inc/load-scripts.php');
 include('inc/postform_ui.php');
@@ -16,6 +20,7 @@ include('inc/admin-ui.php');
 include('inc/settings-ui.php');
 include('inc/core.php');
 include('addons/bulkaction-mpd-addon.php');
+
 
 /**
  * 
@@ -82,7 +87,7 @@ function mdp_get_default_options(){
 
 	$mdp_default_options = array(
 
-		'mdp_default_prefix' 			=> __('Copy of'),
+		'mdp_default_prefix' 			=> __('Copy of', MPD_DOMAIN ),
 		'mdp_default_tags_copy' 		=> 'tags',
 		'mdp_default_featured_image' 	=> 'feat',
 		'mdp_copy_content_images' 		=> 'content-image',
