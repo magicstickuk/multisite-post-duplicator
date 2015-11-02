@@ -164,7 +164,6 @@ function mpd_get_featured_image_from_source($post_id){
 
         );
 
-
         $image_details = apply_filters( 'mpd_featured_image', $image_details );
 
         return $image_details;
@@ -201,9 +200,8 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
 
     file_put_contents( $file, $image_data );
 
-    $wp_filetype = wp_check_filetype( $filename, null );
-
-    $new_file_url = $upload_dir['url'] . '/' . $filename;
+    $wp_filetype    = wp_check_filetype( $filename, null );
+    $new_file_url   = $upload_dir['url'] . '/' . $filename;
 
     $attachment = array(
 
@@ -258,26 +256,30 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
  * 
  */
 function mpd_get_images_from_the_content($post_id){
-
-    $html = get_post_field( 'post_content', $post_id);
-
-    $doc = new DOMDocument();
+    
+    //Collect the sourse content
+    $html   = get_post_field( 'post_content', $post_id);
+    $doc    = new DOMDocument();
+    
     @$doc->loadHTML($html);
-
-    $tags = $doc->getElementsByTagName('img');
+    //Now just focus on the image(s) within that post content
+    $tags   = $doc->getElementsByTagName('img');
     
     if($tags){
 
         $images_objects_from_post = array();
 
         foreach ($tags as $tag) {
-
+            //For all the images in that content get the class attribute and get the specific class
+            //that WordPress adds to an image that indicates its ID.
             preg_match("/(?<=wp-image-)\d+/", $tag->getAttribute('class'),$matches);
+            //Get the post object for the collected ID
             $image_obj = get_post($matches[0]);
+            //Push this object into an array.
             $images_objects_from_post[$matches[0]] = $image_obj;
 
         }
-
+        //Deliver the array of attachement objects to the core
         return $images_objects_from_post;
     }
     
