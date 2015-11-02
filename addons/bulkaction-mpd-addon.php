@@ -76,28 +76,30 @@ function mpd_bulk_action() {
           
 
       }
-
       add_action('admin_notices', 'mpd_bulk_admin_notices');
-      $blog_details = get_blog_details($get_site[0]);
-      // build the redirect url
-      $sendback = add_query_arg(array('duplicated' => count($results), 'destination' => $blog_details->blogname));
+      $countBatch = count($results);
+      $destination_name = get_blog_details($get_site[0])->blogname;
+      $notice = '<div class="updated"><p>'. __('You succesfully duplicated $countBatch post to', MPD_DOMAIN ) ." ". $destination_name;
+      update_option('mpd_admin_bulk_notice', $notice );
 
-      wp_redirect($sendback);
-
-      exit();
   }
  
 }
  
 function mpd_bulk_admin_notices() {
  
-  // global $post_type, $pagenow;
- 
-  // if(isset($_REQUEST['duplicated']) && $_REQUEST['destination']) {
-    
-  //   $message = '<div class="updated"><p>'. __('You succesfully duplicated $_REQUEST["duplicated"] post to', MPD_DOMAIN ) ." ". $_REQUEST['destination'];
+  global $pagenow;
 
-  // }
+  
+    if($notices= get_option('mpd_admin_bulk_notice')){
+
+         echo $notices;
+
+    }
+
+    //delete_option('mpd_admin_bulk_notice');
+
+  
 
 }
 

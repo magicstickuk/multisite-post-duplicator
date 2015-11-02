@@ -98,7 +98,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     }
 
     //Hook for actions just before we switch to the destination blog to start processing our collected data
-    do_action('mpd_during_core_in_source', $mdp_post, $attached_images, $attached_images_alt_tags);
+    do_action('mpd_during_core_in_source', $mdp_post, $attached_images, $attached_images_alt_tags = null);
     //Tell WordPress to work in the destination site
     switch_to_blog($mpd_process_info['destination_id']);
     //Make the new post
@@ -114,7 +114,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     }
 
-    do_action('mpd_during_core_in_destination', $post_id, $mdp_post, $attached_images, $attached_images_alt_tags );
+    do_action('mpd_during_core_in_destination', $post_id, $mdp_post, $attached_images, $attached_images_alt_tags = null);
     //Copy the meta data collected from the sourse post to the new post
   	foreach ($meta_values as $key => $values) {
 
