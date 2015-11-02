@@ -121,7 +121,7 @@ function mpd_get_prefix(){
 
       $options          = get_option( 'mdp_settings' );
       $defaultOptions   = mdp_get_default_options();
-      $prefix   = $options['mdp_default_prefix'] ? $options['mdp_default_prefix'] : $defaultOptions['mdp_default_prefix'];
+      $prefix           = $options['mdp_default_prefix'] ? $options['mdp_default_prefix'] : $defaultOptions['mdp_default_prefix'];
 
       return $prefix;
       
