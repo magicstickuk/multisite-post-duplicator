@@ -73,13 +73,14 @@ function mpd_bulk_action() {
 
           );
 
-          
-
       }
-      add_action('admin_notices', 'mpd_bulk_admin_notices');
-      $countBatch = count($results);
-      $destination_name = get_blog_details($get_site[0])->blogname;
-      $notice = '<div class="updated"><p>'. __('You succesfully duplicated $countBatch post to', MPD_DOMAIN ) ." ". $destination_name;
+      
+      $countBatch           = count($results);
+      $destination_name     = get_blog_details($get_site[0])->blogname;
+      $destination_edit_url = get_admin_url( $get_site[0], 'edit.php?post_type='.$_REQUEST['post_type']);
+      $the_ess              = $countBatch != 1 ? 'posts have' : 'post has';
+      $notice               = '<div class="updated"><p>'.$countBatch. " " . $the_ess . " " . __('been duplicated to', MPD_DOMAIN ) ." '<a href='".$destination_edit_url."'>". $destination_name ."'</a></p></div>";
+
       update_option('mpd_admin_bulk_notice', $notice );
 
   }
@@ -89,27 +90,29 @@ function mpd_bulk_action() {
 function mpd_bulk_admin_notices() {
  
   global $pagenow;
-
   
-    if($notices= get_option('mpd_admin_bulk_notice')){
+  if($pagenow == 'edit.php'){
+       
+        if($notices = get_option('mpd_admin_bulk_notice')){
 
-         echo $notices;
+              echo $notices;
 
-    }
+              delete_option('mpd_admin_bulk_notice');
 
-    //delete_option('mpd_admin_bulk_notice');
-
-  
+        }
+  }
 
 }
 
-add_action( 'mdp_end_plugin_setting_page', 'add_bulk_settings');
+add_action('admin_notices', 'mpd_bulk_admin_notices');
 
 function add_bulk_settings(){
 
     mpd_settings_field('add_bulk_settings', __( 'Allow batch duplication?', MPD_DOMAIN ), 'mdp_default_batch_render');
      
 }
+
+add_action( 'mdp_end_plugin_setting_page', 'add_bulk_settings');
 
 function mdp_default_batch_render(){
 

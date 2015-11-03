@@ -53,7 +53,7 @@ function mpd_get_some_postypes_to_show_options(){
     $post_types_to_ignore   = mpd_get_post_types_to_ignore();
 
 	foreach ($options as $key => $value) {
-
+        //Find all the options in the options array that refer to post type display and assign them to a new key => value array
         if (substr($key, 0, 28) == "meta_box_post_type_selector_" && !in_array($value, $post_types_to_ignore)) {
 
             $post_types[] = $value;
@@ -184,10 +184,14 @@ function mpd_get_featured_image_from_source($post_id){
  */
 function mpd_set_featured_image_to_destination($destination_id, $image_details){
 
+    // Get the upload directory for the current site
     $upload_dir = wp_upload_dir();
+    // Get all the data inside a file and attach it to a variable
     $image_data = file_get_contents($image_details['url']);
+    // Get the file name of the source file
     $filename   = apply_filters('mpd_featured_image_filename', basename($image_details['url']), $image_details);
 
+    // Make the path to the desired path to the new file we are about to create
     if( wp_mkdir_p( $upload_dir['path'] ) ) {
 
         $file = $upload_dir['path'] . '/' . $filename;
@@ -198,11 +202,15 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
 
     }
 
+    // Add the file contents to the new path with the new filename
     file_put_contents( $file, $image_data );
 
+    // Get the mime type of the new file extension
     $wp_filetype    = wp_check_filetype( $filename, null );
+    // Get the URL (not the URI) of the new file
     $new_file_url   = $upload_dir['url'] . '/' . $filename;
 
+    // Create the database information for this new image
     $attachment = array(
 
         'post_mime_type' => $wp_filetype['type'],
@@ -215,17 +223,17 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
 
     );
 
-    // Create the attachment
+    // Attach the new file and its information to the database
     $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
 
-    // Add any alt text;
+    // Add alt text from the destination image
     if($image_details['alt']){
 
          update_post_meta($attach_id,'_wp_attachment_image_alt', $image_details['alt']);
 
     }
    
-    // Include image.php
+    // Include code to process functions below:
     require_once(ABSPATH . 'wp-admin/includes/image.php');
 
     // Define attachment metadata
@@ -301,19 +309,32 @@ function mpd_get_images_from_the_content($post_id){
  */
 function mpd_process_post_media_attachements($destination_id, $post_media_attachments, $attached_images_alt_tags, $source_id, $new_blog_id ){
 
+   // Variable to return the count of images we have process and also to patch the source keys with the desitination keys
    $image_count = 0;
+   // Get array of the ids of the sourse images pulled from the sourse content
    $old_image_ids = array_keys($post_media_attachments);
 
+   //Do stuff with each image from the sourse post content
    foreach ($post_media_attachments as $post_media_attachment) {
 
+        // Get all the data inside a file and attach it to a variable
         $image_data             = file_get_contents($post_media_attachment->guid);
+        // Break up the sourse URL into targetable sections
         $image_URL_info         = pathinfo($post_media_attachment->guid);
+        //Just get the url without the filename extension...we are doing this because this will be the standard URL
+        //for all the thumbnails attached to this image and we can therefore 'find and replace' all the possible
+        //intermediate image sizes later down the line. See: https://codex.wordpress.org/Function_Reference/get_intermediate_image_sizes
         $image_URL_without_EXT  = $image_URL_info['dirname'] ."/". $image_URL_info['filename'];
+        //Do the find and replace for the site path
+        // ie   http://www.somesite.com/source_blog_path/uploads/10/10/file... will become
+        //      http://www.somesite.com/destination_blog_path/uploads/10/10/file...
         $image_URL_without_EXT  = str_replace(get_blog_details($new_blog_id)->path, get_blog_details($source_id)->path, $image_URL_without_EXT);
+
         $filename               = basename($post_media_attachment->guid);
 
+        // Get the upload directory for the current site
         $upload_dir = wp_upload_dir();
-
+        // Make the path to the desired path to the new file we are about to create
         if( wp_mkdir_p( $upload_dir['path'] ) ) {
 
             $file = $upload_dir['path'] . '/' . $filename;
@@ -324,10 +345,11 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
 
         }
 
+        // Get the URL (not the URI) of the new file
         $new_file_url = $upload_dir['url'] . '/' . $filename;
-
+        // Add the file contents to the new path with the new filename
         file_put_contents( $file, $image_data );
-
+        // Get the mime type of the new file extension
         $wp_filetype = wp_check_filetype( $filename, null );
 
         $attachment = apply_filters('mpd_post_media_attachments', array(
@@ -343,18 +365,17 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
 
         ), $post_media_attachment);
 
-        // Create the attachment
+        // Attach the new file and its information to the database
         $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
 
-
-        //Add any alt text;
+        // Add alt text from the destination image
         if($attached_images_alt_tags){
 
               update_post_meta($attach_id,'_wp_attachment_image_alt', $attached_images_alt_tags[$image_count]);
 
         }
        
-        // Include image.php
+        // Include code to process functions below:
         require_once(ABSPATH . 'wp-admin/includes/image.php');
 
         // Define attachment metadata
@@ -363,8 +384,9 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
         // Assign metadata to attachment
         wp_update_attachment_metadata( $attach_id, $attach_data );
 
+        // Now that we have all the data for the newly created file and its post we need to manimulate the old content so that
+        // it now reflects the destination post
         $new_image_URL_without_EXT  = mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_blog_id, $new_file_url);
-
         $old_content                = get_post_field('post_content', $destination_id);
         $middle_content             = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT, $old_content);
         $update_content             = str_replace('wp-image-'. $old_image_ids[$image_count], 'wp-image-' . $attach_id, $middle_content);
@@ -378,6 +400,7 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
 
         $image_count++;
    }
+
 }
 
 
@@ -395,7 +418,7 @@ function mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_bl
         //Break the of the new image into segments
         $new_image_URL_with_EXT     = pathinfo($new_file_url);
         //Just get the url without the filename extension...we are doing this because this will be the standard URL
-        //for all the thumbnails attached to this image and we can therefore change find and replace all the possible
+        //for all the thumbnails attached to this image and we can therefore 'find and replace' all the possible
         //intermediate image sizes later down the line. See: https://codex.wordpress.org/Function_Reference/get_intermediate_image_sizes
         $new_image_URL_without_EXT  = $new_image_URL_with_EXT['dirname'] ."/". $new_image_URL_with_EXT['filename'];
         //Do the find and replace for the site path
@@ -512,12 +535,13 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
  */
 function mpd_plugin_admin_notices(){
 
+    // If there is a notice in the database display it.
     if($notices= get_option('mpd_admin_notice')){
 
          echo $notices;
 
     }
-
+    // Now that we know the notice has been displayed we can delete its database entry
     delete_option('mpd_admin_notice');
 
 }
