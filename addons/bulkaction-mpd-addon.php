@@ -1,17 +1,27 @@
 <?php
 
-add_action('admin_footer-edit.php', 'mpd_bulk_admin_script');
- 
+
+
+function mpd_bulk_add_default_option($mdp_default_options){
+
+    $mdp_default_options['add_bulk_settings'] = 'allow-batch';
+
+    return $mdp_default_options;
+}
+
+add_filter('mdp_default_options', 'mpd_bulk_add_default_option');
+
 function mpd_bulk_admin_script() {
 
     if( is_multisite() ){
 
-        $args     = array('network_id' => null);
-        $sites    = wp_get_sites($args);
-        $options  = get_option( 'mdp_settings' );
+        $defaultoptions = mdp_get_default_options();
+        $args           = array('network_id' => null);
+        $sites          = wp_get_sites($args);
+        $options        = get_option( 'mdp_settings' );
 
       
-        if(isset($options['add_bulk_settings']) || !$options ) : ?>
+        if(isset($options['add_bulk_settings']) || ($defaultoptions['add_bulk_settings'] == 'allow-batch') && !$options) : ?>
 
             <script type="text/javascript">
 
@@ -43,7 +53,7 @@ function mpd_bulk_admin_script() {
     
 }
 
-add_action('load-edit.php', 'mpd_bulk_action');
+add_action('admin_footer-edit.php', 'mpd_bulk_admin_script');
  
 function mpd_bulk_action() {
  
@@ -86,6 +96,8 @@ function mpd_bulk_action() {
   }
  
 }
+
+add_action('load-edit.php', 'mpd_bulk_action');
  
 function mpd_bulk_admin_notices() {
  

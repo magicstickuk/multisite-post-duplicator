@@ -119,9 +119,16 @@ function mpd_get_postype_decision_from_options(){
 */
 function mpd_get_prefix(){
 
-      $options          = get_option( 'mdp_settings' );
-      $defaultOptions   = mdp_get_default_options();
-      $prefix           = $options['mdp_default_prefix'] ? $options['mdp_default_prefix'] : $defaultOptions['mdp_default_prefix'];
+      if($options = get_option( 'mdp_settings' )){
+
+            $prefix = $options['mdp_default_prefix'];
+
+      }else{
+            
+            $defaultOptions   = mdp_get_default_options();
+            $prefix           = $defaultOptions['mdp_default_prefix'];
+            
+      }
 
       return $prefix;
       
