@@ -1,7 +1,7 @@
 <?php
 /**
  * 
- * This file is a collection all functions that are referred to other files
+ * This file is a collection all functions that are referred to in other files
  * @since 0.1
  * @author Mario Jaconelli <mariojaconelli@gmail.com>
  * 
@@ -306,15 +306,16 @@ function mpd_get_images_from_the_content($post_id){
  * the core function.
  * 
  * @since 0.5
- * @param int $destination_id The ID of the bog we are copying the media to
+ * @param int $destination_id The ID of the post we are copying the media to
  * @param array $post_media_attachments array of media library ids to copy. Probably generated from mpd_get_images_from_the_content()
  * @param array $attached_images_alt_tags array of alt tags associated with the images in $post_media_attachments array. Mirrors the array order for association.
  * Probably generated from mpd_get_image_alt_tags()
  * @param int $source_id The id of the blog these images are being copied from.
+ * @param int $new_blog_id The id of the blog these images are going to.
  * @return null
  * 
  */
-function mpd_process_post_media_attachements($destination_id, $post_media_attachments, $attached_images_alt_tags, $source_id, $new_blog_id ){
+function mpd_process_post_media_attachements($destination_post_id, $post_media_attachments, $attached_images_alt_tags, $source_id, $new_blog_id ){
 
    // Variable to return the count of images we have process and also to patch the source keys with the desitination keys
    $image_count = 0;
@@ -373,7 +374,7 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
         ), $post_media_attachment);
 
         // Attach the new file and its information to the database
-        $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
+        $attach_id = wp_insert_attachment( $attachment, $file, $destination_post_id );
 
         // Add alt text from the destination image
         if($attached_images_alt_tags){
@@ -394,12 +395,12 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
         // Now that we have all the data for the newly created file and its post we need to manimulate the old content so that
         // it now reflects the destination post
         $new_image_URL_without_EXT  = mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_blog_id, $new_file_url);
-        $old_content                = get_post_field('post_content', $destination_id);
+        $old_content                = get_post_field('post_content', $destination_post_id);
         $middle_content             = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT, $old_content);
         $update_content             = str_replace('wp-image-'. $old_image_ids[$image_count], 'wp-image-' . $attach_id, $middle_content);
 
         $post_update = array(
-            'ID'           => $destination_id,
+            'ID'           => $destination_post_id,
             'post_content' => $update_content       
         );
 
@@ -412,11 +413,14 @@ function mpd_process_post_media_attachements($destination_id, $post_media_attach
 
 
 /**
- * This function is to generate the image URL from the newly created media libray object for use in the core functions 'find and replace' action
+ * This function is to generate the image URL from the newly created media libray object for use in the core 
+ * functions 'find and replace' action
  * 
  * @since 0.5
  * @param int $attach_id The id or the new image
  * @param int $source_id The id of the blog the image has come from
+ * @param int $new_blog_id The id of the blog the image is going to
+ * @param string $new_file_url The previosly generated URL for the new image
  * @return string
  * 
  */

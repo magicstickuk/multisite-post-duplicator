@@ -1,15 +1,32 @@
 <?php
-
+/**
+ * MPD Addon: Batch Duplication
+ * 
+ * This MPD addon allows you to batch-duplicate your pages within the post list page in WordPress
+ * 
+ * @since 0.6
+ * @author Mario Jaconelli <mariojaconelli@gmail.com>
+ * 
+ */
 
 
 function mpd_bulk_add_default_option($mdp_default_options){
 
-    $mdp_default_options['add_bulk_settings'] = 'allow-batch';
+  $mdp_default_options['add_bulk_settings'] = 'allow-batch';
 
-    return $mdp_default_options;
+  return $mdp_default_options;
+
 }
-
 add_filter('mdp_default_options', 'mpd_bulk_add_default_option');
+
+function addon_mpd_bulk_setting_activation($options){
+
+  $options['add_bulk_settings']    = 'allow-batch';
+
+  return $options;
+
+}
+add_filter('mpd_activation_options', 'addon_mpd_bulk_setting_activation');
 
 function mpd_bulk_admin_script() {
 
@@ -21,8 +38,8 @@ function mpd_bulk_admin_script() {
         $options        = get_option( 'mdp_settings' );
 
       
-        if(isset($options['add_bulk_settings']) || ($defaultoptions['add_bulk_settings'] == 'allow-batch') && !$options) : ?>
-
+        if(isset($options['add_bulk_settings']) || ($defaultoptions['add_bulk_settings'] == 'allow-batch' && !$options)){
+          ?>
             <script type="text/javascript">
 
               jQuery(document).ready(function() {
@@ -43,11 +60,8 @@ function mpd_bulk_admin_script() {
               });
 
             </script>
-
-        <?php endif; ?>
-        
-
-      <?php 
+        <?php
+        }
 
     }
     
@@ -110,6 +124,7 @@ function mpd_bulk_admin_notices() {
               echo $notices;
 
               delete_option('mpd_admin_bulk_notice');
+              delete_option('mpd_admin_notice');
 
         }
   }

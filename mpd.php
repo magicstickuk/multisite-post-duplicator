@@ -59,9 +59,12 @@ function mdp_plugin_activate() {
 		   	
 		   		//Add default option for exsisting users with new checkboxes
 		   		$options = get_option( 'mdp_settings' );
+
 		   		$options['mdp_copy_content_images'] 		= 'content-image';
 		   		$options['mdp_default_tags_copy'] 			= 'tags';
 		   		$options['mdp_default_featured_image']		= 'feat';
+
+		   		$options = apply_filters('mpd_activation_options', $options);
 
 		   		update_option( 'mdp_settings', $options);
 
@@ -77,7 +80,7 @@ register_activation_hook( __FILE__, 'mdp_plugin_activate' );
 
 /**
  * 
- * Static function to allow MDP to be referenced globally
+ * Static function to allow MDP default options to be referenced globally
  * 
  * @since 0.5
  * @return array
