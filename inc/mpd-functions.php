@@ -401,7 +401,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
 
         $post_update = array(
             'ID'           => $destination_post_id,
-            'post_content' => $update_content       
+            'post_content' => $update_content . "<br>" . "image_URL_without_EXT before:". $image_URL_info['dirname'] ."/". $image_URL_info['filename'] . "<br>image_URL_without_EXT after" .  $image_URL_without_EXT   
         );
 
         wp_update_post( $post_update );
