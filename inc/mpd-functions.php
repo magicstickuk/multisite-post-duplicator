@@ -225,8 +225,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
         'post_content'   => $image_details['description'],
         'post_status'    => 'inherit',
         'post_excerpt'   => $image_details['caption'],
-        'post_name'      => $image_details['post_name'],
-        //'guid'           => $new_file_url
+        'post_name'      => $image_details['post_name']
 
     );
 
@@ -336,20 +335,9 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
         //Do the find and replace for the site path
         // ie   http://www.somesite.com/source_blog_path/uploads/10/10/file... will become
         //      http://www.somesite.com/destination_blog_path/uploads/10/10/file...
-
-        //http://localhost/basicwp/site3/wp-content/uploads/sites/3/2015/11/IMG_4341
-       // http://localhost/basicwp/wp-content/uploads/sites/3/2015/11/IMG_4341
-
-        $triggered = "no";
-        if(network_site_url() == get_blog_details($new_blog_id)->siteurl . "/"){
-          
-        }else{
-           $image_URL_without_EXT  = str_replace(get_blog_details($new_blog_id)->siteurl, get_blog_details($source_id)->siteurl, $image_URL_without_EXT); 
-        }
         
+        $image_URL_without_EXT  = str_replace(get_blog_details($new_blog_id)->siteurl, get_blog_details($source_id)->siteurl, $image_URL_without_EXT); 
         
-        
-
         $filename               = basename($post_media_attachment->guid);
 
         // Get the upload directory for the current site
@@ -363,16 +351,11 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
 
             $file = $upload_dir['basedir'] . '/' . $filename;
 
-
         }
-
 
         // Get the URL (not the URI) of the new file
-        $new_file_url = $upload_dir['url'] . '/' . $filename;
-        //http://localhost/basicwp/site3/wp-content/uploads/2015/11/IMG_3300
-        if(network_site_url() == get_blog_details($new_blog_id)->siteurl . "/"){
-            $new_file_url = str_replace(get_blog_details($source_id)->siteurl, get_blog_details($new_blog_id)->siteurl, $new_file_url);
-        }
+        $new_file_url = $upload_dir['url'] . '/' . $filename;$new_file_url = str_replace(get_blog_details($source_id)->siteurl, get_blog_details($new_blog_id)->siteurl, $new_file_url);
+        
         // Add the file contents to the new path with the new filename
         file_put_contents( $file, $image_data );
         // Get the mime type of the new file extension
@@ -419,17 +402,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
 
         $post_update = array(
             'ID'           => $destination_post_id,
-            'post_content' => $update_content . " " . "<br> Source:" . $image_URL_info['dirname'] ."/". $image_URL_info['filename']
-                                                    . "<br> Find:" . get_blog_details($source_id)->siteurl
-                                                    . "<br> Replace:" . get_blog_details($new_blog_id)->siteurl
-                                                    . "<br> New file" 
-                                                    . "<br> Source:" . $new_file_url
-                                                    . "<br> Find:" . get_blog_details($source_id)->path
-                                                    . "<br> Replace:" . get_blog_details($new_blog_id)->path
-                                                    . "<br> <h2>New file</h2>" 
-                                                    . "<br> Source:" . $old_content . "<br>"
-                                                    . "<br> Find:" . $image_URL_without_EXT
-                                                    . "<br> Replace:" . $new_image_URL_without_EXT
+            'post_content' => $update_content
         );          
 
         wp_update_post( $post_update );
@@ -463,13 +436,11 @@ function mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_bl
         //Do the find and replace for the site path
         // ie   http://www.somesite.com/source_blog_path/uploads/10/10/file... will become
         //      http://www.somesite.com/destination_blog_path/uploads/10/10/file...
-        if(network_site_url() == get_blog_details($new_blog_id)->siteurl . "/"){
-          $new_image_URL_without_EXT  = str_replace(get_blog_details($source_id)->siteurl, get_blog_details($new_blog_id)->siteurl, $new_image_URL_without_EXT);
-        }else{
+        // This step is not required if the sourse site is the network main site
+        if(network_site_url() != get_blog_details($source_id)->siteurl . "/"){
             $new_image_URL_without_EXT  = str_replace(get_blog_details($source_id)->siteurl, get_blog_details($new_blog_id)->siteurl, $new_image_URL_without_EXT);
         }
         
-
         return $new_image_URL_without_EXT;
         
 }
