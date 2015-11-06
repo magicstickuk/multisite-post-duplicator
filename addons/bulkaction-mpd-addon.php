@@ -36,10 +36,12 @@ function mpd_bulk_admin_script() {
         $args           = array('network_id' => null);
         $sites          = wp_get_sites($args);
         $options        = get_option( 'mdp_settings' );
-
+        $post_status    = isset($_REQUEST["post_status"]) ? $_REQUEST["post_status"] : null;
       
-        if(isset($options['add_bulk_settings']) || ($defaultoptions['add_bulk_settings'] == 'allow-batch' && !$options)){
-          ?>
+        if(isset($options['add_bulk_settings']) || ($defaultoptions['add_bulk_settings'] == 'allow-batch' && !$options)){ ?>
+
+          <?php if(!$post_status): ?>
+
             <script type="text/javascript">
 
               jQuery(document).ready(function() {
@@ -58,8 +60,11 @@ function mpd_bulk_admin_script() {
                   <?php endforeach; ?>
 
               });
-
+              
             </script>
+
+          <?php endif; ?>
+
         <?php
         }
 
