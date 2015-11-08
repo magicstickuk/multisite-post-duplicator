@@ -21,6 +21,7 @@ include('inc/admin-ui.php');
 include('inc/settings-ui.php');
 include('inc/core.php');
 include('addons/bulkaction-mpd-addon.php');
+include('addons/restrictSites-mpd-addon.php');
 
 /**
  * 
@@ -34,8 +35,7 @@ function mdp_plugin_activate() {
    $type_of_activation 	= mpd_do_version_log();
    $mdp_default_options = mdp_get_default_options();
 
-   $args           = array('network_id' => null);
-   $sites          = wp_get_sites($args);
+   $sites          		= mpd_wp_get_sites();
 
    foreach ($sites as $site) {
    		
@@ -63,6 +63,7 @@ function mdp_plugin_activate() {
 		   		$options['mdp_copy_content_images'] 		= 'content-image';
 		   		$options['mdp_default_tags_copy'] 			= 'tags';
 		   		$options['mdp_default_featured_image']		= 'feat';
+		   		$options['restrict_option_setting']			= 'none';
 
 		   		$options = apply_filters('mpd_activation_options', $options);
 

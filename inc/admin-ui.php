@@ -218,8 +218,7 @@ add_action( 'wp_ajax_mdp_get_posts', 'mdp_get_posts_for_type');
 
 function mdp_get_site_on_network(){
 
-	$args 	= array('network_id' => null);
-	$sites 	= wp_get_sites($args);
+	$sites 	= mpd_wp_get_sites();
 
 	ob_start()?>
 

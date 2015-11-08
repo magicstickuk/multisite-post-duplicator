@@ -112,7 +112,7 @@ function meta_box_show_radio_render(){
 		
 			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_none" <?php checked( $mdp_radio_label_value, 'none'); ?> value="none">
 		
-			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('No post types', MPD_DOMAIN) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('No post types', MPD_DOMAIN) ?></label>
 	    </div>
 
 	    <p class="mpdtip"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
@@ -254,8 +254,7 @@ add_action( 'update_option_mdp_settings', 'mpd_globalise_settings', 10, 2 );
 function mpd_globalise_settings(){
     
     $options 	= get_option( 'mdp_settings' );
-    $args 		= array('network_id' => null);
-	$sites 		= wp_get_sites($args);
+    $sites 		= mpd_wp_get_sites();
 
 	foreach ($sites as $site) {
 

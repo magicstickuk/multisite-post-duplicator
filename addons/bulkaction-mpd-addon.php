@@ -9,10 +9,6 @@
  * @author Mario Jaconelli <mariojaconelli@gmail.com>
  * 
  */
-$addon_headers = get_file_data( __FILE__, array('MPD Addon'), $context = '' ) ;
-if ( ! defined( 'MPD_PLUGIN' ) ){
-  exit('You need <a href="https://wordpress.org/plugins/multisite-post-duplicator/">Multisite Post Duplicator</a> installed to run its addon "' . $addon_headers[0] .'"');
-}
 
 /**
  * @ignore
@@ -46,8 +42,7 @@ function mpd_bulk_admin_script() {
     if( is_multisite() ){
 
         $defaultoptions = mdp_get_default_options();
-        $args           = array('network_id' => null);
-        $sites          = wp_get_sites($args);
+        $sites          = mpd_wp_get_sites();
         $options        = get_option( 'mdp_settings' );
         $post_status    = isset($_REQUEST["post_status"]) ? $_REQUEST["post_status"] : null;
       
@@ -177,7 +172,7 @@ function mdp_default_batch_render(){
   ?>
   <input type='checkbox' name='mdp_settings[add_bulk_settings]' <?php mpd_checked_lookup($options, 'add_bulk_settings', 'allow-batch') ;?> value='allow-batch'>
 
-  <p class="mpdtip"><?php _e('Having this option checked will allow you to duplicate muliple page att a time via the batch processing options on the WordPress post list page', MPD_DOMAIN)?></p>
+  <p class="mpdtip"><?php _e('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page', MPD_DOMAIN)?></p>
   <?php
 
 }

@@ -491,14 +491,21 @@ function mpd_get_image_alt_tags($post_media_attachments){
  * @return string The markup to be added to the checkbox
  * 
  */
-function mpd_checked_lookup($options, $option_key, $option_value){
+function mpd_checked_lookup($options, $option_key, $option_value, $type = null){
 
     if(isset($options[$option_key])){
+        if($type=='select'){
+
+            $checkedLookup = selected( $options[$option_key], $option_value, false);
+
+        }
 
         $checkedLookup = checked( $options[$option_key], $option_value, false);
 
     }elseif(!$options){
-
+        if($type=='select'){
+            $checkedLookup = 'selected="selected"';
+        }
         $checkedLookup = 'checked="checked"';
 
     }else{
@@ -571,7 +578,7 @@ function mpd_plugin_admin_notices(){
  * @param $tag string Unique name for settings field
  * @param $settings_title string Title for the settings field in on the settings page. (accepts markup)
  * @param $callback_function_to_markup string The name of the function to render setting markup
- * @param $args string Any arguments you want topass to the function
+ * @param $args string Any arguments you want to pass to the function
  * 
  * @return none
  * 
@@ -586,5 +593,26 @@ function mpd_settings_field($tag, $settings_title, $callback_function_to_markup,
       MPD_SETTING_SECTION,
       $args
   );
+
+}
+
+/**
+ * This function allows for hooking into the sites returned in the WP core wp_get_sites() function.
+ * 
+ * Uses 'add settings field'. See https://codex.wordpress.org/Function_Reference/add_settings_field
+ * 
+ * @since 0.6
+ * 
+ * @return array A (filtered?) array of all the sites on the network, 
+ * 
+ */
+function mpd_wp_get_sites(){
+
+   $args           = array('network_id' => null);
+   $sites          = wp_get_sites($args);
+
+   $filtered_sites = apply_filters('mpd_global_filter_sites', $sites);
+
+   return $filtered_sites;
 
 }
