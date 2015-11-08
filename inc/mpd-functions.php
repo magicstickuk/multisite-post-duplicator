@@ -467,10 +467,10 @@ function mpd_get_image_alt_tags($post_media_attachments){
 
             $alt_tag = get_post_meta($post_media_attachment->ID, '_wp_attachment_image_alt', true);
 
-            if($alt_tag){
-                $alt_tags_to_be_copied[$attachement_count] = $alt_tag;
-                $attachement_count++;
-            }
+            $alt_tags_to_be_copied[$attachement_count] = $alt_tag;
+            
+            $attachement_count++;
+            
 
         }
 

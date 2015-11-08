@@ -99,7 +99,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     }
 
     //Hook for actions just before we switch to the destination blog to start processing our collected data
-    do_action('mpd_during_core_in_source', $mdp_post, $attached_images, $attached_images_alt_tags = null);
+    do_action('mpd_during_core_in_source', $mdp_post, $attached_images);
     
 
 
