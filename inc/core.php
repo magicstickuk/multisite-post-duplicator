@@ -8,15 +8,15 @@
 
 /**
  *
- * This main core function on Multisite Post Duplicator that processes the duplication of a post on a network from one
+ * This is the main core function on Multisite Post Duplicator that processes the duplication of a post on a network from one
  * site to another
  * 
  * @param int $post_id_to_copy The ID of the source post to copy
  * @param int $new_blog_id The ID of the destination blog to copy to.
  * @param string $post_type The destination post type.
- * @param int $post_author The id of the requested post author from the destination site.
+ * @param int $post_author The ID of the requested post author from the destination site.
  * @param string $prefix Optional prefix to be used on the destination post.
- * @param string $post_status a post status for the destination id. Has to be one of the values returned from WordPress's get_post_statuses() function
+ * @param string $post_status The post status for the destination ID. Has to be one of the values returned from WordPress's get_post_statuses() function
  * 
  * @return array An array containing information about the newly created post
  * 
@@ -51,7 +51,8 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $title      = get_the_title($mdp_post);
     //Get the tags from the post we are copying
     $sourcetags = wp_get_post_tags( $mpd_process_info['source_id'], array( 'fields' => 'names' ) );
-    $source_id  = get_current_blog_id();
+    //Get the ID of the sourse blog
+    $source_blog_id  = get_current_blog_id();
 
     //Format the prefix into the correct format if the user adds their own whitespace
     if($mpd_process_info['prefix'] != ''){
@@ -61,7 +62,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     }
 
     //Using the orgininal post object we now want to insert our any new data based on user settings for use
-    //in thepost object we will be adding to the destination site
+    //in the post object that we will be adding to the destination site
     $mdp_post = apply_filters('mpd_setup_destination_data', array(
 
             'post_title'    => $mpd_process_info['prefix'] . $title,
@@ -73,13 +74,13 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     ), $mpd_process_info);
 
     //Get all the custom fields associated with the sourse post
-    $data                       = get_post_custom($mdp_post);
+    $data              = get_post_custom($mdp_post);
     //Get all the meta data associated with the sourse post
-    $meta_values                = get_post_meta($mpd_process_info['source_id']);
-    //Get array of associated with witht the featured image for this post
-    $featured_image             = mpd_get_featured_image_from_source($mpd_process_info['source_id']);
+    $meta_values       = get_post_meta($mpd_process_info['source_id']);
+    //Get array of data associated with the featured image for this post
+    $featured_image    = mpd_get_featured_image_from_source($mpd_process_info['source_id']);
 
-    //If we are copying the sourse post to another site on the network we will strip out data about those 
+    //If we are copying the sourse post to another site on the network we will collect data about those 
     //images.
     if($mpd_process_info['destination_id'] != get_current_blog_id()){
 
@@ -99,8 +100,16 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     //Hook for actions just before we switch to the destination blog to start processing our collected data
     do_action('mpd_during_core_in_source', $mdp_post, $attached_images, $attached_images_alt_tags = null);
+    
+
+
+    ////////////////////////////////////////////////
     //Tell WordPress to work in the destination site
     switch_to_blog($mpd_process_info['destination_id']);
+    ////////////////////////////////////////////////
+
+
+
     //Make the new post
     $post_id = wp_insert_post($mdp_post);
     //Add the source post meta to the destination post
@@ -115,6 +124,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     }
 
     do_action('mpd_during_core_in_destination', $post_id, $mdp_post, $attached_images, $attached_images_alt_tags = null);
+    
     //Copy the meta data collected from the sourse post to the new post
   	foreach ($meta_values as $key => $values) {
 
@@ -139,7 +149,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
         //Check that the users plugin settings actually want this process to happen
         if(isset($options['mdp_copy_content_images']) || !$options ){
             
-            mpd_process_post_media_attachements($post_id, $attached_images, $attached_images_alt_tags, $source_id, $new_blog_id);
+            mpd_process_post_media_attachements($post_id, $attached_images, $attached_images_alt_tags, $source_blog_id, $new_blog_id);
 
         }
 
@@ -170,8 +180,10 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $blog_details  = get_blog_details($mpd_process_info['destination_id']);
     $site_name     = $blog_details->blogname;
 
+    //////////////////////////////////////
     //Go back to the current blog so we can update information about the action that just took place
     restore_current_blog();
+    //////////////////////////////////////
 
     //Use the collected information about the new post to generate a status notice and a link for the user
     $notice = mdp_make_admin_notice($site_name, $site_edit_url, $blog_details);

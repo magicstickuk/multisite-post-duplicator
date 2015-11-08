@@ -9,6 +9,7 @@ Author: 		Mario Jaconelli
 Author URI:  	http://www.wpmaz.uk
 */
 
+define('MPD_PLUGIN', true);
 define('MPD_SETTING_PAGE', 'mpd_sp');
 define('MPD_SETTING_SECTION', 'mpd_sps');
 define('MPD_DOMAIN', 'mpd');
@@ -20,7 +21,6 @@ include('inc/admin-ui.php');
 include('inc/settings-ui.php');
 include('inc/core.php');
 include('addons/bulkaction-mpd-addon.php');
-
 
 /**
  * 

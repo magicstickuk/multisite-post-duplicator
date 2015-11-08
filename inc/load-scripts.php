@@ -7,9 +7,10 @@
 
 /**
  * 
+ * Enqueue all the required files for this plugin to display/run
+ * 
  * @since 0.1
  * @author Mario Jaconelli <mariojaconelli@gmail.com>
- * @author Sergi Ambel
  * 
  */
 function mdp_load_admin_styles(){

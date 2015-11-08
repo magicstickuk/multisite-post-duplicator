@@ -4,12 +4,19 @@
  * 
  * This MPD addon allows you to batch-duplicate your pages within the post list page in WordPress
  * 
+ * @ignore
  * @since 0.6
  * @author Mario Jaconelli <mariojaconelli@gmail.com>
  * 
  */
+$addon_headers = get_file_data( __FILE__, array('MPD Addon'), $context = '' ) ;
+if ( ! defined( 'MPD_PLUGIN' ) ){
+  exit('You need <a href="https://wordpress.org/plugins/multisite-post-duplicator/">Multisite Post Duplicator</a> installed to run its addon "' . $addon_headers[0] .'"');
+}
 
-
+/**
+ * @ignore
+ */
 function mpd_bulk_add_default_option($mdp_default_options){
 
   $mdp_default_options['add_bulk_settings'] = 'allow-batch';
@@ -19,6 +26,9 @@ function mpd_bulk_add_default_option($mdp_default_options){
 }
 add_filter('mdp_default_options', 'mpd_bulk_add_default_option');
 
+/**
+ * @ignore
+ */
 function addon_mpd_bulk_setting_activation($options){
 
   $options['add_bulk_settings']    = 'allow-batch';
@@ -28,6 +38,9 @@ function addon_mpd_bulk_setting_activation($options){
 }
 add_filter('mpd_activation_options', 'addon_mpd_bulk_setting_activation');
 
+/**
+ * @ignore
+ */
 function mpd_bulk_admin_script() {
 
     if( is_multisite() ){
@@ -73,7 +86,10 @@ function mpd_bulk_admin_script() {
 }
 
 add_action('admin_footer-edit.php', 'mpd_bulk_admin_script');
- 
+
+/**
+ * @ignore
+ */
 function mpd_bulk_action() {
  
   $wp_list_table  = _get_list_table('WP_Posts_List_Table');
@@ -117,7 +133,10 @@ function mpd_bulk_action() {
 }
 
 add_action('load-edit.php', 'mpd_bulk_action');
- 
+
+/**
+ * @ignore
+ */
 function mpd_bulk_admin_notices() {
  
   global $pagenow;
@@ -138,6 +157,9 @@ function mpd_bulk_admin_notices() {
 
 add_action('admin_notices', 'mpd_bulk_admin_notices');
 
+/**
+ * @ignore
+ */
 function add_bulk_settings(){
 
     mpd_settings_field('add_bulk_settings', __( 'Allow batch duplication?', MPD_DOMAIN ), 'mdp_default_batch_render');
@@ -146,6 +168,9 @@ function add_bulk_settings(){
 
 add_action( 'mdp_end_plugin_setting_page', 'add_bulk_settings');
 
+/**
+ * @ignore
+ */
 function mdp_default_batch_render(){
 
   $options = get_option( 'mdp_settings' );

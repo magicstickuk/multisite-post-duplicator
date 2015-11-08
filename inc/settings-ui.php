@@ -226,6 +226,14 @@ function mdp_copy_content_image_render(  ) {
 
 }
 
+/**
+ * 
+ * Generate a sub heading for the settings page
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function mdp_settings_section_callback(  ) { 
 
 	_e( 'Here you can change the default settings for Multisite Post Duplicator. Note that these settings are used for every site in your network.', MPD_DOMAIN );
@@ -243,7 +251,7 @@ add_action( 'update_option_mdp_settings', 'mpd_globalise_settings', 10, 2 );
  * @return null
  * 
  */
-function mpd_globalise_settings( $old_value, $new_value ){
+function mpd_globalise_settings(){
     
     $options 	= get_option( 'mdp_settings' );
     $args 		= array('network_id' => null);
