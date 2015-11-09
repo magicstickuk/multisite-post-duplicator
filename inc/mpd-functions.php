@@ -400,7 +400,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
         $old_content                = get_post_field('post_content', $destination_post_id);
         $middle_content             = str_replace($image_URL_info['dirname'] ."/". $image_URL_info['filename'], $new_image_URL_without_EXT, $old_content);
         $update_content             = str_replace('wp-image-'. $old_image_ids[$image_count], 'wp-image-' . $attach_id, $middle_content);
-        
+
         $post_update = array(
             'ID'           => $destination_post_id,
             'post_content' => $update_content
@@ -466,12 +466,14 @@ function mpd_get_image_alt_tags($post_media_attachments){
         foreach ($post_media_attachments as $post_media_attachment) {
 
             $alt_tag = get_post_meta($post_media_attachment->ID, '_wp_attachment_image_alt', true);
-
-            $alt_tags_to_be_copied[$attachement_count] = $alt_tag;
             
-            $attachement_count++;
-            
+            if($alt_tag){
 
+                $alt_tags_to_be_copied[$attachement_count] = $alt_tag;
+                $attachement_count++;
+            }
+            
+            
         }
 
         $alt_tags_to_be_copied = apply_filters('mpd_alt_tag_array_from_post_content', $alt_tags_to_be_copied, $post_media_attachments);
