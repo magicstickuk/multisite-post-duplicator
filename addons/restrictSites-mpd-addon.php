@@ -30,7 +30,7 @@ add_action( 'mdp_end_plugin_setting_page', 'restrict_addon_mpd_settings');
 function restrict_option_setting_render(){
   
   if($options = get_option( 'mdp_settings' )){
-		$mdp_restrict_radio_label_value = $options['restrict_option_setting'];
+		$mdp_restrict_radio_label_value = !empty($options['restrict_option_setting']) ? $options['restrict_option_setting'] : 'none';
 	}else{
 		$mdp_restrict_radio_label_value = 'none';
 	};
@@ -235,7 +235,7 @@ function checkSiteStatus(){
   $currentSite 		= get_current_blog_id();
   $access			= true;
 
-  $restrict_option = $options['restrict_option_setting'] ? $options['restrict_option_setting'] : 'none';
+  $restrict_option = !empty($options['restrict_option_setting']) ? $options['restrict_option_setting'] : 'none';
 
   switch ($restrict_option) {
 
