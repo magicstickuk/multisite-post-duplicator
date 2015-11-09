@@ -15,8 +15,6 @@ Duplicate any individual page, post or custom post type from one site on your mu
 
 Features:
 
-Features:
-
 *   Copies all custom fields
 *   Copies all related post meta
 *   Includes any custom post type on your network as long as the post type exists in your destination site
@@ -28,10 +26,10 @@ Features:
 *	Settings page to customise the default behaviour
 *	Restrict functionality to only certain sites on your network
 *   Clean and friendly User Interface
-*   Select what status you want your new copies post to be i.e Published, Draft etc
+*   Select what status you want your new copy of post to be i.e Published, Draft etc
 *   Specify a prefix for the new post to avoid confusion
 *   Works with Contact Form 7
-*   Works with Advance Custom Fields
+*   Works with Advanced Custom Fields
 *	Create your own addons! Multisite Post Duplicator is now fully extendable. Create your own functionality. Check out the API [documentation](http://www.wpmaz.uk/mpddocs/). Check out a list of hooks you can use (http://www.wpmaz.uk/multisite-post-duplicator-actions-and-filters/).
 
 == Installation ==
