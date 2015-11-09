@@ -400,7 +400,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
         $old_content                = get_post_field('post_content', $destination_post_id);
         $middle_content             = str_replace($image_URL_info['dirname'] ."/". $image_URL_info['filename'], $new_image_URL_without_EXT, $old_content);
         $update_content             = str_replace('wp-image-'. $old_image_ids[$image_count], 'wp-image-' . $attach_id, $middle_content);
-
+        
         $post_update = array(
             'ID'           => $destination_post_id,
             'post_content' => $update_content
