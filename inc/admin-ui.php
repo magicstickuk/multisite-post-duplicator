@@ -15,8 +15,13 @@
  */
 function mpd_admin_pages(){
 
-	add_submenu_page('tools.php', __('Multisite Post Duplicator', MPD_DOMAIN),__('Multisite Post Duplicator', MPD_DOMAIN ), 'manage_options', 'mpd','mpd_admin_menu_markup');
+	$active_mpd = apply_filters( 'mpd_is_active', true );
 
+	if($active_mpd){
+
+		add_submenu_page('tools.php', __('Multisite Post Duplicator', MPD_DOMAIN),__('Multisite Post Duplicator', MPD_DOMAIN ), 'manage_options', 'mpd','mpd_admin_menu_markup');
+
+	}
 }
 
 add_action( 'admin_menu', 'mpd_admin_pages' );

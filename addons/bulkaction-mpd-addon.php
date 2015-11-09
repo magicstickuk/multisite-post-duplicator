@@ -45,10 +45,12 @@ function mpd_bulk_admin_script() {
         $sites          = mpd_wp_get_sites();
         $options        = get_option( 'mdp_settings' );
         $post_status    = isset($_REQUEST["post_status"]) ? $_REQUEST["post_status"] : null;
+
+        $active_mpd     = apply_filters( 'mpd_is_active', true );
       
         if(isset($options['add_bulk_settings']) || ($defaultoptions['add_bulk_settings'] == 'allow-batch' && !$options)){ ?>
 
-          <?php if(!$post_status): ?>
+          <?php if(!$post_status &&  $active_mpd): ?>
 
             <script type="text/javascript">
 
@@ -175,4 +177,10 @@ function mdp_default_batch_render(){
   <p class="mpdtip"><?php _e('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page', MPD_DOMAIN)?></p>
   <?php
 
+}
+
+add_filter( 'mpd_is_active', 'checkSiteStatus');
+
+function checkSiteStatus(){
+  return true;
 }

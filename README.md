@@ -22,12 +22,15 @@ Features:
 *   Copies any featured image (Can be turned on or off in Settings)
 *   Copies all image media within post content to the new site's media library for exclusive use in the destination site (Can be turned on or off in Settings)
 *   Copies associated tags (Can be turned on or off in Settings)
+*	Batch Duplication
 *	Settings page to customise the default behaviour
+*	Restrict functionality to only certain sites on your network
 *   Clean and friendly User Interface
 *   Select what status you want your new copies post to be i.e Published, Draft etc
 *   Specify a prefix for the new post to avoid confusion
 *   Works with Contact Form 7
 *   Works with Advance Custom Fields
+*	Create your own addons! Multisite Post Duplicator is now fully extendable. Create your own functionality. Check out the API [documentation](http://www.wpmaz.uk/mpddocs/). Check out a list of hooks you can use (http://www.wpmaz.uk/mpddocs/).
 
 == Installation ==
 
@@ -61,6 +64,14 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 3. Setting Page
 
 == Changelog ==
+
+= 0.6 =
+* NEW: Create your own addons! Multisite Post Duplicator is now fully extendable. Create your own functionality
+* Check out the API [documentation](http://www.wpmaz.uk/mpddocs/).
+* Check out a list of hooks you can use (http://www.wpmaz.uk/mpddocs/).
+* NEW CORE ADDON: Batch Duplication! You can now duplicate several pages at a time from the post/page list screen.
+* NEW CORE ADDON: Restrict MPD! You can now restrict the ability to duplicate from certain sites on your network
+* FIXED: Issue with generated destination URL of attached media from root site.
 
 = 0.5.2 =
 * Fixed issues with attached media files when duplicating a page that has aleady been duplicated

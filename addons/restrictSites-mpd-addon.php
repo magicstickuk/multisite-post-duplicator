@@ -153,34 +153,47 @@ function mpd_add_addon_script_to_settings_page(){
 	?>
 	<script>
 		jQuery(document).ready(function() {
-			jQuery(".mpd-master-site").parent().parent().hide();
-			jQuery(".restrict-some-checkbox").parent().parent().hide();
+
+			var masterSiteLvl 	= jQuery(".mpd-master-site").parent().parent();
+			var restrictSomeLvl = jQuery(".restrict-some-checkbox").parent().parent();
+			
+			masterSiteLvl.hide();
+			restrictSomeLvl.hide();
 			
 			jQuery(".mpd-master-site").select2({
 				placeholder: '<?php _e("Select a Master Site", MPD_DOMAIN) ?>'	
 			});
 
 			if(jQuery('#mpd_restrict_set_master').is(':checked') ){
-      				jQuery(".mpd-master-site").parent().parent().show();
+      			masterSiteLvl.show();
   			}
   			if(jQuery('#mpd_restrict_some').is(':checked') ){
-      				jQuery(".restrict-some-checkbox").parent().parent().show();
+      			restrictSomeLvl.show();
   			}
 
   			jQuery('#mpd_restrict_radio_choice_wrap .mdp_radio').change(function() {
   		
   				if (jQuery(this).val() == 'master') {
-  					jQuery(".mpd-master-site").parent().parent().show('fast');
+  					masterSiteLvl.show('fast');
   				}else{
-  					jQuery(".mpd-master-site").parent().parent().hide('fast');
+  					masterSiteLvl.hide('fast');
   				};
 
   				if (jQuery(this).val() == 'some') {
-  					jQuery(".restrict-some-checkbox").parent().parent().show('fast');
+  					restrictSomeLvl.show('fast');
   				}else{
-  					jQuery(".restrict-some-checkbox").parent().parent().hide('fast');
+  					restrictSomeLvl.hide('fast');
   				};
-  		
+
+  			});
+
+  			jQuery('.restrict-some-checkbox').change(function(){
+  				var rcb = jQuery('.restrict-some-checkbox:not(:checked)');
+  				if(rcb.length == 1){
+  					rcb.attr("disabled", true);
+  				}else{
+  					rcb.removeAttr("disabled");
+  				}
   			});
 
 		});

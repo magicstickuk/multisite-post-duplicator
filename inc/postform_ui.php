@@ -30,13 +30,15 @@ if ( is_multisite() ) {
  */
 function mpd_metaboxes(){
     
+    $active_mpd = apply_filters( 'mpd_is_active', true );
+
     $post_types = mpd_get_postype_decision_from_options();
 
     if($post_types){
 
         foreach ($post_types as $page ){
 
-            if ( current_user_can( 'publish_posts' ) )  {
+            if ( current_user_can( 'publish_posts' ) && $active_mpd)  {
                     add_meta_box( 'multisite_clone_metabox', __('Multisite Post Duplicator', MPD_DOMAIN ), 'mpd_publish_top_right', $page, 'side', 'high' );
             }
 
