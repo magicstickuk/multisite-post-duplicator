@@ -24,6 +24,9 @@ function restrict_addon_mpd_settings(){
 
 add_action( 'mdp_end_plugin_setting_page', 'restrict_addon_mpd_settings');
 
+/**
+ * @ignore
+ */
 function restrict_option_setting_render(){
   
   if($options = get_option( 'mdp_settings' )){
@@ -56,6 +59,9 @@ function restrict_option_setting_render(){
   <?php
 
 }
+/**
+ * @ignore
+ */
 function mpd_get_restrict_some_sites_options(){
 
 	if(!$options = get_option( 'mdp_settings' )){
@@ -82,6 +88,9 @@ function mpd_get_restrict_some_sites_options(){
 	}
 
 }
+/**
+ * @ignore
+ */
 function restrict_some_option_setting_render(){
   
   $restricted_ids 	= mpd_get_restrict_some_sites_options();
@@ -114,6 +123,9 @@ function restrict_some_option_setting_render(){
 
 }
 
+/**
+ * @ignore
+ */
 function master_site_settings_render(){
 
   $options = get_option( 'mdp_settings' );
@@ -145,6 +157,9 @@ function master_site_settings_render(){
 
 }
 
+/**
+ * @ignore
+ */
 function mpd_add_addon_script_to_settings_page(){
 	
 	$screenid = get_current_screen()->id;
@@ -156,9 +171,16 @@ function mpd_add_addon_script_to_settings_page(){
 
 			var masterSiteLvl 	= jQuery(".mpd-master-site").parent().parent();
 			var restrictSomeLvl = jQuery(".restrict-some-checkbox").parent().parent();
+			var rcb 			= jQuery('.restrict-some-checkbox:not(:checked)');
 			
 			masterSiteLvl.hide();
 			restrictSomeLvl.hide();
+
+			if(rcb.length == 1){
+				rcb.attr("disabled", true);
+			}else{
+				rcb.removeAttr("disabled");
+			}
 			
 			jQuery(".mpd-master-site").select2({
 				placeholder: '<?php _e("Select a Master Site", MPD_DOMAIN) ?>'	
@@ -203,3 +225,61 @@ function mpd_add_addon_script_to_settings_page(){
 	}
 }
 add_action('admin_head', 'mpd_add_addon_script_to_settings_page');
+
+/**
+ * @ignore
+ */
+function checkSiteStatus(){
+
+  $options 			= get_option( 'mdp_settings' );
+  $currentSite 		= get_current_blog_id();
+  $access			= true;
+
+  $restrict_option = $options['restrict_option_setting'] ? $options['restrict_option_setting'] : 'none';
+
+  switch ($restrict_option) {
+
+    case 'some':
+       	
+       	$blog_ids_to_restrict = array();
+       	foreach ($options as $key => $value) {
+        
+        	if (substr($key, 0, 24) == "mpd_restrict_some_sites_") {
+
+            	$blog_ids_to_restrict[] = $value;
+
+        	}
+
+    	}
+
+    	if(in_array($currentSite, $blog_ids_to_restrict)){
+
+    		$access = false;
+
+    	}
+
+        break;
+
+    case 'master':
+        
+   		if($options['master_site_setting']){
+
+   			if($currentSite != $options['master_site_setting']){
+   				$access = false;
+   			}
+
+   		}
+
+        break;
+    
+    default:
+
+        $access	= true;
+
+  }
+
+  return $access;
+
+}
+
+add_filter( 'mpd_is_active', 'checkSiteStatus');

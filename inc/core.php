@@ -122,8 +122,6 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
         }
 
     }
-
-    do_action('mpd_during_core_in_destination', $post_id, $mdp_post, $attached_images, $attached_images_alt_tags == null);
     
     //Copy the meta data collected from the sourse post to the new post
   	foreach ($meta_values as $key => $values) {

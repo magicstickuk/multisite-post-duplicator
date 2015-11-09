@@ -178,9 +178,3 @@ function mdp_default_batch_render(){
   <?php
 
 }
-
-add_filter( 'mpd_is_active', 'checkSiteStatus');
-
-function checkSiteStatus(){
-  return true;
-}
