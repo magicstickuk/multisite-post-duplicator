@@ -1,13 +1,37 @@
 <?php
+/**
+ * 
+ * This controls the markup and functionality of the MPD Tools page
+ * @since 0.1
+ * @author Mario Jaconelli <mariojaconelli@gmail.com>
+ * 
+ */
+
+/**
+ * 
+ * Add Multisite Post Duplucator Tool Page to WordPress Navigation
+ * @since 0.1
+ * 
+ */
+function mpd_admin_pages(){
+
+	$active_mpd = apply_filters( 'mpd_is_active', true );
+
+	if($active_mpd){
+
+		add_submenu_page('tools.php', __('Multisite Post Duplicator', MPD_DOMAIN),__('Multisite Post Duplicator', MPD_DOMAIN ), 'manage_options', 'mpd','mpd_admin_menu_markup');
+
+	}
+}
 
 add_action( 'admin_menu', 'mpd_admin_pages' );
 
-function mpd_admin_pages(){
-
-	add_submenu_page('tools.php', __('Multisite Post Duplicator','mpd'),__('Multisite Post Duplicator','mpd'), 'manage_options', 'mpd','mpd_admin_menu_markup');
-
-}
-
+/**
+ *
+ * This is the markup to display in the Multisite Post Duplicator Tools page
+ * @since 0.1
+ * 
+ */
 function mpd_admin_menu_markup(){
 
 	global $wp_post_types;
@@ -36,13 +60,13 @@ function mpd_admin_menu_markup(){
 
 	<div class="wrap">
 
-    	<h2><?php _e('Multisite Post Duplicator','mpd'); ?></h2>
+    	<h2><?php _e('Multisite Post Duplicator', MPD_DOMAIN); ?></h2>
 
     	<?php if(!is_multisite()):?>
 
-    		<h2><?php _e('Attention!','mpd'); ?></h2>
+    		<h2><?php _e('Attention!', MPD_DOMAIN); ?></h2>
 
-    		<p><?php _e('At the moment this plugin is solely for funtioning on a mulitisite. It appears this site doees not have multisite enabled','mpd'); ?></p>
+    		<p><?php _e('At the moment this plugin is solely for funtioning on a mulitisite. It appears this site doees not have multisite enabled', MPD_DOMAIN); ?></p>
 			
 			<?php return; ?>
 
@@ -52,7 +76,7 @@ function mpd_admin_menu_markup(){
 
     		<div class="updated">
 
-    			<p><?php _e('Congratulations. The page/post was duplicated successfully.','mpd'); ?> <a href="<?php echo $new_post_obj['edit_url']; ?>"><?php _e('Edit this post','mpd'); ?></a></p>
+    			<p><?php _e('Congratulations. The page/post was duplicated successfully.', MPD_DOMAIN); ?> <a href="<?php echo $new_post_obj['edit_url']; ?>"><?php _e('Edit this post', MPD_DOMAIN); ?></a></p>
 
     		</div>
 
@@ -62,11 +86,11 @@ function mpd_admin_menu_markup(){
 
     		<div class="metabox">
 
-    			<h2><?php _e('Options','mpd'); ?></h2>
+    			<h2><?php _e('Options', MPD_DOMAIN); ?></h2>
 
-    			<p><?php _e('Select your preferences for the duplication.','mpd'); ?></p>
+    			<p><?php _e('Select your preferences for the duplication.', MPD_DOMAIN); ?></p>
 
-    			<h3><?php _e('Select the status of the new post that will be created.','mpd'); ?></h3>
+    			<h3><?php _e('Select the status of the new post that will be created.', MPD_DOMAIN); ?></h3>
 
     			<?php $post_statuses = get_post_statuses(); ?>
 
@@ -77,7 +101,7 @@ function mpd_admin_menu_markup(){
 
     			<?php endforeach; ?>
 
-    			<h3><?php _e('Select a prefix, if any, for the new post/page to be created','mpd'); ?>:</h3>
+    			<h3><?php _e('Select a prefix, if any, for the new post/page to be created', MPD_DOMAIN); ?>:</h3>
 				
     			<input type="text" name="mdp-prefix" value="<?php echo mpd_get_prefix(); ?>"/>
     		
@@ -85,9 +109,9 @@ function mpd_admin_menu_markup(){
 
 			<div class="metabox">
 
-				<h2><?php _e('Process the duplication','mpd'); ?></h2>
+				<h2><?php _e('Process the duplication', MPD_DOMAIN ); ?></h2>
 
-	    		<h3>1. <?php _e('Select the post type of the post you want to duplicate','mpd'); ?></h3>
+	    		<h3>1. <?php _e('Select the post type of the post you want to duplicate', MPD_DOMAIN ); ?></h3>
 	    		
 	    		<input type="hidden" name="action" value="add_foobar">
 
@@ -95,7 +119,7 @@ function mpd_admin_menu_markup(){
 
 		    		<option></option>
 
-		    		<option value="any" > - <?php _e('All Post Types','mpd'); ?> -</option>
+		    		<option value="any" > - <?php _e('All Post Types', MPD_DOMAIN ); ?> -</option>
 
 		    		<?php foreach ($post_types as $post_type):?>
 
@@ -132,6 +156,14 @@ function mpd_admin_menu_markup(){
 	<?php 
 }
 
+/**
+ *
+ * This is the markup to display once the user has selected Question 2 in the Tools admin
+ * 
+ * @since 0.1
+ * 
+ */
+
 function mdp_get_posts_for_type(){
 
 	if($_POST['post_type'] == ' - All Post Types -' ){
@@ -155,7 +187,7 @@ function mdp_get_posts_for_type(){
 
 	ob_start()?>
 
-	<h3>2. <?php _e('Select the page you want to duplicate','mpd'); ?></h3>
+	<h3>2. <?php _e('Select the page you want to duplicate', MPD_DOMAIN ); ?></h3>
 
 	<select name="el1" class="el1" style="width:300px;">
 
@@ -181,14 +213,21 @@ function mdp_get_posts_for_type(){
 
 add_action( 'wp_ajax_mdp_get_posts', 'mdp_get_posts_for_type');
 
+/**
+ *
+ * This is the markup to display once the user has selected Question 3 in the Tools admin
+ * 
+ * @since 0.1
+ * 
+ */
+
 function mdp_get_site_on_network(){
 
-	$args 	= array('network_id' => null);
-	$sites 	= wp_get_sites($args);
+	$sites 	= mpd_wp_get_sites();
 
 	ob_start()?>
 
-	<h3>3. <?php _e('Select the site on this network you want to duplicate to','mpd'); ?></h3>
+	<h3>3. <?php _e('Select the site on this network you want to duplicate to', MPD_DOMAIN ); ?></h3>
 	
 	<select name="el2" class="el2" style="width:300px;">
 
@@ -212,6 +251,13 @@ function mdp_get_site_on_network(){
 }
 add_action( 'wp_ajax_mdp_get_sites', 'mdp_get_site_on_network');
 
+/**
+ *
+ * This is the markup to display once the user has selected Question 4 in the Tools admin
+ * 
+ * @since 0.1
+ * 
+ */
 function mdp_get_users_on_site(){
 
 	$args = array(
@@ -224,7 +270,7 @@ function mdp_get_users_on_site(){
 
 	ob_start()?>
 
-	<h3>4. <?php _e('Select the user on this site you want to atribute this action to','mpd'); ?></h3>
+	<h3>4. <?php _e('Select the user on this site you want to atribute this action to', MPD_DOMAIN ); ?></h3>
 	
 	<select name="el3" class="el3" style="width:300px;">
 
@@ -240,7 +286,7 @@ function mdp_get_users_on_site(){
 
 	<p>
 
-		<input type="submit" value="<?php _e('Duplicate','mpd'); ?>" style="display:none;" class="button-primary main-dup-button" name="duplicate-submit">
+		<input type="submit" value="<?php _e('Duplicate', MPD_DOMAIN ); ?>" style="display:none;" class="button-primary main-dup-button" name="duplicate-submit">
 	
 	</p>
 	

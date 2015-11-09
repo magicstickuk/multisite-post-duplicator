@@ -1,4 +1,13 @@
 <?php
+/**
+ * 
+ * This file controls the generation and functionality  of the MPD Metabox.
+ * 
+ * @since 0.4
+ * @author Mario Jaconelli <mariojaconelli@gmail.com>
+ * @author Sergi Ambel
+ * 
+ */
 
 if ( ! defined( 'ABSPATH' ) ) exit('You\'re not allowed to see this page');
 
@@ -8,16 +17,29 @@ if ( is_multisite() ) {
 
 }
 
+/**
+ * 
+ * This function initialises the MPD Metabox on the WordPress Post
+ * 
+ * Before displaying this function will check the plugin settings option to make sure the use wants to
+ * display the metabox or not depending on the post type.
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function mpd_metaboxes(){
     
+    $active_mpd = apply_filters( 'mpd_is_active', true );
+
     $post_types = mpd_get_postype_decision_from_options();
 
     if($post_types){
 
         foreach ($post_types as $page ){
 
-            if ( current_user_can( 'publish_posts' ) )  {
-                    add_meta_box( 'multisite_clone_metabox', __('Multisite Post Duplicator','mpd'), 'mpd_publish_top_right', $page, 'side', 'high' );
+            if ( current_user_can( 'publish_posts' ) && $active_mpd)  {
+                    add_meta_box( 'multisite_clone_metabox', __('Multisite Post Duplicator', MPD_DOMAIN ), 'mpd_publish_top_right', $page, 'side', 'high' );
             }
 
         } 
@@ -28,19 +50,29 @@ function mpd_metaboxes(){
     
 }
 
-
+/**
+ * 
+ * This function generates the markup for the MPD Metabox
+ * 
+ * @since 0.4
+ * @return null
+ * 
+ */
 function mpd_publish_top_right(){
 
     $post_statuses  = get_post_statuses();
-    $args           = array('network_id' => null);
-    $sites          = wp_get_sites($args);
+    $sites          = mpd_wp_get_sites()
 
     ?>
+
+
     <div id="clone_multisite_box">
 
         <div class="metabox">
 
-            <p><?php _e('Duplicated post status', 'mpd'); ?>:
+            <?php do_action('mpd_before_metabox_content'); ?>
+
+            <p><?php _e('Duplicated post status', MPD_DOMAIN ); ?>:
 
             <select id="mpd-new-status" name="mpd-new-status">
              <?php foreach ($post_statuses as $post_status_key => $post_status_value): ?>
@@ -50,13 +82,13 @@ function mpd_publish_top_right(){
                
             </p>
 
-            <p><?php _e('Title prefix for new post', 'mpd'); ?>:
+            <p><?php _e('Title prefix for new post', MPD_DOMAIN ); ?>:
             
                 <input type="text" name="mpd-prefix" value="<?php echo mpd_get_prefix(); ?>"/>
                 
             </p>
 
-            <p><?php _e('Site(s) you want duplicate to', 'mpd'); ?>:
+            <p><?php _e('Site(s) you want duplicate to', MPD_DOMAIN ); ?>:
 
                 <ul id="mpd_blogschecklist" data-wp-lists="list:category" class="mpd_blogschecklist" style="padding-left: 5px;margin-top: -8px;">
                     
@@ -84,16 +116,18 @@ function mpd_publish_top_right(){
 
             <p>
                 <em>
-                    <?php _e('If you have checked any of the checkboxes above then this post will be duplicated on save.','mpd');?>
+                    <?php _e('If you have checked any of the checkboxes above then this post will be duplicated on save.', MPD_DOMAIN );?>
                 </em>
             </p>
 
             <p style="font-size: 80%; text-align:right; font-style:italic">
 
-                <a target="_blank" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"><?php _e('Settings','mpd'); ?></a>
+                <a target="_blank" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"><?php _e('Settings', MPD_DOMAIN ); ?></a>
                 
             </p>
 
+            <?php do_action('mpd_after_metabox_content'); ?>
+            
         </div>
 
     </div>
@@ -101,14 +135,21 @@ function mpd_publish_top_right(){
 <?php
 }
 
-add_filter( 'save_post', 'mpd_clone_post' );
+/**
+ * 
+ * This function sets up the MPD core function and calls it based on values added by the user in the MPD metabox
+ * 
+ * @since 0.4
+ * @param int $post_id The post ID of the post currently being viewed.
+ * @return int The post ID of the post currently being viewed.
+ * 
+ */
 
-function mpd_clone_post($data )
-{
+function mpd_clone_post($post_id){
 
     if (!count($_POST)){
 
-        return $data;
+        return $post_id;
         
     }
 
@@ -116,19 +157,21 @@ function mpd_clone_post($data )
         && ( $_POST["post_status"] != "auto-draft" )
         && ( isset($_POST['mpd_blogs'] ) )
         && ( count( $_POST['mpd_blogs'] ) )
-        && ( $_POST["post_ID"] == $data ) //hack to avoid execution in cloning process
+        && ( $_POST["post_ID"] == $post_id ) //hack to avoid execution in cloning process
     ){
 
     $mpd_blogs = $_POST['mpd_blogs'];
 
         foreach( $mpd_blogs as $mpd_blog_id ){
 
-            mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], $_POST["post_author"], $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
+            mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
 
         }
 
     }
 
-    return $data;
+    return $post_id;
 
 }
+
+add_filter( 'save_post', 'mpd_clone_post' );
