@@ -288,3 +288,9 @@ add_filter( 'mpd_is_active', 'checkSiteStatus');
 // }
 
 // add_filter( 'mpd_show_settings_page', 'mpd_user_level_for_restrict');
+
+// function mpd_check_for_super_admin(){
+// 	$is_super_admin = current_user_can('manage_sites');
+// 	return $is_super_admin;
+// }
+// add_filter('mpd_show_settings_page', 'mpd_check_for_super_admin');
