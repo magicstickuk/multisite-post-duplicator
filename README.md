@@ -66,6 +66,9 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 
 == Changelog ==
 
+= 0.6.1 =
+* Fixed issue with excerpts not copying in some instances
+
 = 0.6 =
 * NEW: Create your own addons! Multisite Post Duplicator is now fully extendable. Create your own functionality. Check out the API [documentation](http://www.wpmaz.uk/mpddocs/). And here is a list of hooks you can use: (http://www.wpmaz.uk/multisite-post-duplicator-actions-and-filters/). We've even created a couple of core addons if you want have nosey at how they are hooked in.
 * NEW CORE ADDON: Batch Duplication! You can now duplicate several pages at a time from the post/page list screen.

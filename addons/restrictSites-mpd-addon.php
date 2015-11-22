@@ -103,10 +103,6 @@ function restrict_some_option_setting_render(){
 
 				$blog_details 	= get_blog_details($site['blog_id']);
 				$checkme		= ''; 
-
-			?>
-
-			<?php 
 				
 				if(in_array($site['blog_id'], $restricted_ids)){
 					$checkme = 'checked="checked"';
@@ -283,3 +279,12 @@ function checkSiteStatus(){
 }
 
 add_filter( 'mpd_is_active', 'checkSiteStatus');
+
+// function mpd_user_level_for_restrict(){
+
+// 	$is_super_admin = current_user_can('manage_sites');
+// 	return $is_super_admin;
+
+// }
+
+// add_filter( 'mpd_show_settings_page', 'mpd_user_level_for_restrict');
