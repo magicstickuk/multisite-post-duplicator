@@ -69,7 +69,9 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
             'post_status'   => $mpd_process_info['requested_post_status'],
             'post_type'     => $mpd_process_info['post_type'],
             'post_author'   => $mpd_process_info['post_author'],
- 			'post_content'  => $mdp_post->post_content
+ 			'post_content'  => $mdp_post->post_content,
+            'post_excerpt'  => $mdp_post->post_excerpt,
+            'post_content_filtered' => $mdp_post->post_content_filtered
 
     ), $mpd_process_info);
 
