@@ -26,9 +26,10 @@ if ( is_multisite() ) {
  */
 function mdp_add_admin_menu(  ) { 
 
-	$settingsLogic = apply_filters( 'mpd_show_settings_page', true );
+	$settingsLogic = current_user_can( 'manage_options' );
+	$settingsLogic = apply_filters( 'mpd_show_settings_page', $settingsLogic );
 
-	if(current_user_can( 'manage_options' ) && $settingsLogic ){
+	if($settingsLogic){
 		add_submenu_page( 'options-general.php', __('Multisite Post Duplicator Settings', MPD_DOMAIN ), __('Multisite Post Duplicator Settings', MPD_DOMAIN), 'manage_options', 'multisite_post_duplicator', 'mdp_options_page' );
 	}
 
