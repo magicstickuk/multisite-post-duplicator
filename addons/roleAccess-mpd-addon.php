@@ -64,10 +64,7 @@ function role_option_setting_render(){
 
 }
 
-function mpd_checkRoleStatus(){
-
-	$access = false;
-	$roleLogic = false;
+function mpd_get_required_cap(){
 
 	if($options = get_option( 'mdp_settings' )){
 		$mdp_restrict_role = !empty($options['role_option_setting']) ? $options['role_option_setting'] : 'Administrator';
@@ -77,35 +74,29 @@ function mpd_checkRoleStatus(){
 
 	switch ($mdp_restrict_role) {
 		case 'Super-Admin':
-			$roleLogic = current_user_can('manage_sites');
+			$cap = 'manage_sites';
 			break;
 		case 'Administrator':
-			$roleLogic = current_user_can('activate_plugins');
+			$cap = 'activate_plugins';
 			break;
 		case 'Editor':
-			$roleLogic = current_user_can('manage_categories');
+			$cap = 'manage_categories';
 			break;
 		case 'Contributor':
-			$roleLogic = current_user_can('edit_posts');
+			$cap = 'edit_posts';
 			break;
 		case 'Author':
-			$roleLogic = current_user_can('publish_posts');
+			$cap = 'publish_posts';
 			break;
 		case 'Subscriber':
-			$roleLogic = current_user_can('read');
+			$cap = 'read';
 			break;
 		
 		default:
-			# code...
+			$cap = 'activate_plugins';
 			break;
 	}
 
-	if($roleLogic){
-		$access = true;
-	}
-
-	return $access;
+	return $cap;
 
 }
-
-add_filter( 'mpd_active_role', 'mpd_checkRoleStatus');
