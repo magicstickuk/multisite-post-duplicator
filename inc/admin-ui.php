@@ -16,8 +16,9 @@
 function mpd_admin_pages(){
 
 	$active_mpd = apply_filters( 'mpd_is_active', true );
+	$active_mpd_role = apply_filters( 'mpd_active_role', true );
 
-	if($active_mpd){
+	if($active_mpd && $active_mpd_role){
 
 		add_submenu_page('tools.php', __('Multisite Post Duplicator', MPD_DOMAIN),__('Multisite Post Duplicator', MPD_DOMAIN ), 'manage_options', 'mpd','mpd_admin_menu_markup');
 

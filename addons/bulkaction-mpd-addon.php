@@ -47,10 +47,11 @@ function mpd_bulk_admin_script() {
         $post_status    = isset($_REQUEST["post_status"]) ? $_REQUEST["post_status"] : null;
 
         $active_mpd     = apply_filters( 'mpd_is_active', true );
+        $active_mpd_role = apply_filters( 'mpd_active_role', true );
       
         if(isset($options['add_bulk_settings']) || ($defaultoptions['add_bulk_settings'] == 'allow-batch' && !$options)){ ?>
 
-          <?php if(!$post_status &&  $active_mpd): ?>
+          <?php if(!$post_status && $active_mpd): ?>
 
             <script type="text/javascript">
 
@@ -60,7 +61,7 @@ function mpd_bulk_admin_script() {
 
                   <?php $blog_details = get_blog_details($site['blog_id']); ?> 
 
-                    <?php if($site['blog_id'] != get_current_blog_id() && current_user_can_for_blog($site['blog_id'], 'publish_posts')):?> 
+                    <?php if($site['blog_id'] != get_current_blog_id() && $active_mpd_role):?> 
 
                       jQuery('<option>').val("dup-<?php echo $site['blog_id'] ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action']");
                       jQuery('<option>').val("dup-<?php echo $site['blog_id'] ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action2']");

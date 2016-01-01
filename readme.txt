@@ -25,6 +25,7 @@ Features:
 *	Batch Duplication
 *	Settings page to customise the default behaviour
 *	Restrict functionality to only certain sites on your network
+*	Restrict functionality to users of certain roles
 *   Clean and friendly User Interface
 *   Select what status you want your new copy of post to be i.e Published, Draft etc
 *   Specify a prefix for the new post to avoid confusion
@@ -65,6 +66,9 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 4. Batch Duplication
 
 == Changelog ==
+
+= 0.7.1 =
+* NEW: Restrict access to this plugin's functionality to users with certain roles.
 
 = 0.6.1 =
 * Fixed issue with excerpts not copying

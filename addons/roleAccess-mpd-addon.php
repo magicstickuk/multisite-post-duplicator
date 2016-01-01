@@ -1,0 +1,111 @@
+<?php
+/**
+ * MPD Addon: Role Access
+ * 
+ * This MPD addon allows you to restrict the roles that see MPD functionaity
+ * 
+ * @ignore
+ * @since 0.7.1
+ * @author Mario Jaconelli <mariojaconelli@gmail.com>
+ * 
+ */
+
+/**
+ * @ignore
+ */
+ 
+ function roleAccess_addon_mpd_settings(){
+
+ 	mpd_settings_field('role_option_setting', __( 'Minimum user role allowed to use MPD', MPD_DOMAIN ), 'role_option_setting_render');
+
+ }
+
+add_action( 'mdp_end_plugin_setting_page', 'roleAccess_addon_mpd_settings');
+
+function role_option_setting_render(){
+
+	global $wp_roles;
+
+	$all_roles = $wp_roles->roles;
+    $editable_roles = apply_filters('editable_roles', $all_roles);
+
+    if($options = get_option( 'mdp_settings' )){
+		$mdp_restrict_role = !empty($options['role_option_setting']) ? $options['role_option_setting'] : 'Administrator';
+	}else{
+		$mdp_restrict_role = 'Administrator';
+	};
+
+	?>
+		<select name="mdp_settings[role_option_setting]'" class="" style="width:300px;">
+
+			<?php if(current_user_can('manage_sites')):?>
+				
+				<option value="Super-Admin" <?php echo $mdp_restrict_role == 'Super-Admin' ? 'selected="selected"' : ''; ?>>
+
+			    	Super Administrator
+
+			    </option>
+
+			<?php endif; ?>
+
+			<?php foreach ($editable_roles as $editable_role):?>
+
+			    <option value="<?php echo $editable_role['name']; ?>" <?php echo $mdp_restrict_role == $editable_role['name'] ? 'selected="selected"' : ''; ?>>
+
+			    	<?php echo $editable_role['name'];?>
+
+			    </option>
+			
+			<?php endforeach; ?>
+
+		</select>
+
+	<?php
+
+}
+
+function mpd_checkRoleStatus(){
+
+	$access = false;
+	$roleLogic = false;
+
+	if($options = get_option( 'mdp_settings' )){
+		$mdp_restrict_role = !empty($options['role_option_setting']) ? $options['role_option_setting'] : 'Administrator';
+	}else{
+		$mdp_restrict_role = 'Administrator';
+	};
+
+	switch ($mdp_restrict_role) {
+		case 'Super-Admin':
+			$roleLogic = current_user_can('manage_sites');
+			break;
+		case 'Administrator':
+			$roleLogic = current_user_can('activate_plugins');
+			break;
+		case 'Editor':
+			$roleLogic = current_user_can('manage_categories');
+			break;
+		case 'Contributor':
+			$roleLogic = current_user_can('edit_posts');
+			break;
+		case 'Author':
+			$roleLogic = current_user_can('publish_posts');
+			break;
+		case 'Subscriber':
+			$roleLogic = current_user_can('read');
+			break;
+		
+		default:
+			# code...
+			break;
+	}
+
+	if($roleLogic){
+		$access = true;
+	}
+
+	return $access;
+
+}
+
+add_filter( 'mpd_active_role', 'mpd_checkRoleStatus');
