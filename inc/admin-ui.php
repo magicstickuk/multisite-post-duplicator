@@ -17,7 +17,7 @@ function mpd_admin_pages(){
 
 	$active_mpd = apply_filters( 'mpd_is_active', true );
 
-	if($active_mpd){
+	if($active_mpd && current_user_can(mpd_get_required_cap())){
 
 		add_submenu_page('tools.php', __('Multisite Post Duplicator', MPD_DOMAIN),__('Multisite Post Duplicator', MPD_DOMAIN ), 'manage_options', 'mpd','mpd_admin_menu_markup');
 

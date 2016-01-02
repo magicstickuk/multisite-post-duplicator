@@ -38,7 +38,7 @@ function mpd_metaboxes(){
 
         foreach ($post_types as $page ){
 
-            if ( current_user_can( 'publish_posts' ) && $active_mpd)  {
+            if ($active_mpd && current_user_can(mpd_get_required_cap()))  {
                     add_meta_box( 'multisite_clone_metabox', __('Multisite Post Duplicator', MPD_DOMAIN ), 'mpd_publish_top_right', $page, 'side', 'high' );
             }
 
@@ -94,7 +94,7 @@ function mpd_publish_top_right(){
                     
                     <?php foreach ($sites as $site): ?>
 
-                        <?php if (current_user_can_for_blog($site['blog_id'], 'publish_posts') ) : ?>
+                        <?php if (current_user_can_for_blog($site['blog_id'], mpd_get_required_cap()) ) : ?>
 
                             <?php $blog_details = get_blog_details($site['blog_id']); ?>
                             
