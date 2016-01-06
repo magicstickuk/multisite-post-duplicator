@@ -1,10 +1,10 @@
 <?php
 /**
- * 
+ *
  * This file is a collection all non-WordPress functions that used throughout the plugin
  * @since 0.1
  * @author Mario Jaconelli <mariojaconelli@gmail.com>
- * 
+ *
  */
 
 /**
@@ -16,12 +16,12 @@
   * @since 0.5
   * @param none
   * @return array One dimentional array containing all post types to be ignored.
-  * 
-  * Example : 
-  * 
-  *     ['revision', 'nav_menu_item', 'attachment']  
-  * 
-  */        
+  *
+  * Example :
+  *
+  *     ['revision', 'nav_menu_item', 'attachment']
+  *
+  */
 function mpd_get_post_types_to_ignore(){
 
     $post_types_to_ignore   = apply_filters('mpd_ignore_post_types', array(
@@ -39,15 +39,15 @@ function mpd_get_post_types_to_ignore(){
 
 /**
  * Get a list of post types the user wants to show the MPD Metabox (if the 'Some Post Types' option was selected in settings)
- * 
+ *
  * This function checks the settings for MPD and returns all the option values that are associated with post types
- * 
+ *
  * @since 0.4
  * @return array Containing post types for use with MPD Metabox
- * 
+ *
 */
 function mpd_get_some_postypes_to_show_options(){
-	
+
     $post_types             = array();
 	$options  	            = get_option( 'mdp_settings' );
     $post_types_to_ignore   = mpd_get_post_types_to_ignore();
@@ -68,21 +68,21 @@ function mpd_get_some_postypes_to_show_options(){
 
 /**
  * This function returns the all post types that the user has selected they want to display the MDP metabox on
- * 
+ *
  * @since 0.4
  * @param none
  * @return array Containing post types that will show a MPD Metabox.
- * 
- * Example : 
- * 
+ *
+ * Example :
+ *
  *      ['post', 'page']
- *  
+ *
 */
 function mpd_get_postype_decision_from_options(){
 
-	$options      = get_option( 'mdp_settings' ); 
+	$options      = get_option( 'mdp_settings' );
   	$post_types   = $options['meta_box_show_radio'] ? $options['meta_box_show_radio'] : get_post_types('','names');
-    
+
     if($options['meta_box_show_radio']){
 
         if($options['meta_box_show_radio'] == 'all'){
@@ -95,10 +95,10 @@ function mpd_get_postype_decision_from_options(){
 
         }elseif($options['meta_box_show_radio'] == 'some'){
 
-            $post_types = mpd_get_some_postypes_to_show_options();  
+            $post_types = mpd_get_some_postypes_to_show_options();
 
         }
-        
+
 
     }else{
 
@@ -111,9 +111,9 @@ function mpd_get_postype_decision_from_options(){
 
 /**
  * This function returns the current default prefix for the duplication.
- * 
+ *
  * Returns either the core default value or the value of prefix saved by user in settings
- * 
+ *
  * @since 0.5
  * @param none
  * @return string
@@ -125,34 +125,34 @@ function mpd_get_prefix(){
             $prefix = $options['mdp_default_prefix'];
 
       }else{
-            
+
             $defaultOptions   = mdp_get_default_options();
             $prefix           = $defaultOptions['mdp_default_prefix'];
-            
+
       }
 
       return $prefix;
-      
+
 }
 
 /**
  * Gets information on the featured image attached to a post
- * 
+ *
  * This function will get the meta data and other information on the posts featured image; including the url
  * to the full size version of the image.
- * 
+ *
  * @since 0.5
- * @param int $post_id The ID of the post that the featured image is attached to. 
+ * @param int $post_id The ID of the post that the featured image is attached to.
  * @return array
- * 
- * Example 
- * 
- *          id => '23', 
+ *
+ * Example
+ *
+ *          id => '23',
  *          url => 'http://www.example.com/image/image.jpg',
- *          alt => 'Image Alt Tag', 
+ *          alt => 'Image Alt Tag',
  *          description => 'Probably a big string of text here',
  *          caption => 'A nice caption for the image hopefully'
- * 
+ *
  */
 function mpd_get_featured_image_from_source($post_id){
 
@@ -177,25 +177,25 @@ function mpd_get_featured_image_from_source($post_id){
         return $image_details;
 
     }
-    
+
 }
 /**
- * This function performs the action of copying the featured image to the newly created post in 
+ * This function performs the action of copying the featured image to the newly created post in
  * the core function.
- * 
+ *
  * @since 0.5
  * @param int $destination_id The ID of the newly created post
  * @param array $image_details The details of the featured image to be copied. Linked to: mpd_get_featured_image_from_source()
  * which will generate the correct array structure for use here.
  * @return null
- * 
+ *
  */
 function mpd_set_featured_image_to_destination($destination_id, $image_details){
 
     // Get the upload directory for the current site
     $upload_dir = wp_upload_dir();
     // Get all the data inside a file and attach it to a variable
-    $image_data = file_get_contents($image_details['url']);
+    $image_data = file_get_contents(mpd_fix_wordpress_urls($image_details['url']));
     // Get the file name of the source file
     $filename   = apply_filters('mpd_featured_image_filename', basename($image_details['url']), $image_details);
 
@@ -239,7 +239,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
          update_post_meta($attach_id,'_wp_attachment_image_alt', $image_details['alt']);
 
     }
-   
+
     // Include code to process functions below:
     require_once(ABSPATH . 'wp-admin/includes/image.php');
 
@@ -251,35 +251,35 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
 
     // And finally assign featured image to post
     set_post_thumbnail( $destination_id, $attach_id );
-    
+
 }
 
 /**
  * This function looks at the post_content of a post and attempts to return all the id's of images that are used in the content
- * 
+ *
  * When adding an image to your post content in WordPress, WordPress it will give the image a class of wp-image-{image id}
  * This function anticipates this behaviour and searchs the content of any instances of this class structure and grabs
  * the {image id} and collects these id's into an array.
- * 
+ *
  * @since 0.5
  * @param int $post_id The ID of the post to analise
- * @return array 
- * 
- * Example: 
- * 
+ * @return array
+ *
+ * Example:
+ *
  *         ['20', '30', '1', '456']
- * 
+ *
  */
 function mpd_get_images_from_the_content($post_id){
-    
+
     //Collect the sourse content
     $html   = get_post_field( 'post_content', $post_id);
     $doc    = new DOMDocument();
-    
+
     @$doc->loadHTML($html);
     //Now just focus on the image(s) within that post content
     $tags   = $doc->getElementsByTagName('img');
-    
+
     if($tags){
 
         $images_objects_from_post = array();
@@ -297,14 +297,14 @@ function mpd_get_images_from_the_content($post_id){
         //Deliver the array of attachement objects to the core
         return $images_objects_from_post;
     }
-    
+
 }
 
 
 /**
- * This function performs the action of copying the attached media image(s) to the newly created post in 
+ * This function performs the action of copying the attached media image(s) to the newly created post in
  * the core function.
- * 
+ *
  * @since 0.5
  * @param int $destination_post_id The ID of the post we are copying the media to
  * @param array $post_media_attachments An array of media library IDs to copy. Probably generated from mpd_get_images_from_the_content()
@@ -312,7 +312,7 @@ function mpd_get_images_from_the_content($post_id){
  * @param int $source_id The ID of the blog these images are being copied from.
  * @param int $new_blog_id The ID of the blog these images are going to.
  * @return null
- * 
+ *
  */
 function mpd_process_post_media_attachements($destination_post_id, $post_media_attachments, $attached_images_alt_tags, $source_id, $new_blog_id ){
 
@@ -325,7 +325,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
    foreach ($post_media_attachments as $post_media_attachment) {
 
         // Get all the data inside a file and attach it to a variable
-        $image_data             = file_get_contents($post_media_attachment->guid);
+        $image_data             = file_get_contents(mpd_fix_wordpress_urls($post_media_attachment->guid));
         // Break up the sourse URL into targetable sections
         $image_URL_info         = pathinfo($post_media_attachment->guid);
         //Just get the url without the filename extension...we are doing this because this will be the standard URL
@@ -335,9 +335,9 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
         //Do the find and replace for the site path
         // ie   http://www.somesite.com/source_blog_path/uploads/10/10/file... will become
         //      http://www.somesite.com/destination_blog_path/uploads/10/10/file...
-        
-        $image_URL_without_EXT  = str_replace(get_blog_details($new_blog_id)->siteurl, get_blog_details($source_id)->siteurl, $image_URL_without_EXT); 
-        
+
+        $image_URL_without_EXT  = str_replace(get_blog_details($new_blog_id)->siteurl, get_blog_details($source_id)->siteurl, $image_URL_without_EXT);
+
         $filename               = basename($post_media_attachment->guid);
 
         // Get the upload directory for the current site
@@ -356,7 +356,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
         // Get the URL (not the URI) of the new file
         $new_file_url = $upload_dir['url'] . '/' . $filename;
         $new_file_url = str_replace(get_blog_details($source_id)->siteurl, get_blog_details($new_blog_id)->siteurl, $new_file_url);
-        
+
         // Add the file contents to the new path with the new filename
         file_put_contents( $file, $image_data );
         // Get the mime type of the new file extension
@@ -384,7 +384,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
               update_post_meta($attach_id,'_wp_attachment_image_alt', $attached_images_alt_tags[$image_count]);
 
         }
-       
+
         // Include code to process functions below:
         require_once(ABSPATH . 'wp-admin/includes/image.php');
 
@@ -404,7 +404,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
         $post_update = array(
             'ID'           => $destination_post_id,
             'post_content' => $update_content
-        );          
+        );
 
         wp_update_post( $post_update );
 
@@ -415,16 +415,16 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
 
 
 /**
- * This function is to generate the image URL from the newly created media libray object for use in the core 
+ * This function is to generate the image URL from the newly created media libray object for use in the core
  * functions 'find and replace' action
- * 
+ *
  * @since 0.5
  * @param int $attach_id The ID of the new image
  * @param int $source_id The ID of the blog the image has come from
  * @param int $new_blog_id The ID of the blog the image is going to
  * @param string $new_file_url The previously generated URL for the new image
  * @return string
- * 
+ *
  */
 function mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_blog_id, $new_file_url){
 
@@ -441,19 +441,19 @@ function mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_bl
         if(network_site_url() != get_blog_details($source_id)->siteurl . "/"){
             $new_image_URL_without_EXT  = str_replace(get_blog_details($source_id)->siteurl, get_blog_details($new_blog_id)->siteurl, $new_image_URL_without_EXT);
         }
-        
+
         return $new_image_URL_without_EXT;
-        
+
 }
 
 /**
  * This function works with mpd_get_images_from_the_content() and produces alt tags associated with a matching
  * array of image objects
- * 
+ *
  * @since 0.5
  * @param object $post_media_attachments Probably generated from mpd_get_images_from_the_content()
  * @return array List of alt tags to be copied in core matching the array order of mpd_get_images_from_the_content()
- * 
+ *
  */
 function mpd_get_image_alt_tags($post_media_attachments){
 
@@ -466,12 +466,12 @@ function mpd_get_image_alt_tags($post_media_attachments){
         foreach ($post_media_attachments as $post_media_attachment) {
 
             $alt_tag = get_post_meta($post_media_attachment->ID, '_wp_attachment_image_alt', true);
-            
+
             $alt_tags_to_be_copied[$attachement_count] = $alt_tag;
-            
+
             $attachement_count++;
-                   
-            
+
+
         }
 
         $alt_tags_to_be_copied = apply_filters('mpd_alt_tag_array_from_post_content', $alt_tags_to_be_copied, $post_media_attachments);
@@ -483,13 +483,13 @@ function mpd_get_image_alt_tags($post_media_attachments){
 }
 /**
  * A helper function to help display the default state of a settings page checkbox
- * 
+ *
  * @since 0.4
  * @param array $options The option from the database
  * @param string $option_key The key from the options array you are checking
  * @param string $option_value The value you are checking against
  * @return string The markup to be added to the checkbox
- * 
+ *
  */
 function mpd_checked_lookup($options, $option_key, $option_value, $type = null){
 
@@ -520,16 +520,16 @@ function mpd_checked_lookup($options, $option_key, $option_value, $type = null){
 }
 /**
  * Generates markup for the 'Success Notice' once the MPD core function has been run.
- * 
+ *
  * Once the markup has been generated it is then saved as an option in wp_options database for use when the page loads.
- * 
+ *
  * @since 0.5
  * @param string $site_name The site name of the destination blog
  * @param string $site_url The edit URL link of the destination blog
  * @param array $destination_blog_details An array of information about the detination blog. Passed over so the details can be used in
  * filter
  * @return string The markup to be added to the success notice
- * 
+ *
  */
 function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details){
 
@@ -541,20 +541,20 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
 
         $message = $option_value . $message;
 
-    }      
+    }
 
     return $message;
-    
+
 }
 /**
  * Displays the admin notice.
- * 
+ *
  * Once the notice has been displayed on the screen it is then delted form the database
- * 
+ *
  * @since 0.5
  * @param none
  * @return none
- * 
+ *
  */
 function mpd_plugin_admin_notices(){
 
@@ -571,25 +571,25 @@ function mpd_plugin_admin_notices(){
 
 /**
  * Helper function to create setting field in mpd.
- * 
+ *
  * Uses 'add settings field'. See https://codex.wordpress.org/Function_Reference/add_settings_field
- * 
+ *
  * @since 0.6
  * @param $tag string Unique name for settings field
  * @param $settings_title string Title for the settings field in on the settings page. (accepts markup)
  * @param $callback_function_to_markup string The name of the function to render setting markup
  * @param $args string Any arguments you want to pass to the function
- * 
+ *
  * @return none
- * 
+ *
  */
 function mpd_settings_field($tag, $settings_title, $callback_function_to_markup, $args = null){
 
-  add_settings_field( 
-      $tag, 
-      __( $settings_title, MPD_DOMAIN ), 
+  add_settings_field(
+      $tag,
+      __( $settings_title, MPD_DOMAIN ),
       $callback_function_to_markup,
-      MPD_SETTING_PAGE, 
+      MPD_SETTING_PAGE,
       MPD_SETTING_SECTION,
       $args
   );
@@ -598,13 +598,13 @@ function mpd_settings_field($tag, $settings_title, $callback_function_to_markup,
 
 /**
  * This function allows for hooking into the sites returned in the WP core wp_get_sites() function.
- * 
+ *
  * Uses 'add settings field'. See https://codex.wordpress.org/Function_Reference/add_settings_field
- * 
+ *
  * @since 0.6
- * 
- * @return array A (filtered?) array of all the sites on the network, 
- * 
+ *
+ * @return array A (filtered?) array of all the sites on the network,
+ *
  */
 function mpd_wp_get_sites(){
 
@@ -615,4 +615,18 @@ function mpd_wp_get_sites(){
 
    return $filtered_sites;
 
+}
+
+/**
+ * [mpd_fix_wordpress_urls this function fix URLs that are missing the HTTP protocol. It support HTTP and HTTPS]
+ * @param  [string] $url_input [URL that may not have a protocol]
+ * @return [string]            [URL with procol]
+ *
+ * @since 0.7
+ */
+function mpd_fix_wordpress_urls($url_input) {
+	// Wordpress can have URLs missing the protocol (ssl website), so we have to check if the protocol is set
+	$protocol = stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://';
+	$url = preg_replace("/(^\/\/)/", $protocol, $url_input);
+	return $url;
 }
