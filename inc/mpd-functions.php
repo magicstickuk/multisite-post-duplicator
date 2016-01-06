@@ -195,7 +195,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
     // Get the upload directory for the current site
     $upload_dir = wp_upload_dir();
     // Get all the data inside a file and attach it to a variable
-    $image_data = file_get_contents(mdp_fix_wordpress_urls($image_details['url']));
+    $image_data = file_get_contents(mpd_fix_wordpress_urls($image_details['url']));
     // Get the file name of the source file
     $filename   = apply_filters('mpd_featured_image_filename', basename($image_details['url']), $image_details);
 
@@ -325,7 +325,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
    foreach ($post_media_attachments as $post_media_attachment) {
 
         // Get all the data inside a file and attach it to a variable
-        $image_data             = file_get_contents(mdp_fix_wordpress_urls($post_media_attachment->guid));
+        $image_data             = file_get_contents(mpd_fix_wordpress_urls($post_media_attachment->guid));
         // Break up the sourse URL into targetable sections
         $image_URL_info         = pathinfo($post_media_attachment->guid);
         //Just get the url without the filename extension...we are doing this because this will be the standard URL
@@ -618,13 +618,13 @@ function mpd_wp_get_sites(){
 }
 
 /**
- * [mdp_fix_wordpress_urls this function fix URLs that are missing the HTTP protocol. It support HTTP and HTTPS]
+ * [mpd_fix_wordpress_urls this function fix URLs that are missing the HTTP protocol. It support HTTP and HTTPS]
  * @param  [string] $url_input [URL that may not have a protocol]
  * @return [string]            [URL with procol]
  *
  * @since 0.7
  */
-function mdp_fix_wordpress_urls($url_input) {
+function mpd_fix_wordpress_urls($url_input) {
 	// Wordpress can have URLs missing the protocol (ssl website), so we have to check if the protocol is set
 	$protocol = stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://';
 	$url = preg_replace("/(^\/\/)/", $protocol, $url_input);
