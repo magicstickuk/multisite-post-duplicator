@@ -608,12 +608,14 @@ function mpd_settings_field($tag, $settings_title, $callback_function_to_markup,
  */
 function mpd_wp_get_sites(){
 
-   $args           = array('network_id' => null);
-   $sites          = wp_get_sites($args);
+    if(is_multisite()){
+      $args           = array('network_id' => null);
+      $sites          = wp_get_sites($args); 
 
-   $filtered_sites = apply_filters('mpd_global_filter_sites', $sites);
+      $filtered_sites = apply_filters('mpd_global_filter_sites', $sites);
 
-   return $filtered_sites;
+      return $filtered_sites; 
+    }
 
 }
 
@@ -630,3 +632,19 @@ function mpd_fix_wordpress_urls($url_input) {
 	$url = preg_replace("/(^\/\/)/", $protocol, $url_input);
 	return $url;
 }
+
+/**
+ * This function alters the user if they have installed this plugin on a non multisite installation.
+ *
+ * @since 0.7.3
+ *
+ * @return string
+ *
+ */
+function mpd_non_multisite_admin_notice() {
+    if (!is_multisite()) {
+        echo "<div class='error'><p>You have activated <em>Multisite Post Duplicator</em> on this WordPress Installation but this is not a Multisite Network. In the interest of your websites efficiency we would advise you deactivate the plugin until you are using a Multisite Network</p></div>";
+    }
+}
+
+add_action('admin_notices', 'mpd_non_multisite_admin_notice');
