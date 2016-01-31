@@ -67,6 +67,9 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 
 == Changelog ==
 
+= 0.7.3 =
+* Added sign-posting if user activates this plugin on a non multisite wordpress installation.
+
 = 0.7.2 =
 * Fix for file_get_content() not collecting image data on multisites running SSL that store files without a protocol. Thanks Pedro Freitas!
 
