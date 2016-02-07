@@ -92,7 +92,7 @@ function mpd_admin_menu_markup(){
 
     			<h3><?php _e('Select the status of the new post that will be created.', MPD_DOMAIN); ?></h3>
 
-    			<?php $post_statuses = get_post_statuses(); ?>
+    			<?php $post_statuses = mpd_get_post_statuses(); ?>
 
     			<?php  foreach ($post_statuses as $post_status_key => $post_status_value):?>
 

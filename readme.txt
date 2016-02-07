@@ -1,6 +1,6 @@
 === Multisite Post Duplicator ===
 
-Contributors: MagicStick, sergiambel
+Contributors: MagicStick
 Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, clone
 Requires at least: 3.0.1
 Tested up to: 4.4
@@ -66,6 +66,9 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 4. Batch Duplication
 
 == Changelog ==
+
+= 0.7.4 =
+* Added filter to allow access to post statuses. See support thread https://wordpress.org/support/topic/small-request-1 for details. 
 
 = 0.7.3 =
 * Added sign-posting if user activates this plugin on a non multisite wordpress installation.

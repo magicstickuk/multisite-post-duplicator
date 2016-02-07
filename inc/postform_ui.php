@@ -60,7 +60,7 @@ function mpd_metaboxes(){
  */
 function mpd_publish_top_right(){
 
-    $post_statuses  = get_post_statuses();
+    $post_statuses  = mpd_get_post_statuses();
     $sites          = mpd_wp_get_sites()
 
     ?>

@@ -648,3 +648,19 @@ function mpd_non_multisite_admin_notice() {
 }
 
 add_action('admin_notices', 'mpd_non_multisite_admin_notice');
+
+/**
+ * This function allows for user control of the availble statuses the can be used in the duplicated post
+ *
+ * @since 0.7.4
+ *
+ * @return array of post status available to dublicated post
+ *
+ */
+function mpd_get_post_statuses(){
+
+    $available_statuses = apply_filters('mpd_available_post_statuses', get_post_statuses());
+    
+    return $available_statuses;
+
+}
