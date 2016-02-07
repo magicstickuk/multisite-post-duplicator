@@ -16,7 +16,7 @@
  * @param string $post_type The destination post type.
  * @param int $post_author The ID of the requested post author from the destination site.
  * @param string $prefix Optional prefix to be used on the destination post.
- * @param string $post_status The post status for the destination ID. Has to be one of the values returned from WordPress's get_post_statuses() function
+ * @param string $post_status The post status for the destination ID. Has to be one of the values returned from the mpd_get_post_statuses() function
  * 
  * @return array An array containing information about the newly created post
  * 
