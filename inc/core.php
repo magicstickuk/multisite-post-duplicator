@@ -53,6 +53,8 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $sourcetags = wp_get_post_tags( $mpd_process_info['source_id'], array( 'fields' => 'names' ) );
     //Get the ID of the sourse blog
     $source_blog_id  = get_current_blog_id();
+    //Get the categories for the post
+    $source_categories = mpd_get_objects_of_post_categories($mpd_process_info['source_id'], $mpd_process_info['post_type']);
 
     //Format the prefix into the correct format if the user adds their own whitespace
     if($mpd_process_info['prefix'] != ''){
@@ -173,6 +175,13 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
         }
         
+    }
+
+    //
+    if($source_categories){
+
+        mpd_set_destination_categories($post_id, $source_categories, $mdp_post['post_type']);
+
     }
     
     //Collect information about the new post 

@@ -664,3 +664,91 @@ function mpd_get_post_statuses(){
     return $available_statuses;
 
 }
+
+/**
+ * This function allows for hooking into the sites returned in the WP core wp_get_sites() function.
+ *
+ * Uses 'add settings field'. See https://codex.wordpress.org/Function_Reference/add_settings_field
+ *
+ * @since 0.8
+ *
+ * @return array A (filtered?) array of all the sites on the network,
+ *
+ */
+function mpd_get_objects_of_post_categories($post_id, $post_type){
+
+    $args = array(
+        'type' => $post_type,
+    );
+    $categories = wp_get_post_categories($post_id, $args);
+   
+    $array_of_category_objects = array();
+
+    foreach ($categories as $category) {
+        array_push($array_of_category_objects, get_category($category));
+    }
+
+    return $array_of_category_objects;
+
+}
+
+/**
+ * This function allows for hooking into the sites returned in the WP core wp_get_sites() function.
+ *
+ * Uses 'add settings field'. See https://codex.wordpress.org/Function_Reference/add_settings_field
+ *
+ * @since 0.8
+ *
+ * @return array A (filtered?) array of all the sites on the network,
+ *
+ */
+function mpd_get_objects_of_site_categories($post_type){
+
+    $args = array(
+        'type' => $post_type,
+        "hide_empty" => 0,
+    );
+
+    $all_categories = get_terms( 'category', $args );
+
+    return $all_categories;
+
+}
+
+
+function mpd_set_destination_categories($post_id, $source_categories, $post_type){
+
+    $all_destination_categories = mpd_get_objects_of_site_categories($post_type);
+
+    foreach ($source_categories as $source_category) {
+
+        $source_slug = $source_category->slug;
+
+        foreach ($all_destination_categories as $destination_category) {
+
+            if($destination_category->slug == $source_slug){
+
+                $category_id = $destination_category->ID;
+
+                wp_set_post_categories( $post_id, array($category_id), false );
+
+            }else{
+
+                $catarr = array(
+                    'cat_name' => $source_category->name,
+                    'category_description' => $source_category->description,
+                    'category_nicename' => $source_slug,
+                    'category_parent' => ''
+                );
+
+                $new_cat_id = wp_insert_category( $catarr);
+
+                wp_set_post_categories( $post_id, array($new_cat_id), true );
+
+            }
+
+        }
+
+    }
+
+}
