@@ -666,13 +666,13 @@ function mpd_get_post_statuses(){
 }
 
 /**
- * This function allows for hooking into the sites returned in the WP core wp_get_sites() function.
- *
- * Uses 'add settings field'. See https://codex.wordpress.org/Function_Reference/add_settings_field
+ * This function gets all the categories that a post is assigned to
  *
  * @since 0.8
+ * @param $post_id The id of the post that we want to get the categories for
+ * @param $post_type The post type of the post that we want to get the categories for
  *
- * @return array A (filtered?) array of all the sites on the network,
+ * @return array An array of the catergory objects.
  *
  */
 function mpd_get_objects_of_post_categories($post_id, $post_type){
@@ -693,13 +693,14 @@ function mpd_get_objects_of_post_categories($post_id, $post_type){
 }
 
 /**
- * This function allows for hooking into the sites returned in the WP core wp_get_sites() function.
+ * 
+ * This function gets all the categories currently avaialble on the site
  *
- * Uses 'add settings field'. See https://codex.wordpress.org/Function_Reference/add_settings_field
  *
  * @since 0.8
+ * @param $post_type The post type of the post that we want to get the categories for
  *
- * @return array A (filtered?) array of all the sites on the network,
+ * @return array An array of the catergory objects.
  *
  */
 function mpd_get_objects_of_site_categories($post_type){
@@ -715,7 +716,20 @@ function mpd_get_objects_of_site_categories($post_type){
 
 }
 
-
+/**
+ * 
+ * This function performs the action of taking the categories of the sourse post
+ * and assigning the categories to the new destination post. If the category doesn't
+ * exist in the destination site it will create the category
+ *
+ * @since 0.8
+ * @param $post_id The the ID of the newly created destination post
+ * @param $source_categories An array of category objects from the source post
+ * @param $post_type The post type of the post that we assign the categories to
+ * 
+ * @return NULL
+ *
+ */
 function mpd_set_destination_categories($post_id, $source_categories, $post_type){
 
     $all_destination_categories = mpd_get_objects_of_site_categories($post_type);
