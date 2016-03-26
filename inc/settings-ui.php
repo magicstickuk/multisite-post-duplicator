@@ -84,8 +84,10 @@ function mdp_settings_init(  ) {
 	
 	mpd_settings_field('mdp_default_prefix', __( 'Default Prefix', MPD_DOMAIN ), 'mdp_default_prefix_render');
 	mpd_settings_field('mdp_default_tags_copy', __( 'Copy post tags when duplicating?', MPD_DOMAIN ), 'mdp_default_tags_copy_render');
+	mpd_settings_field('mdp_copy_post_categories', __( 'Copy post categories?', MPD_DOMAIN ), 'mdp_copy_post_categories_render');
 	mpd_settings_field('mdp_default_featured_image', __( 'Copy featured image when duplicating?', MPD_DOMAIN ), 'mdp_default_feat_image_copy_render');
 	mpd_settings_field('mdp_copy_content_images', __( 'Copy post content images to destination media library?', MPD_DOMAIN ), 'mdp_copy_content_image_render');
+
 
 	do_action( 'mdp_end_plugin_setting_page' );
 
@@ -189,6 +191,27 @@ function mdp_default_tags_copy_render(  ) {
 	<input type='checkbox' name='mdp_settings[mdp_default_tags_copy]' <?php mpd_checked_lookup($options, 'mdp_default_tags_copy', 'tags') ;?> value='tags'> 
 
 	<p class="mpdtip"><?php _e('This plugin will automatically copy the tags associated with the post. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
+
+	<?php
+
+}
+
+/**
+ * 
+ * Create the UI for the Category Copy Selection Setting
+ * 
+ * @since 0.8
+ * @return null
+ * 
+ */
+function mdp_copy_post_categories_render(  ) { 
+
+	$options = get_option( 'mdp_settings' );
+
+	?>
+	<input type='checkbox' name='mdp_settings[mdp_copy_post_categories]' <?php mpd_checked_lookup($options, 'mdp_copy_post_categories', 'category') ;?> value='category'> 
+
+	<p class="mpdtip"><?php _e('This plugin will automatically copy the categories associated with the post. If the category doesn\'t exsist in the destination site the cat will be created for you. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
 
 	<?php
 
