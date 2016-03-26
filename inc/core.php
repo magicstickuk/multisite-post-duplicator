@@ -177,10 +177,14 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
         
     }
 
-    //
+    //If there were categories in the sourse post then copy them over
     if($source_categories){
 
-        mpd_set_destination_categories($post_id, $source_categories, $mdp_post['post_type']);
+        if(isset($options['mdp_copy_post_categories']) || !$options ){
+
+            mpd_set_destination_categories($post_id, $source_categories, $mdp_post['post_type']);
+
+        }
 
     }
     
