@@ -78,9 +78,9 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     ), $mpd_process_info);
 
     //Get all the custom fields associated with the sourse post
-    $data              = get_post_custom($mdp_post);
+    $data              = apply_filters('mpd_filter_post_custom', get_post_custom($mdp_post));
     //Get all the meta data associated with the sourse post
-    $meta_values       = get_post_meta($mpd_process_info['source_id']);
+    $meta_values       = apply_filters('mpd_filter_post_meta', get_post_meta($mpd_process_info['source_id']));
     //Get array of data associated with the featured image for this post
     $featured_image    = mpd_get_featured_image_from_source($mpd_process_info['source_id']);
 
