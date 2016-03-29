@@ -158,3 +158,13 @@ function mpd_do_version_log(){
    return $type_of_activation;
 
 }
+
+function testing_taxonomy(){
+	global $post;
+
+	echo "<pre>";
+	print_r( get_object_taxonomies( 'post', 'names' ));
+	print_r(wp_get_post_terms($post->ID, 'post_format'));
+	echo "</pre>";
+}
+add_action('admin_notices', 'testing_taxonomy');
