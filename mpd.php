@@ -165,6 +165,7 @@ function testing_taxonomy(){
 	echo "<pre>";
 	print_r( get_object_taxonomies( 'post', 'names' ));
 	print_r(wp_get_post_terms($post->ID, 'post_format'));
+	//https://codex.wordpress.org/Function_Reference/wp_insert_term
 	echo "</pre>";
 }
 add_action('admin_notices', 'testing_taxonomy');
