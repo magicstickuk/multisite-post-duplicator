@@ -774,3 +774,19 @@ function mpd_set_destination_categories($post_id, $source_categories, $post_type
     wp_set_post_categories( $post_id, $destination_post_categories, false );
 
 }
+
+// function mpd_filter_post_meta($post_metai){
+
+//     $meta_to_ignore = array();
+
+//     foreach ($post_metai as $post_meta) {
+        
+//         if(in_array($post_meta, $meta_to_ignore)){
+//             unset($post_meta)
+//         }
+//     }
+
+//     return $post_metai;
+    
+// }
+// add_filter('mpd_filter_post_meta', 'mpd_filter_post_meta')
