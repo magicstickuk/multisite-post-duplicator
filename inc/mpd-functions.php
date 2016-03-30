@@ -775,6 +775,69 @@ function mpd_set_destination_categories($post_id, $source_categories, $post_type
 
 }
 
+/**
+ * 
+ * This function performs the action of taking the taxonomies of the sourse post and
+ * collecting them into an array of objects for use when duplicating to the desitination.
+ * Works with mpd_set_post_taxonomy_terms();
+ *
+ * @since 0.9
+ * @param $post_id The the ID of post being copied
+ * 
+ * @return array An array of term objects used in the post
+ *
+ */
+function mpd_get_post_taxonomy_terms($post_id){
+
+    $source_taxonomy_terms_object = array();
+
+    $post_taxonomies = get_object_taxonomies( get_post_type($post_id), 'names' );
+
+    foreach ($post_taxonomies as $post_taxonomy) {
+        if($post_taxonomy != 'category' && $post_taxonomy != 'post_tag'){
+            array_push($source_taxonomy_terms_object, wp_get_post_terms($post_id, $post_taxonomy));
+        }
+    }
+
+    return $source_taxonomy_terms_object;
+
+}
+
+/**
+ * 
+ * This function performs the action of setting the taxonomies of the sourse post and
+ * to the desitination post.
+ * Works with mpd_get_post_taxonomy_terms();
+ *
+ * @since 0.9
+ * @param $source_taxonomy_terms_object An array of term objects used in the sourse post
+ * @param $post_id The ID of the newly created post
+ * 
+ * @return array An array of term objects used in the post
+ *
+ */
+function mpd_set_post_taxonomy_terms($source_taxonomy_terms_object, $post_id){
+
+    foreach ($source_taxonomy_terms_object as $source_taxonomy_terms) {
+        foreach ($source_taxonomy_terms as $term) {
+
+            $args = array(
+                'description'=> $term->description,
+                'slug' => $term->slug,
+            );
+
+            wp_insert_term( $term->name, $term->taxonomy, $args);
+
+            wp_set_object_terms( $post_id, $term->slug, $term->taxonomy, true);
+            
+        }
+        
+    }
+
+    return; 
+
+}
+
 // function mpd_filter_post_meta($post_metai){
 
 //     $meta_to_ignore = array();

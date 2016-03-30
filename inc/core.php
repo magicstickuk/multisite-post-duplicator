@@ -83,6 +83,8 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $meta_values       = apply_filters('mpd_filter_post_meta', get_post_meta($mpd_process_info['source_id']));
     //Get array of data associated with the featured image for this post
     $featured_image    = mpd_get_featured_image_from_source($mpd_process_info['source_id']);
+    //Get array of taxenomy term objects from post if any
+    $source_taxonomy_terms_object = mpd_get_post_taxonomy_terms($mpd_process_info['source_id']);
 
     //If we are copying the sourse post to another site on the network we will collect data about those 
     //images.
@@ -187,6 +189,12 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
         }
 
     }
+
+    //If there were taxonomy terms associated with the post create them and assign them to new post
+    if($source_taxonomy_terms_object){
+        mpd_set_post_taxonomy_terms($source_taxonomy_terms_object, $post_id);
+    }
+    
     
     //Collect information about the new post 
     $site_edit_url = get_edit_post_link( $post_id );

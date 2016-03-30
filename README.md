@@ -23,6 +23,7 @@ Features
 *   Copies all image media within post content to the new site's media library for exclusive use in the destination site (Can be turned on or off in Settings)
 *   Copies associated tags (Can be turned on or off in Settings)
 *   Copies post categories. If the category doesn't exist in the destination site then the category is created and assigned to the post (Can be turned on or off in Settings)
+*   Copies post taxonomies. (Can be turned on or off in Settings). This behaviour assumes that the taxonomies being duplicated are been registered on the destination site.
 *	Batch Duplication
 *	Settings page to customise the default behaviour
 *	Restrict functionality to only certain sites on your network
@@ -67,6 +68,9 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 4. Batch Duplication
 
 == Changelog ==
+
+= 0.9 =
+* NEW (finally): Copy post taxonomies. This behaviour assumes that the taxonomies being duplicated are also registered on the destination site.
 
 = 0.8 =
 * NEW: Copy post categories. If the category doesn't exist in the destination site then the category is created and assigned to the post (Can be turned on or off in Settings). NOTE: Full taxonomy support coming soon
