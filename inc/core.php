@@ -51,7 +51,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $title      = get_the_title($mdp_post);
     //Get the tags from the post we are copying
     $sourcetags = wp_get_post_tags( $mpd_process_info['source_id'], array( 'fields' => 'names' ) );
-    //Get the ID of the sourse blog
+    //Get the ID of the source blog
     $source_blog_id  = get_current_blog_id();
     //Get the categories for the post
     $source_categories = mpd_get_objects_of_post_categories($mpd_process_info['source_id'], $mpd_process_info['post_type']);
@@ -63,7 +63,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     }
 
-    //Using the orgininal post object we now want to insert our any new data based on user settings for use
+    //Using the original post object we now want to insert our any new data based on user settings for use
     //in the post object that we will be adding to the destination site
     $mdp_post = apply_filters('mpd_setup_destination_data', array(
 
@@ -77,16 +77,16 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     ), $mpd_process_info);
 
-    //Get all the custom fields associated with the sourse post
+    //Get all the custom fields associated with the source post
     $data              = apply_filters('mpd_filter_post_custom', get_post_custom($mdp_post));
-    //Get all the meta data associated with the sourse post
+    //Get all the meta data associated with the source post
     $meta_values       = apply_filters('mpd_filter_post_meta', get_post_meta($mpd_process_info['source_id']));
     //Get array of data associated with the featured image for this post
     $featured_image    = mpd_get_featured_image_from_source($mpd_process_info['source_id']);
-    //Get array of taxenomy term objects from post if any
+    //Get array of taxonomy term objects from post if any
     $source_taxonomy_terms_object = mpd_get_post_taxonomy_terms($mpd_process_info['source_id']);
 
-    //If we are copying the sourse post to another site on the network we will collect data about those 
+    //If we are copying the source post to another site on the network we will collect data about those 
     //images.
     if($mpd_process_info['destination_id'] != $source_blog_id){
 
@@ -129,7 +129,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     }
     
-    //Copy the meta data collected from the sourse post to the new post
+    //Copy the meta data collected from the source post to the new post
   	foreach ($meta_values as $key => $values) {
 
        foreach ($values as $value) {
@@ -148,7 +148,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
         }
 
     }
-    //If there were media attached to the sourse post content then copy that over
+    //If there were media attached to the source post content then copy that over
     if($attached_images){
         //Check that the users plugin settings actually want this process to happen
         if(isset($options['mdp_copy_content_images']) || !$options ){
@@ -158,7 +158,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
         }
 
     }
-    //If there was a featured image in the sourse post then copy it over
+    //If there was a featured image in the source post then copy it over
     if($featured_image){
         //Check that the users plugin settings actually want this process to happen
         if(isset($options['mdp_default_featured_image']) || !$options ){
@@ -168,7 +168,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
         }
 
     }
-    //If there were tags in the sourse post then copy them over
+    //If there were tags in the source post then copy them over
     if($sourcetags){
         //Check that the users plugin settings actually want this process to happen
         if(isset($options['mdp_default_tags_copy']) || !$options ){
@@ -179,7 +179,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
         
     }
 
-    //If there were categories in the sourse post then copy them over
+    //If there were categories in the source post then copy them over
     if($source_categories){
 
         if(isset($options['mdp_copy_post_categories']) || !$options ){

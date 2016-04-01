@@ -58,15 +58,17 @@ function mdp_plugin_activate() {
 
 		   }else{
 		   	
-		   		//Add default option for exsisting users with new checkboxes
+		   		//Add default option for existing users with new checkboxes
 		   		$options = get_option( 'mdp_settings' );
 
 		   		$options['mdp_copy_content_images'] 		= 'content-image';
 		   		$options['mdp_default_tags_copy'] 			= 'tags';
 		   		$options['mdp_copy_post_categories'] 		= 'category';
+		   		$options['mdp_copy_post_taxonomies']		= 'taxonomy';
 		   		$options['mdp_default_featured_image']		= 'feat';
 		   		$options['restrict_option_setting']			= 'none';
 		   		$options['role_option_setting']				= 'Administrator';
+		   		$options['mdp_ignore_custom_meta']			= '';
 
 		   		$options = apply_filters('mpd_activation_options', $options);
 
@@ -97,9 +99,11 @@ function mdp_get_default_options(){
 		'mdp_default_prefix' 			=> __('Copy of', MPD_DOMAIN ),
 		'mdp_default_tags_copy' 		=> 'tags',
 		'mdp_copy_post_categories'		=> 'category',
+		'mdp_copy_post_taxonomies'		=> 'taxonomy',
 		'mdp_default_featured_image' 	=> 'feat',
 		'mdp_copy_content_images' 		=> 'content-image',
 		'meta_box_show_radio' 			=> 'all',
+		'mdp_ignore_custom_meta'		=> ''
 
 	);
 
