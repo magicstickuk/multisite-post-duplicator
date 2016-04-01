@@ -860,6 +860,19 @@ function mpd_set_post_taxonomy_terms($source_taxonomy_terms_object, $post_id){
 
 }
 
+/**
+ * 
+ * This function performs the action of setting the taxonomies of the source post and
+ * to the destination post.
+ * Works with mpd_get_post_taxonomy_terms();
+ *
+ * @since 0.9
+ * @param $source_taxonomy_terms_object An array of term objects used in the source post
+ * @param $post_id The ID of the newly created post
+ * 
+ * @return array An array of term objects used in the post
+ *
+ */
 function mpd_ignore_custom_meta_keys($post_meta_array){
 	
 	$options = get_option( 'mdp_settings' );

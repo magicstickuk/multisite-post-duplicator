@@ -192,7 +192,9 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     //If there were taxonomy terms associated with the post create them and assign them to new post
     if($source_taxonomy_terms_object){
-        mpd_set_post_taxonomy_terms($source_taxonomy_terms_object, $post_id);
+        if(isset($options['mdp_copy_post_taxonomies']) || !$options ){
+            mpd_set_post_taxonomy_terms($source_taxonomy_terms_object, $post_id);
+        }
     }
     
     
