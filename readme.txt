@@ -3,7 +3,7 @@
 Contributors: MagicStick
 Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, clone
 Requires at least: 3.0.1
-Tested up to: 4.4.2
+Tested up to: 4.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,9 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 
 = 0.9 =
 * NEW (finally): Copy post taxonomies. This behaviour assumes that the taxonomies being duplicated are also registered on the destination site.
+* NEW: Add list of post meta keys to ignore in settings.
+* Fixed bug in with copying categories where category wouldn't copy if the term id didn't marry up with the destination term id.
+* Fixed bug where categories with special characters would break the duplication process
 
 = 0.8 =
 * NEW: Copy post categories. If the category doesn't exist in the destination site then the category is created and assigned to the post (Can be turned on or off in Settings). NOTE: Full taxonomy support coming soon

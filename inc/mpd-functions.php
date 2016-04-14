@@ -739,62 +739,66 @@ function mpd_get_objects_of_site_categories($post_type){
 }
 
 /**
- * 
- * This function performs the action of taking the categories of the source post
- * and assigning the categories to the new destination post. If the category doesn't
- * exist in the destination site it will create the category
- *
- * @since 0.8
- * @param $post_id The the ID of the newly created destination post
- * @param $source_categories An array of category objects from the source post
- * @param $post_type The post type of the post that we assign the categories to
- * 
+*
+ * This function performs the action of taking the categories of the sourse post
+* and assigning the categories to the new destination post. If the category doesn't
+* exist in the destination site it will create the category
+*
+* @since 0.8
+* @param $post_id The the ID of the newly created destination post
+* @param $source_categories An array of category objects from the source post
+* @param $post_type The post type of the post that we assign the categories to
+*
  * @return NULL
- *
- */
+*
+*/
 function mpd_set_destination_categories($post_id, $source_categories, $post_type){
-
+ 
     $all_destination_categories = mpd_get_objects_of_site_categories($post_type);
-
+ 
     $destination_post_categories = array();
-
+ 
     foreach ($source_categories as $source_category) {
-
+ 
         $source_slug = $source_category->slug;
-
+ 
         if($source_slug != 'uncategorised'){
-
+ 
              foreach ($all_destination_categories as $destination_category) {
-
+ 
                 if($destination_category->slug == $source_slug){
-
-                    $category_id = $destination_category->ID;
-
-                    array_push($destination_post_categories, $category_id);
-
+ 
+                    $category = get_category_by_slug( $destination_category->slug  );
+ 
+                    array_push($destination_post_categories, $category->term_id);
+ 
                 }else{
-
+ 
                     $catarr = array(
-                        'cat_name' => $source_category->name,
-                        'category_description' => $source_category->description,
-                        'category_nicename' => $source_slug,
-                        'category_parent' => ''
+                        'cat_name'              => esc_attr($source_category->name),
+                        'category_description'  => esc_attr($source_category->description),
+                        'category_nicename'     => $source_slug,
+                        'category_parent'       => ''
                     );
-
+ 
                     $new_cat_id = wp_insert_category($catarr);
-
+ 
+                  
+ 
                     array_push($destination_post_categories, $new_cat_id);
-
+ 
                 }
-
+ 
             }
-
+ 
         }
-
+ 
     }
-
+ 
     wp_set_post_categories( $post_id, $destination_post_categories, false );
-
+ 
+    return;
+ 
 }
 
 /**
@@ -816,9 +820,13 @@ function mpd_get_post_taxonomy_terms($post_id){
     $post_taxonomies = get_object_taxonomies( get_post_type($post_id), 'names' );
 
     foreach ($post_taxonomies as $post_taxonomy) {
+
         if($post_taxonomy != 'category' && $post_taxonomy != 'post_tag'){
+
             array_push($source_taxonomy_terms_object, wp_get_post_terms($post_id, $post_taxonomy));
+
         }
+
     }
 
     return $source_taxonomy_terms_object;
@@ -841,10 +849,11 @@ function mpd_get_post_taxonomy_terms($post_id){
 function mpd_set_post_taxonomy_terms($source_taxonomy_terms_object, $post_id){
 
     foreach ($source_taxonomy_terms_object as $source_taxonomy_terms) {
+
         foreach ($source_taxonomy_terms as $term) {
 
             $args = array(
-                'description'=> $term->description,
+                'description'=> esc_attr($term->description),
                 'slug' => $term->slug,
             );
 
@@ -878,7 +887,9 @@ function mpd_ignore_custom_meta_keys($post_meta_array){
 	$options = get_option( 'mdp_settings' );
 	
 	if($options['mdp_ignore_custom_meta'] = ''){
+
 		return $post_meta_array;
+
 	}
 	
 	$meta_to_ignore_raw = str_replace(' ', '', $options['mdp_ignore_custom_meta']);
@@ -889,7 +900,9 @@ function mpd_ignore_custom_meta_keys($post_meta_array){
 	foreach($post_meta_array as $meta_key => $meta_value){
 		
 		if(!in_array($meta_key, $meta_to_ignore)){
-			$new_post_meta[$meta_key] = $meta_value;		
+
+			$new_post_meta[$meta_key] = $meta_value;
+            		
 		}
 		
 	}
