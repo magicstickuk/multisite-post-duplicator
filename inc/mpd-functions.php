@@ -871,13 +871,12 @@ function mpd_set_post_taxonomy_terms($source_taxonomy_terms_object, $post_id){
 
 /**
  * 
- * This function filters the post meta array for a source post by any post meta that is required
- * to be ignored as set in mpd setting.
+ * This function filters out post meta keys from the post meta as requested in the 'keys to ignore' mpd settings page.
  *
  * @since 0.9
- * @param $post_meta_array An array of the post meta
+ * @param $post_meta_array The source post post_meta
  * 
- * @return array An array without the keys that we wish to ignore when creating the destination post
+ * @return array A filtered array without the keys as specified in 'keys to ignore' in mpd settings
  *
  */
 function mpd_ignore_custom_meta_keys($post_meta_array){

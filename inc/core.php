@@ -30,7 +30,7 @@
 function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $post_author, $prefix, $post_status) {
 
     //Collect function arguments into a single variable
-    $mpd_process_info = array(
+    $mpd_process_info = apply_filters('mpd_source_data', array(
 
         'source_id'             => $post_id_to_copy,
         'destination_id'        => $new_blog_id,
@@ -39,7 +39,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
         'prefix'                => $prefix,
         'requested_post_status' => $post_status
 
-    );
+    ));
 
     do_action('mpd_before_core', $mpd_process_info);
 
