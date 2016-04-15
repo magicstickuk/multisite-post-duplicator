@@ -72,8 +72,8 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 
 = 0.9 =
 * NEW (finally): Copy post taxonomies terms. This behaviour assumes that the taxonomies terms being duplicated are from taxonomies that are registered on the destination site.
-* NEW: Add list of post meta keys to ignore in your duplication.
-* Fixed bug in with copying categories where category wouldn't copy if the term id didn't marry up with the destination term id.
+* NEW: Add list of post meta keys to ignore in settings.
+* Fixed bug where category wouldn't copy if the term id didn't marry up with the destination term id.
 * Fixed bug where categories with special characters would cause unexpected results
 * Some UI improvements
 * Added 'mpd_source_data' filter to allow hooking into the source post data
