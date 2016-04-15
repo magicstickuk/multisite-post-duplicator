@@ -89,9 +89,10 @@ function mdp_settings_init(  ) {
 
 	mpd_settings_field('mdp_default_featured_image', __( 'Copy featured image when duplicating?', MPD_DOMAIN ), 'mdp_default_feat_image_copy_render');
 	mpd_settings_field('mdp_copy_content_images', __( 'Copy post content images to destination media library?', MPD_DOMAIN ), 'mdp_copy_content_image_render');
-	mpd_settings_field('mdp_ignore_custom_meta', __( 'Post Meta to ignore?', MPD_DOMAIN ), 'mdp_ignore_custom_meta_render');
 
 	do_action( 'mdp_end_plugin_setting_page' );
+
+	mpd_settings_field('mdp_ignore_custom_meta', __( 'Post Meta to ignore?', MPD_DOMAIN ), 'mdp_ignore_custom_meta_render');
 
 }
 /**
@@ -188,9 +189,9 @@ function mdp_ignore_custom_meta_render(  ) {
 
 	$options = get_option( 'mdp_settings' );
 	?>
-	<input type='text' autocapitalize="none" autocorrect="none" name='mdp_settings[mdp_ignore_custom_meta]' value='<?php echo mpd_get_ignore_keys(); ?>'>
+	<input id="mdp-ignore-custom-meta" type='text' autocapitalize="none" autocorrect="none" name='mdp_settings[mdp_ignore_custom_meta]' value='<?php echo mpd_get_ignore_keys(); ?>'>
 
-	<p class="mpdtip"><?php _e('A comma delimerated list of post meta keys you wish to ignore during the duplication process. <em>i.e (without quotes) \'my_custom_meta_key, post_facebook_share_count\'</em> WARNING: Only edit this option if you are sure what you are doing.', MPD_DOMAIN )?></p>
+	<p class="mpdtip"><?php _e('A comma delimerated list of post meta keys you wish to ignore during the duplication process. <em>i.e (without quotes) \'my_custom_meta_key, post_facebook_share_count\'</em></br></br>WARNING: Only edit this option if you are sure what you are doing.', MPD_DOMAIN )?></p>
 	<?php
 
 }
