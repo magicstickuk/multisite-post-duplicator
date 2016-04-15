@@ -134,7 +134,29 @@ function mpd_get_prefix(){
       return $prefix;
 
 }
+/**
+ * This function returns the value of keys to ignore.
+ *
+ * @since 0.9
+ * @param none
+ * @return string
+*/
+function mpd_get_ignore_keys(){
 
+      if($options = get_option( 'mdp_settings' )){
+
+            $ignore_keys = $options['mdp_ignore_custom_meta'];
+
+      }else{
+
+            $defaultOptions	= mdp_get_default_options();
+            $ignore_keys    = $defaultOptions['mdp_ignore_custom_meta'];
+
+      }
+
+      return $ignore_keys;
+
+}
 /**
  * Gets information on the featured image attached to a post
  *
@@ -294,7 +316,7 @@ function mpd_get_images_from_the_content($post_id){
             $images_objects_from_post[$matches[0]] = $image_obj;
 
         }
-        //Deliver the array of attachement objects to the core
+        //Deliver the array of attachment objects to the core
         return $images_objects_from_post;
     }
 
@@ -316,17 +338,17 @@ function mpd_get_images_from_the_content($post_id){
  */
 function mpd_process_post_media_attachements($destination_post_id, $post_media_attachments, $attached_images_alt_tags, $source_id, $new_blog_id ){
 
-   // Variable to return the count of images we have processed and also to patch the source keys with the desitination keys
+   // Variable to return the count of images we have processed and also to patch the source keys with the destination keys
    $image_count = 0;
-   // Get array of the IDs of the sourse images pulled from the sourse content
+   // Get array of the IDs of the source images pulled from the source content
    $old_image_ids = array_keys($post_media_attachments);
 
-   //Do stuff with each image from the sourse post content
+   //Do stuff with each image from the source post content
    foreach ($post_media_attachments as $post_media_attachment) {
 
         // Get all the data inside a file and attach it to a variable
         $image_data             = file_get_contents(mpd_fix_wordpress_urls($post_media_attachment->guid));
-        // Break up the sourse URL into targetable sections
+        // Break up the source URL into targetable sections
         $image_URL_info         = pathinfo($post_media_attachment->guid);
         //Just get the url without the filename extension...we are doing this because this will be the standard URL
         //for all the thumbnails attached to this image and we can therefore 'find and replace' all the possible
@@ -415,7 +437,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
 
 
 /**
- * This function is to generate the image URL from the newly created media libray object for use in the core
+ * This function is to generate the image URL from the newly created media library object for use in the core
  * functions 'find and replace' action
  *
  * @since 0.5
@@ -437,7 +459,7 @@ function mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_bl
         //Do the find and replace for the site path
         // ie   http://www.somesite.com/source_blog_path/uploads/10/10/file... will become
         //      http://www.somesite.com/destination_blog_path/uploads/10/10/file...
-        // This step is not required if the sourse site is the network main site
+        // This step is not required if the source site is the network main site
         if(network_site_url() != get_blog_details($source_id)->siteurl . "/"){
             $new_image_URL_without_EXT  = str_replace(get_blog_details($source_id)->siteurl, get_blog_details($new_blog_id)->siteurl, $new_image_URL_without_EXT);
         }
@@ -526,7 +548,7 @@ function mpd_checked_lookup($options, $option_key, $option_value, $type = null){
  * @since 0.5
  * @param string $site_name The site name of the destination blog
  * @param string $site_url The edit URL link of the destination blog
- * @param array $destination_blog_details An array of information about the detination blog. Passed over so the details can be used in
+ * @param array $destination_blog_details An array of information about the destination blog. Passed over so the details can be used in
  * filter
  * @return string The markup to be added to the success notice
  *
@@ -549,7 +571,7 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
 /**
  * Displays the admin notice.
  *
- * Once the notice has been displayed on the screen it is then delted form the database
+ * Once the notice has been displayed on the screen it is then deleted form the database
  *
  * @since 0.5
  * @param none
@@ -622,7 +644,7 @@ function mpd_wp_get_sites(){
 /**
  * [mpd_fix_wordpress_urls this function fix URLs that are missing the HTTP protocol. It support HTTP and HTTPS]
  * @param  [string] $url_input [URL that may not have a protocol]
- * @return [string]            [URL with procol]
+ * @return [string]            [URL with protocol]
  *
  * @since 0.7
  */
@@ -650,11 +672,11 @@ function mpd_non_multisite_admin_notice() {
 add_action('admin_notices', 'mpd_non_multisite_admin_notice');
 
 /**
- * This function allows for user control of the availble statuses the can be used in the duplicated post
+ * This function allows for user control of the available statuses the can be used in the duplicated post
  *
  * @since 0.7.4
  *
- * @return array of post status available to dublicated post
+ * @return array of post status available to duplicated post
  *
  */
 function mpd_get_post_statuses(){
@@ -672,7 +694,7 @@ function mpd_get_post_statuses(){
  * @param $post_id The id of the post that we want to get the categories for
  * @param $post_type The post type of the post that we want to get the categories for
  *
- * @return array An array of the catergory objects.
+ * @return array An array of the category objects.
  *
  */
 function mpd_get_objects_of_post_categories($post_id, $post_type){
@@ -694,13 +716,13 @@ function mpd_get_objects_of_post_categories($post_id, $post_type){
 
 /**
  * 
- * This function gets all the categories currently avaialble on the site
+ * This function gets all the categories currently available on the site
  *
  *
  * @since 0.8
  * @param $post_type The post type of the post that we want to get the categories for
  *
- * @return array An array of the catergory objects.
+ * @return array An array of the category objects.
  *
  */
 function mpd_get_objects_of_site_categories($post_type){
@@ -717,60 +739,167 @@ function mpd_get_objects_of_site_categories($post_type){
 }
 
 /**
- * 
+*
  * This function performs the action of taking the categories of the sourse post
- * and assigning the categories to the new destination post. If the category doesn't
- * exist in the destination site it will create the category
- *
- * @since 0.8
- * @param $post_id The the ID of the newly created destination post
- * @param $source_categories An array of category objects from the source post
- * @param $post_type The post type of the post that we assign the categories to
- * 
+* and assigning the categories to the new destination post. If the category doesn't
+* exist in the destination site it will create the category
+*
+* @since 0.8
+* @param $post_id The the ID of the newly created destination post
+* @param $source_categories An array of category objects from the source post
+* @param $post_type The post type of the post that we assign the categories to
+*
  * @return NULL
+*
+*/
+function mpd_set_destination_categories($post_id, $source_categories, $post_type){
+ 
+    $all_destination_categories = mpd_get_objects_of_site_categories($post_type);
+ 
+    $destination_post_categories = array();
+ 
+    foreach ($source_categories as $source_category) {
+ 
+        $source_slug = $source_category->slug;
+ 
+        if($source_slug != 'uncategorised'){
+ 
+             foreach ($all_destination_categories as $destination_category) {
+ 
+                if($destination_category->slug == $source_slug){
+ 
+                    $category = get_category_by_slug( $destination_category->slug  );
+ 
+                    array_push($destination_post_categories, $category->term_id);
+ 
+                }else{
+ 
+                    $catarr = array(
+                        'cat_name'              => esc_attr($source_category->name),
+                        'category_description'  => esc_attr($source_category->description),
+                        'category_nicename'     => $source_slug,
+                        'category_parent'       => ''
+                    );
+ 
+                    $new_cat_id = wp_insert_category($catarr);
+ 
+                  
+ 
+                    array_push($destination_post_categories, $new_cat_id);
+ 
+                }
+ 
+            }
+ 
+        }
+ 
+    }
+ 
+    wp_set_post_categories( $post_id, $destination_post_categories, false );
+ 
+    return;
+ 
+}
+
+/**
+ * 
+ * This function performs the action of taking the taxonomies of the source post and
+ * collecting them into an array of objects for use when duplicating to the destination.
+ * Works with mpd_set_post_taxonomy_terms();
+ *
+ * @since 0.9
+ * @param $post_id The the ID of post being copied
+ * 
+ * @return array An array of term objects used in the post
  *
  */
-function mpd_set_destination_categories($post_id, $source_categories, $post_type){
+function mpd_get_post_taxonomy_terms($post_id){
 
-    $all_destination_categories = mpd_get_objects_of_site_categories($post_type);
+    $source_taxonomy_terms_object = array();
 
-    $destination_post_categories = array();
+    $post_taxonomies = get_object_taxonomies( get_post_type($post_id), 'names' );
 
-    foreach ($source_categories as $source_category) {
+    foreach ($post_taxonomies as $post_taxonomy) {
 
-        $source_slug = $source_category->slug;
+        if($post_taxonomy != 'category' && $post_taxonomy != 'post_tag'){
 
-        if($source_slug != 'uncategorised'){
-
-             foreach ($all_destination_categories as $destination_category) {
-
-                if($destination_category->slug == $source_slug){
-
-                    $category_id = $destination_category->ID;
-
-                    array_push($destination_post_categories, $category_id);
-
-                }else{
-
-                    $catarr = array(
-                        'cat_name' => $source_category->name,
-                        'category_description' => $source_category->description,
-                        'category_nicename' => $source_slug,
-                        'category_parent' => ''
-                    );
-
-                    $new_cat_id = wp_insert_category($catarr);
-
-                    array_push($destination_post_categories, $new_cat_id);
-
-                }
-
-            }
+            array_push($source_taxonomy_terms_object, wp_get_post_terms($post_id, $post_taxonomy));
 
         }
 
     }
 
-    wp_set_post_categories( $post_id, $destination_post_categories, false );
+    return $source_taxonomy_terms_object;
 
 }
+
+/**
+ * 
+ * This function performs the action of setting the taxonomies of the source post and
+ * to the destination post.
+ * Works with mpd_get_post_taxonomy_terms();
+ *
+ * @since 0.9
+ * @param $source_taxonomy_terms_object An array of term objects used in the source post
+ * @param $post_id The ID of the newly created post
+ * 
+ * @return array An array of term objects used in the post
+ *
+ */
+function mpd_set_post_taxonomy_terms($source_taxonomy_terms_object, $post_id){
+
+    foreach ($source_taxonomy_terms_object as $source_taxonomy_terms) {
+
+        foreach ($source_taxonomy_terms as $term) {
+
+            $args = array(
+                'description'=> esc_attr($term->description),
+                'slug' => $term->slug,
+            );
+
+            wp_insert_term( $term->name, $term->taxonomy, $args);
+
+            wp_set_object_terms( $post_id, $term->slug, $term->taxonomy, true);
+            
+        }
+        
+    }
+
+    return; 
+
+}
+
+/**
+ * 
+ * This function filters out post meta keys from the post meta as requested in the 'keys to ignore' mpd settings page.
+ *
+ * @since 0.9
+ * @param $post_meta_array The source post post_meta
+ * 
+ * @return array A filtered array without the keys as specified in 'keys to ignore' in mpd settings
+ *
+ */
+function mpd_ignore_custom_meta_keys($post_meta_array){
+	
+	$options = get_option( 'mdp_settings' );
+	
+	$meta_to_ignore_raw = str_replace(' ', '', $options['mdp_ignore_custom_meta']);
+	$meta_to_ignore 	= explode(',', $meta_to_ignore_raw);
+
+	$new_post_meta 	= array();
+	
+	foreach($post_meta_array as $meta_key => $meta_value){
+		
+		if(!in_array($meta_key, $meta_to_ignore)){
+
+			$new_post_meta[$meta_key] = $meta_value;
+            		
+		}
+		
+	}
+	
+	return $new_post_meta;
+	
+}
+add_filter('mpd_filter_post_custom', 'mpd_ignore_custom_meta_keys');
+add_filter('mpd_filter_post_meta', 'mpd_ignore_custom_meta_keys');
