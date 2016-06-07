@@ -83,7 +83,7 @@ function mdp_plugin_activate() {
 
    	global $wpdb;
 
-	$tableName = $wpdb->prefix . "mpd_log";
+	$tableName = $wpdb->base_prefix . "mpd_log";
 
 	$charset_collate = $wpdb->get_charset_collate();
 

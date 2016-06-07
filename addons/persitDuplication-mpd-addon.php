@@ -34,33 +34,39 @@ function persist_option_setting_render(){
 // Possible columns
 // duplication id (p key auto-increment) int, source_id int, destination_id int, source_post_id int, destination_post_id int, persist_active bool, persist_action_count int
 
-function mpd_log_duplication($args){
+function mpd_log_duplication($createdPostObject, $mpd_process_info){
 	
 	global $wpdb;
 	
 	$result = $wpdb->insert( 
-		'wp_mpd_log', 
+		$wpdb->base_prefix . "mpd_log", 
 		array( 
-			'source_id' 			=> $args['source_id'], 
-			'destination_id' 		=> $args['destination_id'],
-			'source_post_id'		=> $args['source_post_id'],
-			'destination_post_id'	=> $args['destination_post_id'],
-			'persist_action_count'	=> 0
+			'source_id' 			=> get_current_blog_id(), 
+			'destination_id' 		=> $mpd_process_info['destination_id'],
+			'source_post_id'		=> $mpd_process_info['source_id'],
+			'destination_post_id'	=> $createdPostObject['id'],
+			'persist_action_count'	=> 0,
+			'dup_user_id'			=> get_current_user_id()
 		), 
 		array( 
-			'%d','%d','%d','%d','%d'
+			'%d','%d','%d','%d','%d','%d'
 		) 
 	);
 	
 	return $result;
 }
 
+add_action('mpd_log', 'mpd_log_duplication', 10, 2);
+
+
 function mpd_is_there_a_persist($args){
 	
 	global $wpdb;
+	
+	$tableName = $wpdb->base_prefix . "mpd_log";
 
 	$query = "SELECT persist_active
-				FROM wp_mpd_log
+				FROM $tableName
 				WHERE 
 				source_id = ". $args['source_id'] . " 
 				destination_id = ". $args['destination_id']. "
@@ -80,7 +86,7 @@ function mpd_add_persit($args){
 	
 	global $wpdb;
 	
-	$table = 'wp_mpd_log';
+	$table = $wpdb->base_prefix . "mpd_log";
 	$data = array(
 		'persist_active' => 1
 	);

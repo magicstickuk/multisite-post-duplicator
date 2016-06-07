@@ -214,6 +214,8 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     ));
 
     do_action('mpd_end_of_core', $createdPostObject);
+
+    do_action('mpd_log', $createdPostObject, $mpd_process_info);
      
     return $createdPostObject;
  
