@@ -97,6 +97,7 @@ function mdp_plugin_activate() {
 			  persist_active mediumint(9) DEFAULT '0' NOT NULL,
 			  persist_action_count mediumint(9) DEFAULT '0' NOT NULL,
 			  dup_user_id mediumint(9) DEFAULT NULL,
+			  dup_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			  UNIQUE KEY id (id)
 			
 			) $charset_collate;";

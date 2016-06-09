@@ -46,10 +46,11 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 			'source_post_id'		=> $mpd_process_info['source_id'],
 			'destination_post_id'	=> $createdPostObject['id'],
 			'persist_action_count'	=> 0,
-			'dup_user_id'			=> get_current_user_id()
+			'dup_user_id'			=> get_current_user_id(),
+			'dup_time'				=> date("Y-m-d H:i:s")
 		), 
 		array( 
-			'%d','%d','%d','%d','%d','%d'
+			'%d','%d','%d','%d','%d','%d', '%s'
 		) 
 	);
 	
