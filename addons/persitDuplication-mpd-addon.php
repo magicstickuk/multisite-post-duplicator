@@ -58,6 +58,21 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 
 add_action('mpd_log', 'mpd_log_duplication', 10, 2);
 
+function testingtesting(){
+	$args = array(
+
+			'source_id'			=> 1,
+			'destination_id'	=> 2,
+			'source_post_id'	=> 302,
+			'destination_post_id'=> 148
+
+			); 
+	
+	$result = mpd_add_persit($args);
+	var_dump($result);
+	return $result;
+}
+add_action('admin_notices', 'testingtesting');
 
 function mpd_is_there_a_persist($args){
 	
@@ -69,13 +84,13 @@ function mpd_is_there_a_persist($args){
 				FROM $tableName
 				WHERE 
 				source_id = ". $args['source_id'] . " 
-				destination_id = ". $args['destination_id']. "
-				source_post_id = ". $args['source_post_id']. "
-				destination_post_id = ". $args['destination_post_id'];
+				AND destination_id = ". $args['destination_id']. "
+				AND source_post_id = ". $args['source_post_id']. "
+				AND destination_post_id = ". $args['destination_post_id'];
 	
-	$result = $wpdb->get_var($wpdb->prepare($query));
+	$result = $wpdb->get_var($query);
 	
-	if($result != null || $result != 0){
+	if($result != null && $result != 0){
 		return true;
 	}else{
 		return false;
