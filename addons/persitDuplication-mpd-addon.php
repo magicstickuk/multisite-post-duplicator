@@ -59,6 +59,20 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 
 add_action('mpd_log', 'mpd_log_duplication', 10, 2);
 
+function mpd_get_log(){
+
+	global $wpdb;
+	
+	$tableName = $wpdb->base_prefix . "mpd_log";
+
+	$query = "SELECT * FROM $tableName";
+	
+	$results = $wpdb->get_results($query);
+	
+	return $results;
+
+}
+
 function testingtesting(){
 	$args = array(
 
@@ -70,7 +84,6 @@ function testingtesting(){
 			); 
 	
 	$result = mpd_add_persit($args);
-	var_dump($result);
 	return $result;
 }
 add_action('admin_notices', 'testingtesting');
@@ -136,5 +149,98 @@ function mpd_log_persist_save(){
 function mpd_get_persist_status(){
 	
 	
+}
+
+function mdp_log_page(){
+	
+	$rows = mpd_get_log();
+
+	?>
+	<div class="wrap">
+	<h2>Multisite Post Duplicator Log</h2>
+	<table id="mpdLogTable" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Source Site</th>
+                <th>Destination Site</th>
+                <th>Source Post</th>
+                <th>Destination Post</th>
+                <th>Post Type</th>
+                <th>User</th>
+                <th>Time</th>
+                <th>Time Raw</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Source Site</th>
+                <th>Destination Site</th>
+                <th>Source Post</th>
+                <th>Destination Post</th>
+                <th>Post Type</th>
+                <th>User</th>
+                <th>Time</th>
+                <th>Time Raw</th>
+            </tr>
+        </tfoot>
+        <tbody>
+        	<?php 
+        		$date_format = get_option('date_format');
+        		$time_format = get_option('time_format');
+        		foreach($rows as $row):?>
+	        	
+	        	<?php
+        			$source_details 		= get_blog_details($row->source_id);
+        			$destination_details 	= get_blog_details($row->destination_id);
+        			$source_post 			= get_blog_post($row->source_id, $row->source_post_id);
+        			$destination_post 		= get_blog_post($row->destination_id, $row->destination_post_id);
+        			$user_info 				= get_userdata($row->dup_user_id);
+        			$nice_date_time			= date($date_format ." ". $time_format ,strtotime($row->dup_time));
+	        	?>
+	        	<?php if($destination_post && $destination_post->post_status != 'trash'):?>
+
+		       		 <tr>
+		                <td><?php echo $source_details->blogname; ?></td>
+		                <td><?php echo $destination_details->blogname; ?></td>
+		                <td>
+		                	<?php if($bool = ($source_post && $source_post->post_status != 'trash')):?>
+		                		
+		                		<a href="<?php echo mpd_get_edit_url($row->source_id, $row->source_post_id); ?>">
+		                			
+			                	<?php endif; ?>
+
+			                		<?php if($source_post):?>
+			                		<?php echo $source_post->post_title; ?>
+			                		<?php else:?>
+			                			<em>This post no longer exists</em>
+			                		<?php endif;?>
+
+			                	<?php if($bool):?>
+
+			                		</a>
+
+		                	<?php endif; ?>
+
+		                </td>
+		                <td>
+		                	<a href="<?php echo mpd_get_edit_url($row->destination_id, $row->destination_post_id); ?>">
+		                		<?php echo $destination_post->post_title; ?>
+		                	</a>
+		                </td>
+		                <td><?php echo $destination_post->post_type; ?></td>
+		                <td><?php echo $user_info->user_login; ?></td>
+		                <td><?php echo $nice_date_time; ?></td>
+		                <td><?php echo $row->dup_time; ?></td>
+		            </tr>
+
+	            <?php endif?>
+
+            <?php endforeach; ?>
+
+        </tbody>
+
+    </table>
+
+	<?php
 }
 

@@ -34,14 +34,6 @@ function mdp_add_admin_menu(  ) {
 	}
 
 }
-function mdp_log_page(){
-	
-	?>
-
-	<h1>Hello Log</h1>
-	
-	<?php
-}
 
 
 /**

@@ -50,6 +50,8 @@ function mdp_load_admin_styles(){
 
 		if($screenid == 'settings_page_multisite_post_duplicator_log'){
 			wp_enqueue_script( 'mdp-admin-datatables-scripts', 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js', array( 'jquery' ), '1.0' );
+
+			wp_enqueue_script( 'mdp-admin-datatables-init', plugins_url( '../js/admin-datatable-init.js', __FILE__ ), array( 'mdp-admin-datatables-scripts' ), '1.0' );
 			
 			wp_register_style( 'mdp-datatables-styles', 'https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css' , false, '1.0.0' );
 

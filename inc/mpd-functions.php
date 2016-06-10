@@ -903,3 +903,23 @@ function mpd_ignore_custom_meta_keys($post_meta_array){
 }
 add_filter('mpd_filter_post_custom', 'mpd_ignore_custom_meta_keys');
 add_filter('mpd_filter_post_meta', 'mpd_ignore_custom_meta_keys');
+
+
+/**
+ * 
+ * This function gets An 'edit url' for a post.
+ *
+ * @since 1.0
+ * @param $blog_id The blog_id where the post is
+ * @param $post_id The post_id you want to link to
+ * 
+ * @return string An edit url for a post
+ *
+ */
+function mpd_get_edit_url($blog_id, $post_id){
+
+    $url = get_admin_url($blog_id, 'post.php?post='. $post_id. '&action=edit');
+
+    return $url;
+
+}
