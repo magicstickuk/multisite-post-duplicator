@@ -16,8 +16,7 @@
  */
 function persist_addon_mpd_settings(){
 
-	mpd_settings_field('persist_option_setting', __( 'Restrict MPD to certain sites', MPD_DOMAIN ), 'persist_option_setting_render');    
-     
+	mpd_settings_field('persist_option_setting', __( 'Logging?', MPD_DOMAIN ), 'persist_option_setting_render');    
 }
 
 add_action( 'mdp_end_plugin_setting_page', 'persist_addon_mpd_settings');
@@ -27,13 +26,42 @@ add_action( 'mdp_end_plugin_setting_page', 'persist_addon_mpd_settings');
  */
 function persist_option_setting_render(){
   
+  $options = get_option( 'mdp_settings' );
+  ?>
+  <input type='checkbox' name='mdp_settings[add_logging]' <?php mpd_checked_lookup($options, 'add_logging', 'allow-logging') ;?> value='allow-logging'>
+
+  <p class="mpdtip"><?php _e('Having this option checked will allow you to see the log of duplications made over this network', MPD_DOMAIN)?></p>
+  <?php
   
 }
 
-// Need a post destination and source link table
-// Possible columns
-// duplication id (p key auto-increment) int, source_id int, destination_id int, source_post_id int, destination_post_id int, persist_active bool, persist_action_count int
+/**
+ * @ignore
+ */
+function addon_mpd_logging_setting_activation($options){
 
+  $options['add_logging'] = 'allow-logging';
+
+  return $options;
+
+}
+add_filter('mpd_activation_options', 'addon_mpd_logging_setting_activation');
+
+/**
+ * @ignore
+ */
+function mpd_logging_add_default_option($mdp_default_options){
+
+  $mdp_default_options['add_logging'] = 'allow-logging';
+
+  return $mdp_default_options;
+
+}
+add_filter('mdp_default_options', 'mpd_logging_add_default_option');
+
+/**
+ * @ignore
+ */
 function mpd_log_duplication($createdPostObject, $mpd_process_info){
 	
 	global $wpdb;
@@ -59,6 +87,9 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 
 add_action('mpd_log', 'mpd_log_duplication', 10, 2);
 
+/**
+ * @ignore
+ */
 function mpd_get_log(){
 
 	global $wpdb;
@@ -73,21 +104,9 @@ function mpd_get_log(){
 
 }
 
-function testingtesting(){
-	$args = array(
-
-			'source_id'			=> 1,
-			'destination_id'	=> 2,
-			'source_post_id'	=> 302,
-			'destination_post_id'=> 148
-
-			); 
-	
-	$result = mpd_add_persit($args);
-	return $result;
-}
-add_action('admin_notices', 'testingtesting');
-
+/**
+ * @ignore
+ */
 function mpd_is_there_a_persist($args){
 	
 	global $wpdb;
@@ -111,6 +130,10 @@ function mpd_is_there_a_persist($args){
 	}
 
 }
+
+/**
+ * @ignore
+ */
 function mpd_add_persit($args){
 	
 	global $wpdb;
@@ -151,6 +174,9 @@ function mpd_get_persist_status(){
 	
 }
 
+/**
+ * @ignore
+ */
 function mdp_log_page(){
 	
 	$rows = mpd_get_log();

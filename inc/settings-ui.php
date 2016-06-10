@@ -23,14 +23,20 @@ if ( is_multisite() ) {
  * @return null
  * 
  */
-function mdp_add_admin_menu(  ) { 
+function mdp_add_admin_menu(  ) {
 
-	$settingsLogic = current_user_can( 'manage_options' );
-	$settingsLogic = apply_filters( 'mpd_show_settings_page', $settingsLogic );
+	$options 		= get_option( 'mdp_settings' );
+	$settingsLogic 	= current_user_can( 'manage_options' );
+	$settingsLogic 	= apply_filters( 'mpd_show_settings_page', $settingsLogic );
 
 	if($settingsLogic){
+
 		add_submenu_page( 'options-general.php', __('Multisite Post Duplicator Settings', MPD_DOMAIN ), __('Multisite Post Duplicator Settings', MPD_DOMAIN), 'manage_options', 'multisite_post_duplicator', 'mdp_options_page' );
-		add_submenu_page( 'options-general.php', __('Multisite Post Duplicator Log', MPD_DOMAIN ), __('Multisite Post Duplicator Log', MPD_DOMAIN), 'manage_options', 'multisite_post_duplicator_log', 'mdp_log_page' );
+
+		if(isset($options['add_logging']) || !$options){
+			add_submenu_page( 'options-general.php', __('Multisite Post Duplicator Log', MPD_DOMAIN ), __('Multisite Post Duplicator Log', MPD_DOMAIN), 'manage_options', 'multisite_post_duplicator_log', 'mdp_log_page' );
+		}
+		
 	}
 
 }
