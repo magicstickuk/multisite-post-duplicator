@@ -123,6 +123,14 @@ function mpd_publish_top_right(){
                 </em></small>
             </p>
 
+            <p>
+                <label class="selectit">
+
+                    <input value="persist" type="checkbox" name="persist">Create Persist Link?
+
+                </label>
+            </p>
+
             <p style="font-size: 80%; text-align:right; font-style:italic">
 
                 <a target="_blank" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"><?php _e('Settings', MPD_DOMAIN ); ?></a>
@@ -155,7 +163,7 @@ function mpd_clone_post($post_id){
         return $post_id;
         
     }
-
+    var_dump($_POST);
     if(    ( isset($_POST["post_status"] ) )
         && ( $_POST["post_status"] != "auto-draft" )
         && ( isset($_POST['mpd_blogs'] ) )

@@ -64,25 +64,31 @@ add_filter('mdp_default_options', 'mpd_logging_add_default_option');
  */
 function mpd_log_duplication($createdPostObject, $mpd_process_info){
 	
-	global $wpdb;
+	$options = get_option( 'mdp_settings' );
+
+	if((isset($options['add_logging']) || !$options)){
+		
+		global $wpdb;
 	
-	$result = $wpdb->insert( 
-		$wpdb->base_prefix . "mpd_log", 
-		array( 
-			'source_id' 			=> get_current_blog_id(), 
-			'destination_id' 		=> $mpd_process_info['destination_id'],
-			'source_post_id'		=> $mpd_process_info['source_id'],
-			'destination_post_id'	=> $createdPostObject['id'],
-			'persist_action_count'	=> 0,
-			'dup_user_id'			=> get_current_user_id(),
-			'dup_time'				=> date("Y-m-d H:i:s")
-		), 
-		array( 
-			'%d','%d','%d','%d','%d','%d', '%s'
-		) 
-	);
+		$result = $wpdb->insert( 
+			$wpdb->base_prefix . "mpd_log", 
+			array( 
+				'source_id' 			=> get_current_blog_id(), 
+				'destination_id' 		=> $mpd_process_info['destination_id'],
+				'source_post_id'		=> $mpd_process_info['source_id'],
+				'destination_post_id'	=> $createdPostObject['id'],
+				'persist_action_count'	=> 0,
+				'dup_user_id'			=> get_current_user_id(),
+				'dup_time'				=> date("Y-m-d H:i:s")
+			), 
+			array( 
+				'%d','%d','%d','%d','%d','%d', '%s'
+			) 
+		);
+		
+		return $result;
+	}
 	
-	return $result;
 }
 
 add_action('mpd_log', 'mpd_log_duplication', 10, 2);
@@ -197,18 +203,7 @@ function mdp_log_page(){
                 <th>Time Raw</th>
             </tr>
         </thead>
-        <tfoot>
-            <tr>
-                <th>Source Site</th>
-                <th>Destination Site</th>
-                <th>Source Post</th>
-                <th>Destination Post</th>
-                <th>Post Type</th>
-                <th>User</th>
-                <th>Time</th>
-                <th>Time Raw</th>
-            </tr>
-        </tfoot>
+       
         <tbody>
         	<?php 
         		$date_format = get_option('date_format');
