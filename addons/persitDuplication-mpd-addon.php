@@ -66,7 +66,7 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 	
 	$options = get_option( 'mdp_settings' );
 
-	if((isset($options['add_logging']) || !$options)){
+	
 		
 		global $wpdb;
 	
@@ -87,7 +87,7 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 		);
 		
 		return $result;
-	}
+	
 	
 }
 
