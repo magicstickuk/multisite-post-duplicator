@@ -163,7 +163,7 @@ function mpd_clone_post($post_id){
         return $post_id;
         
     }
-    //var_dump($_POST);
+    
     if(    ( isset($_POST["post_status"] ) )
         && ( $_POST["post_status"] != "auto-draft" )
         && ( isset($_POST['mpd_blogs'] ) )
@@ -175,20 +175,32 @@ function mpd_clone_post($post_id){
 
         foreach( $mpd_blogs as $mpd_blog_id ){
 
-            $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
-
-            if($_POST['persist']){
-
-               $args = array(
+            $args = array(
+        
                 'source_id'             => get_current_blog_id(),
                 'destination_id'        => $mpd_blog_id,
                 'source_post_id'        => $_POST["ID"],
                 'destination_post_id'   => $createdPost['id']
 
-                );
+            );
 
-                mpd_add_persit($args); 
+            if(mpd_is_there_a_persist()){
+
+                //Update exsisting post.
+
+            }else{
+
+                $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
+
+                if($_POST['persist']){
+
+                    mpd_add_persit($args); 
+
+                }
+                
             }
+
+            
             
 
         }
