@@ -26,13 +26,17 @@ function role_option_setting_render(){
 
 	global $wp_roles;
 
-	$all_roles = $wp_roles->roles;
+	$all_roles 		= $wp_roles->roles;
     $editable_roles = apply_filters('editable_roles', $all_roles);
 
     if($options = get_option( 'mdp_settings' )){
+
 		$mdp_restrict_role = !empty($options['role_option_setting']) ? $options['role_option_setting'] : 'Administrator';
+
 	}else{
+
 		$mdp_restrict_role = 'Administrator';
+		
 	};
 
 	?>

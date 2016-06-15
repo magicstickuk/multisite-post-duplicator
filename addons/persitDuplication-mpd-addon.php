@@ -126,6 +126,7 @@ function mpd_is_there_a_persist($args){
 				AND destination_id = ". $args['destination_id']. "
 				AND source_post_id = ". $args['source_post_id']. "
 				AND destination_post_id = ". $args['destination_post_id'];
+
 	
 	$result = $wpdb->get_var($query);
 	
@@ -134,6 +135,29 @@ function mpd_is_there_a_persist($args){
 	}else{
 		return false;
 	}
+
+}
+/**
+ * @ignore
+ */
+function mpd_get_the_persists($args){
+	
+	global $wpdb;
+	
+	$tableName = $wpdb->base_prefix . "mpd_log";
+
+	$query = "SELECT *
+				FROM $tableName
+				WHERE 
+				source_id = ". $args['source_id'] . " 
+				AND destination_id = ". $args['destination_id']. "
+				AND source_post_id = ". $args['source_post_id']. "
+				AND destination_post_id = ". $args['destination_post_id'] . "
+				AND persist_active = 1";
+	
+	$result = $wpdb->get_results($query);
+	
+	return $results;
 
 }
 
@@ -184,13 +208,21 @@ function mpd_get_persist_status(){
  * @ignore
  */
 function mdp_log_page(){
+
+	wp_enqueue_script( 'mdp-admin-datatables-scripts', 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js', array( 'jquery' ), '1.0' );
+
+	wp_enqueue_script( 'mdp-admin-datatables-init', plugins_url( '../js/admin-datatable-init.js', __FILE__ ), array( 'mdp-admin-datatables-scripts' ), '1.0' );
+	
+	wp_register_style( 'mdp-datatables-styles', 'https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css' , false, '1.0.0' );
+
+	wp_enqueue_style( 'mdp-datatables-styles');
 	
 	$rows = mpd_get_log();
 
 	?>
 	<div class="wrap">
 	<h2>Multisite Post Duplicator Log</h2>
-	<table id="mpdLogTable" class="display" cellspacing="0" width="100%">
+	<table id="mpdLogTable" class="display" cellspacing="0" width="100%" style="display:none;">
         <thead>
             <tr>
                 <th>Source Site</th>

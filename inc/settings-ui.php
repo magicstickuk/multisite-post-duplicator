@@ -32,10 +32,6 @@ function mdp_add_admin_menu(  ) {
 	if($settingsLogic){
 
 		add_submenu_page( 'options-general.php', __('Multisite Post Duplicator Settings', MPD_DOMAIN ), __('Multisite Post Duplicator Settings', MPD_DOMAIN), 'manage_options', 'multisite_post_duplicator', 'mdp_options_page' );
-
-		if(isset($options['add_logging']) || !$options){
-			add_submenu_page( 'options-general.php', __('Multisite Post Duplicator Log', MPD_DOMAIN ), __('Multisite Post Duplicator Log', MPD_DOMAIN), 'manage_options', 'multisite_post_duplicator_log', 'mdp_log_page' );
-		}
 		
 	}
 
@@ -357,19 +353,40 @@ function mpd_globalise_settings(){
  */
 function mdp_options_page(  ) { 
 
-	?>
+	$active_tab = '';
 
-	<form action='options.php' method='post'>
+	if( isset( $_GET[ 'tab' ] ) ) {
+        $active_tab = $_GET[ 'tab' ];
+     }
+
+    $options 		= get_option( 'mdp_settings' );
+	$settingsLogic 	= current_user_can( mpd_get_required_cap() );
+	$settingsLogic 	= apply_filters( 'mpd_show_settings_page', $settingsLogic );
+
+	if($logic = ($settingsLogic && isset($options['add_logging']))):?>
+
+		<h2 class="nav-tab-wrapper">
+
+    		<a href="options-general.php?page=multisite_post_duplicator" class="nav-tab <?php echo $active_tab == '' ? 'nav-tab-active' : ''; ?>">Settings</a>
+    		<a href="options-general.php?page=multisite_post_duplicator&tab=log" class="nav-tab <?php echo $active_tab == 'log' ? 'nav-tab-active' : ''; ?>">Activity Log</a>
+
+		</h2>
 		
-		<?php
-		settings_fields( MPD_SETTING_PAGE );
-		do_settings_sections( MPD_SETTING_PAGE );
-		submit_button();
-		?>
-		
-	</form>
-	
-	<?php
+	<?php endif; 
+
+		if($active_tab == 'log' && $logic){
+
+			mdp_log_page();
+
+		}else{
+
+			echo "<form action='options.php' method='post'>";
+			settings_fields( MPD_SETTING_PAGE );
+			do_settings_sections( MPD_SETTING_PAGE );
+			submit_button();
+			echo "</form>";
+
+		}
 
 }
 

@@ -8,6 +8,10 @@ jQuery(document).ready(function(){
                 "visible": false,
                 "searchable": false
             }
-        ]
+        ],
+        "initComplete": function( settings, json ) {
+            jQuery('#mpdLogTable').fadeIn();
+        },
+        'iDisplayLength' : 25
     });
 });
