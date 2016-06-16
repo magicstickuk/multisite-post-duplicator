@@ -65,28 +65,26 @@ add_filter('mdp_default_options', 'mpd_logging_add_default_option');
 function mpd_log_duplication($createdPostObject, $mpd_process_info){
 	
 	$options = get_option( 'mdp_settings' );
+		
+	global $wpdb;
 
+	$result = $wpdb->insert( 
+		$wpdb->base_prefix . "mpd_log", 
+		array( 
+			'source_id' 			=> get_current_blog_id(), 
+			'destination_id' 		=> $mpd_process_info['destination_id'],
+			'source_post_id'		=> $mpd_process_info['source_id'],
+			'destination_post_id'	=> $createdPostObject['id'],
+			'persist_action_count'	=> 0,
+			'dup_user_id'			=> get_current_user_id(),
+			'dup_time'				=> date("Y-m-d H:i:s")
+		), 
+		array( 
+			'%d','%d','%d','%d','%d','%d', '%s'
+		) 
+	);
 	
-		
-		global $wpdb;
-	
-		$result = $wpdb->insert( 
-			$wpdb->base_prefix . "mpd_log", 
-			array( 
-				'source_id' 			=> get_current_blog_id(), 
-				'destination_id' 		=> $mpd_process_info['destination_id'],
-				'source_post_id'		=> $mpd_process_info['source_id'],
-				'destination_post_id'	=> $createdPostObject['id'],
-				'persist_action_count'	=> 0,
-				'dup_user_id'			=> get_current_user_id(),
-				'dup_time'				=> date("Y-m-d H:i:s")
-			), 
-			array( 
-				'%d','%d','%d','%d','%d','%d', '%s'
-			) 
-		);
-		
-		return $result;
+	return $result;
 	
 	
 }
@@ -158,13 +156,32 @@ function mpd_get_the_persists(){
 /**
  * @ignore
  */
-function mpd_add_persit($args){
+function mpd_add_persist($args){
 	
+	$dataValue = 1;
+	
+	$result = mpd_update_persist($args, $dataValue);
+
+	return $result;
+
+}
+
+function mpd_remove_persist($args){
+
+	$dataValue = 0;
+
+	$result = mpd_update_persist($args, $dataValue);
+
+	return $result;
+		
+}
+function mpd_update_persist($args, $dataValue){
+
 	global $wpdb;
 	
 	$table = $wpdb->base_prefix . "mpd_log";
 	$data = array(
-		'persist_active' => 1
+		'persist_active' => $dataValue
 	);
 	$where = array( 
 		'source_id' 			=> $args['source_id'], 
@@ -180,8 +197,7 @@ function mpd_add_persit($args){
 	$result = $wpdb->update( $table, $data, $where, $format, $where_format);
 	
 	return $result;
-	
-		
+
 }
 
 function mpd_do_persit(){
@@ -198,10 +214,7 @@ function mpd_get_persist_status(){
 	
 }
 
-/**
- * @ignore
- */
-function mdp_log_page(){
+function mpd_enqueue_datatables(){
 
 	wp_enqueue_script( 'mdp-admin-datatables-scripts', 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js', array( 'jquery' ), '1.0' );
 
@@ -210,6 +223,105 @@ function mdp_log_page(){
 	wp_register_style( 'mdp-datatables-styles', 'https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css' , false, '1.0.0' );
 
 	wp_enqueue_style( 'mdp-datatables-styles');
+
+}
+
+function mpd_persist_page(){
+
+	if(isset($_GET['remove'])){
+		$args = array(
+			'source_id' 			=> $_GET['s'], 
+			'destination_id' 		=> $_GET['d'],
+			'source_post_id'		=> $_GET['sp'],
+			'destination_post_id'	=> $_GET['dp']
+		);
+		mpd_remove_persist($args);
+	}
+
+	mpd_enqueue_datatables();
+
+	$rows = mpd_get_the_persists();
+	?>
+	<div class="wrap">
+	<h2>Linked Duplication Control</h2>
+	<table id="mpdLinkedTable" class="display" cellspacing="0" width="100%" style="display:none;">
+        <thead>
+            <tr>
+                <th>Source Site</th>
+                <th>Destination Site</th>
+                <th>Source Post</th>
+                <th>Destination Post</th>
+                <th>Post Type</th>
+                <th>User</th>
+                <th>Action</th>
+                
+            </tr>
+        </thead>
+       
+        <tbody>
+        	<?php foreach($rows as $row):?>
+	        	
+	        	<?php
+        			$source_details 		= get_blog_details($row->source_id);
+        			$destination_details 	= get_blog_details($row->destination_id);
+        			$source_post 			= get_blog_post($row->source_id, $row->source_post_id);
+        			$destination_post 		= get_blog_post($row->destination_id, $row->destination_post_id);
+        			$user_info 				= get_userdata($row->dup_user_id);
+
+        			$remove_url = "options-general.php?page=multisite_post_duplicator&tab=persists&remove=1&s=". $row->source_id . "&d=" . $row->destination_id . "&sp=" . $row->source_post_id  . "&dp=" . $row->destination_post_id;
+	        	?>
+	        	<?php if($destination_post && $destination_post->post_status != 'trash'):?>
+
+		       		 <tr>
+		                <td><?php echo $source_details->blogname; ?></td>
+		                <td><?php echo $destination_details->blogname; ?></td>
+		                <td>
+		                	<?php if($bool = ($source_post && $source_post->post_status != 'trash')):?>
+		                		
+		                		<a href="<?php echo mpd_get_edit_url($row->source_id, $row->source_post_id); ?>">
+		                			
+			                	<?php endif; ?>
+
+			                		<?php if($source_post):?>
+			                		<?php echo $source_post->post_title; ?>
+			                		<?php else:?>
+			                			<em>This post no longer exists</em>
+			                		<?php endif;?>
+
+			                	<?php if($bool):?>
+
+			                		</a>
+
+		                	<?php endif; ?>
+
+		                </td>
+		                <td>
+		                	<a href="<?php echo mpd_get_edit_url($row->destination_id, $row->destination_post_id); ?>">
+		                		<?php echo $destination_post->post_title; ?>
+		                	</a>
+		                </td>
+		                <td><?php echo $destination_post->post_type; ?></td>
+		                <td><?php echo $user_info->user_login; ?></td>
+		                <td><a class="removeURL button-secondary" href="<?php echo $remove_url; ?>">Delete Persist</a></td>
+		                <td><?php echo $row->dup_time; ?></td>
+		            </tr>
+
+	            <?php endif?>
+
+            <?php endforeach; ?>
+
+        </tbody>
+
+    </table>
+	</div>
+	<?php
+}
+/**
+ * @ignore
+ */
+function mdp_log_page(){
+
+	mpd_enqueue_datatables();
 	
 	$rows = mpd_get_log();
 
@@ -287,7 +399,7 @@ function mdp_log_page(){
         </tbody>
 
     </table>
-
+	</div>
 	<?php
 }
 

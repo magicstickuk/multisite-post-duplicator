@@ -195,7 +195,7 @@ function mpd_clone_post($post_id){
 
                     $args['destination_post_id'] = $createdPost['id'];
 
-                    mpd_add_persit($args); 
+                    mpd_add_persist($args); 
 
                 }
                 

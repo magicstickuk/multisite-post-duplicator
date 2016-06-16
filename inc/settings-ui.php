@@ -381,8 +381,8 @@ function mdp_options_page(  ) {
 
 		}elseif($active_tab == 'persists' && $logic){
 
-			var_dump(mpd_get_the_persists()); 
-
+			mpd_persist_page();
+			
 		}else{
 
 			echo "<form action='options.php' method='post'>";
