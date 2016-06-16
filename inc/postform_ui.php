@@ -179,8 +179,7 @@ function mpd_clone_post($post_id){
         
                 'source_id'             => get_current_blog_id(),
                 'destination_id'        => $mpd_blog_id,
-                'source_post_id'        => $_POST["ID"],
-                'destination_post_id'   => $createdPost['id']
+                'source_post_id'        => $_POST["ID"]
 
             );
 
@@ -193,6 +192,8 @@ function mpd_clone_post($post_id){
                 $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
 
                 if($_POST['persist']){
+
+                    $args['destination_post_id'] = $createdPost['id'];
 
                     mpd_add_persit($args); 
 

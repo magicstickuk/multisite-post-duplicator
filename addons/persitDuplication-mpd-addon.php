@@ -124,8 +124,7 @@ function mpd_is_there_a_persist($args){
 				WHERE 
 				source_id = ". $args['source_id'] . " 
 				AND destination_id = ". $args['destination_id']. "
-				AND source_post_id = ". $args['source_post_id']. "
-				AND destination_post_id = ". $args['destination_post_id'];
+				AND source_post_id = ". $args['source_post_id'];
 
 	
 	$result = $wpdb->get_var($query);
@@ -140,7 +139,7 @@ function mpd_is_there_a_persist($args){
 /**
  * @ignore
  */
-function mpd_get_the_persists($args){
+function mpd_get_the_persists(){
 	
 	global $wpdb;
 	
@@ -148,14 +147,9 @@ function mpd_get_the_persists($args){
 
 	$query = "SELECT *
 				FROM $tableName
-				WHERE 
-				source_id = ". $args['source_id'] . " 
-				AND destination_id = ". $args['destination_id']. "
-				AND source_post_id = ". $args['source_post_id']. "
-				AND destination_post_id = ". $args['destination_post_id'] . "
-				AND persist_active = 1";
+				WHERE persist_active = 1";
 	
-	$result = $wpdb->get_results($query);
+	$results = $wpdb->get_results($query);
 	
 	return $results;
 

@@ -369,6 +369,7 @@ function mdp_options_page(  ) {
 
     		<a href="options-general.php?page=multisite_post_duplicator" class="nav-tab <?php echo $active_tab == '' ? 'nav-tab-active' : ''; ?>">Settings</a>
     		<a href="options-general.php?page=multisite_post_duplicator&tab=log" class="nav-tab <?php echo $active_tab == 'log' ? 'nav-tab-active' : ''; ?>">Activity Log</a>
+    		<a href="options-general.php?page=multisite_post_duplicator&tab=persists" class="nav-tab <?php echo $active_tab == 'persists' ? 'nav-tab-active' : ''; ?>">Linked Duplications</a>
 
 		</h2>
 		
@@ -377,6 +378,10 @@ function mdp_options_page(  ) {
 		if($active_tab == 'log' && $logic){
 
 			mdp_log_page();
+
+		}elseif($active_tab == 'persists' && $logic){
+
+			var_dump(mpd_get_the_persists()); 
 
 		}else{
 
