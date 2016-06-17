@@ -65,7 +65,6 @@ function mpd_publish_top_right(){
 
     ?>
 
-
     <div id="clone_multisite_box">
 
         <div class="metabox">
@@ -75,9 +74,13 @@ function mpd_publish_top_right(){
             <p><?php _e('Duplicated post status', MPD_DOMAIN ); ?>:
 
             <select id="mpd-new-status" name="mpd-new-status" style="width:100%">
-             <?php foreach ($post_statuses as $post_status_key => $post_status_value): ?>
-                      <option value="<?php echo $post_status_key;?>" <?php echo $post_status_key == 'draft' ? 'selected' : '' ?>><?php echo $post_status_value;?></option>
-               <?php endforeach ?>
+
+                <?php foreach ($post_statuses as $post_status_key => $post_status_value): ?>
+                    
+                    <option value="<?php echo $post_status_key;?>" <?php echo $post_status_key == 'draft' ? 'selected' : '' ?>><?php echo $post_status_value;?></option>
+                
+                <?php endforeach ?>
+            
             </select>
                
             </p>
@@ -118,9 +121,13 @@ function mpd_publish_top_right(){
             </p>
 
             <p>
-                <small><em>
+                <small>
+                    
+                    <em>
                     <?php _e('If you have checked any of the checkboxes above then this post will be duplicated on save.', MPD_DOMAIN );?>
-                </em></small>
+                    </em>
+                    
+                </small>
             </p>
 
             <p>
@@ -199,10 +206,7 @@ function mpd_clone_post($post_id){
 
                 }
                 
-            }
-
-            
-            
+            }    
 
         }
 

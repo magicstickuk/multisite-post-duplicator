@@ -20,10 +20,10 @@ include('inc/postform_ui.php');
 include('inc/admin-ui.php');
 include('inc/settings-ui.php');
 include('inc/core.php');
+include('inc/persist.php');
 include('addons/bulkaction-mpd-addon.php');
 include('addons/restrictSites-mpd-addon.php');
 include('addons/roleAccess-mpd-addon.php');
-include('addons/persitDuplication-mpd-addon.php');
 
 /**
  * 
@@ -58,18 +58,15 @@ function mdp_plugin_activate() {
 		   		update_option( 'mdp_settings', $options);
 
 		   }else{
-		   	
-		   		//Add default option for existing users with new checkboxes
-		   		$options = get_option( 'mdp_settings' );
+		   		
+		   		if($type_of_activation == 'had_before'){
 
-		   		$options['mdp_copy_content_images'] 		= 'content-image';
-		   		$options['mdp_default_tags_copy'] 			= 'tags';
-		   		$options['mdp_copy_post_categories'] 		= 'category';
-		   		$options['mdp_copy_post_taxonomies']		= 'taxonomy';
-		   		$options['mdp_default_featured_image']		= 'feat';
-		   		$options['restrict_option_setting']			= 'none';
-		   		$options['role_option_setting']				= 'Administrator';
-		   		$options['mdp_ignore_custom_meta']			= '';
+		   			//Do something
+
+		   		}
+		   		if($type_of_activation == 'change_of_version'){
+		   			//Do something
+		   		}
 
 		   		$options = apply_filters('mpd_activation_options', $options);
 
