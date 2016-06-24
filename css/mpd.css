@@ -56,3 +56,13 @@
 .nav-tab-wrapper{
 	border-bottom: 1px solid #ccc;
 }
+.wrap > h2:first-child{
+	margin-bottom: 20px;
+}
+.mpd-loading{
+	width: 100%;
+	text-align:center;
+}
+.accord{
+	cursor: pointer;
+}

@@ -18,3 +18,15 @@ jQuery(document).ready(function($) {
 	});
 	
 });
+
+function accordionClick(classofbutton, classofContainer, speed){
+	
+	jQuery(classofbutton).on("click", function(e){
+		accordionMe(classofContainer,speed);
+		$(classofbutton).toggleClass('deactiveAccord');		    
+	});
+
+}
+function accordionMe(classOfContainer, speed){
+	jQuery(classOfContainer).toggle(speed);
+}

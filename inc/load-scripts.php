@@ -87,6 +87,13 @@ function mdp_load_admin_styles(){
 		array( 'jquery' ),
 		'1.0'
 	);
+
+	wp_enqueue_script(
+		'mdp-admin-fa',
+		'https://use.fontawesome.com/9442318e7e.js',
+		array( 'jquery' ),
+		'1.0'
+	);
 		
 }
 

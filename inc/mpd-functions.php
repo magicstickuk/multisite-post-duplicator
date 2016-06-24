@@ -923,3 +923,11 @@ function mpd_get_edit_url($blog_id, $post_id){
     return $url;
 
 }
+
+function mpd_get_version(){
+
+    $version_number = get_option( 'mdp_version' );
+
+    return $version_number;
+
+}

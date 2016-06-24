@@ -36,6 +36,11 @@ function restrict_option_setting_render(){
 	};
 
   ?>
+  <script>
+		jQuery(document).ready(function() {
+				accordionClick('.ros-click', '.ros-content', 'fast');
+		});
+	</script>
 	<div id="mpd_restrict_radio_choice_wrap">
 
 		<div class="mdp-inputcontainer">
@@ -50,9 +55,11 @@ function restrict_option_setting_render(){
 			<input type="radio" class="mdp_radio" name='mdp_settings[restrict_option_setting]' id="mpd_restrict_set_master" <?php checked($mdp_restrict_radio_label_value, 'master'); ?> value="master">
 		
 			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('Select a Master Site', MPD_DOMAIN) ?></label>
+
+			<i class="fa fa-info-circle ros-click accord" aria-hidden="true"></i>
 	    </div>
 
-	    <p class="mpdtip"><?php _e('You can, if you want, limit MPD functionality to only certain sites.', MPD_DOMAIN ) ?></p>
+	    <p class="mpdtip ros-content" style="display:none"><?php _e('You can, if you want, limit MPD functionality to only certain sites.', MPD_DOMAIN ) ?></p>
 
     </div>
 
@@ -279,18 +286,3 @@ function checkSiteStatus(){
 }
 
 add_filter( 'mpd_is_active', 'checkSiteStatus');
-
-// function mpd_user_level_for_restrict(){
-
-// 	$is_super_admin = current_user_can('manage_sites');
-// 	return $is_super_admin;
-
-// }
-
-// add_filter( 'mpd_show_settings_page', 'mpd_user_level_for_restrict');
-
-// function mpd_check_for_super_admin(){
-// 	$is_super_admin = current_user_can('manage_sites');
-// 	return $is_super_admin;
-// }
-// add_filter('mpd_show_settings_page', 'mpd_check_for_super_admin');

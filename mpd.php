@@ -34,7 +34,6 @@ include('addons/roleAccess-mpd-addon.php');
  */
 function mdp_plugin_activate() {
 
-   $type_of_activation 	= mpd_do_version_log();
    $mdp_default_options = mdp_get_default_options();
 
    $sites          		= mpd_wp_get_sites();
@@ -59,14 +58,7 @@ function mdp_plugin_activate() {
 
 		   }else{
 		   		
-		   		if($type_of_activation == 'had_before'){
-
-		   			//Do something
-
-		   		}
-		   		if($type_of_activation == 'change_of_version'){
-		   			//Do something
-		   		}
+		   	
 
 		   		$options = apply_filters('mpd_activation_options', $options);
 
@@ -75,6 +67,8 @@ function mdp_plugin_activate() {
 		   }
 
 		 restore_current_blog();
+
+		 mpd_do_version_log();
 
    	}
 

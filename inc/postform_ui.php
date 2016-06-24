@@ -39,7 +39,7 @@ function mpd_metaboxes(){
         foreach ($post_types as $page ){
 
             if ($active_mpd && current_user_can(mpd_get_required_cap()))  {
-                    add_meta_box( 'multisite_clone_metabox', __('Multisite Post Duplicator', MPD_DOMAIN ), 'mpd_publish_top_right', $page, 'side', 'high' );
+                    add_meta_box( 'multisite_clone_metabox', "<i class='fa fa-clone' aria-hidden='true'></i> " . __('Multisite Post Duplicator', MPD_DOMAIN ), 'mpd_publish_top_right', $page, 'side', 'high' );
             }
 
         } 
@@ -61,7 +61,10 @@ function mpd_metaboxes(){
 function mpd_publish_top_right(){
 
     $post_statuses  = mpd_get_post_statuses();
-    $sites          = mpd_wp_get_sites()
+    $sites          = mpd_wp_get_sites();
+    $options        = get_option( 'mdp_settings' );
+
+    add_thickbox();
 
     ?>
 
@@ -129,14 +132,20 @@ function mpd_publish_top_right(){
                     
                 </small>
             </p>
+           <?php if(isset($options['allow_persist']) || !$options ): ?>     
+                <p>
+                    <label class="selectit">
+                        <div id="persist-help" style="display:none;">
+                            <p>
+                                This is my hidden content! It will appear in ThickBox when the link is clicked.
+                            </p>
+                        </div>
+                        <input type="checkbox" name="persist">Create Persist Link? <a class="thickbox"href="#TB_inline?width=400&height=auto&inlineId=persist-help" class="thickbox" title="Create Persist Link?"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
 
-            <p>
-                <label class="selectit">
+                    </label>
+                </p>
+            <?php endif; ?>
 
-                    <input type="checkbox" name="persist">Create Persist Link?
-
-                </label>
-            </p>
 
             <p style="font-size: 80%; text-align:right; font-style:italic">
 

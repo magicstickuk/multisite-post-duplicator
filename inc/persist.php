@@ -20,6 +20,7 @@
 function persist_addon_mpd_settings(){
 
 	mpd_settings_field('persist_option_setting', __( 'Show Logging Tab?', MPD_DOMAIN ), 'persist_option_setting_render');
+	mpd_settings_field('persist_functionality_setting', __( 'Show Persist Functionality?', MPD_DOMAIN ), 'persist_functionality_setting_render');
 
 }
 add_action( 'mdp_end_plugin_setting_page', 'persist_addon_mpd_settings');
@@ -34,10 +35,37 @@ add_action( 'mdp_end_plugin_setting_page', 'persist_addon_mpd_settings');
 function persist_option_setting_render(){
   
   $options = get_option( 'mdp_settings' ); ?>
+  <script>
+		jQuery(document).ready(function() {
+				accordionClick('.sl-click', '.sl-content', 'fast');
+		});
+	</script>
+  <input type='checkbox' name='mdp_settings[add_logging]' <?php mpd_checked_lookup($options, 'add_logging', 'allow-logging') ;?> value='allow-logging'> <i class="fa fa-info-circle sl-click accord" aria-hidden="true"></i>
 
-  <input type='checkbox' name='mdp_settings[add_logging]' <?php mpd_checked_lookup($options, 'add_logging', 'allow-logging') ;?> value='allow-logging'>
+  <p class="mpdtip sl-content" style="display:none"><?php _e('Having this option checked will allow you to see the log of duplications made over this network', MPD_DOMAIN)?></p>
+ 
+  <?php
+  
+}
 
-  <p class="mpdtip"><?php _e('Having this option checked will allow you to see the log of duplications made over this network', MPD_DOMAIN)?></p>
+/**
+ * Function Used to render settings markup for logging question
+ *
+ * @since 1.0
+ * @return null
+ *
+ */
+function persist_functionality_setting_render(){
+  
+  $options = get_option( 'mdp_settings' ); ?>
+ <script>
+		jQuery(document).ready(function() {
+				accordionClick('.ap-click', '.ap-content', 'fast');
+		});
+	</script>
+  <input type='checkbox' name='mdp_settings[allow_persist]' <?php mpd_checked_lookup($options, 'allow_persist', 'allow_persist') ;?> value='allow_persist'> <i class="fa fa-info-circle ap-click accord" aria-hidden="true"></i>
+
+  <p class="mpdtip ap-content" style="display:none"><?php _e('Having this option checked will allow you to link a source post to a destination post. If the source is then updated the destination post will always be updated. This link can be added via the MPD Box on the posts page', MPD_DOMAIN)?></p>
  
   <?php
   
@@ -53,7 +81,10 @@ function persist_option_setting_render(){
  */
 function addon_mpd_logging_setting_activation($options){
  
-  $options['add_logging'] = 'allow-logging';
+  if(mpd_get_version() <= 0.9){
+  		$options['add_logging'] = 'allow-logging';
+  		$options['allow_persist'] = 'allow_persist';
+  }
 
   return $options;
 
@@ -71,6 +102,7 @@ add_filter('mpd_activation_options', 'addon_mpd_logging_setting_activation');
 function mpd_logging_add_default_option($mdp_default_options){
 
   $mdp_default_options['add_logging'] = 'allow-logging';
+   $mdp_default_options['allow_persist'] = 'allow_persist';
 
   return $mdp_default_options;
 
@@ -319,7 +351,11 @@ function mpd_persist_page(){
 	$rows = mpd_get_the_persists();
 	?>
 	<div class="wrap">
-	<h2>Linked Duplication Control</h2>
+	<h2><i class="fa fa-link" aria-hidden="true"></i> Linked Duplication Control</h2>
+		<div class="mpd-loading">
+				<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+				<span class="sr-only">Loading...</span>
+		</div>	
 		<table id="mpdLinkedTable" class="display" cellspacing="0" width="100%" style="display:none;">
 
 	        <thead>
@@ -416,7 +452,12 @@ function mdp_log_page(){
 	?>
 	<div class="wrap">
 		
-		<h2>Multisite Post Duplicator Log</h2>
+		<h2><i class="fa fa-list-ul" aria-hidden="true"></i> Multisite Post Duplicator Log</h2>
+
+		<div class="mpd-loading">
+				<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+				<span class="sr-only">Loading...</span>
+		</div>	
 
 		<table id="mpdLogTable" class="display" cellspacing="0" width="100%" style="display:none;">
 	        

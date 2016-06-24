@@ -27,8 +27,10 @@ add_filter('mdp_default_options', 'mpd_bulk_add_default_option');
  */
 function addon_mpd_bulk_setting_activation($options){
 
-  $options['add_bulk_settings']    = 'allow-batch';
-
+  if(mpd_get_version() < 0.6){
+      $options['add_bulk_settings']    = 'allow-batch';
+  }
+  
   return $options;
 
 }
@@ -172,9 +174,14 @@ function mdp_default_batch_render(){
 
   $options = get_option( 'mdp_settings' );
   ?>
-  <input type='checkbox' name='mdp_settings[add_bulk_settings]' <?php mpd_checked_lookup($options, 'add_bulk_settings', 'allow-batch') ;?> value='allow-batch'>
+  <script>
+    jQuery(document).ready(function() {
+        accordionClick('.abs-click', '.abs-content', 'fast');
+    });
+  </script>
+  <input type='checkbox' name='mdp_settings[add_bulk_settings]' <?php mpd_checked_lookup($options, 'add_bulk_settings', 'allow-batch') ;?> value='allow-batch'> <i class="fa fa-info-circle abs-click accord" aria-hidden="true"></i>
 
-  <p class="mpdtip"><?php _e('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page', MPD_DOMAIN)?></p>
+  <p class="mpdtip abs-content" style="display:none"><?php _e('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page', MPD_DOMAIN)?></p>
   <?php
 
 }

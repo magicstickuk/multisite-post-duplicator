@@ -10,6 +10,7 @@ jQuery(document).ready(function(){
             }
         ],
         "initComplete": function( settings, json ) {
+            jQuery('.mpd-loading').hide();
             jQuery('#mpdLogTable').fadeIn();
         },
         'iDisplayLength' : 25
@@ -24,6 +25,7 @@ jQuery(document).ready(function(){
             }
         ],
         "initComplete": function( settings, json ) {
+            jQuery('.mpd-loading').hide();
             jQuery('#mpdLinkedTable').fadeIn();
         },
         'iDisplayLength' : 25
