@@ -443,15 +443,31 @@ function mdp_options_page(  ) {
 	$settingsLogic 	= current_user_can( mpd_get_required_cap() );
 	$settingsLogic 	= apply_filters( 'mpd_show_settings_page', $settingsLogic );
 
-	if($logic = ($settingsLogic && isset($options['add_logging']))):?>
+	if($logic = $settingsLogic):?>
 
-		<h2 class="nav-tab-wrapper">
+		<?php if(isset($options['add_logging']) || isset($options['allow_persist'])):?>
 
-    		<a href="options-general.php?page=multisite_post_duplicator" class="nav-tab <?php echo $active_tab == '' ? 'nav-tab-active' : ''; ?>"><i class="fa fa-sliders fa-fw" aria-hidden="true"></i> Settings</a>
-    		<a href="options-general.php?page=multisite_post_duplicator&tab=log" class="nav-tab <?php echo $active_tab == 'log' ? 'nav-tab-active' : ''; ?>"><i class="fa fa-list-ul fa-fw" aria-hidden="true"></i> Activity Log</a>
-    		<a href="options-general.php?page=multisite_post_duplicator&tab=persists" class="nav-tab <?php echo $active_tab == 'persists' ? 'nav-tab-active' : ''; ?>"><i class="fa fa-link fa-fw" aria-hidden="true"></i> Linked Duplications</a>
+			<h2 class="nav-tab-wrapper">
 
-		</h2>
+    			<a href="options-general.php?page=multisite_post_duplicator" class="nav-tab <?php echo $active_tab == '' ? 'nav-tab-active' : ''; ?>"><i class="fa fa-sliders fa-fw" aria-hidden="true"></i> Settings</a>
+
+    	<?php endif; ?>
+
+    	<?php if(isset($options['add_logging'])) :?>
+
+    			<a href="options-general.php?page=multisite_post_duplicator&tab=log" class="nav-tab <?php echo $active_tab == 'log' ? 'nav-tab-active' : ''; ?>"><i class="fa fa-list-ul fa-fw" aria-hidden="true"></i> Activity Log</a>
+
+    	<?php endif;?>
+
+    	<?php if(isset($options['allow_persist'])):?>
+    		
+    			<a href="options-general.php?page=multisite_post_duplicator&tab=persists" class="nav-tab <?php echo $active_tab == 'persists' ? 'nav-tab-active' : ''; ?>"><i class="fa fa-link fa-fw" aria-hidden="true"></i> Linked Duplications</a>
+
+    	<?php endif; ?>
+
+    	<?php if(isset($options['add_logging']) || isset($options['allow_persist'])):?>
+			</h2>
+		<?php endif; ?>
 		
 	<?php endif; 
 
