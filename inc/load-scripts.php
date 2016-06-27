@@ -94,6 +94,15 @@ function mdp_load_admin_styles(){
 		array( 'jquery' ),
 		'1.0'
 	);
+
+	wp_register_style(
+			'mdp-metabox-styles',
+			plugins_url( '../css/mpd-mb.css', __FILE__ ),
+			false,
+			'1.0.0'
+		);
+
+	wp_enqueue_style( 'mdp-metabox-styles');
 		
 }
 

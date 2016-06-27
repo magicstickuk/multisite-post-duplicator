@@ -93,10 +93,18 @@ function mpd_publish_top_right(){
                 <input type="text" style="width:100%" name="mpd-prefix" value="<?php echo mpd_get_prefix(); ?>"/>
                 
             </p>
+             <script>
 
-            <p><?php _e('Site(s) you want duplicate to', MPD_DOMAIN ); ?>:
+                jQuery(document).ready(function($) { 
+                    accordionClick('.ps-link', '.ps-content', 'fast');
+                });
 
-                <ul id="mpd_blogschecklist" data-wp-lists="list:category" class="mpd_blogschecklist" style="padding-left: 5px;margin-top: -8px;">
+            </script>
+            <p><?php _e('Site(s) you want duplicate to', MPD_DOMAIN ); ?> <i class="fa fa-info-circle ps-link accord" aria-hidden="true"></i> :</p>
+
+            <p class="mpdtip ps-content" style="display:none"><?php _e('If you have checked any of the checkboxes above then this post will be duplicated on save.', MPD_DOMAIN );?></p>
+
+                <ul id="mpd_blogschecklist" data-wp-lists="list:category" class="mpd_blogschecklist">
 
                     <?php $current_blog_id = get_current_blog_id(); ?>
 
@@ -127,29 +135,34 @@ function mpd_publish_top_right(){
                 <small>
                     
                     <em>
-                    <?php _e('If you have checked any of the checkboxes above then this post will be duplicated on save.', MPD_DOMAIN );?>
+                    
                     </em>
                     
                 </small>
             </p>
            <?php if(isset($options['allow_persist']) || !$options ): ?>     
-                <p>
+            <hr>
                     <label class="selectit">
-                        <div id="persist-help" style="display:none;">
-                            <p>
-                                This is my hidden content! It will appear in ThickBox when the link is clicked.
-                            </p>
-                        </div>
-                        <input type="checkbox" name="persist">Create Persist Link? <a class="thickbox"href="#TB_inline?width=400&height=auto&inlineId=persist-help" class="thickbox" title="Create Persist Link?"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+                        <script>
+                            jQuery(document).ready(function($) { 
+                                accordionClick('.pl-link', '.pl-content', 'fast');
+                            });
+
+                        </script>
+                        <ul>
+                            <li><input type="checkbox" name="persist">Create Persist Link? <i class="fa fa-info-circle pl-link" aria-hidden="true"></i></li>
+                        </ul>
+                        
+                        <p class="mpdtip pl-content" style="display:none"><?php _e('The MDP meta box is   shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
 
                     </label>
-                </p>
+               
             <?php endif; ?>
 
 
-            <p style="font-size: 80%; text-align:right; font-style:italic">
+            <p style="text-align:right; margin-top:-2.5em">
 
-                <a target="_blank" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"><?php _e('Settings', MPD_DOMAIN ); ?></a>
+                <a target="_blank" title="Multisite Post Duplicator Settings" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"><i class="fa fa-sliders fa-lg" aria-hidden="true"></i></a>
                 
             </p>
 

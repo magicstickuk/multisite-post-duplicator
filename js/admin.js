@@ -21,9 +21,9 @@ jQuery(document).ready(function($) {
 
 function accordionClick(classofbutton, classofContainer, speed){
 	
-	jQuery(classofbutton).on("click", function(e){
-		accordionMe(classofContainer,speed);
-		$(classofbutton).toggleClass('deactiveAccord');		    
+	jQuery(classofbutton).on("click", function(event){
+		event.preventDefault();
+		accordionMe(classofContainer,speed);		    
 	});
 
 }
