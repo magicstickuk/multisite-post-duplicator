@@ -4,7 +4,7 @@
 Plugin Name: 	Multisite Post Duplicator
 Plugin URI: 	http://www.wpmaz.uk
 Description:    Duplicate any individual page, post or custom post type from one site on your multisite network to another.
-Version: 		0.9
+Version: 		0.9.1
 Author: 		Mario Jaconelli
 Author URI:  	http://www.wpmaz.uk
 */
@@ -33,7 +33,6 @@ include('addons/roleAccess-mpd-addon.php');
  */
 function mdp_plugin_activate() {
 
-   $type_of_activation 	= mpd_do_version_log();
    $mdp_default_options = mdp_get_default_options();
 
    $sites          		= mpd_wp_get_sites();
@@ -42,9 +41,12 @@ function mdp_plugin_activate() {
    		
    		$siteid = $site['blog_id'];
 
+
    		switch_to_blog($siteid);
 
-	   		if(!$options  = get_option( 'mdp_settings' )){
+   			$options = get_option( 'mdp_settings' );
+   			
+	   		if(!$options){
 
 		   		$options = array();
 
@@ -61,22 +63,17 @@ function mdp_plugin_activate() {
 		   		//Add default option for existing users with new checkboxes
 		   		$options = get_option( 'mdp_settings' );
 
-		   		$options['mdp_copy_content_images'] 		= 'content-image';
-		   		$options['mdp_default_tags_copy'] 			= 'tags';
-		   		$options['mdp_copy_post_categories'] 		= 'category';
-		   		$options['mdp_copy_post_taxonomies']		= 'taxonomy';
-		   		$options['mdp_default_featured_image']		= 'feat';
-		   		$options['restrict_option_setting']			= 'none';
-		   		$options['role_option_setting']				= 'Administrator';
-		   		$options['mdp_ignore_custom_meta']			= '';
-
-		   		$options = apply_filters('mpd_activation_options', $options);
+		   		$options = apply_filters('mdp_activation_options', $options);
 
 		   		update_option( 'mdp_settings', $options);
 
 		   }
 
+		 mpd_do_version_log();
+
 		 restore_current_blog();
+
+		 
 
    	}
 	   

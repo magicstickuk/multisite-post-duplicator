@@ -70,6 +70,11 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 
 == Changelog ==
 
+= 0.9.1 =
+* Fixed bug where restricted sites were still showing up on the MPD metabox list.
+* Fixed bug where batch duplication functionality was lost when viewing a page list 'search results'.
+* Fixed issue that could cause users to lose some settings when upgrading.
+
 = 0.9 =
 * NEW (finally): Copy post taxonomies terms. This behaviour assumes that the taxonomies terms being duplicated are from taxonomies that are registered on the destination site.
 * NEW: Add list of post meta keys to ignore in settings.
