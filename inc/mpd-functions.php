@@ -664,8 +664,7 @@ function mpd_fix_wordpress_urls($url_input) {
  *
  */
 function mpd_non_multisite_admin_notice() {
-
-    var_dump(version_compare(mpd_get_version(),'0.6', '<'));
+    
     if (!is_multisite()) {
         echo "<div class='error'><p>You have activated <a href='https://en-gb.wordpress.org/plugins/multisite-post-duplicator/' target='_blank'>Multisite Post Duplicator</a> on this WordPress Installation but this is not a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a>. In the interest of your websites efficiency we would advise you deactivate the plugin until you are using a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a></p></div>";
     }
