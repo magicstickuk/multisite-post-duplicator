@@ -2,7 +2,7 @@
 
 Contributors: MagicStick
 Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, clone
-Requires at least: 3.7.0
+Requires at least: 3.7
 Tested up to: 4.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -69,6 +69,11 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 4. Batch Duplication
 
 == Changelog ==
+
+= 0.9.1 =
+* Fixed bug where restricted sites were still showing up on the MPD metabox list.
+* Fixed bug where batch duplication functionality was lost when viewing a page list 'search results'.
+* Fixed issue that could cause users to lose some settings when upgrading.
 
 = 0.9 =
 * NEW (finally): Copy post taxonomy terms. This behaviour assumes that the taxonomies terms being duplicated are from taxonomies that are registered on the destination site.

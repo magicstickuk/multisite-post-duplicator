@@ -110,7 +110,7 @@ function mpd_publish_top_right(){
 
                     <?php foreach ($sites as $site): ?>
 
-                        <?php if (current_user_can_for_blog($site['blog_id'], mpd_get_required_cap()) ) : ?>
+                        <?php if (current_user_can_for_blog($site['blog_id'], mpd_get_required_cap()) && !in_array($site['blog_id'], mpd_get_restrict_some_sites_options())) : ?>
 
                             <?php $blog_details = get_blog_details($site['blog_id']); ?>
                             

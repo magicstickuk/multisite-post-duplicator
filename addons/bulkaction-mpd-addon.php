@@ -27,14 +27,14 @@ add_filter('mdp_default_options', 'mpd_bulk_add_default_option');
  */
 function addon_mpd_bulk_setting_activation($options){
 
-  if(mpd_get_version() < 0.6){
+  if(version_compare(mpd_get_version(),'0.6', '<')){
       $options['add_bulk_settings']    = 'allow-batch';
   }
-  
+
   return $options;
 
 }
-add_filter('mpd_activation_options', 'addon_mpd_bulk_setting_activation');
+add_filter('mdp_activation_options', 'addon_mpd_bulk_setting_activation');
 
 /**
  * @ignore
@@ -52,7 +52,7 @@ function mpd_bulk_admin_script() {
       
         if(isset($options['add_bulk_settings']) || ($defaultoptions['add_bulk_settings'] == 'allow-batch' && !$options)){ ?>
 
-          <?php if(!$post_status && $active_mpd): ?>
+          <?php if($_REQUEST["post_status"] != 'trash' && $active_mpd): ?>
 
             <script type="text/javascript">
 

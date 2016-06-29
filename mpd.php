@@ -42,9 +42,12 @@ function mdp_plugin_activate() {
    		
    		$siteid = $site['blog_id'];
 
+
    		switch_to_blog($siteid);
 
-	   		if(!$options  = get_option( 'mdp_settings' )){
+   			$options = get_option( 'mdp_settings' );
+   			
+	   		if(!$options){
 
 		   		$options = array();
 
@@ -59,16 +62,29 @@ function mdp_plugin_activate() {
 		   }else{
 		   		
 		   	
+<<<<<<< HEAD
 
 		   		$options = apply_filters('mpd_activation_options', $options);
+=======
+		   		//Add default option for existing users with new checkboxes
+		   		$options = get_option( 'mdp_settings' );
+
+		   		$options = apply_filters('mdp_activation_options', $options);
+>>>>>>> v0.9.1
 
 		   		update_option( 'mdp_settings', $options);
 
 		   }
 
+		 mpd_do_version_log();
+
 		 restore_current_blog();
 
+<<<<<<< HEAD
 		 mpd_do_version_log();
+=======
+		 
+>>>>>>> v0.9.1
 
    	}
 
