@@ -13,3 +13,10 @@
 .accord{
 	cursor: pointer;
 }
+.no-dec{
+  text-decoration: none
+}
+.bottom-para{
+  text-align: right;
+  margin-bottom: 0;
+}

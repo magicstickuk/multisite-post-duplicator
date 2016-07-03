@@ -19,8 +19,8 @@
  */
 function persist_addon_mpd_settings(){
 
-	mpd_settings_field('persist_option_setting', __( 'Show Logging Tab?', MPD_DOMAIN ), 'persist_option_setting_render');
-	mpd_settings_field('persist_functionality_setting', __( 'Show Persist Functionality?', MPD_DOMAIN ), 'persist_functionality_setting_render');
+	mpd_settings_field('persist_option_setting', __( 'Show logging tab?', MPD_DOMAIN ), 'persist_option_setting_render');
+	mpd_settings_field('persist_functionality_setting', __( 'Show Post persist functionality?', MPD_DOMAIN ), 'persist_functionality_setting_render');
 
 }
 add_action( 'mdp_end_plugin_setting_page', 'persist_addon_mpd_settings');
@@ -81,7 +81,7 @@ function persist_functionality_setting_render(){
  */
 function addon_mpd_logging_setting_activation($options){
  
-  if(mpd_get_version() <= 0.9){
+  if(version_compare(mpd_get_version(),'0.9.1', '<=')){
   		$options['add_logging'] = 'allow-logging';
   		$options['allow_persist'] = 'allow_persist';
   }
@@ -89,7 +89,7 @@ function addon_mpd_logging_setting_activation($options){
   return $options;
 
 }
-add_filter('mpd_activation_options', 'addon_mpd_logging_setting_activation');
+add_filter('mdp_activation_options', 'addon_mpd_logging_setting_activation');
 
 /**
  * Add default option for logging on activation of plugin
@@ -488,7 +488,7 @@ function mdp_log_page(){
 	        			$source_post 			= get_blog_post($row->source_id, $row->source_post_id);
 	        			$destination_post 		= get_blog_post($row->destination_id, $row->destination_post_id);
 	        			$user_info 				= get_userdata($row->dup_user_id);
-	        			$nice_date_time			= date($date_format ." ". $time_format ,strtotime($row->dup_time));
+	        			$nice_date_time			= date($date_format .", ". $time_format ,strtotime($row->dup_time));
 
 		        	 if($destination_post && $destination_post->post_status != 'trash'):?>
 

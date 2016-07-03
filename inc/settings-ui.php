@@ -73,7 +73,7 @@ function mdp_settings_init(  ) {
 			mpd_settings_field(
 
 					'meta_box_post_type_selector_' . $mpd_post_type,
-					$loopcount == 1 ? __("Select post types to show the MPD Meta Box on", MPD_DOMAIN ) : "",
+					$loopcount == 1 ? __("Select Post Types to show the MPD Meta Box on", MPD_DOMAIN ) : "",
 					'meta_box_post_type_selector_render',
 					array(
 						'mdpposttype' => $mpd_post_type
@@ -89,33 +89,33 @@ function mdp_settings_init(  ) {
 	
 	mpd_settings_field(
 		'mdp_default_prefix',
-		__( 'Default Prefix', MPD_DOMAIN ),
+		__( 'Default prefix', MPD_DOMAIN ),
 		'mdp_default_prefix_render'
 	);
 	mpd_settings_field(
 		'mdp_default_tags_copy',
-		__( 'Copy post tags when duplicating?', MPD_DOMAIN ),
+		__( 'Copy Post Tags when duplicating?', MPD_DOMAIN ),
 		'mdp_default_tags_copy_render'
 	);
 	mpd_settings_field(
 		'mdp_copy_post_categories',
-		__( 'Copy post categories?', MPD_DOMAIN ),
+		__( 'Copy Post Categories?', MPD_DOMAIN ),
 		'mdp_copy_post_categories_render'
 	);
 	mpd_settings_field(
 		'mdp_copy_post_taxonomies',
-		__( 'Copy post taxonomies?', MPD_DOMAIN ),
+		__( 'Copy Post Taxonomies?', MPD_DOMAIN ),
 		'mdp_copy_post_taxonomies_render'
 	);
 
 	mpd_settings_field(
 		'mdp_default_featured_image',
-		__( 'Copy featured image when duplicating?', MPD_DOMAIN ),
+		__( 'Copy Featured Image when duplicating?', MPD_DOMAIN ),
 		'mdp_default_feat_image_copy_render'
 	);
 	mpd_settings_field(
 		'mdp_copy_content_images',
-		__( 'Copy post content images to destination media library?', MPD_DOMAIN ),
+		__( 'Copy Post content images to destination Media Library?', MPD_DOMAIN ),
 		'mdp_copy_content_image_render'
 	);
 
@@ -160,15 +160,15 @@ function meta_box_show_radio_render(){
 
 			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_all" <?php checked( $mdp_radio_label_value, 'all'); ?> value="all">
 		
-			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('All post types', MPD_DOMAIN ) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('All Post Types', MPD_DOMAIN ) ?></label>
 			    
 			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_some" <?php checked( $mdp_radio_label_value, 'some'); ?> value="some">
 		
-			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Some post types', MPD_DOMAIN ) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Some Post Types', MPD_DOMAIN ) ?></label>
 		
 			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_none" <?php checked( $mdp_radio_label_value, 'none'); ?> value="none">
 		
-			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('No post types', MPD_DOMAIN) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('No Post Types', MPD_DOMAIN) ?></label>
 
 	    	<i class="fa fa-info-circle mbs-click accord" aria-hidden="true"></i>
 	    </div>

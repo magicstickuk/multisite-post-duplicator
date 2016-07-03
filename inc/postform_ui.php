@@ -156,13 +156,14 @@ function mpd_publish_top_right(){
                         <p class="mpdtip pl-content" style="display:none"><?php _e('The MDP meta box is   shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
 
                     </label>
-               
+
+            <hr>
+
             <?php endif; ?>
 
+            <p class="bottom-para">
 
-            <p style="text-align:right; margin-top:-2.5em">
-
-                <a target="_blank" title="Multisite Post Duplicator Settings" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"><i class="fa fa-sliders fa-lg" aria-hidden="true"></i></a>
+                <small><a class="no-dec" target="_blank" title="Multisite Post Duplicator Settings" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"> Settings <i class="fa fa-sliders fa-lg" aria-hidden="true"></i></a></small>
                 
             </p>
 
@@ -204,19 +205,6 @@ function mpd_clone_post($post_id){
 
         foreach( $mpd_blogs as $mpd_blog_id ){
 
-            $args = array(
-        
-                'source_id'             => get_current_blog_id(),
-                'destination_id'        => $mpd_blog_id,
-                'source_post_id'        => $_POST["ID"]
-
-            );
-
-            if(mpd_is_there_a_persist($args)){
-
-                $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
-
-            }else{
 
                 $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
 
@@ -228,9 +216,7 @@ function mpd_clone_post($post_id){
 
                 }
                 
-            }    
-
-        }
+            }      
 
     }
 

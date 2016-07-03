@@ -315,7 +315,7 @@ function mpd_persist_over_multisite($post_id_to_copy, $new_blog_id, $post_type, 
 
        foreach ($values as $value) {
 
-           add_post_meta( $post_id, $key, $value );
+           update_post_meta( $post_id, $key, $value );
 
         }
 
@@ -329,11 +329,11 @@ function mpd_persist_over_multisite($post_id_to_copy, $new_blog_id, $post_type, 
             //...which is bad
             if(is_serialized($value)){
              
-                add_post_meta( $post_id, $key, unserialize($value));
+                update_post_meta( $post_id, $key, unserialize($value));
 
             }else{
 
-                add_post_meta( $post_id, $key, $value );
+                update_post_meta( $post_id, $key, $value );
 
             }
            
