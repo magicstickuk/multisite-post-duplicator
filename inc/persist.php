@@ -202,6 +202,24 @@ function mpd_is_there_a_persist($args){
 	}
 
 }
+function mpd_get_persists_for_post($blog_id, $post_id){
+	
+	global $wpdb;
+	
+	$tableName = $wpdb->base_prefix . "mpd_log";
+
+	$query = "SELECT *
+				FROM $tableName
+				WHERE 
+				source_id = ". $blog_id . " 
+				AND source_post_id = ". $post_id;
+
+	
+	$result = $wpdb->get_results($query);
+	
+	return $result;
+	
+}
 /**
  * Get all data on requested persists across the network
  *
@@ -386,13 +404,13 @@ function mpd_persist_page(){
 
 		        	?>
 
-		        	<?php if($destination_post && $destination_post->post_status != 'trash'):?>
+		        	<?php if(($bool = ($source_post && $source_post->post_status != 'trash')) && $destination_post && $destination_post->post_status != 'trash'):?>
 
 			       		 <tr>
 			                <td><?php echo $source_details->blogname; ?></td>
 			                <td><?php echo $destination_details->blogname; ?></td>
 			                <td>
-			                	<?php if($bool = ($source_post && $source_post->post_status != 'trash')):?>
+			                	<?php if($bool):?>
 			                		
 			                		<a href="<?php echo mpd_get_edit_url($row->source_id, $row->source_post_id); ?>">
 			                			

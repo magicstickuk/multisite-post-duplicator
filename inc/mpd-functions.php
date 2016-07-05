@@ -386,7 +386,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
 
         $attachment = apply_filters('mpd_post_media_attachments', array(
 
-            'post_mime_type' => 'image/jpeg',
+            'post_mime_type' => $wp_filetype['type'],
             'post_title'     => sanitize_file_name( $filename ),
             'post_content'   => $post_media_attachment->post_content,
             'post_status'    => 'inherit',

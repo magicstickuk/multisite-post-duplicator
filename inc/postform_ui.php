@@ -153,7 +153,7 @@ function mpd_publish_top_right(){
                             <li><input type="checkbox" name="persist">Create Persist Link? <i class="fa fa-info-circle pl-link" aria-hidden="true"></i></li>
                         </ul>
                         
-                        <p class="mpdtip pl-content" style="display:none"><?php _e('The MDP meta box is   shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
+                        <p class="mpdtip pl-content" style="display:none"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
 
                     </label>
 
@@ -207,9 +207,16 @@ function mpd_clone_post($post_id){
 
 
                 $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
+                
+                
 
                 if($_POST['persist']){
-
+					
+					$args = array();
+					
+                    $args['source_id'] = get_current_blog_id();
+                    $args['destination_id'] = $mpd_blog_id;
+                    $args['source_post_id'] = $_POST['ID'];
                     $args['destination_post_id'] = $createdPost['id'];
 
                     mpd_add_persist($args); 
@@ -225,3 +232,31 @@ function mpd_clone_post($post_id){
 }
 
 add_filter( 'save_post', 'mpd_clone_post' );
+
+function mpd_persist_post($post_id){
+	
+	$blog_id = get_current_blog_id();
+    $post_id = get_the_ID();
+	
+	$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
+	
+	foreach($persist_posts as $persist_post){
+		mpd_persist_over_multisite($post_id, $persist_post->destination_id, get_post_type($post_id), get_current_user_id(), '', 'publish');
+	}
+	
+	return $post_id;
+	
+}
+add_filter('save_post', 'mpd_persist_post');
+
+function mpd_persist_debug(){
+
+    $blog_id = get_current_blog_id();
+    $post_id = get_the_ID();
+
+    $persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
+
+    var_dump($persist_posts);
+
+}
+add_filter('admin_notices', 'mpd_persist_debug');
