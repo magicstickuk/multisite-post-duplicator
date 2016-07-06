@@ -241,7 +241,7 @@ function mpd_persist_post($post_id){
 	$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
 	
 	foreach($persist_posts as $persist_post){
-		mpd_persist_over_multisite($post_id, $persist_post->destination_id, get_post_type($post_id), get_current_user_id(), '', 'publish');
+		mpd_persist_over_multisite($persist_post->destination_post_id, $post_id, $persist_post->destination_id, get_post_type($post_id), get_current_user_id(), '', 'publish');
 	}
 	
 	return $post_id;
@@ -255,8 +255,14 @@ function mpd_persist_debug(){
     $post_id = get_the_ID();
 
     $persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
-
-    var_dump($persist_posts);
+    $args = array(
+        "source_id"=> 1,
+        "destination_id" => 2,
+        "source_post_id" => 819,
+        "destination_post_id"=> 770 
+    );
+    $result = mpd_set_persist_count($args);
+    var_dump("Mario" . $result);
 
 }
 add_filter('admin_notices', 'mpd_persist_debug');

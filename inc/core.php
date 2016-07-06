@@ -221,7 +221,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
  
 }
 
-function mpd_persist_over_multisite($post_id_to_copy, $new_blog_id, $post_type, $post_author, $prefix, $post_status) {
+function mpd_persist_over_multisite($destination_post_id, $post_id_to_copy, $new_blog_id, $post_type, $post_author, $prefix, $post_status) {
 
     //Collect function arguments into a single variable
     $mpd_process_info = apply_filters('mpd_source_data', array(
@@ -260,7 +260,7 @@ function mpd_persist_over_multisite($post_id_to_copy, $new_blog_id, $post_type, 
     //Using the orgininal post object we now want to insert our any new data based on user settings for use
     //in the post object that we will be adding to the destination site
     $mdp_post = apply_filters('mpd_setup_destination_data', array(
-
+            'ID'            => $destination_post_id,
             'post_title'    => $mpd_process_info['prefix'] . $title,
             'post_type'     => $mpd_process_info['post_type'],
             'post_author'   => $mpd_process_info['post_author'],

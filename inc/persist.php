@@ -322,7 +322,60 @@ function mpd_update_persist($args, $dataValue){
 	return $result;
 
 }
+function mpd_get_persist_count($args){
 
+	global $wpdb;
+	
+	$table 	= $wpdb->base_prefix . "mpd_log";
+
+	$query = "SELECT persist_action_count
+				FROM $table
+				WHERE 	source_id 			= " . $args['source_id'] . "
+				AND
+						destination_id		= " . $args['destination_id'] . "
+				AND
+						source_post_id		= " . $args['source_post_id'] . "
+				AND
+						destination_post_id	= " . $args['destination_post_id'];
+	
+	$result = $wpdb->get_var($query);
+
+	return $result;
+
+}
+
+function mpd_set_persist_count($args){
+
+	global $wpdb;
+	
+	$table 	= $wpdb->base_prefix . "mpd_log";
+
+	$oldData = mpd_get_persist_count($args);
+
+	$newData 	= array(
+		'persist_action_count' => $oldData + 1
+	);
+
+	$where 	= array(
+
+		'source_id' 			=> $args['source_id'], 
+		'destination_id' 		=> $args['destination_id'],
+		'source_post_id'		=> $args['source_post_id'],
+		'destination_post_id'	=> $args['destination_post_id'],
+		'persist_active'		=> 1
+
+	);	
+	$format = array('%d');	
+
+	$where_format = array( 
+		'%d','%d','%d','%d','%d'
+	);
+
+	$result = $wpdb->update( $table, $newData, $where, $format, $where_format);
+
+	return $newData['persist_action_count'];
+
+}
 function mpd_enqueue_datatables(){
 
 	wp_enqueue_script(
