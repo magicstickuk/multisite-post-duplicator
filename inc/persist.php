@@ -435,6 +435,7 @@ function mpd_persist_page(){
 	                <th>Destination Site</th>
 	                <th>Source Post</th>
 	                <th>Destination Post</th>
+	                <th>Update Count</th>
 	                <th>Post Type</th>
 	                <th>User</th>
 	                <th>Action</th>
@@ -491,6 +492,7 @@ function mpd_persist_page(){
 			                		<?php echo $destination_post->post_title; ?>
 			                	</a>
 			                </td>
+			                <td><?php echo $row->persist_action_count; ?></td>
 			                <td><?php echo $destination_post->post_type; ?></td>
 			                <td><?php echo $user_info->user_login; ?></td>
 			                <td>

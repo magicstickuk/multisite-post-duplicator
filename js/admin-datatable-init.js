@@ -16,10 +16,10 @@ jQuery(document).ready(function(){
         'iDisplayLength' : 25
     });
     jQuery('#mpdLinkedTable').DataTable({
-         "order": [[ 7, "desc" ]],
+         "order": [[ 8, "desc" ]],
          "columnDefs": [
             {
-                "targets": [ 7 ],
+                "targets": [ 8 ],
                 "visible": false,
                 "searchable": false
             }
