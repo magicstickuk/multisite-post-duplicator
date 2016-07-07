@@ -259,7 +259,7 @@ function mpd_add_persist($args){
 	$dataValue = 1;
 	
 	$result = mpd_update_persist($args, $dataValue);
-
+	
 	return $result;
 
 }
