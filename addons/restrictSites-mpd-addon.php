@@ -66,7 +66,7 @@ function mpd_get_restrict_some_sites_options(){
 
 	if(!$options = get_option( 'mdp_settings' )){
 
-		return null;
+		return array();
 
 	}else{
 
