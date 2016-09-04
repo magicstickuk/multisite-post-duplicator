@@ -208,8 +208,6 @@ function mpd_clone_post($post_id){
 
                 $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
                 
-                
-
                 if($_POST['persist']){
 					
 					$args = array();
@@ -240,9 +238,12 @@ function mpd_persist_post($post_id){
 	
 	$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
 	
-	foreach($persist_posts as $persist_post){
-		mpd_persist_over_multisite($persist_post->destination_post_id, $post_id, $persist_post->destination_id, get_post_type($post_id), get_current_user_id(), '', 'publish');
-	}
+    if($persist_posts){
+        foreach($persist_posts as $persist_post){
+            mpd_persist_over_multisite($persist_post->destination_post_id, $post_id, $persist_post->destination_id, get_post_type($post_id), get_current_user_id(), '', 'publish');
+        }
+    }
+	
 	
 	return $post_id;
 	
