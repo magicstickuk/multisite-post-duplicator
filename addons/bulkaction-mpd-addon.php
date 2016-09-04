@@ -46,7 +46,7 @@ function mpd_bulk_admin_script() {
         $defaultoptions = mdp_get_default_options();
         $sites          = mpd_wp_get_sites();
         $options        = get_option( 'mdp_settings' );
-        $post_status    = isset($_REQUEST["post_status"]) ? $_REQUEST["post_status"] : null;
+        $post_status    = isset($_REQUEST["post_status"]) ? $_REQUEST["post_status"] : '';
 
         $active_mpd     = apply_filters( 'mpd_is_active', true );
       
