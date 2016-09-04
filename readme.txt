@@ -3,7 +3,7 @@
 Contributors: MagicStick
 Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, clone
 Requires at least: 3.7
-Tested up to: 4.5
+Tested up to: 4.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,6 +69,9 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 4. Batch Duplication
 
 == Changelog ==
+
+= 0.9.2 =
+* Fixed php warnings experienced by some users
 
 = 0.9.1 =
 * Fixed bug where restricted sites were still showing up on the MPD metabox list.
