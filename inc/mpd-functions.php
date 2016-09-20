@@ -185,7 +185,7 @@ function mpd_get_featured_image_from_source($post_id){
 
         $image_details = array(
 
-            'url'           => $image[0],
+            'url'           => get_attached_file($thumbnail_id),
             'alt'           => get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true ),
             'post_title'    => get_post_field('post_title', $thumbnail_id),
             'description'   => get_post_field('post_content', $thumbnail_id),
@@ -631,12 +631,35 @@ function mpd_settings_field($tag, $settings_title, $callback_function_to_markup,
 function mpd_wp_get_sites(){
 
     if(is_multisite()){
+      global $wp_version;
       $args           = array('network_id' => null);
-      $sites          = wp_get_sites($args); 
+      $is_pre_4_6     = version_compare( $wp_version, '4.6-RC1', '<' );
+
+      if($is_pre_4_6){
+
+            $new_sites  = array();
+            $sites      = wp_get_sites($args);
+            $object     = new stdClass();
+
+            foreach (wp_get_sites($args) as $site){
+
+                $object = (object) $site;
+                array_push($new_sites, $object);
+
+            }
+
+            $sites = $new_sites;
+
+      }else{
+
+            $sites = get_sites($args);
+            
+      }
 
       $filtered_sites = apply_filters('mpd_global_filter_sites', $sites);
 
-      return $filtered_sites; 
+      return $filtered_sites;
+
     }
 
 }

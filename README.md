@@ -70,6 +70,11 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 
 == Changelog ==
 
+= 0.9.3 =
+* NEW: Support for WordPress' new WP_Site_Query (get_sites()) class.
+* Fixed issue with featured images not copying over for some users (thanks joedev91).
+* Fixed issue with unwanted duplicated post meta upon duplication process (thanks joedev91).
+
 = 0.9.2 =
 * Fixed php warnings experienced by some users
 

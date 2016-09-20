@@ -60,12 +60,12 @@ function mpd_bulk_admin_script() {
 
                 <?php foreach ($sites as $site) :?>
 
-                  <?php $blog_details = get_blog_details($site['blog_id']); ?> 
+                  <?php $blog_details = get_blog_details($site->blog_id); ?> 
 
-                    <?php if($site['blog_id'] != get_current_blog_id() && current_user_can_for_blog($site['blog_id'], mpd_get_required_cap())):?> 
+                    <?php if($site->blog_id != get_current_blog_id() && current_user_can_for_blog($site->blog_id, mpd_get_required_cap())):?> 
 
-                      jQuery('<option>').val("dup-<?php echo $site['blog_id'] ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action']");
-                      jQuery('<option>').val("dup-<?php echo $site['blog_id'] ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action2']");
+                      jQuery('<option>').val("dup-<?php echo $site->blog_id ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action']");
+                      jQuery('<option>').val("dup-<?php echo $site->blog_id ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action2']");
 
                     <?php endif; ?>
                     
