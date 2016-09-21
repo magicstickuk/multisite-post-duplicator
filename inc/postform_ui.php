@@ -61,7 +61,7 @@ function mpd_metaboxes(){
 function mpd_publish_top_right(){
 
     $post_statuses  = mpd_get_post_statuses();
-    $sites          = mpd_wp_get_sites()
+    $sites          = mpd_wp_get_sites();
 
     ?>
 
@@ -96,15 +96,15 @@ function mpd_publish_top_right(){
 
                     <?php foreach ($sites as $site): ?>
 
-                        <?php if (current_user_can_for_blog($site['blog_id'], mpd_get_required_cap()) && !in_array($site['blog_id'], mpd_get_restrict_some_sites_options())) : ?>
+                        <?php if (current_user_can_for_blog($site->blog_id, mpd_get_required_cap()) && !in_array($site->blog_id, mpd_get_restrict_some_sites_options())) : ?>
 
-                            <?php $blog_details = get_blog_details($site['blog_id']); ?>
+                            <?php $blog_details = get_blog_details($site->blog_id); ?>
                             
-                                <li id="mpd_blog_<?php echo $site['blog_id']; ?>" class="mpd-site-checkbox">
+                                <li id="mpd_blog_<?php echo $site->blog_id; ?>" class="mpd-site-checkbox">
 
                                     <label class="selectit">
 
-                                        <input value="<?php echo $site['blog_id']; ?>" type="checkbox" name="mpd_blogs[]" id="in_blog_<?php echo $site['blog_id']; ?>">  <?php echo $site['blog_id'] == $current_blog_id ? '<em>' : ''; ?><?php echo $blog_details->blogname; ?> <?php echo $site['blog_id'] == $current_blog_id ? ' <small>(Current Site)</small></em>' : ''; ?>
+                                        <input value="<?php echo $site->blog_id; ?>" type="checkbox" name="mpd_blogs[]" id="in_blog_<?php echo $site->blog_id; ?>">  <?php echo $site->blog_id == $current_blog_id ? '<em>' : ''; ?><?php echo $blog_details->blogname; ?> <?php echo $site->blog_id == $current_blog_id ? ' <small>(Current Site)</small></em>' : ''; ?>
 
                                     </label>
 

@@ -46,13 +46,13 @@ function mpd_bulk_admin_script() {
         $defaultoptions = mdp_get_default_options();
         $sites          = mpd_wp_get_sites();
         $options        = get_option( 'mdp_settings' );
-        $post_status    = isset($_REQUEST["post_status"]) ? $_REQUEST["post_status"] : null;
+        $post_status    = isset($_REQUEST["post_status"]) ? $_REQUEST["post_status"] : '';
 
         $active_mpd     = apply_filters( 'mpd_is_active', true );
       
         if(isset($options['add_bulk_settings']) || ($defaultoptions['add_bulk_settings'] == 'allow-batch' && !$options)){ ?>
 
-          <?php if($_REQUEST["post_status"] != 'trash' && $active_mpd): ?>
+          <?php if($post_status != 'trash' && $active_mpd): ?>
 
             <script type="text/javascript">
 
@@ -60,12 +60,12 @@ function mpd_bulk_admin_script() {
 
                 <?php foreach ($sites as $site) :?>
 
-                  <?php $blog_details = get_blog_details($site['blog_id']); ?> 
+                  <?php $blog_details = get_blog_details($site->blog_id); ?> 
 
-                    <?php if($site['blog_id'] != get_current_blog_id() && current_user_can_for_blog($site['blog_id'], mpd_get_required_cap())):?> 
+                    <?php if($site->blog_id != get_current_blog_id() && current_user_can_for_blog($site->blog_id, mpd_get_required_cap())):?> 
 
-                      jQuery('<option>').val("dup-<?php echo $site['blog_id'] ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action']");
-                      jQuery('<option>').val("dup-<?php echo $site['blog_id'] ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action2']");
+                      jQuery('<option>').val("dup-<?php echo $site->blog_id ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action']");
+                      jQuery('<option>').val("dup-<?php echo $site->blog_id ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action2']");
 
                     <?php endif; ?>
                     

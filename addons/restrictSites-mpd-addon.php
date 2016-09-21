@@ -66,7 +66,7 @@ function mpd_get_restrict_some_sites_options(){
 
 	if(!$options = get_option( 'mdp_settings' )){
 
-		return null;
+		return array();
 
 	}else{
 
@@ -101,15 +101,15 @@ function restrict_some_option_setting_render(){
 			
 			<?php 	
 
-				$blog_details 	= get_blog_details($site['blog_id']);
+				$blog_details 	= get_blog_details($site->blog_id);
 				$checkme		= ''; 
 				
-				if(in_array($site['blog_id'], $restricted_ids)){
+				if(in_array($site->blog_id, $restricted_ids)){
 					$checkme = 'checked="checked"';
 				}
 
 			?>
-				<input type='checkbox' class="restrict-some-checkbox" name='mdp_settings[mpd_restrict_some_sites_<?php echo $site['blog_id'] ?>]' <?php echo $checkme; ?> value='<?php echo $site['blog_id']; ?>'> <?php echo $blog_details->blogname; ?> <br >
+				<input type='checkbox' class="restrict-some-checkbox" name='mdp_settings[mpd_restrict_some_sites_<?php echo $site->blog_id ?>]' <?php echo $checkme; ?> value='<?php echo $site->blog_id; ?>'> <?php echo $blog_details->blogname; ?> <br >
 			
 
 		<?php endforeach;?>
@@ -136,9 +136,9 @@ function master_site_settings_render(){
 
 		<option></option>
 		<?php foreach ($sites as $site): ?>
-			<?php $blog_details = get_blog_details($site['blog_id']); ?>
+			<?php $blog_details = get_blog_details($site->blog_id); ?>
 
-			<option value="<?php echo $site['blog_id'] ?>" <?php selected($mdp_restrict_master_label_value, $site['blog_id']); ?>>
+			<option value="<?php echo $site->blog_id ?>" <?php selected($mdp_restrict_master_label_value, $site->blog_id); ?>>
 
 			    <?php echo $blog_details->blogname;?>
 
