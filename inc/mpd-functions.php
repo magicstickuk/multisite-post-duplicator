@@ -652,8 +652,9 @@ function mpd_wp_get_sites(){
 
       }else{
 
+            $args = apply_filters('mpd_get_sites_args', $args);
             $sites = get_sites($args);
-            
+
       }
 
       $filtered_sites = apply_filters('mpd_global_filter_sites', $sites);

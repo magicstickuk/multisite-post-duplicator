@@ -52,7 +52,7 @@ function mpd_bulk_admin_script() {
       
         if(isset($options['add_bulk_settings']) || ($defaultoptions['add_bulk_settings'] == 'allow-batch' && !$options)){ ?>
 
-          <?php if($_REQUEST["post_status"] != 'trash' && $active_mpd): ?>
+          <?php if($post_status != 'trash' && $active_mpd): ?>
 
             <script type="text/javascript">
 
