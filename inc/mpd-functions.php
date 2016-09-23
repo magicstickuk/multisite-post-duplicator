@@ -680,7 +680,8 @@ function mpd_fix_wordpress_urls($url_input) {
 }
 
 /**
- * This function alters the user if they have installed this plugin on a non multisite installation.
+ * This function alerts the user if they have installed this plugin on a non multisite installation
+ * or if thier confiuration is not supported.
  *
  * @since 0.7.3
  *
@@ -691,6 +692,10 @@ function mpd_non_multisite_admin_notice() {
     
     if (!is_multisite()) {
         echo "<div class='error'><p>You have activated <a href='https://en-gb.wordpress.org/plugins/multisite-post-duplicator/' target='_blank'>Multisite Post Duplicator</a> on this WordPress Installation but this is not a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a>. In the interest of your websites efficiency we would advise you deactivate the plugin until you are using a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a></p></div>";
+    }
+
+    if(is_subdomain_install()){
+            echo "<div class='error'><p>You have activated <a href='https://en-gb.wordpress.org/plugins/multisite-post-duplicator/' target='_blank'>Multisite Post Duplicator</a> on this WordPress Installation however this network has the subdomain configuration enabled. Unfortunately this plugin doesn't support Subdomain configurations at this time. Please accept our apologies and check back as we hope to support it soon.</div>";
     }
 }
 

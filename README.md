@@ -61,6 +61,10 @@ Yes.
 
 Yes. However, you have to have the same custom fields defined in each of the sites on your network. To help keep the fields in sync try: https://wordpress.org/plugins/acf-multisite-sync/
 
+= What about Multisites on Subdomain Configurations? =
+
+Unfortunately we don't support sub domain configuations at this time. You may use it to some extent, but a lot of this plugins features may produce unexpected results. Our plan is to introduce support for this in the near futute.
+
 == Screenshots ==
 
 1. User Interface
@@ -69,6 +73,10 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 4. Batch Duplication
 
 == Changelog ==
+
+= 0.9.4 =
+* NEW: Added setting to let you retain the source post publish date if you wish.
+* Added signposting for users trying to use this plugin on a subdomain configuration.
 
 = 0.9.3 =
 * NEW: Support for WordPress' new WP_Site_Query (get_sites()) class.
