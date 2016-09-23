@@ -933,3 +933,56 @@ function mpd_get_version(){
     $version_number = get_option( 'mdp_version' );
     return $version_number;
 }
+
+/**
+ * 
+ * If the user chooses to, this function will collect the post date to of the source post to be used later
+ * in mpd_set_published_date() to assign the published date to be the same as the destination.
+ *
+ * @since 0.9.4
+ * @param $mpd_process_info Array of the source post information
+ * 
+ * @return array A filtered array of source post information
+ *
+ */
+function mpd_get_published_date($mpd_process_info){
+
+ $options = get_option( 'mdp_settings' );
+
+ if($options['mdp_retain_published_date']){
+    $mpd_process_info['post_date'] = get_post_field('post_date', $mpd_process_info['source_id']);
+ }
+ 
+ return $mpd_process_info;
+
+}
+
+add_filter('mpd_source_data', 'mpd_get_published_date');
+
+/**
+ * 
+ * If the user chooses to, this function will set the post date to of the source post to the destination post. Note we have to set the post_status to publish for this activity as no published date would be assigned otherwise.
+ *
+ * @since 0.9.4
+ * @param $mdp_post Array of the destination post info prior to post being created in database
+ * @param $mpd_process_info Array of the source post information
+ * 
+ * @return array A filtered array of destination post information prior to post being saved in database
+ *
+ */
+function mpd_set_published_date($mdp_post, $mpd_process_info){
+
+  $options = get_option( 'mdp_settings' );
+
+  if($options['mdp_retain_published_date']){
+
+    $mdp_post['post_date'] = $mpd_process_info['post_date'];
+    $mdp_post['post_status'] = 'publish';
+
+  }
+ 
+  return $mdp_post;
+
+}
+
+add_filter('mpd_setup_destination_data', 'mpd_set_published_date', 10,2);

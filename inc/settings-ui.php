@@ -89,6 +89,7 @@ function mdp_settings_init(  ) {
 
 	mpd_settings_field('mdp_default_featured_image', __( 'Copy featured image when duplicating?', MPD_DOMAIN ), 'mdp_default_feat_image_copy_render');
 	mpd_settings_field('mdp_copy_content_images', __( 'Copy post content images to destination media library?', MPD_DOMAIN ), 'mdp_copy_content_image_render');
+	mpd_settings_field('mdp_retain_published_date', __( 'Retain Published Date from Source?', MPD_DOMAIN ), 'mdp_retain_published_date_render');
 
 	do_action( 'mdp_end_plugin_setting_page' );
 
@@ -293,6 +294,25 @@ function mdp_copy_content_image_render(  ) {
 	<input type='checkbox' name='mdp_settings[mdp_copy_content_images]' <?php mpd_checked_lookup($options, 'mdp_copy_content_images', 'content-image') ;?> value='content-image'>
 
 	<p class="mpdtip"><?php _e('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It will also change the urls in the duplicated post to reference the new media file. You can turn off this activity by unchecking the box', MPD_DOMAIN)?></p>
+	<?php
+
+}
+/**
+ * 
+ * Create the UI for the Inline Image Copy Selection setting
+ * 
+ * @since 0.9.4
+ * @return null
+ * 
+ */
+function mdp_retain_published_date_render(  ) { 
+
+	$options = get_option( 'mdp_settings' );
+
+	?>
+	<input type='checkbox' name='mdp_settings[mdp_retain_published_date]' <?php mpd_checked_lookup($options, 'mdp_retain_published_date', 'retain-published') ;?> value='retain-published'>
+
+	<p class="mpdtip"><?php _e('Check this box if you would like the destination post to keep the source published date. NOTE! If you check this option the desination post status will be set to published by default', MPD_DOMAIN)?></p>
 	<?php
 
 }
