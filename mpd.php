@@ -40,7 +40,7 @@ function mdp_plugin_activate() {
 
    foreach ($sites as $site) {
    		
-   		$siteid = $site['blog_id'];
+   		$siteid = $site->blog_id;
 
 
    		switch_to_blog($siteid);
