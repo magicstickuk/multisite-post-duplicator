@@ -83,14 +83,6 @@ function mdp_plugin_activate() {
 
 register_activation_hook( __FILE__, 'mdp_plugin_activate' );
 
-function mdp_plugin_deactivate() {
-
-
-
-}
-
-register_deactivation_hook( __FILE__, 'mdp_plugin_deactivate' );
-
 /**
  * 
  * Static function to allow MDP default options to be referenced globally

@@ -6,14 +6,12 @@
  * @author Mario Jaconelli <mariojaconelli@gmail.com>
  * 
  */
-
-
 if ( is_multisite() ) {
+
 	add_action( 'admin_menu', 'mdp_add_admin_menu' );
 	
 	add_action( 'admin_init', 'mdp_settings_init' );
 
-	
 }
 
 /**
@@ -82,20 +80,55 @@ function mdp_settings_init(  ) {
 
 	}
 	
-	mpd_settings_field('mdp_default_prefix', __( 'Default Prefix', MPD_DOMAIN ), 'mdp_default_prefix_render');
-	mpd_settings_field('mdp_default_tags_copy', __( 'Copy post tags when duplicating?', MPD_DOMAIN ), 'mdp_default_tags_copy_render');
-	mpd_settings_field('mdp_copy_post_categories', __( 'Copy post categories?', MPD_DOMAIN ), 'mdp_copy_post_categories_render');
-	mpd_settings_field('mdp_copy_post_taxonomies', __( 'Copy post taxonomies?', MPD_DOMAIN ), 'mdp_copy_post_taxonomies_render');
+	mpd_settings_field(
+		'mdp_default_prefix',
+		__( 'Default Prefix', MPD_DOMAIN ),
+		'mdp_default_prefix_render'
+	);
 
-	mpd_settings_field('mdp_default_featured_image', __( 'Copy featured image when duplicating?', MPD_DOMAIN ), 'mdp_default_feat_image_copy_render');
-	mpd_settings_field('mdp_copy_content_images', __( 'Copy post content images to destination media library?', MPD_DOMAIN ), 'mdp_copy_content_image_render');
-	mpd_settings_field('mdp_retain_published_date', __( 'Retain Published Date from Source?', MPD_DOMAIN ), 'mdp_retain_published_date_render');
+	mpd_settings_field(
+		'mdp_default_tags_copy',
+		__( 'Copy post tags when duplicating?', MPD_DOMAIN ),
+		'mdp_default_tags_copy_render');
+
+	mpd_settings_field(
+		'mdp_copy_post_categories',
+		__( 'Copy post categories?', MPD_DOMAIN ),
+		'mdp_copy_post_categories_render'
+	);
+
+	mpd_settings_field('mdp_copy_post_taxonomies',
+		__( 'Copy post taxonomies?', MPD_DOMAIN ),
+		'mdp_copy_post_taxonomies_render'
+	);
+
+	mpd_settings_field(
+		'mdp_default_featured_image',
+		__( 'Copy featured image when duplicating?', MPD_DOMAIN ),
+		'mdp_default_feat_image_copy_render'
+	);
+	mpd_settings_field(
+		'mdp_copy_content_images',
+		__( 'Copy post content images to destination media library?', MPD_DOMAIN ),
+		'mdp_copy_content_image_render'
+	);
+	mpd_settings_field(
+		'mdp_retain_published_date',
+		__( 'Retain Published Date from Source?', MPD_DOMAIN ),
+		'mdp_retain_published_date_render'
+	);
 
 	do_action( 'mdp_end_plugin_setting_page' );
 
-	mpd_settings_field('mdp_ignore_custom_meta', __( 'Post Meta to ignore?', MPD_DOMAIN ), 'mdp_ignore_custom_meta_render');
+	mpd_settings_field('mdp_ignore_custom_meta',
+		__( 'Post Meta to ignore?', MPD_DOMAIN ),
+		'mdp_ignore_custom_meta_render'
+	);
 
-	mpd_settings_field('mdp_allow_dev_info', __( 'Allow anonymous usage data?', MPD_DOMAIN ), 'mdp_allow_dev_info_render');
+	mpd_settings_field('mdp_allow_dev_info',
+		__( 'Allow anonymous usage data?', MPD_DOMAIN ),
+		'mdp_allow_dev_info_render'
+	);
 
 }
 /**
@@ -174,9 +207,11 @@ function mdp_default_prefix_render(  ) {
 
 	$options = get_option( 'mdp_settings' );
 	?>
-	<input type='text' name='mdp_settings[mdp_default_prefix]' value='<?php echo mpd_get_prefix(); ?>'>
+		
+		<input type='text' name='mdp_settings[mdp_default_prefix]' value='<?php echo mpd_get_prefix(); ?>'>
+		
+		<p class="mpdtip"><?php _e('Change the default prefix for your duplication across the network.', MPD_DOMAIN )?></p>
 
-	<p class="mpdtip"><?php _e('Change the default prefix for your duplication across the network.', MPD_DOMAIN )?></p>
 	<?php
 
 }
@@ -192,9 +227,11 @@ function mdp_ignore_custom_meta_render(  ) {
 
 	$options = get_option( 'mdp_settings' );
 	?>
-	<input id="mdp-ignore-custom-meta" type='text' autocapitalize="none" autocorrect="none" name='mdp_settings[mdp_ignore_custom_meta]' value='<?php echo mpd_get_ignore_keys(); ?>'>
 
-	<p class="mpdtip"><?php _e('A comma delimerated list of post meta keys you wish to ignore during the duplication process. <em>i.e (without quotes) \'my_custom_meta_key, post_facebook_share_count\'</em></br></br>WARNING: Only edit this option if you are sure what you are doing.', MPD_DOMAIN )?></p>
+		<input id="mdp-ignore-custom-meta" type='text' autocapitalize="none" autocorrect="none" name='mdp_settings[mdp_ignore_custom_meta]' value='<?php echo mpd_get_ignore_keys(); ?>'>
+
+		<p class="mpdtip"><?php _e('A comma delimerated list of post meta keys you wish to ignore during the duplication process. <em>i.e (without quotes) \'my_custom_meta_key, post_facebook_share_count\'</em></br></br>WARNING: Only edit this option if you are sure what you are doing.', MPD_DOMAIN )?></p>
+
 	<?php
 
 }
@@ -209,11 +246,11 @@ function mdp_ignore_custom_meta_render(  ) {
 function mdp_default_tags_copy_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
-
 	?>
-	<input type='checkbox' name='mdp_settings[mdp_default_tags_copy]' <?php mpd_checked_lookup($options, 'mdp_default_tags_copy', 'tags') ;?> value='tags'> 
+		
+		<input type='checkbox' name='mdp_settings[mdp_default_tags_copy]' <?php mpd_checked_lookup($options, 'mdp_default_tags_copy', 'tags') ;?> value='tags'> 
 
-	<p class="mpdtip"><?php _e('This plugin will automatically copy the tags associated with the post. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
+		<p class="mpdtip"><?php _e('This plugin will automatically copy the tags associated with the post. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
 
 	<?php
 
@@ -228,13 +265,13 @@ function mdp_default_tags_copy_render(  ) {
  * 
  */
 function mdp_copy_post_categories_render(  ) { 
-
+	
 	$options = get_option( 'mdp_settings' );
-
 	?>
-	<input type='checkbox' name='mdp_settings[mdp_copy_post_categories]' <?php mpd_checked_lookup($options, 'mdp_copy_post_categories', 'category') ;?> value='category'> 
+	
+		<input type='checkbox' name='mdp_settings[mdp_copy_post_categories]' <?php mpd_checked_lookup($options, 'mdp_copy_post_categories', 'category') ;?> value='category'> 
 
-	<p class="mpdtip"><?php _e('This plugin will automatically copy the categories associated with the post. If the category doesn\'t exist in the destination site the category will be created for you. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
+		<p class="mpdtip"><?php _e('This plugin will automatically copy the categories associated with the post. If the category doesn\'t exist in the destination site the category will be created for you. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
 
 	<?php
 
@@ -250,11 +287,11 @@ function mdp_copy_post_categories_render(  ) {
 function mdp_copy_post_taxonomies_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
-
 	?>
-	<input type='checkbox' name='mdp_settings[mdp_copy_post_taxonomies]' <?php mpd_checked_lookup($options, 'mdp_copy_post_taxonomies', 'taxonomy') ;?> value='taxonomy'> 
+	
+		<input type='checkbox' name='mdp_settings[mdp_copy_post_taxonomies]' <?php mpd_checked_lookup($options, 'mdp_copy_post_taxonomies', 'taxonomy') ;?> value='taxonomy'> 
 
-	<p class="mpdtip"><?php _e('This plugin will automatically copy the taxonomy TERMS associated with the post. If the taxonomy TERMS don\'t exist in the destination site the will be created for you. Note: This functionsality assumes you have the taxonomies in your source site also registered in your destination site. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
+		<p class="mpdtip"><?php _e('This plugin will automatically copy the taxonomy TERMS associated with the post. If the taxonomy TERMS don\'t exist in the destination site the will be created for you. Note: This functionsality assumes you have the taxonomies in your source site also registered in your destination site. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
 
 	<?php
 
@@ -271,11 +308,12 @@ function mdp_copy_post_taxonomies_render(  ) {
 function mdp_default_feat_image_copy_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
-
 	?>
-	<input type='checkbox' name='mdp_settings[mdp_default_featured_image]' <?php mpd_checked_lookup($options, 'mdp_default_featured_image', 'feat') ;?> value='feat'>
+	
+		<input type='checkbox' name='mdp_settings[mdp_default_featured_image]' <?php mpd_checked_lookup($options, 'mdp_default_featured_image', 'feat') ;?> value='feat'>
 
-	<p class="mpdtip"><?php _e('This plugin will automatically copy any featured image associated with the post. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
+		<p class="mpdtip"><?php _e('This plugin will automatically copy any featured image associated with the post. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
+
 	<?php
 
 }
@@ -291,11 +329,12 @@ function mdp_default_feat_image_copy_render(  ) {
 function mdp_copy_content_image_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
-
 	?>
-	<input type='checkbox' name='mdp_settings[mdp_copy_content_images]' <?php mpd_checked_lookup($options, 'mdp_copy_content_images', 'content-image') ;?> value='content-image'>
+		
+		<input type='checkbox' name='mdp_settings[mdp_copy_content_images]' <?php mpd_checked_lookup($options, 'mdp_copy_content_images', 'content-image') ;?> value='content-image'>
 
-	<p class="mpdtip"><?php _e('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It will also change the urls in the duplicated post to reference the new media file. You can turn off this activity by unchecking the box', MPD_DOMAIN)?></p>
+		<p class="mpdtip"><?php _e('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It will also change the urls in the duplicated post to reference the new media file. You can turn off this activity by unchecking the box', MPD_DOMAIN)?></p>
+
 	<?php
 
 }
@@ -310,11 +349,12 @@ function mdp_copy_content_image_render(  ) {
 function mdp_retain_published_date_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
-
 	?>
-	<input type='checkbox' name='mdp_settings[mdp_retain_published_date]' <?php mpd_checked_lookup($options, 'mdp_retain_published_date', 'retain-published') ;?> value='retain-published'>
+	
+		<input type='checkbox' name='mdp_settings[mdp_retain_published_date]' <?php mpd_checked_lookup($options, 'mdp_retain_published_date', 'retain-published') ;?> value='retain-published'>
 
-	<p class="mpdtip"><?php _e('Check this box if you would like the destination post to keep the source published date. NOTE! If you check this option the desination post status will be set to published by default', MPD_DOMAIN)?></p>
+		<p class="mpdtip"><?php _e('Check this box if you would like the destination post to keep the source published date. NOTE! If you check this option the desination post status will be set to published by default', MPD_DOMAIN)?></p>
+
 	<?php
 
 }
@@ -329,11 +369,12 @@ function mdp_retain_published_date_render(  ) {
 function mdp_allow_dev_info_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
-
 	?>
-	<input type='checkbox' name='mdp_settings[mdp_allow_dev_info]' <?php mpd_checked_lookup($options, 'mdp_allow_dev_info', 'allow-dev') ;?> value='allow-dev'>
+		
+		<input type='checkbox' name='mdp_settings[mdp_allow_dev_info]' <?php mpd_checked_lookup($options, 'mdp_allow_dev_info', 'allow-dev') ;?> value='allow-dev'>
 
-	<p class="mpdtip"><?php _e('If this box is checked you are allowing anonymous useage data to be sent to the developers to help provide valuable information in order to improve this plugin', MPD_DOMAIN)?></p>
+		<p class="mpdtip"><?php _e('If this box is checked you are allowing anonymous useage data to be sent to the developers to help provide valuable information in order to improve this plugin', MPD_DOMAIN)?></p>
+
 	<?php
 
 }
