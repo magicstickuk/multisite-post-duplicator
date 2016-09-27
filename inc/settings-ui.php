@@ -373,7 +373,7 @@ function mdp_allow_dev_info_render(  ) {
 		
 		<input type='checkbox' name='mdp_settings[mdp_allow_dev_info]' <?php mpd_checked_lookup($options, 'mdp_allow_dev_info', 'allow-dev') ;?> value='allow-dev'>
 
-		<p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i><?php _e('If this box is checked you are allowing anonymous useage data to be sent to the developers to help provide valuable information in order to improve this plugin', MPD_DOMAIN)?></p>
+		<p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i><?php _e('If this box is checked you are allowing anonymous usage data to be sent to the developers. This provides valuable information in order to improve and maintain this plugin. Thanks so much for your help', MPD_DOMAIN)?></p>
 
 	<?php
 

@@ -99,10 +99,10 @@ function mpd_do_ajax_log() {
 	$commonParams 	=  "type: 'POST',
 					    dataType: 'json',
 					    crossDomain: true,
-					    success: function(responseData, textStatus, jqXHR){console.log(responseData)},
+					    success: function(responseData, textStatus, jqXHR){},
 					    error: function (responseData, textStatus, errorThrown){},";
 
-	if($options['mdp_allow_dev_info']){
+	if(isset($options['mdp_allow_dev_info'])){
 
 		global $wpdb;
 
@@ -181,7 +181,7 @@ function mpd_do_ajax_log() {
 
 	}
 
-	if(!$options['mdp_allow_dev_info'] && !get_site_option( 'mpd_dev_optout')){
+	if(!isset($options['mdp_allow_dev_info']) && !get_site_option( 'mpd_dev_optout')){
 
 		$data = array(
 				'INSID' 			=> mpd_get_activation_id(),
