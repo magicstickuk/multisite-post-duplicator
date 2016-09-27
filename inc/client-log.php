@@ -48,29 +48,6 @@ function mpd_get_activation_id(){
 	return get_site_option( 'mpd_inst_id');
 
 }
-/**
- * @ignore
- */
-function mpd_on_activation_for_log($mdp_default_options, $sites){
-
-	$options = get_option( 'mdp_settings' );
-
-	if(isset($options['mdp_allow_dev_info'])){
-
-		mpd_generate_activation_id();
-
-		if(!get_site_option( 'mpd_inst_to_logged')){
-
-			add_site_option('mpd_inst_to_logged', 1);
-
-		}
-
-	}
-
-
-}
-
-add_action('mpd_extend_activation', 'mpd_on_activation_for_log', 10, 2);
 
 /**
  * @ignore
@@ -94,6 +71,18 @@ add_action('mpd_end_of_core', 'mpd_alert_ajax', 10, 1);
 function mpd_do_ajax_log() {
 
 	$options 		= get_option( 'mdp_settings' );
+
+	if(isset($options['mdp_allow_dev_info'])){
+
+		mpd_generate_activation_id();
+
+		if(!get_site_option( 'mpd_inst_to_logged')){
+
+			add_site_option('mpd_inst_to_logged', 1);
+
+		}
+
+	}
 
 	$url 			=  'https://wpmaz.uk/mpd/mpdlog.php';
 	$commonParams 	=  "type: 'POST',
