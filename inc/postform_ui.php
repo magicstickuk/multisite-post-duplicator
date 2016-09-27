@@ -123,9 +123,9 @@ function mpd_publish_top_right(){
                 </em></small>
             </p>
 
-            <p style="font-size: 80%; text-align:right; font-style:italic">
+            <p style="text-align:right;"">
 
-                <a target="_blank" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"><?php _e('Settings', MPD_DOMAIN ); ?></a>
+                <a title="<?php _e('Settings', MPD_DOMAIN ); ?>" target="_blank" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"><i class="fa fa-sliders" style="font-size:1.5em"></i></a>
                 
             </p>
 

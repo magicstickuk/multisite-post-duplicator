@@ -1,4 +1,5 @@
 jQuery(document).ready(function($) {
+	
 	sb = jQuery('#publishing-action #publish');
 	sV = sb.val();
 	jQuery('#delete-action a').css('font-size','11px');

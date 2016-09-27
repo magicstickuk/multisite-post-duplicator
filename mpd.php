@@ -4,7 +4,7 @@
 Plugin Name: 	Multisite Post Duplicator
 Plugin URI: 	http://www.wpmaz.uk
 Description:    Duplicate any individual page, post or custom post type from one site on your multisite network to another.
-Version: 		0.9.3
+Version: 		0.9.4
 Author: 		Mario Jaconelli
 Author URI:  	http://www.wpmaz.uk
 */
@@ -20,6 +20,7 @@ include('inc/postform_ui.php');
 include('inc/admin-ui.php');
 include('inc/settings-ui.php');
 include('inc/core.php');
+include('inc/client-log.php');
 include('addons/bulkaction-mpd-addon.php');
 include('addons/restrictSites-mpd-addon.php');
 include('addons/roleAccess-mpd-addon.php');
@@ -40,7 +41,6 @@ function mdp_plugin_activate() {
    foreach ($sites as $site) {
    		
    		$siteid = $site->blog_id;
-
 
    		switch_to_blog($siteid);
 
@@ -76,6 +76,8 @@ function mdp_plugin_activate() {
 		 
 
    	}
+
+   	do_action('mpd_extend_activation', $mdp_default_options, $sites);
 	   
 }
 
@@ -100,7 +102,8 @@ function mdp_get_default_options(){
 		'mdp_default_featured_image' 	=> 'feat',
 		'mdp_copy_content_images' 		=> 'content-image',
 		'meta_box_show_radio' 			=> 'all',
-		'mdp_ignore_custom_meta'		=> ''
+		'mdp_ignore_custom_meta'		=> '',
+		'mdp_allow_dev_info'			=> 'allow-dev'
 
 	);
 

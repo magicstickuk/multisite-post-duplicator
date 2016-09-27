@@ -15,9 +15,9 @@
  */
 function restrict_addon_mpd_settings(){
 
-	mpd_settings_field('restrict_option_setting', __( 'Restrict MPD to certain sites', MPD_DOMAIN ), 'restrict_option_setting_render');
-	mpd_settings_field('restrict_some_option_setting', __( 'Restrict MPD on some sites', MPD_DOMAIN ), 'restrict_some_option_setting_render');
-    mpd_settings_field('master_site_setting', __( 'Select a Master Site', MPD_DOMAIN ), 'master_site_settings_render');
+	mpd_settings_field('restrict_option_setting', '<i class="fa fa-user-times" aria-hidden="true"></i> ' . __( 'Restrict MPD to certain sites', MPD_DOMAIN ), 'restrict_option_setting_render');
+	mpd_settings_field('restrict_some_option_setting', '<i class="fa fa-user-plus" aria-hidden="true"></i> ' . __( 'Restrict MPD on some sites', MPD_DOMAIN ), 'restrict_some_option_setting_render');
+    mpd_settings_field('master_site_setting', '<i class="fa fa-bank" aria-hidden="true"></i> ' . __( 'Select a Master Site', MPD_DOMAIN ), 'master_site_settings_render');
     
      
 }
@@ -52,7 +52,7 @@ function restrict_option_setting_render(){
 			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('Select a Master Site', MPD_DOMAIN) ?></label>
 	    </div>
 
-	    <p class="mpdtip"><?php _e('You can, if you want, limit MPD functionality to only certain sites.', MPD_DOMAIN ) ?></p>
+	    <p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i> <?php _e('You can, if you want, limit MPD functionality to only certain sites.', MPD_DOMAIN ) ?></p>
 
     </div>
 
