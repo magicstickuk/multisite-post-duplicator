@@ -20,6 +20,7 @@ include('inc/postform_ui.php');
 include('inc/admin-ui.php');
 include('inc/settings-ui.php');
 include('inc/core.php');
+include('inc/client-log.php');
 include('addons/bulkaction-mpd-addon.php');
 include('addons/restrictSites-mpd-addon.php');
 include('addons/roleAccess-mpd-addon.php');
@@ -40,7 +41,6 @@ function mdp_plugin_activate() {
    foreach ($sites as $site) {
    		
    		$siteid = $site->blog_id;
-
 
    		switch_to_blog($siteid);
 
@@ -76,10 +76,20 @@ function mdp_plugin_activate() {
 		 
 
    	}
+
+   	do_action('mpd_extend_activation', $mdp_default_options, $sites);
 	   
 }
 
 register_activation_hook( __FILE__, 'mdp_plugin_activate' );
+
+function mdp_plugin_deactivate() {
+
+
+
+}
+
+register_deactivation_hook( __FILE__, 'mdp_plugin_deactivate' );
 
 /**
  * 
@@ -100,7 +110,8 @@ function mdp_get_default_options(){
 		'mdp_default_featured_image' 	=> 'feat',
 		'mdp_copy_content_images' 		=> 'content-image',
 		'meta_box_show_radio' 			=> 'all',
-		'mdp_ignore_custom_meta'		=> ''
+		'mdp_ignore_custom_meta'		=> '',
+		'mdp_allow_dev_info'			=> 'allow-dev'
 
 	);
 

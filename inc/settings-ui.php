@@ -95,6 +95,8 @@ function mdp_settings_init(  ) {
 
 	mpd_settings_field('mdp_ignore_custom_meta', __( 'Post Meta to ignore?', MPD_DOMAIN ), 'mdp_ignore_custom_meta_render');
 
+	mpd_settings_field('mdp_allow_dev_info', __( 'Allow anonymous usage data?', MPD_DOMAIN ), 'mdp_allow_dev_info_render');
+
 }
 /**
  * 
@@ -299,7 +301,7 @@ function mdp_copy_content_image_render(  ) {
 }
 /**
  * 
- * Create the UI for the Inline Image Copy Selection setting
+ * Create the UI for the Retain Published Date Option
  * 
  * @since 0.9.4
  * @return null
@@ -316,7 +318,25 @@ function mdp_retain_published_date_render(  ) {
 	<?php
 
 }
+/**
+ * 
+ * Create the UI for the Allow Usage data
+ * 
+ * @since 0.9.4
+ * @return null
+ * 
+ */
+function mdp_allow_dev_info_render(  ) { 
 
+	$options = get_option( 'mdp_settings' );
+
+	?>
+	<input type='checkbox' name='mdp_settings[mdp_allow_dev_info]' <?php mpd_checked_lookup($options, 'mdp_allow_dev_info', 'allow-dev') ;?> value='allow-dev'>
+
+	<p class="mpdtip"><?php _e('If this box is checked you are allowing anonymous useage data to be sent to the developers to help provide valuable information in order to improve this plugin', MPD_DOMAIN)?></p>
+	<?php
+
+}
 /**
  * 
  * Generate a sub heading for the settings page
@@ -380,6 +400,7 @@ function mdp_options_page(  ) {
 		?>
 		
 	</form>
+	<p><small>MPD INST ID: <?php echo mpd_get_activation_id(); ?></small></p>
 	
 	<?php
 

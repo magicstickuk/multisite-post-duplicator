@@ -954,7 +954,7 @@ function mpd_get_published_date($mpd_process_info){
 
  $options = get_option( 'mdp_settings' );
 
- if($options['mdp_retain_published_date']){
+ if(isset($options['mdp_retain_published_date'])){
     $mpd_process_info['post_date'] = get_post_field('post_date', $mpd_process_info['source_id']);
  }
  
@@ -979,7 +979,7 @@ function mpd_set_published_date($mdp_post, $mpd_process_info){
 
   $options = get_option( 'mdp_settings' );
 
-  if($options['mdp_retain_published_date']){
+  if(isset($options['mdp_retain_published_date'])){
 
     $mdp_post['post_date'] = $mpd_process_info['post_date'];
     $mdp_post['post_status'] = 'publish';
