@@ -77,6 +77,8 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 = 0.9.4 =
 * NEW: Added setting to let you retain the source post publish date if you wish.
 * Added signposting for users trying to use this plugin on a subdomain configuration.
+* Fixed various typos and spelling mistakes throught the plugin.
+* NEW: Added font-awesome for some nice icons.
 
 = 0.9.3 =
 * NEW: Support for WordPress' new WP_Site_Query (get_sites()) class.

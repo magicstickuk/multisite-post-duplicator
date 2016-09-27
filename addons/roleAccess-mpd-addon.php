@@ -16,7 +16,7 @@
  
  function roleAccess_addon_mpd_settings(){
 
- 	mpd_settings_field('role_option_setting', __( 'Minimum user role allowed to use MPD', MPD_DOMAIN ), 'role_option_setting_render');
+ 	mpd_settings_field('role_option_setting', '<i class="fa fa-users" aria-hidden="true"></i> ' . __( 'Minimum user role allowed to use MPD', MPD_DOMAIN ), 'role_option_setting_render');
 
  }
 

@@ -50,6 +50,10 @@ function mdp_load_admin_styles(){
 
 		wp_enqueue_script( 'mdp-admin-settings-scripts', plugins_url( '../js/admin.js', __FILE__ ), array( 'jquery' ), '1.0' );
 
+		wp_register_style( 'mdp-font-awesome', plugins_url( '../css/font-awesome.min.css', __FILE__ ) , false, '1.0.0' );
+
+		wp_enqueue_style( 'mdp-font-awesome');
+
 
 
 		
