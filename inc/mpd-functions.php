@@ -694,12 +694,58 @@ function mpd_non_multisite_admin_notice() {
         echo "<div class='error'><p>You have activated <a href='https://en-gb.wordpress.org/plugins/multisite-post-duplicator/' target='_blank'>Multisite Post Duplicator</a> on this WordPress Installation but this is not a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a>. In the interest of your websites efficiency we would advise you deactivate the plugin until you are using a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a></p></div>";
     }
 
-    if(is_subdomain_install()){
-            echo "<div class='error'><p>You have activated <a href='https://en-gb.wordpress.org/plugins/multisite-post-duplicator/' target='_blank'>Multisite Post Duplicator</a> on this WordPress Installation however this network has the subdomain configuration enabled. Unfortunately this plugin doesn't support Subdomain configurations at this time. Please accept our apologies and check back as we hope to support it soon.</div>";
+    if(!is_subdomain_install() && empty(get_site_option('has_dismissed_subdomain_error'))){
+            
+            ?>
+            
+            <div class='not-subdomain error notice is-dismissible'><p>You have activated <a href='https://en-gb.wordpress.org/plugins/multisite-post-duplicator/' target='_blank'>Multisite Post Duplicator</a> on this WordPress Installation however this network has the subdomain configuration enabled. Unfortunately this plugin doesn't support Subdomain configurations at this time. Please accept our apologies and check back as we hope to support it soon.</div>
+            <?php
+
+
     }
+
 }
 
 add_action('admin_notices', 'mpd_non_multisite_admin_notice');
+
+function mpd_notices_javascript(){
+
+    if(!is_subdomain_install()){
+    ?>
+    <script>
+        jQuery(document).on('ready', function() {
+
+            jQuery('.not-subdomain .notice-dismiss').click(function(){
+
+                jQuery.ajax({
+                    url : ajaxurl,
+                    type : 'post',
+                    data : {
+                        action : 'mpd_dismiss_subdomain_notice'
+                    }
+                });
+
+             });
+          
+        });
+    </script>
+    <?php
+
+    }
+    
+}
+
+add_action('admin_head', "mpd_notices_javascript");
+
+function mpd_dismiss_subdomain_notice(){
+
+    update_site_option('has_dismissed_subdomain_error', 1);
+
+    die();
+
+}
+
+add_action('wp_ajax_mpd_dismiss_subdomain_notice','mpd_dismiss_subdomain_notice');
 
 /**
  * This function allows for user control of the available statuses the can be used in the duplicated post

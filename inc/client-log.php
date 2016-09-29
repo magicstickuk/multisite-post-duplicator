@@ -7,7 +7,6 @@ function allow_dev_setting_activation($options){
   if(version_compare(mpd_get_version(),'0.9.4.1', '<')){
       $options['mdp_allow_dev_info']    = 'allow-dev';
   }
-
   return $options;
 
 }
