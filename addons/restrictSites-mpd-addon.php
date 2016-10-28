@@ -15,9 +15,9 @@
  */
 function restrict_addon_mpd_settings(){
 
-	mpd_settings_field('restrict_option_setting', __( 'Restrict MPD to certain sites', MPD_DOMAIN ), 'restrict_option_setting_render');
-	mpd_settings_field('restrict_some_option_setting', __( 'Restrict MPD on some sites', MPD_DOMAIN ), 'restrict_some_option_setting_render');
-    mpd_settings_field('master_site_setting', __( 'Select a Master Site', MPD_DOMAIN ), 'master_site_settings_render');
+	mpd_settings_field('restrict_option_setting', '<i class="fa fa-user-times" aria-hidden="true"></i> ' . __( 'Restrict MPD to certain sites', MPD_DOMAIN ), 'restrict_option_setting_render');
+	mpd_settings_field('restrict_some_option_setting', '<i class="fa fa-user-plus" aria-hidden="true"></i> ' . __( 'Restrict MPD on some sites', MPD_DOMAIN ), 'restrict_some_option_setting_render');
+    mpd_settings_field('master_site_setting', '<i class="fa fa-bank" aria-hidden="true"></i> ' . __( 'Select a Master Site', MPD_DOMAIN ), 'master_site_settings_render');
     
      
 }
@@ -108,15 +108,15 @@ function restrict_some_option_setting_render(){
 			
 			<?php 	
 
-				$blog_details 	= get_blog_details($site['blog_id']);
+				$blog_details 	= get_blog_details($site->blog_id);
 				$checkme		= ''; 
 				
-				if(in_array($site['blog_id'], $restricted_ids)){
+				if(in_array($site->blog_id, $restricted_ids)){
 					$checkme = 'checked="checked"';
 				}
 
 			?>
-				<input type='checkbox' class="restrict-some-checkbox" name='mdp_settings[mpd_restrict_some_sites_<?php echo $site['blog_id'] ?>]' <?php echo $checkme; ?> value='<?php echo $site['blog_id']; ?>'> <?php echo $blog_details->blogname; ?> <br >
+				<input type='checkbox' class="restrict-some-checkbox" name='mdp_settings[mpd_restrict_some_sites_<?php echo $site->blog_id ?>]' <?php echo $checkme; ?> value='<?php echo $site->blog_id; ?>'> <?php echo $blog_details->blogname; ?> <br >
 			
 
 		<?php endforeach;?>
@@ -143,9 +143,9 @@ function master_site_settings_render(){
 
 		<option></option>
 		<?php foreach ($sites as $site): ?>
-			<?php $blog_details = get_blog_details($site['blog_id']); ?>
+			<?php $blog_details = get_blog_details($site->blog_id); ?>
 
-			<option value="<?php echo $site['blog_id'] ?>" <?php selected($mdp_restrict_master_label_value, $site['blog_id']); ?>>
+			<option value="<?php echo $site->blog_id ?>" <?php selected($mdp_restrict_master_label_value, $site->blog_id); ?>>
 
 			    <?php echo $blog_details->blogname;?>
 

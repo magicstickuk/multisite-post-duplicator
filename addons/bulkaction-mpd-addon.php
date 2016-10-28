@@ -60,12 +60,12 @@ function mpd_bulk_admin_script() {
 
                 <?php foreach ($sites as $site) :?>
 
-                  <?php $blog_details = get_blog_details($site['blog_id']); ?> 
+                  <?php $blog_details = get_blog_details($site->blog_id); ?> 
 
-                    <?php if($site['blog_id'] != get_current_blog_id() && current_user_can_for_blog($site['blog_id'], mpd_get_required_cap())):?> 
+                    <?php if($site->blog_id != get_current_blog_id() && current_user_can_for_blog($site->blog_id, mpd_get_required_cap())):?> 
 
-                      jQuery('<option>').val("dup-<?php echo $site['blog_id'] ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action']");
-                      jQuery('<option>').val("dup-<?php echo $site['blog_id'] ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action2']");
+                      jQuery('<option>').val("dup-<?php echo $site->blog_id ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action']");
+                      jQuery('<option>').val("dup-<?php echo $site->blog_id ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action2']");
 
                     <?php endif; ?>
                     
@@ -161,7 +161,7 @@ add_action('admin_notices', 'mpd_bulk_admin_notices');
  */
 function add_bulk_settings(){
 
-    mpd_settings_field('add_bulk_settings', __( 'Allow batch duplication?', MPD_DOMAIN ), 'mdp_default_batch_render');
+    mpd_settings_field('add_bulk_settings', '<i class="fa fa-files-o" aria-hidden="true"></i> ' . __( 'Allow batch duplication?', MPD_DOMAIN ), 'mdp_default_batch_render');
      
 }
 
@@ -181,7 +181,7 @@ function mdp_default_batch_render(){
   </script>
   <input type='checkbox' name='mdp_settings[add_bulk_settings]' <?php mpd_checked_lookup($options, 'add_bulk_settings', 'allow-batch') ;?> value='allow-batch'> <i class="fa fa-info-circle abs-click accord" aria-hidden="true"></i>
 
-  <p class="mpdtip abs-content" style="display:none"><?php _e('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page', MPD_DOMAIN)?></p>
+  <p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i> <?php _e('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page', MPD_DOMAIN)?></p>
   <?php
 
 }

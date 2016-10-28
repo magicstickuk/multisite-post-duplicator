@@ -235,9 +235,9 @@ function mdp_get_site_on_network(){
 
 	    <?php foreach ($sites as $site) :?>
 
-	    	<?php $blog_details = get_blog_details($site['blog_id']);?>
+	    	<?php $blog_details = get_blog_details($site->blog_id);?>
 
-	    		<option value="<?php echo $site['blog_id'] ?>"><?php echo $blog_details->blogname; ?></option>
+	    		<option value="<?php echo $site->blog_id ?>"><?php echo $blog_details->blogname; ?></option>
 
 	    <?php endforeach; ?>
 

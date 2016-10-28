@@ -21,6 +21,7 @@ include('inc/admin-ui.php');
 include('inc/settings-ui.php');
 include('inc/core.php');
 include('inc/persist.php');
+include('inc/client-log.php');
 include('addons/bulkaction-mpd-addon.php');
 include('addons/restrictSites-mpd-addon.php');
 include('addons/roleAccess-mpd-addon.php');
@@ -40,7 +41,7 @@ function mdp_plugin_activate() {
 
    foreach ($sites as $site) {
    		
-   		$siteid = $site['blog_id'];
+   		$siteid = $site->blog_id;
 
 
    		switch_to_blog($siteid);
@@ -61,6 +62,7 @@ function mdp_plugin_activate() {
 
 		   }else{
 		   		
+		   		//Add default option for existing users with new checkboxes
 		   		$options = get_option( 'mdp_settings' );
 
 		   		$options = apply_filters('mdp_activation_options', $options);
@@ -73,9 +75,11 @@ function mdp_plugin_activate() {
 
 		 restore_current_blog();
 
+		 
+
    	}
 
-   	global $wpdb;
+   	do_action('mpd_extend_activation', $mdp_default_options, $sites);
 
 	$tableName = $wpdb->base_prefix . "mpd_log";
 
@@ -123,7 +127,8 @@ function mdp_get_default_options(){
 		'mdp_default_featured_image' 	=> 'feat',
 		'mdp_copy_content_images' 		=> 'content-image',
 		'meta_box_show_radio' 			=> 'all',
-		'mdp_ignore_custom_meta'		=> ''
+		'mdp_ignore_custom_meta'		=> '',
+		'mdp_allow_dev_info'			=> 'allow-dev'
 
 	);
 

@@ -60,7 +60,7 @@ function mdp_settings_init(  ) {
 		MPD_SETTING_PAGE
 	);
 
-	mpd_settings_field('meta_box_show_radio', __( 'What Post Types you want to show the MPD Meta Box?', MPD_DOMAIN ), 'meta_box_show_radio_render');
+	mpd_settings_field('meta_box_show_radio', '<i class="fa fa-file-text-o" aria-hidden="true"></i> ' . __( 'What Post Types you want to show the MPD Meta Box?', MPD_DOMAIN ), 'meta_box_show_radio_render');
 
 	$mpd_post_types 		= get_post_types();
 	$loopcount 				= 1;
@@ -73,7 +73,7 @@ function mdp_settings_init(  ) {
 			mpd_settings_field(
 
 					'meta_box_post_type_selector_' . $mpd_post_type,
-					$loopcount == 1 ? __("Select Post Types to show the MPD Meta Box on", MPD_DOMAIN ) : "",
+					$loopcount == 1 ? '<i class="fa fa-file-text-o" aria-hidden="true"></i> ' . __("Select post types to show the MPD Meta Box on", MPD_DOMAIN ) : "",
 					'meta_box_post_type_selector_render',
 					array(
 						'mdpposttype' => $mpd_post_type
@@ -89,42 +89,51 @@ function mdp_settings_init(  ) {
 	
 	mpd_settings_field(
 		'mdp_default_prefix',
-		__( 'Default prefix', MPD_DOMAIN ),
+		'<i class="fa fa-pencil" aria-hidden="true"></i> ' . __( 'Default Prefix', MPD_DOMAIN ),
 		'mdp_default_prefix_render'
 	);
 	mpd_settings_field(
 		'mdp_default_tags_copy',
-		__( 'Copy Post Tags when duplicating?', MPD_DOMAIN ),
-		'mdp_default_tags_copy_render'
-	);
+		'<i class="fa fa-tags" aria-hidden="true"></i> ' .__( 'Copy post tags when duplicating?', MPD_DOMAIN ),
+		'mdp_default_tags_copy_render');
+
 	mpd_settings_field(
 		'mdp_copy_post_categories',
-		__( 'Copy Post Categories?', MPD_DOMAIN ),
+		'<i class="fa fa-files-o" aria-hidden="true"></i> ' . __( 'Copy post categories?', MPD_DOMAIN ),
 		'mdp_copy_post_categories_render'
 	);
-	mpd_settings_field(
-		'mdp_copy_post_taxonomies',
-		__( 'Copy Post Taxonomies?', MPD_DOMAIN ),
+
+	mpd_settings_field('mdp_copy_post_taxonomies',
+		'<i class="fa fa-tag" aria-hidden="true"></i> ' . __( 'Copy post taxonomies?', MPD_DOMAIN ),
 		'mdp_copy_post_taxonomies_render'
 	);
 
 	mpd_settings_field(
 		'mdp_default_featured_image',
-		__( 'Copy Featured Image when duplicating?', MPD_DOMAIN ),
+		'<i class="fa fa-picture-o" aria-hidden="true"></i> ' . __( 'Copy featured image when duplicating?', MPD_DOMAIN ),
 		'mdp_default_feat_image_copy_render'
 	);
 	mpd_settings_field(
 		'mdp_copy_content_images',
-		__( 'Copy Post content images to destination Media Library?', MPD_DOMAIN ),
+		'<i class="fa fa-camera" aria-hidden="true"></i> ' . __( 'Copy post content images to destination media library?', MPD_DOMAIN ),
 		'mdp_copy_content_image_render'
+	);
+	mpd_settings_field(
+		'mdp_retain_published_date',
+		'<i class="fa fa-calendar-o" aria-hidden="true"></i> ' . __( 'Retain Published Date from Source?', MPD_DOMAIN ),
+		'mdp_retain_published_date_render'
 	);
 
 	do_action( 'mdp_end_plugin_setting_page' );
 
-	mpd_settings_field(
-		'mdp_ignore_custom_meta',
-		__( 'Post Meta to ignore?', MPD_DOMAIN ),
+	mpd_settings_field('mdp_ignore_custom_meta',
+		'<i class="fa fa-fast-forward" aria-hidden="true"></i> ' . __( 'Post Meta to ignore?', MPD_DOMAIN ),
 		'mdp_ignore_custom_meta_render'
+	);
+
+	mpd_settings_field('mdp_allow_dev_info',
+		'<i class="fa fa-bar-chart" aria-hidden="true"></i> ' . __( 'Allow anonymous usage data?', MPD_DOMAIN ),
+		'mdp_allow_dev_info_render'
 	);
 
 }
@@ -160,20 +169,20 @@ function meta_box_show_radio_render(){
 
 			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_all" <?php checked( $mdp_radio_label_value, 'all'); ?> value="all">
 		
-			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('All Post Types', MPD_DOMAIN ) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('All post types', MPD_DOMAIN ) ?></label>
 			    
 			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_some" <?php checked( $mdp_radio_label_value, 'some'); ?> value="some">
 		
-			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Some Post Types', MPD_DOMAIN ) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Some post types', MPD_DOMAIN ) ?></label>
 		
 			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_none" <?php checked( $mdp_radio_label_value, 'none'); ?> value="none">
 		
-			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('No Post Types', MPD_DOMAIN) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('No post types', MPD_DOMAIN) ?></label>
 
 	    	<i class="fa fa-info-circle mbs-click accord" aria-hidden="true"></i>
 	    </div>
 
-	    <p class="mpdtip mbs-content" style="display:none"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
+	    <p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
 
     </div>
 	<?php
@@ -378,7 +387,46 @@ function mdp_copy_content_image_render(  ) {
 	<?php
 
 }
+/**
+ * 
+ * Create the UI for the Retain Published Date Option
+ * 
+ * @since 0.9.4
+ * @return null
+ * 
+ */
+function mdp_retain_published_date_render(  ) { 
 
+	$options = get_option( 'mdp_settings' );
+	?>
+	
+		<input type='checkbox' name='mdp_settings[mdp_retain_published_date]' <?php mpd_checked_lookup($options, 'mdp_retain_published_date', 'retain-published') ;?> value='retain-published'>
+
+		<p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i><?php _e('Check this box if you would like the destination post to keep the source published date. NOTE! If you check this option the destination post status will be set to published by default', MPD_DOMAIN)?></p>
+
+	<?php
+
+}
+/**
+ * 
+ * Create the UI for the Allow Usage data
+ * 
+ * @since 0.9.4
+ * @return null
+ * 
+ */
+function mdp_allow_dev_info_render(  ) { 
+
+	$options = get_option( 'mdp_settings' );
+	?>
+		
+		<input type='checkbox' name='mdp_settings[mdp_allow_dev_info]' <?php mpd_checked_lookup($options, 'mdp_allow_dev_info', 'allow-dev') ;?> value='allow-dev'>
+
+		<p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i><?php _e('If this box is checked you are allowing anonymous usage data to be sent to the developers. This provides valuable information in order to improve and maintain this plugin. Thanks so much for your help', MPD_DOMAIN)?></p>
+
+	<?php
+
+}
 /**
  * 
  * Generate a sub heading for the settings page
@@ -411,7 +459,7 @@ function mpd_globalise_settings(){
 
 	foreach ($sites as $site) {
 
-		switch_to_blog($site['blog_id']);
+		switch_to_blog($site->blog_id);
 
 			update_option( 'mdp_settings', $options);
 
@@ -475,22 +523,23 @@ function mdp_options_page(  ) {
 
 		mdp_log_page();
 
-	}elseif($active_tab == 'persists' && $logic){
+		}elseif($active_tab == 'persists' && $logic){
 
-		mpd_persist_page();
+			mpd_persist_page();
 		
-	}else{
-		echo "<div class='wrap'>";
-		echo "<h2><i class='fa fa-link' aria-hidden='true'></i> Multisite Post Duplicator Settings</h2>";
-		echo "<form action='options.php' method='post'>";
-		settings_fields( MPD_SETTING_PAGE );
-		do_settings_sections( MPD_SETTING_PAGE );
-		submit_button();
-		echo "</form>";
-		echo "</div>";
+		}else{
+			
+			echo "<div class='wrap'>";
+			echo "<h2><i class='fa fa-link' aria-hidden='true'></i> Multisite Post Duplicator Settings</h2>";
+			echo "<form action='options.php' method='post'>";
+			settings_fields( MPD_SETTING_PAGE );
+			do_settings_sections( MPD_SETTING_PAGE );
+			submit_button();
+		
+			echo "</form>";	
+			echo "<p><small>MPD INST ID: ". mpd_get_activation_id() . "</small></p>";
 
 	}
 
 }
-
 ?>
