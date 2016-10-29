@@ -130,43 +130,7 @@ function mpd_publish_top_right(){
 
                 </ul>
             </p>
-
-            <p>
-                <small>
-                    
-                    <em>
-                    
-                    </em>
-                    
-                </small>
-            </p>
-           <?php if(isset($options['allow_persist']) || !$options ): ?>     
-            <hr>
-                    <label class="selectit">
-                        <script>
-                            jQuery(document).ready(function($) { 
-                                accordionClick('.pl-link', '.pl-content', 'fast');
-                            });
-
-                        </script>
-                        <ul>
-                            <li><input type="checkbox" name="persist">Create Persist Link? <i class="fa fa-info-circle pl-link" aria-hidden="true"></i></li>
-                        </ul>
-                        
-                        <p class="mpdtip pl-content" style="display:none"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
-
-                    </label>
-
-            <hr>
-
-            <?php endif; ?>
-
-            <p class="bottom-para">
-
-                <small><a class="no-dec" target="_blank" title="Multisite Post Duplicator Settings" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"> Settings <i class="fa fa-sliders fa-lg" aria-hidden="true"></i></a></small>
-                
-            </p>
-
+           
             <?php do_action('mpd_after_metabox_content'); ?>
             
         </div>

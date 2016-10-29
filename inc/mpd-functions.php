@@ -694,7 +694,7 @@ function mpd_non_multisite_admin_notice() {
         echo "<div class='error'><p>You have activated <a href='https://en-gb.wordpress.org/plugins/multisite-post-duplicator/' target='_blank'>Multisite Post Duplicator</a> on this WordPress Installation but this is not a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a>. In the interest of your websites efficiency we would advise you deactivate the plugin until you are using a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a></p></div>";
     }
 
-    if(is_subdomain_install() && empty(get_site_option('mpd_has_dismissed_subdomain_error'))){
+    if(is_subdomain_install() && !get_site_option('mpd_has_dismissed_subdomain_error')){
             
             ?>
             
@@ -1075,3 +1075,16 @@ function mpd_set_published_date($mdp_post, $mpd_process_info){
 }
 
 add_filter('mpd_setup_destination_data', 'mpd_set_published_date', 10,2);
+
+function mpd_do_settings_link(){
+
+    ?> <p class="bottom-para">
+
+                <small><a class="no-dec" target="_blank" title="Multisite Post Duplicator Settings" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"> Settings <i class="fa fa-sliders fa-lg" aria-hidden="true"></i></a></small>
+                
+            </p>
+    <?php
+
+}
+add_action('mpd_after_metabox_content', 'mpd_do_settings_link');
+

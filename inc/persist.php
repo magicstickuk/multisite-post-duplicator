@@ -612,3 +612,32 @@ function mdp_log_page(){
 	</div>
 	<?php
 }
+
+function mpd_persist_checkbox(){
+
+	$options = get_option( 'mdp_settings' );
+
+	if(isset($options['allow_persist']) || !$options ): ?>     
+            <hr>
+                    <label class="selectit">
+                        <script>
+                            jQuery(document).ready(function($) { 
+                                accordionClick('.pl-link', '.pl-content', 'fast');
+                            });
+
+                        </script>
+                        <ul>
+                            <li><input type="checkbox" name="persist">Create Persist Link? <i class="fa fa-info-circle pl-link" aria-hidden="true"></i></li>
+                        </ul>
+                        
+                        <p class="mpdtip pl-content" style="display:none"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
+
+                    </label>
+
+            <hr>
+
+    <?php endif;
+
+}
+
+add_action('mpd_after_metabox_content', 'mpd_persist_checkbox', 9);
