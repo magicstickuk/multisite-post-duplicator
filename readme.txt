@@ -74,6 +74,12 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 0.9.5.1 =
+* Fixed critical error experienced by some users from update v0.9.5 
+
+= 0.9.5 =
+* Subdomain warning message can now be dissmissed. Also has improved signposting.
+
 = 0.9.4 =
 * NEW: Added setting to let you retain the source post publish date if you wish.
 * NEW: Added font-awesome for some nice icons in our UI

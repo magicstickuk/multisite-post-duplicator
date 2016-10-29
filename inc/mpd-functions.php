@@ -694,12 +694,75 @@ function mpd_non_multisite_admin_notice() {
         echo "<div class='error'><p>You have activated <a href='https://en-gb.wordpress.org/plugins/multisite-post-duplicator/' target='_blank'>Multisite Post Duplicator</a> on this WordPress Installation but this is not a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a>. In the interest of your websites efficiency we would advise you deactivate the plugin until you are using a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a></p></div>";
     }
 
-    if(is_subdomain_install()){
-            echo "<div class='error'><p>You have activated <a href='https://en-gb.wordpress.org/plugins/multisite-post-duplicator/' target='_blank'>Multisite Post Duplicator</a> on this WordPress Installation however this network has the subdomain configuration enabled. Unfortunately this plugin doesn't support Subdomain configurations at this time. Please accept our apologies and check back as we hope to support it soon.</div>";
+    if(is_subdomain_install() && !get_site_option('mpd_has_dismissed_subdomain_error')){
+            
+            ?>
+            
+            <div class='not-subdomain error notice is-dismissible'><p><?php _e('You have activated Multisite Post Duplicator on this WordPress Installation however this network has the subdomain configuration enabled. This plugin is untested on subdomain configurations. While it should work fine for most functions you may notice issues with images being copied over to destination sites. We are working to bring full subdmain support as soon as possible.', MPD_DOMAIN ); ?></div>
+            <?php
+
+
     }
+
 }
 
 add_action('admin_notices', 'mpd_non_multisite_admin_notice');
+
+/**
+ * Adds ajax to subdomain error message dismiss button so we can control if we want to display the message in the future
+ *
+ * @since 0.9.5
+ *
+ * @return null
+ *
+ */
+function mpd_notices_javascript(){
+
+    if(is_subdomain_install()){
+    ?>
+    <script>
+        jQuery(document).on('ready', function() {
+
+            jQuery('.not-subdomain .notice-dismiss').click(function(){
+
+                jQuery.ajax({
+                    url : ajaxurl,
+                    type : 'post',
+                    data : {
+                        action : 'mpd_dismiss_subdomain_notice'
+                    }
+                });
+
+             });
+          
+        });
+    </script>
+    <?php
+
+    }
+
+}
+
+add_action('admin_head', "mpd_notices_javascript");
+
+/**
+ * This function is called when a user clicks to dismiss the subdamin error message. It creates an option
+ * in the network options table that tells us not to display the message again as it has been dismissed
+ *
+ * @since 0.9.5
+ *
+ * @return null
+ *
+ */
+function mpd_dismiss_subdomain_notice(){
+
+    update_site_option('mpd_has_dismissed_subdomain_error', 1);
+
+    die();
+
+}
+
+add_action('wp_ajax_mpd_dismiss_subdomain_notice','mpd_dismiss_subdomain_notice');
 
 /**
  * This function allows for user control of the available statuses the can be used in the duplicated post
