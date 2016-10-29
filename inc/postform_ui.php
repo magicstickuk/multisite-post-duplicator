@@ -152,9 +152,16 @@ function mpd_publish_top_right(){
 
 function mpd_clone_post($post_id){
 
+
     if (!count($_POST)){
 
         return $post_id;
+        
+    }
+
+    if(isset($_POST["post_status"]) && $_POST["post_ID"] == $post_id && $_POST["post_status"] != "auto-draft"){
+
+        mpd_persist_post($post_id);
         
     }
     
@@ -180,7 +187,7 @@ function mpd_clone_post($post_id){
                     $args['destination_id'] = $mpd_blog_id;
                     $args['source_post_id'] = $_POST['ID'];
                     $args['destination_post_id'] = $createdPost['id'];
-
+                    
                     mpd_add_persist($args); 
 
                 }
