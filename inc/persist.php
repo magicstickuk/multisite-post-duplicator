@@ -12,8 +12,10 @@
 
 function mpd_linked_list_metabox($page){
 
+	$priority = apply_filters( 'mpd_list_metabox_priority', 'high' );
+
 	if(mpd_get_persists_for_post()){
-	 	add_meta_box( 'multisite_linked_list_metabox', "<i class='fa fa-clone' aria-hidden='true'></i> " . __('Linked MPD Pages', MPD_DOMAIN ), 'mpd_linked_list_metabox_render', $page, 'side', 'high' );
+	 	add_meta_box( 'multisite_linked_list_metabox', "<i class='fa fa-link' aria-hidden='true'></i> " . __('Linked MPD Pages', MPD_DOMAIN ), 'mpd_linked_list_metabox_render', $page, 'side', $priority );
 	}
 
 
@@ -21,8 +23,48 @@ function mpd_linked_list_metabox($page){
 add_action('mpd_meta_box', 'mpd_linked_list_metabox');
 
 function mpd_linked_list_metabox_render(){
+    
+    $linked_posts = mpd_get_persists_for_post();
+    $count = 1;
     ?>
-        <p>Mario</p>
+
+    <p><small><?php _e('This post has other posts linked to it. If you update this post the it will also update the following posts in your network:', MPD_DOMAIN)?></small></p>
+       
+    <?php foreach ($linked_posts as $linked_post) :?>
+
+    	<?php
+    		$destination_post 		= get_blog_post($linked_post->destination_id, $linked_post->destination_post_id);
+    		$destination_details 	= get_blog_details($linked_post->destination_id);
+    	?>
+
+    	<?php if($count == 1 || $linked_post->destination_id != $carryover):?>
+    		
+    		<span class="mpd-metabox-subtitle"><?php echo $destination_details->blogname ?></span>
+    	
+    	<?php endif;?>
+
+    		<small class="mpd-metabox-list">
+
+    			<a href="<?php echo mpd_get_edit_url($linked_post->destination_id, $linked_post->destination_post_id); ?>"><?php echo $destination_post->post_title; ?></a>
+
+    		</small>
+
+    	<?php $carryover = $linked_post->destination_id; $count++;?>
+
+    <?php endforeach;?>
+
+    <hr>
+
+    <p class="bottom-para">
+
+        <small>
+
+        	<a class="no-dec" target="_blank" title="Multisite Post Duplicator Manage Links" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator&tab=persists') ); ?>"> Manage Links <i class="fa fa-cog fa-lg" aria-hidden="true"></i></a>
+
+        </small>
+                
+    </p>
+
     <?php
 }
 
@@ -252,20 +294,23 @@ function mpd_get_persists_for_post($blog_id = null, $post_id = null){
 	global $wpdb;
 	global $post;
 
-	$blog_id = $blog_id ? $blog_id : get_current_blog_id();
-	$post_id = $post_id ? $post_id : $post->ID;
+	$postobject = $post ? $post->ID : 0;
+	$blog_id 	= $blog_id ? $blog_id : get_current_blog_id();
+	$post_id 	= $post_id ? $post_id : $postobject;
 	
 	$tableName = $wpdb->base_prefix . "mpd_log";
 
 	$query = "SELECT *
-				FROM $tableName
-				WHERE 
-				source_id = ". $blog_id . " 
-				AND source_post_id = ". $post_id;
+			  FROM $tableName
+			  WHERE 
+			  source_id = ". $blog_id . " 
+			  AND source_post_id = ". $post_id ."
+			  
+			  order by destination_id";
 
 	
 	$result = $wpdb->get_results($query);
-	
+	// AND persist_active = 1
 	return $result;
 	
 }
@@ -402,7 +447,7 @@ function mpd_set_persist_count($args){
 	$oldData = mpd_get_persist_count($args);
 
 	$newData 	= array(
-		'persist_action_count' => $oldData + 1
+		'persist_action_count' => intval($oldData) + 1
 	);
 
 	$where 	= array(
@@ -425,6 +470,41 @@ function mpd_set_persist_count($args){
 	return $newData['persist_action_count'];
 
 }
+
+function mpd_persist_post($post_id){
+	
+    global $post;
+
+	$blog_id = get_current_blog_id();
+    $post_id = $post->ID;
+	
+	$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
+	
+    if($persist_posts){
+        
+        foreach($persist_posts as $persist_post){
+            
+            $args = array(
+                'source_id' 			=> intval($persist_post->source_id),
+                'destination_id' 		=> intval($persist_post->destination_id),
+                'source_post_id' 		=> intval($persist_post->source_post_id),
+                'destination_post_id' 	=> intval($persist_post->destination_post_id)
+            );
+            
+            mpd_persist_over_multisite($persist_post);
+
+            mpd_set_persist_count($args);
+        }
+    }
+ 
+	return;
+	
+}
+add_action('save_post', 'mpd_persist_post');
+
+
+
+
 function mpd_enqueue_datatables(){
 
 	wp_enqueue_script(
@@ -678,10 +758,10 @@ function mpd_persist_checkbox(){
 
                         </script>
                         <ul>
-                            <li><input type="checkbox" name="persist">Create Persist Link? <i class="fa fa-info-circle pl-link" aria-hidden="true"></i></li>
+                            <li><input type="checkbox" name="persist">Create Duplication Link? <i class="fa fa-info-circle pl-link" aria-hidden="true"></i></li>
                         </ul>
                         
-                        <p class="mpdtip pl-content" style="display:none"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
+                        <p class="mpdtip pl-content" style="display:none"><?php _e('Checking this option will create a link between this post and the resulting copied post. After the link is created if you ever update this post in the future the changes will automatically be copied over to the linked posts also. If you want to delete the link you can do so <a href="'. esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator&tab=persists') ) .'">here</a>', MPD_DOMAIN ) ?></p>
 
                     </label>
 

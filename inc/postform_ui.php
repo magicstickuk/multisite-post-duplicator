@@ -39,7 +39,10 @@ function mpd_metaboxes(){
         foreach ($post_types as $page ){
 
             if ($active_mpd && current_user_can(mpd_get_required_cap()))  {
-                    add_meta_box( 'multisite_clone_metabox', "<i class='fa fa-clone' aria-hidden='true'></i> " . __('Multisite Post Duplicator', MPD_DOMAIN ), 'mpd_publish_top_right', $page, 'side', 'high' );
+
+                    $priority = apply_filters( 'mpd_metabox_priority', 'high' );
+
+                    add_meta_box( 'multisite_clone_metabox', "<i class='fa fa-clone' aria-hidden='true'></i> " . __('Multisite Post Duplicator', MPD_DOMAIN ), 'mpd_publish_top_right', $page, 'side', $priority );
 
                     do_action('mpd_meta_box', $page);
                    
@@ -163,11 +166,11 @@ function mpd_clone_post($post_id){
         
     }
 
-    if(isset($_POST["post_status"]) && $_POST["post_ID"] == $post_id && $_POST["post_status"] != "auto-draft"){
+    // if(isset($_POST["post_status"]) && $_POST["post_ID"] == $post_id && $_POST["post_status"] != "auto-draft"){
 
-        mpd_persist_post($post_id);
+    //     mpd_persist_post($post_id);
         
-    }
+    // }
     
     if(    ( isset($_POST["post_status"] ) )
         && ( $_POST["post_status"] != "auto-draft" )
@@ -192,7 +195,7 @@ function mpd_clone_post($post_id){
                     $args['source_post_id'] = $_POST['ID'];
                     $args['destination_post_id'] = $createdPost['id'];
                     
-                    mpd_add_persist($args); 
+                    mpd_add_persist($args);
 
                 }
                 
@@ -206,39 +209,21 @@ function mpd_clone_post($post_id){
 
 add_filter( 'save_post', 'mpd_clone_post' );
 
-function mpd_persist_post($post_id){
-	
-	$blog_id = get_current_blog_id();
-    $post_id = get_the_ID();
-	
-	$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
-	
-    if($persist_posts){
-        foreach($persist_posts as $persist_post){
-            mpd_persist_over_multisite($persist_post->destination_post_id, $post_id, $persist_post->destination_id, get_post_type($post_id), get_current_user_id(), '', 'publish');
-        }
-    }
-	
-	
-	return $post_id;
-	
-}
-add_filter('save_post', 'mpd_persist_post');
-
 function mpd_persist_debug(){
+     global $blog_id;
+     global $post;
+  
+    $persist_posts = mpd_get_persists_for_post(1, 334);
+    
 
-    $blog_id = get_current_blog_id();
-    $post_id = get_the_ID();
-
-    $persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
+   // $persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
     $args = array(
         "source_id"=> 1,
-        "destination_id" => 2,
-        "source_post_id" => 819,
-        "destination_post_id"=> 770 
+        "destination_id" => 3,
+        "source_post_id" => 334,
+        "destination_post_id"=> 228 
     );
-    $result = mpd_set_persist_count($args);
-    var_dump("Mario" . $result);
-
+  
+    
 }
 add_filter('admin_notices', 'mpd_persist_debug');

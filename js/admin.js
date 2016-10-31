@@ -2,12 +2,25 @@ jQuery(document).ready(function($) {
 	sb = jQuery('#publishing-action #publish');
 	sV = sb.val();
 	jQuery('#delete-action a').css('font-size','11px');
-	sb.css('font-size','12px');
-	jQuery('#mpd_blogschecklist input:checkbox').change(function() {
-		
-		if ($("#mpd_blogschecklist input:checkbox:checked").length > 0){
+	sb.css('font-size','11px');
 
-   			sb.val(sV + " & Copy");
+
+	if(jQuery("#multisite_linked_list_metabox").length > 0){
+		sb.val(sV + " Post & Update Linked Posts");
+	}
+
+	jQuery('#mpd_blogschecklist input:checkbox').change(function() {
+
+		if(($("#mpd_blogschecklist input:checkbox:checked").length > 0 && jQuery("#multisite_linked_list_metabox").length > 0)){
+
+   			sb.val(sV + " & Duplicate & Update Linked Posts");
+
+   		}else if ($("#mpd_blogschecklist input:checkbox:checked").length > 0){
+
+   			sb.val(sV + " Post & Duplicate");
+		}else if(jQuery("#multisite_linked_list_metabox").length > 0){
+
+			sb.val(sV + " Post & Update Linked Posts");
 
 		}else{
 

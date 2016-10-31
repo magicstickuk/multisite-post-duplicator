@@ -20,3 +20,17 @@
   text-align: right;
   margin-bottom: 0;
 }
+.mpd-metabox-subtitle{
+  font-size:1.2em;
+  width: 100%;
+  clear: both;
+  display: inline-block;
+  padding: 0.2em 0 ;
+}
+.mpd-metabox-list{
+  display: inline-block;
+  clear:both;
+  width: 100%;
+  padding-left: 1em;
+  line-height: 2em
+}
