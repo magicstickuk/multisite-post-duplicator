@@ -80,29 +80,6 @@ function mdp_plugin_activate() {
    	}
 
    	do_action('mpd_extend_activation', $mdp_default_options, $sites);
-
-	$tableName = $wpdb->base_prefix . "mpd_log";
-
-	$charset_collate = $wpdb->get_charset_collate();
-
-	$sql ="CREATE TABLE $tableName (
-	
-			  id mediumint(9) unsigned NOT NULL AUTO_INCREMENT,
-			  source_id mediumint(9) DEFAULT NULL,
-			  destination_id mediumint(9) DEFAULT NULL,
-			  source_post_id mediumint(9) DEFAULT NULL,
-			  destination_post_id mediumint(9) DEFAULT NULL,
-			  persist_active mediumint(9) DEFAULT '0' NOT NULL,
-			  persist_action_count mediumint(9) DEFAULT '0' NOT NULL,
-			  dup_user_id mediumint(9) DEFAULT NULL,
-			  dup_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			  UNIQUE KEY id (id)
-			
-			) $charset_collate;";
-
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	
-	dbDelta( $sql );
 	   
 }
 
