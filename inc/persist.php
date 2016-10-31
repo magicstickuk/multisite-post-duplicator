@@ -305,12 +305,12 @@ function mpd_get_persists_for_post($blog_id = null, $post_id = null){
 			  WHERE 
 			  source_id = ". $blog_id . " 
 			  AND source_post_id = ". $post_id ."
-			  
+			  AND persist_active = 1
 			  order by destination_id";
 
 	
 	$result = $wpdb->get_results($query);
-	// AND persist_active = 1
+	
 	return $result;
 	
 }
@@ -476,7 +476,10 @@ function mpd_persist_post($post_id){
     global $post;
 
 	$blog_id = get_current_blog_id();
-    $post_id = $post->ID;
+    if($post){
+    	$post_id = $post->ID;
+    }
+    
 	
 	$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
 	

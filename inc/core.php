@@ -261,6 +261,7 @@ function mpd_persist_over_multisite($persist_post) {
     //Using the orgininal post object we now want to insert our any new data based on user settings for use
     //in the post object that we will be adding to the destination site
     $mdp_post = apply_filters('mpd_setup_persist_destination_data', array(
+            'ID'            => $persist_post->destination_post_id,
             'post_title'    => $title,
             'post_type'     => get_post_type($persist_post->source_post_id),
             'post_author'   => get_post_field( 'post_author', $persist_post->source_post_id ),
@@ -306,7 +307,7 @@ function mpd_persist_over_multisite($persist_post) {
     //Make the new post
     $post_id = wp_update_post($mdp_post);
 
-    $post_meta_ids = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d ", $postid ));
+    $post_meta_ids = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d ", $post_id ));
 
     foreach ( $post_meta_ids as $mid ){
         delete_metadata_by_mid( 'post', $mid );

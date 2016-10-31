@@ -55,7 +55,7 @@ function mpd_alert_ajax($createdPostObject){
 
 	$options = get_option( 'mdp_settings' );
 
-	if($options['mdp_allow_dev_info']){
+	if(isset($options['mdp_allow_dev_info'])){
 
 		update_option('mpd_log_completed_' . $createdPostObject['id'] ."_". microtime() , $createdPostObject['id'] );
 
