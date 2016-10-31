@@ -74,7 +74,6 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
-<<<<<<< HEAD
 =======
 = 0.9.5 =
 * Subdomain warning message can now be dissmissed. Also has improved signposting.
@@ -86,7 +85,6 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 * Fixed various typos and spelling mistakes throughout the plugin.
 * Added new action 'mpd_extend_activation' so developers may hook into the plugin's activation process.
 
->>>>>>> 720f769c4ab2331fe43f1574d7381014bf755ce6
 = 0.9.3 =
 * NEW: Support for WordPress' new WP_Site_Query (get_sites()) class.
 * Fixed issue with featured images not copying over for some users (thanks joedev91).
