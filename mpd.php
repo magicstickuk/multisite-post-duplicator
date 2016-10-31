@@ -21,6 +21,7 @@ include('inc/admin-ui.php');
 include('inc/settings-ui.php');
 include('inc/core.php');
 include('inc/persist.php');
+include('inc/client-log.php');
 include('addons/bulkaction-mpd-addon.php');
 include('addons/restrictSites-mpd-addon.php');
 include('addons/roleAccess-mpd-addon.php');
@@ -61,6 +62,7 @@ function mdp_plugin_activate() {
 
 		   }else{
 		   		
+		   		//Add default option for existing users with new checkboxes
 		   		$options = get_option( 'mdp_settings' );
 
 		   		$options = apply_filters('mdp_activation_options', $options);
@@ -73,32 +75,11 @@ function mdp_plugin_activate() {
 
 		 restore_current_blog();
 
+		 
+
    	}
 
-   	global $wpdb;
-
-	$tableName = $wpdb->base_prefix . "mpd_log";
-
-	$charset_collate = $wpdb->get_charset_collate();
-
-	$sql ="CREATE TABLE $tableName (
-	
-			  id mediumint(9) unsigned NOT NULL AUTO_INCREMENT,
-			  source_id mediumint(9) DEFAULT NULL,
-			  destination_id mediumint(9) DEFAULT NULL,
-			  source_post_id mediumint(9) DEFAULT NULL,
-			  destination_post_id mediumint(9) DEFAULT NULL,
-			  persist_active mediumint(9) DEFAULT '0' NOT NULL,
-			  persist_action_count mediumint(9) DEFAULT '0' NOT NULL,
-			  dup_user_id mediumint(9) DEFAULT NULL,
-			  dup_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			  UNIQUE KEY id (id)
-			
-			) $charset_collate;";
-
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	
-	dbDelta( $sql );
+   	do_action('mpd_extend_activation', $mdp_default_options, $sites);
 	   
 }
 
@@ -123,7 +104,8 @@ function mdp_get_default_options(){
 		'mdp_default_featured_image' 	=> 'feat',
 		'mdp_copy_content_images' 		=> 'content-image',
 		'meta_box_show_radio' 			=> 'all',
-		'mdp_ignore_custom_meta'		=> ''
+		'mdp_ignore_custom_meta'		=> '',
+		'mdp_allow_dev_info'			=> 'allow-dev'
 
 	);
 

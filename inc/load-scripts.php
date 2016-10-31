@@ -88,12 +88,14 @@ function mdp_load_admin_styles(){
 		'1.0'
 	);
 
-	wp_enqueue_script(
-		'mdp-admin-fa',
-		'https://use.fontawesome.com/9442318e7e.js',
-		array( 'jquery' ),
-		'1.0'
+	wp_register_style(
+		'mdp-font-awesome',
+		plugins_url( '../css/font-awesome.min.css', __FILE__ )
+		, false,
+		'1.0.0'
 	);
+
+	wp_enqueue_style( 'mdp-font-awesome');
 
 	wp_register_style(
 			'mdp-metabox-styles',

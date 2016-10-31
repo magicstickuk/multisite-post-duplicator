@@ -386,7 +386,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
 
         $attachment = apply_filters('mpd_post_media_attachments', array(
 
-            'post_mime_type' => $wp_filetype['type'],
+            'post_mime_type' => 'image/jpeg',
             'post_title'     => sanitize_file_name( $filename ),
             'post_content'   => $post_media_attachment->post_content,
             'post_status'    => 'inherit',
@@ -680,7 +680,8 @@ function mpd_fix_wordpress_urls($url_input) {
 }
 
 /**
- * This function alters the user if they have installed this plugin on a non multisite installation.
+ * This function alerts the user if they have installed this plugin on a non multisite installation
+ * or if thier confiuration is not supported.
  *
  * @since 0.7.3
  *
@@ -692,9 +693,76 @@ function mpd_non_multisite_admin_notice() {
     if (!is_multisite()) {
         echo "<div class='error'><p>You have activated <a href='https://en-gb.wordpress.org/plugins/multisite-post-duplicator/' target='_blank'>Multisite Post Duplicator</a> on this WordPress Installation but this is not a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a>. In the interest of your websites efficiency we would advise you deactivate the plugin until you are using a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a></p></div>";
     }
+
+    if(is_subdomain_install() && !get_site_option('mpd_has_dismissed_subdomain_error')){
+            
+            ?>
+            
+            <div class='not-subdomain error notice is-dismissible'><p><?php _e('You have activated Multisite Post Duplicator on this WordPress Installation however this network has the subdomain configuration enabled. This plugin is untested on subdomain configurations. While it should work fine for most functions you may notice issues with images being copied over to destination sites. We are working to bring full subdmain support as soon as possible.', MPD_DOMAIN ); ?></div>
+            <?php
+
+
+    }
+
 }
 
 add_action('admin_notices', 'mpd_non_multisite_admin_notice');
+
+/**
+ * Adds ajax to subdomain error message dismiss button so we can control if we want to display the message in the future
+ *
+ * @since 0.9.5
+ *
+ * @return null
+ *
+ */
+function mpd_notices_javascript(){
+
+    if(is_subdomain_install()){
+    ?>
+    <script>
+        jQuery(document).on('ready', function() {
+
+            jQuery('.not-subdomain .notice-dismiss').click(function(){
+
+                jQuery.ajax({
+                    url : ajaxurl,
+                    type : 'post',
+                    data : {
+                        action : 'mpd_dismiss_subdomain_notice'
+                    }
+                });
+
+             });
+          
+        });
+    </script>
+    <?php
+
+    }
+
+}
+
+add_action('admin_head', "mpd_notices_javascript");
+
+/**
+ * This function is called when a user clicks to dismiss the subdamin error message. It creates an option
+ * in the network options table that tells us not to display the message again as it has been dismissed
+ *
+ * @since 0.9.5
+ *
+ * @return null
+ *
+ */
+function mpd_dismiss_subdomain_notice(){
+
+    update_site_option('mpd_has_dismissed_subdomain_error', 1);
+
+    die();
+
+}
+
+add_action('wp_ajax_mpd_dismiss_subdomain_notice','mpd_dismiss_subdomain_notice');
 
 /**
  * This function allows for user control of the available statuses the can be used in the duplicated post
@@ -953,5 +1021,70 @@ function mpd_get_version(){
     $version_number = get_option( 'mdp_version' );
 
     return $version_number;
+}
+
+/**
+ * 
+ * If the user chooses to, this function will collect the post date to of the source post to be used later
+ * in mpd_set_published_date() to assign the published date to be the same as the destination.
+ *
+ * @since 0.9.4
+ * @param $mpd_process_info Array of the source post information
+ * 
+ * @return array A filtered array of source post information
+ *
+ */
+function mpd_get_published_date($mpd_process_info){
+
+ $options = get_option( 'mdp_settings' );
+
+ if(isset($options['mdp_retain_published_date'])){
+    $mpd_process_info['post_date'] = get_post_field('post_date', $mpd_process_info['source_id']);
+ }
+ 
+ return $mpd_process_info;
 
 }
+
+add_filter('mpd_source_data', 'mpd_get_published_date');
+
+/**
+ * 
+ * If the user chooses to, this function will set the post date to of the source post to the destination post. Note we have to set the post_status to publish for this activity as no published date would be assigned otherwise.
+ *
+ * @since 0.9.4
+ * @param $mdp_post Array of the destination post info prior to post being created in database
+ * @param $mpd_process_info Array of the source post information
+ * 
+ * @return array A filtered array of destination post information prior to post being saved in database
+ *
+ */
+function mpd_set_published_date($mdp_post, $mpd_process_info){
+
+  $options = get_option( 'mdp_settings' );
+
+  if(isset($options['mdp_retain_published_date'])){
+
+    $mdp_post['post_date'] = $mpd_process_info['post_date'];
+    $mdp_post['post_status'] = 'publish';
+
+  }
+ 
+  return $mdp_post;
+
+}
+
+add_filter('mpd_setup_destination_data', 'mpd_set_published_date', 10,2);
+
+function mpd_do_settings_link(){
+
+    ?> <p class="bottom-para">
+
+                <small><a class="no-dec" target="_blank" title="Multisite Post Duplicator Settings" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"> Settings <i class="fa fa-sliders fa-lg" aria-hidden="true"></i></a></small>
+                
+            </p>
+    <?php
+
+}
+add_action('mpd_after_metabox_content', 'mpd_do_settings_link');
+

@@ -40,6 +40,9 @@ function mpd_metaboxes(){
 
             if ($active_mpd && current_user_can(mpd_get_required_cap()))  {
                     add_meta_box( 'multisite_clone_metabox', "<i class='fa fa-clone' aria-hidden='true'></i> " . __('Multisite Post Duplicator', MPD_DOMAIN ), 'mpd_publish_top_right', $page, 'side', 'high' );
+
+                    do_action('mpd_meta_box', $page);
+                   
             }
 
         } 
@@ -49,6 +52,7 @@ function mpd_metaboxes(){
     add_action('admin_notices', 'mpd_plugin_admin_notices');
     
 }
+
 
 /**
  * 
@@ -130,43 +134,7 @@ function mpd_publish_top_right(){
 
                 </ul>
             </p>
-
-            <p>
-                <small>
-                    
-                    <em>
-                    
-                    </em>
-                    
-                </small>
-            </p>
-           <?php if(isset($options['allow_persist']) || !$options ): ?>     
-            <hr>
-                    <label class="selectit">
-                        <script>
-                            jQuery(document).ready(function($) { 
-                                accordionClick('.pl-link', '.pl-content', 'fast');
-                            });
-
-                        </script>
-                        <ul>
-                            <li><input type="checkbox" name="persist">Create Persist Link? <i class="fa fa-info-circle pl-link" aria-hidden="true"></i></li>
-                        </ul>
-                        
-                        <p class="mpdtip pl-content" style="display:none"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
-
-                    </label>
-
-            <hr>
-
-            <?php endif; ?>
-
-            <p class="bottom-para">
-
-                <small><a class="no-dec" target="_blank" title="Multisite Post Duplicator Settings" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"> Settings <i class="fa fa-sliders fa-lg" aria-hidden="true"></i></a></small>
-                
-            </p>
-
+           
             <?php do_action('mpd_after_metabox_content'); ?>
             
         </div>
@@ -215,8 +183,6 @@ function mpd_clone_post($post_id){
 
                 $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
                 
-                
-
                 if($_POST['persist']){
 					
 					$args = array();
@@ -247,9 +213,12 @@ function mpd_persist_post($post_id){
 	
 	$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
 	
-	foreach($persist_posts as $persist_post){
-		mpd_persist_over_multisite($persist_post->destination_post_id, $post_id, $persist_post->destination_id, get_post_type($post_id), get_current_user_id(), '', 'publish');
-	}
+    if($persist_posts){
+        foreach($persist_posts as $persist_post){
+            mpd_persist_over_multisite($persist_post->destination_post_id, $post_id, $persist_post->destination_id, get_post_type($post_id), get_current_user_id(), '', 'publish');
+        }
+    }
+	
 	
 	return $post_id;
 	

@@ -10,6 +10,51 @@
  * 
  */
 
+function mpd_linked_list_metabox($page){
+
+	if(mpd_get_persists_for_post()){
+	 	add_meta_box( 'multisite_linked_list_metabox', "<i class='fa fa-clone' aria-hidden='true'></i> " . __('Linked MPD Pages', MPD_DOMAIN ), 'mpd_linked_list_metabox_render', $page, 'side', 'high' );
+	}
+
+
+}
+add_action('mpd_meta_box', 'mpd_linked_list_metabox');
+
+function mpd_linked_list_metabox_render(){
+    ?>
+        <p>Mario</p>
+    <?php
+}
+
+function mpd_create_persist_database(){
+
+	$tableName = $wpdb->base_prefix . "mpd_log";
+
+	$charset_collate = $wpdb->get_charset_collate();
+
+	$sql ="CREATE TABLE $tableName (
+	
+			  id mediumint(9) unsigned NOT NULL AUTO_INCREMENT,
+			  source_id mediumint(9) DEFAULT NULL,
+			  destination_id mediumint(9) DEFAULT NULL,
+			  source_post_id mediumint(9) DEFAULT NULL,
+			  destination_post_id mediumint(9) DEFAULT NULL,
+			  persist_active mediumint(9) DEFAULT '0' NOT NULL,
+			  persist_action_count mediumint(9) DEFAULT '0' NOT NULL,
+			  dup_user_id mediumint(9) DEFAULT NULL,
+			  dup_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			  UNIQUE KEY id (id)
+			
+			) $charset_collate;";
+
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	
+	dbDelta( $sql );
+
+}
+
+add_action('mpd_extend_activation', 'mpd_create_persist_database');
+
 /**
  * Add the settings required for the persist setting 
  *
@@ -202,9 +247,13 @@ function mpd_is_there_a_persist($args){
 	}
 
 }
-function mpd_get_persists_for_post($blog_id, $post_id){
+function mpd_get_persists_for_post($blog_id = null, $post_id = null){
 	
 	global $wpdb;
+	global $post;
+
+	$blog_id = $blog_id ? $blog_id : get_current_blog_id();
+	$post_id = $post_id ? $post_id : $post->ID;
 	
 	$tableName = $wpdb->base_prefix . "mpd_log";
 
@@ -614,3 +663,32 @@ function mdp_log_page(){
 	</div>
 	<?php
 }
+
+function mpd_persist_checkbox(){
+
+	$options = get_option( 'mdp_settings' );
+
+	if(isset($options['allow_persist']) || !$options ): ?>     
+            <hr>
+                    <label class="selectit">
+                        <script>
+                            jQuery(document).ready(function($) { 
+                                accordionClick('.pl-link', '.pl-content', 'fast');
+                            });
+
+                        </script>
+                        <ul>
+                            <li><input type="checkbox" name="persist">Create Persist Link? <i class="fa fa-info-circle pl-link" aria-hidden="true"></i></li>
+                        </ul>
+                        
+                        <p class="mpdtip pl-content" style="display:none"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
+
+                    </label>
+
+            <hr>
+
+    <?php endif;
+
+}
+
+add_action('mpd_after_metabox_content', 'mpd_persist_checkbox', 9);
