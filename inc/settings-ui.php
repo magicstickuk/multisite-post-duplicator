@@ -182,7 +182,7 @@ function meta_box_show_radio_render(){
 	    	<i class="fa fa-info-circle mbs-click accord" aria-hidden="true"></i>
 	    </div>
 
-	    <p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
+	    <p class="mpdtip mbs-content" style="display:none"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', MPD_DOMAIN ) ?></p>
 
     </div>
 	<?php
@@ -399,10 +399,15 @@ function mdp_retain_published_date_render(  ) {
 
 	$options = get_option( 'mdp_settings' );
 	?>
+	<script>
+		jQuery(document).ready(function() {
+				accordionClick('.rpd-click', '.rpd-content', 'fast');
+		});
+	</script>
 	
-		<input type='checkbox' name='mdp_settings[mdp_retain_published_date]' <?php mpd_checked_lookup($options, 'mdp_retain_published_date', 'retain-published') ;?> value='retain-published'>
+		<input type='checkbox' name='mdp_settings[mdp_retain_published_date]' <?php mpd_checked_lookup($options, 'mdp_retain_published_date', 'retain-published') ;?> value='retain-published'> <i class="fa fa-info-circle rpd-click accord" aria-hidden="true"></i>
 
-		<p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i><?php _e('Check this box if you would like the destination post to keep the source published date. NOTE! If you check this option the destination post status will be set to published by default', MPD_DOMAIN)?></p>
+		<p class="mpdtip rpd-content" style="display:none"><?php _e('Check this box if you would like the destination post to keep the source published date. NOTE! If you check this option the destination post status will be set to published by default', MPD_DOMAIN)?></p>
 
 	<?php
 
@@ -419,10 +424,15 @@ function mdp_allow_dev_info_render(  ) {
 
 	$options = get_option( 'mdp_settings' );
 	?>
+	<script>
+		jQuery(document).ready(function() {
+				accordionClick('.aau-click', '.aau-content', 'fast');
+		});
+	</script>
 		
-		<input type='checkbox' name='mdp_settings[mdp_allow_dev_info]' <?php mpd_checked_lookup($options, 'mdp_allow_dev_info', 'allow-dev') ;?> value='allow-dev'>
+		<input type='checkbox' name='mdp_settings[mdp_allow_dev_info]' <?php mpd_checked_lookup($options, 'mdp_allow_dev_info', 'allow-dev') ;?> value='allow-dev'> <i class="fa fa-info-circle aau-click accord" aria-hidden="true"></i>
 
-		<p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i><?php _e('If this box is checked you are allowing anonymous usage data to be sent to the developers. This provides valuable information in order to improve and maintain this plugin. Thanks so much for your help', MPD_DOMAIN)?></p>
+		<p class="mpdtip aau-content" style="display:none"><?php _e('If this box is checked you are allowing anonymous usage data to be sent to the developers. This provides valuable information in order to improve and maintain this plugin. Thanks so much for your help', MPD_DOMAIN)?></p>
 
 	<?php
 

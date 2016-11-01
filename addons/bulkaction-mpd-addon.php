@@ -181,7 +181,7 @@ function mdp_default_batch_render(){
   </script>
   <input type='checkbox' name='mdp_settings[add_bulk_settings]' <?php mpd_checked_lookup($options, 'add_bulk_settings', 'allow-batch') ;?> value='allow-batch'> <i class="fa fa-info-circle abs-click accord" aria-hidden="true"></i>
 
-  <p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i> <?php _e('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page', MPD_DOMAIN)?></p>
+  <p class="mpdtip abs-content" style="display:none"><?php _e('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page', MPD_DOMAIN)?></p>
   <?php
 
 }

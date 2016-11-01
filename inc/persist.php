@@ -106,8 +106,8 @@ add_action('mpd_extend_activation', 'mpd_create_persist_database');
  */
 function persist_addon_mpd_settings(){
 
-	mpd_settings_field('persist_option_setting', __( 'Show logging tab?', MPD_DOMAIN ), 'persist_option_setting_render');
-	mpd_settings_field('persist_functionality_setting', __( 'Show Post persist functionality?', MPD_DOMAIN ), 'persist_functionality_setting_render');
+	mpd_settings_field('persist_option_setting', '<i class="fa fa-list-ul" aria-hidden="true"></i> ' . __( 'Show logging tab?', MPD_DOMAIN ), 'persist_option_setting_render');
+	mpd_settings_field('persist_functionality_setting', '<i class="fa fa-link" aria-hidden="true"></i> ' . __( 'Allow linked duplication functionality?', MPD_DOMAIN ), 'persist_functionality_setting_render');
 
 }
 add_action( 'mdp_end_plugin_setting_page', 'persist_addon_mpd_settings');
@@ -309,9 +309,36 @@ function mpd_get_persists_for_post($blog_id = null, $post_id = null){
 			  order by destination_id";
 
 	
-	$result = $wpdb->get_results($query);
+	$results = $wpdb->get_results($query);
 	
-	return $result;
+	// Now we need to check the post statuses and remove any that are in the bin or dont exsist
+
+	if($results){
+
+		$wanted_post_statuses 	= array_keys(mpd_get_post_statuses());
+		$keys_to_remove 		= array();
+
+		foreach ($results as $key => $result) {
+
+			$the_post = get_blog_post($result->destination_id, $result->destination_post_id);
+
+			if(!$the_post || !in_array($the_post->post_status, $wanted_post_statuses)){
+
+				array_push($keys_to_remove, $key);
+
+			}
+
+		}
+	
+		foreach ($keys_to_remove as $value) {
+			
+			unset($results[$value]);
+
+		}
+
+	}
+	
+	return $results;
 	
 }
 /**
@@ -473,32 +500,37 @@ function mpd_set_persist_count($args){
 
 function mpd_persist_post($post_id){
 	
-    global $post;
+	if( ! ( wp_is_post_revision( $post_id) || wp_is_post_autosave( $post_id ) ) ) {
 
-	$blog_id = get_current_blog_id();
-    if($post){
-    	$post_id = $post->ID;
-    }
-    
-	
-	$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
-	
-    if($persist_posts){
-        
-        foreach($persist_posts as $persist_post){
-            
-            $args = array(
-                'source_id' 			=> intval($persist_post->source_id),
-                'destination_id' 		=> intval($persist_post->destination_id),
-                'source_post_id' 		=> intval($persist_post->source_post_id),
-                'destination_post_id' 	=> intval($persist_post->destination_post_id)
-            );
-            
-            mpd_persist_over_multisite($persist_post);
+	    global $post;
 
-            mpd_set_persist_count($args);
-        }
-    }
+		$blog_id = get_current_blog_id();
+
+	    // if($post){
+	    // 	$post_id = $post->ID;
+	    // }
+	    
+		
+		$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
+		
+	    if($persist_posts){
+	        
+	        foreach($persist_posts as $persist_post){
+	            
+	            $args = array(
+	                'source_id' 			=> intval($persist_post->source_id),
+	                'destination_id' 		=> intval($persist_post->destination_id),
+	                'source_post_id' 		=> intval($persist_post->source_post_id),
+	                'destination_post_id' 	=> intval($persist_post->destination_post_id)
+	            );
+	            
+	            mpd_persist_over_multisite($persist_post);
+
+	            mpd_set_persist_count($args);
+	        }
+	    }
+
+	}
  
 	return;
 	
