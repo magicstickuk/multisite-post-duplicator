@@ -1,5 +1,8 @@
 jQuery(document).ready(function(){
     jQuery('#mpdLogTable').DataTable({
+        "language": {
+            "emptyTable": "No multisite duplications."
+        },
     	 "order": [[ 7, "desc" ]],
     	 "columnDefs": [
     	 	{'orderData':[7], 'targets': [6]},
@@ -16,6 +19,9 @@ jQuery(document).ready(function(){
         'iDisplayLength' : 25
     });
     jQuery('#mpdLinkedTable').DataTable({
+        "language": {
+            "emptyTable": "There are no linked duplications yet."
+        },
          "order": [[ 8, "desc" ]],
          "columnDefs": [
             {
