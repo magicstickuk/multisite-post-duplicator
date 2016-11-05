@@ -74,6 +74,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 0.9.5.2 =
+* Improved signposting for users installing this plugin on a non multisite network 
+
 = 0.9.5.1 =
 * Fixed critical error experienced by some users from update v0.9.5 
 
