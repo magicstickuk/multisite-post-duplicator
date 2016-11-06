@@ -290,22 +290,50 @@ function mpd_is_there_a_persist($args){
 
 }
 
-// function mpd_get_posts_source_post($blog_id = null, $post_id = null{
+function mpd_get_posts_source_post($blog_id = null, $post_id = null{
+	
+	global $wpdb;
+	global $post;
+
+	$postobject = $post ? $post->ID : false;
+	$blog_id 	= $blog_id ? $blog_id : get_current_blog_id();
+	$post_id 	= $post_id ? $post_id : $postobject;
+	
+	if($post_id){
+		
+		$tableName = $wpdb->base_prefix . "mpd_log";
+	
+		$query = "SELECT *
+			  FROM $tableName
+			  WHERE 
+			  destination_id = ". $blog_id . " 
+			  AND destination_post_id = ". $post_id ."
+			  AND persist_active = 1
+			  order by destination_id";
 
 	
-// }
+		$results = $wpdb->get_results($query);	
+		
+	}
+	
+	return $results;
+	
+
+}
 function mpd_get_persists_for_post($blog_id = null, $post_id = null){
 	
 	global $wpdb;
 	global $post;
 
-	$postobject = $post ? $post->ID : 0;
+	$postobject = $post ? $post->ID : false;
 	$blog_id 	= $blog_id ? $blog_id : get_current_blog_id();
 	$post_id 	= $post_id ? $post_id : $postobject;
 	
-	$tableName = $wpdb->base_prefix . "mpd_log";
+	if($post_id){
+		
+		$tableName = $wpdb->base_prefix . "mpd_log";
 
-	$query = "SELECT *
+		$query = "SELECT *
 			  FROM $tableName
 			  WHERE 
 			  source_id = ". $blog_id . " 
@@ -314,7 +342,9 @@ function mpd_get_persists_for_post($blog_id = null, $post_id = null){
 			  order by destination_id";
 
 	
-	$results = $wpdb->get_results($query);
+		$results = $wpdb->get_results($query);	
+	}
+	
 	
 	// Now we need to check the post statuses and remove any that are in the bin or dont exsist
 
