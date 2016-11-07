@@ -10,17 +10,37 @@
  * 
  */
 
-function mpd_linked_list_metabox($page){
+function mpd_side_metaboxs($page){
 
-	$priority = apply_filters( 'mpd_list_metabox_priority', 'high' );
+	$priority = apply_filters( 'mpd_metabox_priority', 'high' );
 
 	if(mpd_get_persists_for_post()){
 	 	add_meta_box( 'multisite_linked_list_metabox', "<i class='fa fa-link' aria-hidden='true'></i> " . __('Linked MPD Pages', MPD_DOMAIN ), 'mpd_linked_list_metabox_render', $page, 'side', $priority );
+	 	
+	}
+	if(mpd_get_posts_source_post()){
+		
+		add_meta_box( 'multisite_source_list_metabox', "<i class='fa fa-link' aria-hidden='true'></i> " . __('MPD Source Post', MPD_DOMAIN ), 'mpd_source_list_metabox_render', $page, 'side', $priority );
+	 	
 	}
 
 
 }
-add_action('mpd_meta_box', 'mpd_linked_list_metabox');
+add_action('mpd_meta_box', 'mpd_side_metaboxs');
+
+function mpd_source_list_metabox_render(){
+	
+	$sourse_post = mpd_get_posts_source_post();
+	
+	var_dump($sourse_post);
+	?>
+		<p><small><?php _e('CAUTION: This post is linked to the following post', MPD_DOMAIN)?></small></p>
+	<?php
+	
+	?>
+		<p><small><?php _e('This means that if the source post is updated it will overwrite any changes made here', MPD_DOMAIN)?></small></p>
+	<?php
+}
 
 function mpd_linked_list_metabox_render(){
     
