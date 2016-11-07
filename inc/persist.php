@@ -290,7 +290,7 @@ function mpd_is_there_a_persist($args){
 
 }
 
-function mpd_get_posts_source_post($blog_id = null, $post_id = null{
+function mpd_get_posts_source_post($blog_id = null, $post_id = null){
 	
 	global $wpdb;
 	global $post;
