@@ -30,16 +30,26 @@ add_action('mpd_meta_box', 'mpd_side_metaboxs');
 
 function mpd_source_list_metabox_render(){
 	
-	$sourse_post = mpd_get_posts_source_post();
+	$source_link_info 	= mpd_get_posts_source_post()	
+	$source_post 		= get_blog_post($source_link_info->source_id, $source_link_info->source_post_id);
+	$source_details 	= get_blog_details($source_link_info->source_id);
 	
-	var_dump($sourse_post);
 	?>
 		<p><small><?php _e('CAUTION: This post is linked to the following post', MPD_DOMAIN)?></small></p>
+	
+	<span class="mpd-metabox-subtitle"><?php echo $source_details->blogname ?></span>	
+	
+	<small class="mpd-metabox-list">
+
+    			<a href="<?php echo mpd_get_edit_url($source_link_info->source_id, $$source_link_info->source_post_id); ?>"><?php echo $source_post->post_title; ?></a>
+
+    		</small>
+    		
+		<p><small><?php _e('This means that if the source post is updated it will overwrite any changes made here', MPD_DOMAIN)?></small></p>
+	
 	<?php
 	
-	?>
-		<p><small><?php _e('This means that if the source post is updated it will overwrite any changes made here', MPD_DOMAIN)?></small></p>
-	<?php
+	mpd_do_manage_links();
 }
 
 function mpd_linked_list_metabox_render(){
@@ -71,9 +81,15 @@ function mpd_linked_list_metabox_render(){
 
     	<?php $carryover = $linked_post->destination_id; $count++;?>
 
-    <?php endforeach;?>
+    <?php endforeach;
+    
+    mpd_do_manage_links();
+    
+}
 
-    <hr>
+function mpd_do_manage_links(){
+	?>
+	<hr>
 
     <p class="bottom-para">
 
@@ -84,8 +100,8 @@ function mpd_linked_list_metabox_render(){
         </small>
                 
     </p>
-
-    <?php
+	<?php
+	
 }
 
 function mpd_create_persist_database(){
@@ -332,11 +348,11 @@ function mpd_get_posts_source_post($blog_id = null, $post_id = null){
 			  order by destination_id";
 
 	
-		$results = $wpdb->get_results($query);	
+		$result = $wpdb->get_row($query);	
 		
 	}
 	
-	return $results;
+	return $result;
 	
 
 }
