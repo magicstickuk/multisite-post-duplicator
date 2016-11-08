@@ -35,6 +35,16 @@ function mpd_source_list_metabox_render(){
 	$source_details 	= get_blog_details($source_link_info->source_id);
 	
 	?>
+	<script>
+    	jQuery(document).ready(function($) {
+    	jQuery('#publish').click(function(e) {
+        	e.preventDefault();
+        	if (window.confirm("Remember, this post is linked to source post, so any changes made here maybe overwritten if the source post is updated")) {
+            	location.href = this.href;
+        	}
+    		});
+    	});
+    </script>
 		<p><small><?php _e('CAUTION: This post is linked to the following post', MPD_DOMAIN)?></small></p>
 	
 	<span class="mpd-metabox-subtitle"><?php echo $source_details->blogname ?></span>	
@@ -57,7 +67,7 @@ function mpd_linked_list_metabox_render(){
     $linked_posts = mpd_get_persists_for_post();
     $count = 1;
     ?>
-
+    
     <p><small><?php _e('This post has other posts linked to it. If you update this post the it will also update the following posts in your network:', MPD_DOMAIN)?></small></p>
        
     <?php foreach ($linked_posts as $linked_post) :?>
@@ -416,7 +426,7 @@ function mpd_get_persists_for_post($blog_id = null, $post_id = null){
  * Get all data on requested persists across the network
  *
  * @since 1.0
- * @return Object All data relating to requested presists
+ * @return Object All data relating to requested persists
  */
 function mpd_get_the_persists(){
 	
