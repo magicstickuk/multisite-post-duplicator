@@ -30,7 +30,7 @@ add_action('mpd_meta_box', 'mpd_side_metaboxs');
 
 function mpd_source_list_metabox_render(){
 	
-	$source_link_info 	= mpd_get_posts_source_post()	
+	$source_link_info 	= mpd_get_posts_source_post();	
 	$source_post 		= get_blog_post($source_link_info->source_id, $source_link_info->source_post_id);
 	$source_details 	= get_blog_details($source_link_info->source_id);
 	
@@ -45,17 +45,17 @@ function mpd_source_list_metabox_render(){
     		});
     	});
     </script>
-		<p><small><?php _e('CAUTION: This post is linked to the following post', MPD_DOMAIN)?></small></p>
+		<p><small><?php _e('CAUTION: This post is linked to the following post:', MPD_DOMAIN)?></small></p>
 	
 	<span class="mpd-metabox-subtitle"><?php echo $source_details->blogname ?></span>	
 	
 	<small class="mpd-metabox-list">
 
-    			<a href="<?php echo mpd_get_edit_url($source_link_info->source_id, $$source_link_info->source_post_id); ?>"><?php echo $source_post->post_title; ?></a>
+    			<a href="<?php echo mpd_get_edit_url($source_link_info->source_id, $source_link_info->source_post_id); ?>"><?php echo $source_post->post_title; ?></a>
 
     		</small>
     		
-		<p><small><?php _e('This means that if the source post is updated it will overwrite any changes made here', MPD_DOMAIN)?></small></p>
+		<p><small><?php _e('This means that if the source post is updated it will overwrite any changes made here.', MPD_DOMAIN)?></small></p>
 	
 	<?php
 	
