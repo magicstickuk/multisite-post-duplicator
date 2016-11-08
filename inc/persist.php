@@ -40,7 +40,7 @@ function mpd_source_list_metabox_render(){
     	jQuery('#publish').click(function(e) {
         	e.preventDefault();
         	if (window.confirm("Remember, this post is linked to source post, so any changes made here maybe overwritten if the source post is updated")) {
-            	location.href = this.href;
+            	jQuery(this).click();
         	}
     		});
     	});
