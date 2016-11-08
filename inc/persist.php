@@ -20,7 +20,7 @@ function mpd_side_metaboxs($page){
 	}
 	if(mpd_get_posts_source_post()){
 		
-		add_meta_box( 'multisite_source_list_metabox', "<i class='fa fa-link' aria-hidden='true'></i> " . __('MPD Source Post', MPD_DOMAIN ), 'mpd_source_list_metabox_render', $page, 'side', $priority );
+		add_meta_box( 'multisite_source_list_metabox', "<i class='fa fa-university' aria-hidden='true'></i> " . __('MPD Source Post', MPD_DOMAIN ), 'mpd_source_list_metabox_render', $page, 'side', $priority );
 	 	
 	}
 
@@ -37,15 +37,17 @@ function mpd_source_list_metabox_render(){
 	?>
 	<script>
     	jQuery(document).ready(function($) {
-    	jQuery('#publish').click(function(e) {
-        	e.preventDefault();
-        	if (window.confirm("Remember, this post is linked to source post, so any changes made here maybe overwritten if the source post is updated")) {
-            	jQuery(this).click();
-        	}
+    		
+    		jQuery('#publish').click(function(e) {
+    			e.preventDefault();
+        		if (window.confirm("Remember, this post is linked to source post, so any changes made here maybe overwritten if the source post is updated")) {
+            		jQuery(this).unbind('click').click();
+        		}
     		});
+    		
     	});
     </script>
-		<p><small><?php _e('CAUTION: This post is linked to the following post:', MPD_DOMAIN)?></small></p>
+		<p class="notice notice-warning"><small><?php _e('CAUTION: This post is linked to the following post:', MPD_DOMAIN)?></small></p>
 	
 	<span class="mpd-metabox-subtitle"><?php echo $source_details->blogname ?></span>	
 	
@@ -741,7 +743,7 @@ function mpd_persist_page(){
 			                <td><?php echo $destination_post->post_type; ?></td>
 			                <td><?php echo $user_info->user_login; ?></td>
 			                <td>
-			                	<a class="removeURL button-secondary" href="<?php echo $remove_url; ?>">Delete Persist</a>
+			                	<a class="removeURL button-secondary" href="<?php echo $remove_url; ?>"><i class="fa fa-chain-broken" aria-hidden="true"></i>  Remove Link</a>
 			                </td>
 			                <td><?php echo $row->dup_time; ?></td>
 			            </tr>
