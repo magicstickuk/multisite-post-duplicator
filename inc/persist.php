@@ -44,7 +44,7 @@ function mpd_source_list_metabox_render(){
             		jQuery(this).unbind('click').click();
         		}
     		});
-    		
+
     	});
     </script>
 		<p class="notice notice-warning"><small><?php _e('CAUTION: This post is linked to the following post:', MPD_DOMAIN)?></small></p>
@@ -57,7 +57,7 @@ function mpd_source_list_metabox_render(){
 
     		</small>
     		
-		<p><small><?php _e('This means that if the source post is updated it will overwrite any changes made here.', MPD_DOMAIN)?></small></p>
+		<p><small><?php _e('This means that if the source post above is updated it will overwrite any changes made here.', MPD_DOMAIN)?></small></p>
 	
 	<?php
 	
