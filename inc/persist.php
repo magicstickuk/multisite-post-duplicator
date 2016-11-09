@@ -266,7 +266,7 @@ function persist_functionality_setting_render(){
  */
 function addon_mpd_logging_setting_activation($options){
  
-  if(version_compare(mpd_get_version(),'0.9.3', '<=')){
+  if(version_compare(mpd_get_version(),'0.9.6', '<=')){
   		$options['add_logging'] = 'allow-logging';
   		$options['allow_persist'] = 'allow_persist';
   }
