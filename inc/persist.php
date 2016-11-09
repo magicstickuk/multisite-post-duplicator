@@ -266,7 +266,7 @@ function persist_functionality_setting_render(){
  */
 function addon_mpd_logging_setting_activation($options){
  
-  if(version_compare(mpd_get_version(),'0.9.1', '<=')){
+  if(version_compare(mpd_get_version(),'0.9.3', '<=')){
   		$options['add_logging'] = 'allow-logging';
   		$options['allow_persist'] = 'allow_persist';
   }
@@ -349,7 +349,7 @@ function mpd_get_log(){
 	
 	$results = $wpdb->get_results($query);
 	
-	return $results;
+	return apply_filters('mpd_get_log', $results);
 
 }
 
@@ -535,7 +535,7 @@ function mpd_get_the_persists(){
 	
 	$results = $wpdb->get_results($query);
 	
-	return $results;
+	return apply_filters('mpd_get_the_persists', $results);
 
 }
 
@@ -724,17 +724,20 @@ function mpd_persist_post($post_id){
 	        
 	        foreach($persist_posts as $persist_post){
 	            
-	            $args = array(
+	            $args = apply_filters('persist_post_args', array(
 	                'source_id' 			=> intval($persist_post->source_id),
 	                'destination_id' 		=> intval($persist_post->destination_id),
 	                'source_post_id' 		=> intval($persist_post->source_post_id),
 	                'destination_post_id' 	=> intval($persist_post->destination_post_id)
-	            );
+	            ));
 	            
 	            mpd_persist_over_multisite($persist_post);
 
 	            // Increate the count
 	            mpd_set_persist_count($args);
+
+	            do_action('after_persist');
+
 	        }
 	    }
 
@@ -809,23 +812,23 @@ function mpd_persist_page(){
 	$rows = mpd_get_the_persists();
 	?>
 	<div class="wrap">
-	<h2><i class="fa fa-link" aria-hidden="true"></i> Linked Duplication Control</h2>
+	<h2><i class="fa fa-link" aria-hidden="true"></i> <?php _e('Linked Duplication Control', MPD_DOMAIN); ?></h2>
 		<div class="mpd-loading">
 				<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
-				<span class="sr-only">Loading...</span>
+				<span class="sr-only"><?php _e('Loading', MPD_DOMAIN) ?>...</span>
 		</div>	
 		<table id="mpdLinkedTable" class="display" cellspacing="0" width="100%" style="display:none;">
 
 	        <thead>
 	            <tr>
-	                <th>Source Site</th>
-	                <th>Destination Site</th>
-	                <th>Source Post</th>
-	                <th>Destination Post</th>
-	                <th>Update Count</th>
-	                <th>Post Type</th>
-	                <th>User</th>
-	                <th>Action</th>
+	                <th><?php _e('Source Site', MPD_DOMAIN); ?></th>
+	                <th><?php _e('Destination Site', MPD_DOMAIN); ?></th>
+	                <th><?php _e('Source Post', MPD_DOMAIN); ?></th>
+	                <th><?php _e('Destination Post', MPD_DOMAIN); ?></th>
+	                <th><?php _e('Update Count', MPD_DOMAIN); ?></th>
+	                <th><?php _e('Post Type', MPD_DOMAIN); ?></th>
+	                <th><?php _e('User', MPD_DOMAIN); ?></th>
+	                <th><?php _e('Action', MPD_DOMAIN); ?></th>
 	                
 	            </tr>
 	        </thead>
@@ -883,7 +886,7 @@ function mpd_persist_page(){
 			                <td><?php echo $destination_post->post_type; ?></td>
 			                <td><?php echo $user_info->user_login; ?></td>
 			                <td>
-			                	<a class="removeURL button-secondary" href="<?php echo $remove_url; ?>"><i class="fa fa-chain-broken" aria-hidden="true"></i>  Remove Link</a>
+			                	<a class="removeURL button-secondary" href="<?php echo $remove_url; ?>"><i class="fa fa-chain-broken" aria-hidden="true"></i>  <?php _e('Remove Link', MPD_DOMAIN);?></a>
 			                </td>
 			                <td><?php echo $row->dup_time; ?></td>
 			            </tr>
@@ -918,25 +921,25 @@ function mdp_log_page(){
 	?>
 	<div class="wrap">
 		
-		<h2><i class="fa fa-list-ul" aria-hidden="true"></i> Multisite Post Duplicator Log</h2>
+		<h2><i class="fa fa-list-ul" aria-hidden="true"></i> <?php _e('Multisite Post Duplicator Log', MPD_DOMAIN);?></h2>
 
 		<div class="mpd-loading">
 				<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
-				<span class="sr-only">Loading...</span>
+				<span class="sr-only">L<?php _e('Loading', MPD_DOMAIN) ?>...</span>
 		</div>	
 
 		<table id="mpdLogTable" class="display" cellspacing="0" width="100%" style="display:none;">
 	        
 	        <thead>
 	            <tr>
-	                <th>Source Site</th>
-	                <th>Destination Site</th>
-	                <th>Source Post</th>
-	                <th>Destination Post</th>
-	                <th>Post Type</th>
-	                <th>User</th>
-	                <th>Time</th>
-	                <th>Time Raw</th>
+	                <th><?php _e('Source Site', MPD_DOMAIN) ?></th>
+	                <th><?php _e('Destination Site', MPD_DOMAIN) ?></th>
+	                <th><?php _e('Source Post', MPD_DOMAIN) ?></th>
+	                <th><?php _e('Destination Post', MPD_DOMAIN) ?></th>
+	                <th><?php _e('Post Type', MPD_DOMAIN) ?></th>
+	                <th><?php _e('User', MPD_DOMAIN) ?></th>
+	                <th><?php _e('Time', MPD_DOMAIN) ?></th>
+	                <th><?php _e('Time Raw', MPD_DOMAIN) ?></th>
 	            </tr>
 	        </thead>
 	       
