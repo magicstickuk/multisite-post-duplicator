@@ -263,6 +263,7 @@ function mpd_persist_over_multisite($persist_post) {
     $mdp_post = apply_filters('mpd_setup_persist_destination_data', array(
             'ID'            => $persist_post->destination_post_id,
             'post_title'    => $title,
+            'post_name'     => sanitize_title_with_dashes($title),
             'post_type'     => get_post_type($persist_post->source_post_id),
             'post_author'   => get_post_field( 'post_author', $persist_post->source_post_id ),
             'post_content'  => $mdp_post->post_content,
