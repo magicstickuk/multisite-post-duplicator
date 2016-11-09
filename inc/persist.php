@@ -10,14 +10,25 @@
  * 
  */
 
+/**
+ * Create Metaboxs related to the 'Linked Duplication' functionality on a post type as determined my users options ($page)
+ *
+ * @since 1.0
+ * @param string|array|WP_Screen $page The screen or screens on which to show the box. Generated from mpd_get_postype_decision_from_options();
+ * @return null
+ *
+ */
 function mpd_side_metaboxs($page){
 
+	// Filter to allow developers to determine thier own metabox priority.
 	$priority = apply_filters( 'mpd_metabox_priority', 'high' );
 
+	// If the current post is a source post, the add a metabox to list the linked posts.
 	if(mpd_get_persists_for_post()){
 	 	add_meta_box( 'multisite_linked_list_metabox', "<i class='fa fa-link' aria-hidden='true'></i> " . __('Linked MPD Pages', MPD_DOMAIN ), 'mpd_linked_list_metabox_render', $page, 'side', $priority );
 	 	
 	}
+	// If the current post has any souce posts add appropriate metabox
 	if(mpd_get_posts_source_post()){
 		
 		add_meta_box( 'multisite_source_list_metabox', "<i class='fa fa-university' aria-hidden='true'></i> " . __('MPD Source Post', MPD_DOMAIN ), 'mpd_source_list_metabox_render', $page, 'side', $priority );
@@ -28,14 +39,27 @@ function mpd_side_metaboxs($page){
 }
 add_action('mpd_meta_box', 'mpd_side_metaboxs');
 
+/**
+ * Create the markup for information on the posts source post
+ *
+ * @since 1.0
+ * @return null
+ *
+ */
 function mpd_source_list_metabox_render(){
 	
-	$source_link_info 	= mpd_get_posts_source_post();	
-	$source_post 		= get_blog_post($source_link_info->source_id, $source_link_info->source_post_id);
-	$source_details 	= get_blog_details($source_link_info->source_id);
+	// Get the source post information from our custom database
+	$source_link_info 	= mpd_get_posts_source_post();
+
+	// Relate this info to WordPress
+	if($source_link_info){
+		$source_post 		= get_blog_post($source_link_info->source_id, $source_link_info->source_post_id);
+		$source_details 	= get_blog_details($source_link_info->source_id);
+	}
 	
 	?>
 	<script>
+		// Add alert warning information to the 'update' button on the post's page about this functionality
     	jQuery(document).ready(function($) {
     		
     		jQuery('#publish').click(function(e) {
@@ -47,23 +71,31 @@ function mpd_source_list_metabox_render(){
 
     	});
     </script>
-		<p class="notice notice-warning"><small><?php _e('CAUTION: This post is linked to the following post:', MPD_DOMAIN)?></small></p>
+	
+	<p class="notice notice-warning"><small><?php _e('CAUTION: This post is linked to the following post:', MPD_DOMAIN)?></small></p>
 	
 	<span class="mpd-metabox-subtitle"><?php echo $source_details->blogname ?></span>	
 	
 	<small class="mpd-metabox-list">
 
-    			<a href="<?php echo mpd_get_edit_url($source_link_info->source_id, $source_link_info->source_post_id); ?>"><?php echo $source_post->post_title; ?></a>
+    	<a href="<?php echo mpd_get_edit_url($source_link_info->source_id, $source_link_info->source_post_id); ?>"><?php echo $source_post->post_title; ?></a>
 
-    		</small>
+    </small>
     		
-		<p><small><?php _e('This means that if the source post above is updated it will overwrite any changes made here.', MPD_DOMAIN)?></small></p>
+	<p><small><?php _e('This means that if the source post above is updated it will overwrite any changes made here.', MPD_DOMAIN)?></small></p>
 	
 	<?php
 	
 	mpd_do_manage_links();
 }
 
+/**
+ * Create the markup for information on the source posts linked pages
+ *
+ * @since 1.0
+ * @return null
+ *
+ */
 function mpd_linked_list_metabox_render(){
     
     $linked_posts = mpd_get_persists_for_post();
@@ -99,6 +131,14 @@ function mpd_linked_list_metabox_render(){
     
 }
 
+
+/**
+ * Create the markup for a link to manage linked posts.
+ *
+ * @since 1.0
+ * @return null
+ *
+ */
 function mpd_do_manage_links(){
 	?>
 	<hr>
@@ -116,6 +156,13 @@ function mpd_do_manage_links(){
 	
 }
 
+/**
+ * On activation of this plugin create a custom table in the database to sort information on linked pages.
+ *
+ * @since 1.0
+ * @return null
+ *
+ */
 function mpd_create_persist_database(){
 
 	$tableName = $wpdb->base_prefix . "mpd_log";
@@ -155,6 +202,7 @@ add_action('mpd_extend_activation', 'mpd_create_persist_database');
 function persist_addon_mpd_settings(){
 
 	mpd_settings_field('persist_option_setting', '<i class="fa fa-list-ul" aria-hidden="true"></i> ' . __( 'Show logging tab?', MPD_DOMAIN ), 'persist_option_setting_render');
+
 	mpd_settings_field('persist_functionality_setting', '<i class="fa fa-link" aria-hidden="true"></i> ' . __( 'Allow linked duplication functionality?', MPD_DOMAIN ), 'persist_functionality_setting_render');
 
 }
@@ -184,7 +232,7 @@ function persist_option_setting_render(){
 }
 
 /**
- * Function Used to render settings markup for logging question
+ * FRender settings markup for logging question
  *
  * @since 1.0
  * @return null
@@ -193,11 +241,13 @@ function persist_option_setting_render(){
 function persist_functionality_setting_render(){
   
   $options = get_option( 'mdp_settings' ); ?>
- <script>
+  <script>
+
 		jQuery(document).ready(function() {
-				accordionClick('.ap-click', '.ap-content', 'fast');
+			accordionClick('.ap-click', '.ap-content', 'fast');
 		});
-	</script>
+
+  </script>
   <input type='checkbox' name='mdp_settings[allow_persist]' <?php mpd_checked_lookup($options, 'allow_persist', 'allow_persist') ;?> value='allow_persist'> <i class="fa fa-info-circle ap-click accord" aria-hidden="true"></i>
 
   <p class="mpdtip ap-content" style="display:none"><?php _e('Having this option checked will allow you to link a source post to a destination post. If the source is then updated the destination post will always be updated. This link can be added via the MPD Box on the posts page', MPD_DOMAIN)?></p>
@@ -338,6 +388,22 @@ function mpd_is_there_a_persist($args){
 
 }
 
+/**
+ * Get the source post, if any, for a given post
+ *
+ * @since 1.0
+ * @param $blog_id The id of the blog the post is on. If blank then use current blog.
+ * @param $blog_id The id of post to look at. If blank then use current post.
+ * @return object An object with information on the post relationship with the following parameters:
+ * 
+ * 'id' => The unique id of the duplication event
+ * 'source_id' => The id of the souce blog when duplicating
+ * 'destination_id' => The id of the destination blog when duplicating
+ * 'source_post_id' => The id of the souce post when duplicating
+ * 'destination_post_id' => The id of the post that was created for the duplication
+ * 'persist_active' => Confirmation that there is an active link on this post
+ * 'persist_active_count' => How many times the source has maintained the link and update the destination
+ */
 function mpd_get_posts_source_post($blog_id = null, $post_id = null){
 	
 	global $wpdb;
@@ -364,10 +430,37 @@ function mpd_get_posts_source_post($blog_id = null, $post_id = null){
 		
 	}
 	
-	return $result;
-	
+	// Check if the result is for a post that exists.
+
+	if($result){
+		
+		$result_post 			= get_blog_post($result->source_id, $result->source_post_id);
+		$wanted_post_statuses 	= array_keys(mpd_get_post_statuses());
+
+		if($result_post && in_array($result_post->post_status, $wanted_post_statuses)){
+			return $result;
+		}
+
+	}
 
 }
+
+/**
+ * Get the linked posts, if any, for a given post
+ *
+ * @since 1.0
+ * @param $blog_id The id of the blog the post is on. If blank then use current blog.
+ * @param $blog_id The id of post to look at. If blank then use current post.
+ * @return object An object with information on the post relationship with the following parameters:
+ *  
+ * 'id' => The unique id of the duplication event
+ * 'source_id' => The id of the souce blog when duplicating
+ * 'destination_id' => The id of the destination blog when duplicating
+ * 'source_post_id' => The id of the souce post when duplicating
+ * 'destination_post_id' => The id of the post that was created for the duplication
+ * 'persist_active' => Confirmation that there is an active link on this post
+ * 'persist_active_count' => How many times the source has maintained the link and update the destination
+ */
 function mpd_get_persists_for_post($blog_id = null, $post_id = null){
 	
 	global $wpdb;
@@ -498,6 +591,7 @@ function mpd_remove_persist($args){
  *		'destination_id' : The ID of the destination site  
  *		'source_post_id' : The ID of the source post that was copied
  * 		'destination_post_id' : The ID of the source post that was copied
+ * @param int $dataValue The value to update the 'persist_active' value to. 1 denotes 'active', 0 denotes 'inactive'
  * @return bool True on success
  */
 function mpd_update_persist($args, $dataValue){
@@ -526,6 +620,19 @@ function mpd_update_persist($args, $dataValue){
 	return $result;
 
 }
+
+/**
+ * Get the amount of time the source post has updated a destination post.
+ *
+ * @since 1.0
+ * @param  Array $args 
+ * 		Required Params
+ * 		'source_id' : The ID of the source site 
+ *		'destination_id' : The ID of the destination site  
+ *		'source_post_id' : The ID of the source post that was copied
+ * 		'destination_post_id' : The ID of the source post that was copied
+ * @return int The number count of succesfully duplicated linked posts
+ */
 function mpd_get_persist_count($args){
 
 	global $wpdb;
@@ -534,13 +641,10 @@ function mpd_get_persist_count($args){
 
 	$query = "SELECT persist_action_count
 				FROM $table
-				WHERE 	source_id 			= " . $args['source_id'] . "
-				AND
-						destination_id		= " . $args['destination_id'] . "
-				AND
-						source_post_id		= " . $args['source_post_id'] . "
-				AND
-						destination_post_id	= " . $args['destination_post_id'];
+				WHERE source_id 		= " . $args['source_id'] . "
+				AND destination_id		= " . $args['destination_id'] . "
+				AND source_post_id		= " . $args['source_post_id'] . "
+				AND destination_post_id	= " . $args['destination_post_id'];
 	
 	$result = $wpdb->get_var($query);
 
@@ -548,6 +652,18 @@ function mpd_get_persist_count($args){
 
 }
 
+/**
+ * Increment the count of duplication between source and destination posts on a set of given arguments
+ *
+ * @since 1.0
+ * @param  Array $args 
+ * 		Required Params
+ * 		'source_id' : The ID of the source site 
+ *		'destination_id' : The ID of the destination site  
+ *		'source_post_id' : The ID of the source post that was copied
+ * 		'destination_post_id' : The ID of the source post that was copied
+ * @return int The new number count of succesfully duplicated linked posts
+ */
 function mpd_set_persist_count($args){
 
 	global $wpdb;
@@ -581,6 +697,13 @@ function mpd_set_persist_count($args){
 
 }
 
+/**
+ * When a user updates a post we check if there is a link and if so do the duplication
+ *
+ * @since 1.0
+ * @param  Int $post_id The post id of the current post being saved 
+ * @return null
+ */
 function mpd_persist_post($post_id){
 	
 	if( ! ( wp_is_post_revision( $post_id) || wp_is_post_autosave( $post_id ) ) ) {
@@ -593,9 +716,10 @@ function mpd_persist_post($post_id){
 	    // 	$post_id = $post->ID;
 	    // }
 	    
-		
+		// Check if there is a link
 		$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
 		
+		// Do the duplications if there are any links
 	    if($persist_posts){
 	        
 	        foreach($persist_posts as $persist_post){
@@ -609,6 +733,7 @@ function mpd_persist_post($post_id){
 	            
 	            mpd_persist_over_multisite($persist_post);
 
+	            // Increate the count
 	            mpd_set_persist_count($args);
 	        }
 	    }
@@ -621,8 +746,13 @@ function mpd_persist_post($post_id){
 add_action('save_post', 'mpd_persist_post');
 
 
-
-
+/**
+ * Get the nessesary assets to run datatables
+ * https://datatables.net/
+ *
+ * @since 1.0
+ * @return null
+ */
 function mpd_enqueue_datatables(){
 
 	wp_enqueue_script(
@@ -650,8 +780,16 @@ function mpd_enqueue_datatables(){
 
 }
 
+/**
+ * Do the markup for a nice table showing all the currently active linked pages
+ *
+ * @since 1.0
+ * @return null
+ */
+
 function mpd_persist_page(){
 
+	// Process romoval of link if user has clicked on the 'remove link' button
 	if(isset($_GET['remove'])){
 
 		$args = array(
@@ -664,8 +802,10 @@ function mpd_persist_page(){
 		mpd_remove_persist($args);
 	}
 
+	// Load assests for nice datatable markup and functionality
 	mpd_enqueue_datatables();
 
+	// Get all the linked duplications
 	$rows = mpd_get_the_persists();
 	?>
 	<div class="wrap">
@@ -760,13 +900,19 @@ function mpd_persist_page(){
 
 	<?php
 }
+
 /**
- * @ignore
+ * Do the markup for a nice table showing all duplication performed by this plugin since 1.0 install
+ *
+ * @since 1.0
+ * @return null
  */
 function mdp_log_page(){
 
+	// Load assests for nice datatable markup and functionality
 	mpd_enqueue_datatables();
 	
+	// Get all mpd duplcations
 	$rows = mpd_get_log();
 
 	?>
@@ -862,6 +1008,13 @@ function mdp_log_page(){
 	<?php
 }
 
+/**
+ * Function Used to render checkbox to assign duplication link in metabox
+ *
+ * @since 1.0
+ * @return null
+ *
+ */
 function mpd_persist_checkbox(){
 
 	$options = get_option( 'mdp_settings' );

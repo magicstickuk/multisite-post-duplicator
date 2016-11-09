@@ -135,7 +135,7 @@ function mpd_get_prefix(){
 
 }
 /**
- * This function returns the value of keys to ignore.
+ * This function returns the value of custom meta keys to ignore upon duplication.
  *
  * @since 0.9
  * @param none
