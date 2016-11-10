@@ -67,10 +67,10 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Screenshots ==
 
-1. User Interface
-2. Meta Box
-3. Setting Page
-4. Batch Duplication
+1. Meta Box
+2. Setting Page
+3. Batch Duplication
+4. Duplication Tool
 
 == Changelog ==
 

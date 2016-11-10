@@ -526,6 +526,8 @@ function mdp_options_page(  ) {
     	<?php if(isset($options['add_logging']) || isset($options['allow_persist'])):?>
 			</h2>
 		<?php endif; ?>
+
+		<div class="donate-link button-secondary"><a target="_blank" class="mpd-smile" href="https://www.paypal.me/mariojaconelli/5">Buy me a beer</a></div>
 		
 	<?php endif; 
 

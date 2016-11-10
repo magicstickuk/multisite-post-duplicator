@@ -66,3 +66,14 @@
 .accord{
 	cursor: pointer;
 }
+.mpd-smile{
+	background-image: url('../images/smile.png');
+	background-position: right;
+	background-repeat: no-repeat;
+	padding-right:25px;
+}
+.donate-link{
+	float: right;
+	margin-right:20px !important;
+
+}
