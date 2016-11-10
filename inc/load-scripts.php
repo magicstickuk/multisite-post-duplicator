@@ -100,7 +100,7 @@ function mdp_load_admin_styles(){
 	wp_localize_script('mdp-admin-settings-scripts', 'mpd_admin_vars', array(
 		'post_and_update' => __('Post & Update Linked Posts', MPD_DOMAIN),
 		'post_and_dup' => __('Post & Duplicate', MPD_DOMAIN),
-		'dup_and_update' => __('& Duplicate & Update Linked Posts', MPD_DOMAIN)
+		'dup_and_update' => __('& Duplicate & Update Linked Posts', MPD_DOMAIN),
 		)
 	);
 

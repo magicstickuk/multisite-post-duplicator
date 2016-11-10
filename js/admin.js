@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
 		sb.val(sV + " " + mpd_admin_vars.post_and_update);
 
 	}
-
+	
 	jQuery('#mpd_blogschecklist input:checkbox').change(function() {
 
 		if(($("#mpd_blogschecklist input:checkbox:checked").length > 0 && jQuery("#multisite_linked_list_metabox").length > 0)){

@@ -21,15 +21,16 @@
 function mpd_side_metaboxs($page){
 
 	// Filter to allow developers to determine thier own metabox priority.
-	$priority = apply_filters( 'mpd_metabox_priority', 'high' );
+	$priority 		= apply_filters( 'mpd_metabox_priority', 'high' );
+	$options 		= get_option( 'mdp_settings' );
 
 	// If the current post is a source post, the add a metabox to list the linked posts.
-	if(mpd_get_persists_for_post()){
+	if(mpd_get_persists_for_post() && (isset($options['allow_persist']) || !$options)){
 	 	add_meta_box( 'multisite_linked_list_metabox', "<i class='fa fa-link' aria-hidden='true'></i> " . __('Linked MPD Pages', MPD_DOMAIN ), 'mpd_linked_list_metabox_render', $page, 'side', $priority );
 	 	
 	}
 	// If the current post has any souce posts add appropriate metabox
-	if(mpd_get_posts_source_post()){
+	if(mpd_get_posts_source_post() && (isset($options['allow_persist']) || !$options)){
 		
 		add_meta_box( 'multisite_source_list_metabox', "<i class='fa fa-university' aria-hidden='true'></i> " . __('MPD Source Post', MPD_DOMAIN ), 'mpd_source_list_metabox_render', $page, 'side', $priority );
 	 	
@@ -706,42 +707,46 @@ function mpd_set_persist_count($args){
  */
 function mpd_persist_post($post_id){
 	
-	if( ! ( wp_is_post_revision( $post_id) || wp_is_post_autosave( $post_id ) ) ) {
+	$options = get_option( 'mdp_settings' );
 
-	    global $post;
+	if((isset($options['allow_persist']) || !$options)){
 
-		$blog_id = get_current_blog_id();
+		if( ! ( wp_is_post_revision( $post_id) || wp_is_post_autosave( $post_id ) ) ) {
 
-	    // if($post){
-	    // 	$post_id = $post->ID;
-	    // }
-	    
-		// Check if there is a link
-		$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
-		
-		// Do the duplications if there are any links
-	    if($persist_posts){
-	        
-	        foreach($persist_posts as $persist_post){
-	            
-	            $args = apply_filters('persist_post_args', array(
-	                'source_id' 			=> intval($persist_post->source_id),
-	                'destination_id' 		=> intval($persist_post->destination_id),
-	                'source_post_id' 		=> intval($persist_post->source_post_id),
-	                'destination_post_id' 	=> intval($persist_post->destination_post_id)
-	            ));
-	            
-	            mpd_persist_over_multisite($persist_post);
+		    global $post;
 
-	            // Increate the count
-	            mpd_set_persist_count($args);
+			$blog_id = get_current_blog_id();
+		    
+			// Check if there is a link
+			$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
+			
+			// Do the duplications if there are any links
+		    if($persist_posts){
+		        
+		        foreach($persist_posts as $persist_post){
+		            
+		            $args = apply_filters('persist_post_args', array(
+		                'source_id' 			=> intval($persist_post->source_id),
+		                'destination_id' 		=> intval($persist_post->destination_id),
+		                'source_post_id' 		=> intval($persist_post->source_post_id),
+		                'destination_post_id' 	=> intval($persist_post->destination_post_id)
+		            ));
+		            
+		            mpd_persist_over_multisite($persist_post);
 
-	            do_action('after_persist');
+		            // Increment the count
+		            mpd_set_persist_count($args);
 
-	        }
-	    }
+		            do_action('after_persist');
+
+		        }
+		        
+		    }
+
+		}
 
 	}
+	
  
 	return;
 	
