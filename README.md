@@ -18,12 +18,13 @@ Features
 *   Copies all custom fields
 *   Copies all related post meta
 *   Includes any custom post type on your network as long as the post type exists in your destination site
-*   Automatically copy your post/page/custom post type from one site to another from within your workflow 
-*   Copies any featured image (Can be turned on or off in Settings)
-*   Copies all image media within post content to the new site's media library for exclusive use in the destination site (Can be turned on or off in Settings)
-*   Copies associated tags (Can be turned on or off in Settings)
-*   Copies post categories. If the category doesn't exist in the destination site then the category is created and assigned to the post (Can be turned on or off in Settings)
-*   Copies post taxonomy terms. (Can be turned on or off in Settings). This behaviour assumes that the taxonomies being duplicated have been registered on the destination site.
+*   Copies any featured image
+*   Copies all image media within post content to the new site's media library for exclusive use in the destination site 
+*   Copies associated tags
+*   Copies post categories. If the category doesn't exist in the destination site then the category is created and assigned to the post
+*   Copies post taxonomy terms. This behaviour assumes that the taxonomies being duplicated have been registered on the destination site.
+*	Create a duplication link so if you ever update the source post again it will automatically update the duplicated page also
+*	Activity Log. View information on all dulications performed within your network
 *	Batch Duplication
 *	Settings page to customise the default behaviour
 *	Restrict functionality to only certain sites on your network
@@ -31,17 +32,15 @@ Features
 *   Clean and friendly User Interface
 *   Select what status you want your new copy of post to be i.e Published, Draft etc
 *   Specify a prefix for the new post to avoid confusion
-*   Works with Contact Form 7
 *   Works with Advanced Custom Fields
 *	Create your own addons! Multisite Post Duplicator is now fully extendable. Create your own functionality. Check out the API [documentation](http://www.wpmaz.uk/mpddocs/). Check out a list of hooks you can use (http://www.wpmaz.uk/multisite-post-duplicator-actions-and-filters/).
-*	Choose to ignore specific post meta keys in the duplication process.
+*	Choose to ignore specific post meta keys in the duplication process
 
 == Installation ==
 
 1. Upload `multisite-post-duplicator` folder to your `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. In WordPress admin on any of your sites within your multisite network go to Tools > Multisite Post Duplicator
-4. Customise the default behaviour by going to Setting > Multisite Post Duplicator Settings
+3. Customise the default behaviour by going to Setting > Multisite Post Duplicator Settings
 
 == Frequently Asked Questions ==
 
@@ -73,6 +72,26 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 4. Batch Duplication
 
 == Changelog ==
+
+= 1.0 =
+Bringing Multisite Post Duplicator into Version 1.0 with a massive update. Really excited to provide this new, continually requested, functionality:
+
+* NEW: Link a duplication!
+	* If you create a link between the original post and it's 'duplicated post' then whenever you update the original post the 'duplicated post' will be updated also! Simply check the box 'Create Duplication Link' on the MPD metabox before processing your duplication
+	* View and edit your linked posts via a handy user interface
+	* View all posts that a post is linked to via a new MPD Metabox
+	* Behaviour can be turned off in settings
+	* Loads of new filters and actions to help developers customise this functionality
+* NEW: Duplication activity log!
+	* Keep track of all posts that have been duplicated within your multisite network.
+	* Behaviour can be turned off in settings
+* NEW: Settings page has been cleaned up. Looks a lot lets cluttered.
+* Added: Filter 'mpd_list_metabox_priority' and  for developers to change priority of MPD Metaboxes
+* Fixed: Error on activation of plugin in a non-multisite installation.
+* Fixed: Problems with the setup to allow plugin translations
+
+= 0.9.5.1 = 
+* Fixed critical error experienced by some users from update v0.9.5
 
 = 0.9.5 =
 * Subdomain warning message can now be dissmissed. Also has improved signposting.
