@@ -331,7 +331,7 @@ function mdp_copy_post_taxonomies_render(  ) {
 	
 	<input type='checkbox' name='mdp_settings[mdp_copy_post_taxonomies]' <?php mpd_checked_lookup($options, 'mdp_copy_post_taxonomies', 'taxonomy') ;?> value='taxonomy'> <i class="fa fa-info-circle cpt-click accord" aria-hidden="true"></i>
 
-	<p class="mpdtip cpt-content" style="display:none"><?php _e('This plugin will automatically copy the taxonomy TERMS associated with the post. If the taxonomy TERMS don\'t exist in the destination site the will be created for you. Note: This functionsality assumes you have the taxonomies in your source site also registered in your destination site. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
+	<p class="mpdtip cpt-content" style="display:none"><?php _e('This plugin will automatically copy the taxonomy TERMS associated with the post. If the taxonomy TERMS don\'t exist in the destination site the will be created for you. Note: This functionality assumes you have the taxonomies in your source site also registered in your destination site. You can turn off this activity by unchecking the box.', MPD_DOMAIN )?></p>
 
 	<?php
 
@@ -540,7 +540,7 @@ function mdp_options_page(  ) {
 		}else{
 			
 			echo "<div class='wrap'>";
-			echo "<h2><i class='fa fa-link' aria-hidden='true'></i> Multisite Post Duplicator Settings</h2>";
+			echo "<h2><i class='fa fa-link' aria-hidden='true'></i> ". __("Multisite Post Duplicator Settings", MPD_DOMAIN)."</h2>";
 			echo "<form action='options.php' method='post'>";
 			settings_fields( MPD_SETTING_PAGE );
 			do_settings_sections( MPD_SETTING_PAGE );

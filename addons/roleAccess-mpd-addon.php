@@ -46,7 +46,7 @@ function role_option_setting_render(){
 				
 				<option value="Super-Admin" <?php echo $mdp_restrict_role == 'Super-Admin' ? 'selected="selected"' : ''; ?>>
 
-			    	Super Administrator
+			    	<?php _e('Super Administrator', MPD_DOMAIN ); ?>
 
 			    </option>
 

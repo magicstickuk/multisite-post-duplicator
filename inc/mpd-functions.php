@@ -691,16 +691,28 @@ function mpd_fix_wordpress_urls($url_input) {
 function mpd_non_multisite_admin_notice() {
     
     if (!is_multisite()) {
-        echo "<div class='error'><p>You have activated <a href='https://en-gb.wordpress.org/plugins/multisite-post-duplicator/' target='_blank'>Multisite Post Duplicator</a> on this WordPress Installation but this is not a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a>. In the interest of your websites efficiency we would advise you deactivate the plugin until you are using a <a target='_blank' href='http://codex.wordpress.org/Create_A_Network'>Multisite Network</a></p></div>";
+
+        ?>
+
+        <div class='error'><p>
+            <?php _e('You have activated Multisite Post Duplicator on this WordPress Installation but this is not a Multisite Network. In the interest of your websites efficiency we would advise you deactivate the plugin until you are using a Multisite Network',MPD_DOMAIN);?>
+            </p>
+        </div>
+
+        <?php
+        
     }
 
     if(mpd_is_subdomain_install() && !get_site_option('mpd_has_dismissed_subdomain_error')){
             
-            ?>
+        ?>
             
-            <div class='not-subdomain error notice is-dismissible'><p><?php _e('You have activated Multisite Post Duplicator on this WordPress Installation however this network has the subdomain configuration enabled. This plugin is untested on subdomain configurations. While it should work fine for most functions you may notice issues with images being copied over to destination sites. We are working to bring full subdmain support as soon as possible.', MPD_DOMAIN ); ?></div>
-            <?php
-
+        <div class='not-subdomain error notice is-dismissible'><p>
+            <?php _e('You have activated Multisite Post Duplicator on this WordPress Installation however this network has the subdomain configuration enabled. This plugin is untested on subdomain configurations. While it should work fine for most functions you may notice issues with images being copied over to destination sites. We are working to bring full subdmain support as soon as possible.', MPD_DOMAIN ); ?>
+            </p>
+        </div>
+        
+        <?php
 
     }
 
@@ -1080,9 +1092,12 @@ function mpd_do_settings_link(){
 
     ?> <p class="bottom-para">
 
-                <small><a class="no-dec" target="_blank" title="Multisite Post Duplicator Settings" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"> Settings <i class="fa fa-sliders fa-lg" aria-hidden="true"></i></a></small>
+            <small>
+                <a class="no-dec" target="_blank" title="Multisite Post Duplicator Settings" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"> Settings <i class="fa fa-sliders fa-lg" aria-hidden="true"></i></a>
+            </small>
                 
-            </p>
+        </p>
+
     <?php
 
 }
@@ -1100,7 +1115,4 @@ function mpd_is_subdomain_install(){
 
     }
 
-
 }
-
-

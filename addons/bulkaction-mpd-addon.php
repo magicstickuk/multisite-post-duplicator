@@ -122,7 +122,7 @@ function mpd_bulk_action() {
       $countBatch           = count($results);
       $destination_name     = get_blog_details($get_site[0])->blogname;
       $destination_edit_url = get_admin_url( $get_site[0], 'edit.php?post_type='.$_REQUEST['post_type']);
-      $the_ess              = $countBatch != 1 ? 'posts have' : 'post has';
+      $the_ess              = $countBatch != 1 ? __('posts have', MPD_DOMAIN) : __('post has', MPD_DOMAIN);
       $notice               = '<div class="updated"><p>'.$countBatch. " " . $the_ess . " " . __('been duplicated to', MPD_DOMAIN ) ." '<a href='".$destination_edit_url."'>". $destination_name ."'</a></p></div>";
 
       update_option('mpd_admin_bulk_notice', $notice );

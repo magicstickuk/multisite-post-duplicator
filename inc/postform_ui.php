@@ -165,12 +165,6 @@ function mpd_clone_post($post_id){
         return $post_id;
         
     }
-
-    // if(isset($_POST["post_status"]) && $_POST["post_ID"] == $post_id && $_POST["post_status"] != "auto-draft"){
-
-    //     mpd_persist_post($post_id);
-        
-    // }
     
     if(    ( isset($_POST["post_status"] ) )
         && ( $_POST["post_status"] != "auto-draft" )
@@ -208,22 +202,3 @@ function mpd_clone_post($post_id){
 }
 
 add_filter( 'save_post', 'mpd_clone_post' );
-
-function mpd_persist_debug(){
-     global $blog_id;
-     global $post;
-  
-    $persist_posts = mpd_get_persists_for_post(1, 334);
-    
-
-   // $persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
-    $args = array(
-        "source_id"=> 1,
-        "destination_id" => 3,
-        "source_post_id" => 334,
-        "destination_post_id"=> 228 
-    );
-  
-    
-}
-add_filter('admin_notices', 'mpd_persist_debug');
