@@ -1,7 +1,15 @@
 jQuery(document).ready(function(){
     jQuery('#mpdLogTable').DataTable({
         "language": {
-            "emptyTable": mpd_dt_vars.no_dups
+            "emptyTable": mpd_dt_vars.no_dups,
+            "search":  mpd_dt_vars.search,
+            "lengthMenu": mpd_dt_vars.show + " _MENU_ " + mpd_dt_vars.entries,
+            "paginate": {
+                "first":      mpd_dt_vars.first,
+                "last":       mpd_dt_vars.last,
+                "next":       mpd_dt_vars.next,
+                "previous":   mpd_dt_vars.pervious
+            },
         },
     	 "order": [[ 7, "desc" ]],
     	 "columnDefs": [
@@ -20,7 +28,15 @@ jQuery(document).ready(function(){
     });
     jQuery('#mpdLinkedTable').DataTable({
         "language": {
-            "emptyTable": mpd_dt_vars.no_linked_dups
+            "emptyTable": mpd_dt_vars.no_linked_dups,
+            "search":  mpd_dt_vars.search,
+            "lengthMenu": mpd_dt_vars.show + " _MENU_ " + mpd_dt_vars.entries,
+            "paginate": {
+                "first":      mpd_dt_vars.first,
+                "last":       mpd_dt_vars.last,
+                "next":       mpd_dt_vars.next,
+                "previous":   mpd_dt_vars.pervious
+            },
         },
          "order": [[ 8, "desc" ]],
          "columnDefs": [

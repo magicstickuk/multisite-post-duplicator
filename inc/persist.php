@@ -776,6 +776,13 @@ function mpd_enqueue_datatables(){
 		'no_dups' => __('No multisite duplications.', MPD_DOMAIN),
 		'no_linked_dups' => __('There are no linked duplications yet.', MPD_DOMAIN),
 		'delete_link_warning' => __('Are you sure you want to delete the link between the source and destination post?', MPD_DOMAIN),
+		'search' => __('Search:', MPD_DOMAIN),
+		'first' => __('First', MPD_DOMAIN),
+		'last' => __('Last', MPD_DOMAIN),
+		'next' => __('Next', MPD_DOMAIN),
+		'previous' => __('Previous', MPD_DOMAIN),
+		'show' => __('Show', MPD_DOMAIN),
+		'entries' => __('entries', MPD_DOMAIN),
 		)
 	);
 	
