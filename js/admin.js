@@ -6,21 +6,24 @@ jQuery(document).ready(function($) {
 
 
 	if(jQuery("#multisite_linked_list_metabox").length > 0){
-		sb.val(sV + " Post & Update Linked Posts");
+
+		sb.val(sV + " " + mpd_admin_vars.post_and_update);
+
 	}
 
 	jQuery('#mpd_blogschecklist input:checkbox').change(function() {
 
 		if(($("#mpd_blogschecklist input:checkbox:checked").length > 0 && jQuery("#multisite_linked_list_metabox").length > 0)){
 
-   			sb.val(sV + " & Duplicate & Update Linked Posts");
+   			sb.val(sV + " " + mpd_admin_vars.dup_and_update);
 
    		}else if ($("#mpd_blogschecklist input:checkbox:checked").length > 0){
 
-   			sb.val(sV + " Post & Duplicate");
+   			sb.val(sV + " " + mpd_admin_vars.post_and_dup);
+
 		}else if(jQuery("#multisite_linked_list_metabox").length > 0){
 
-			sb.val(sV + " Post & Update Linked Posts");
+			sb.val(sV + " " + mpd_admin_vars.post_and_update);
 
 		}else{
 
@@ -41,5 +44,7 @@ function accordionClick(classofbutton, classofContainer, speed){
 
 }
 function accordionMe(classOfContainer, speed){
+
 	jQuery(classOfContainer).toggle(speed);
+
 }

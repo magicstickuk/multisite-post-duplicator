@@ -12,7 +12,7 @@ Author URI:  	http://www.wpmaz.uk
 define('MPD_PLUGIN', true);
 define('MPD_SETTING_PAGE', 'mpd_sp');
 define('MPD_SETTING_SECTION', 'mpd_sps');
-define('MPD_DOMAIN', 'mpd');
+define('MPD_DOMAIN', 'multisite-post-duplicator');
 
 include('inc/mpd-functions.php');
 include('inc/load-scripts.php');
@@ -25,6 +25,21 @@ include('inc/client-log.php');
 include('addons/bulkaction-mpd-addon.php');
 include('addons/restrictSites-mpd-addon.php');
 include('addons/roleAccess-mpd-addon.php');
+
+/**
+ * 
+ * Setup Internationalisation
+ * 
+ * @since 1.0
+ * 
+ */
+function mpd_load_textdomain() {
+
+	load_plugin_textdomain( MPD_DOMAIN, false, dirname( plugin_basename(__FILE__) ) . '/lang/' );
+	
+}
+
+add_action('plugins_loaded', 'mpd_load_textdomain');
 
 /**
  * 

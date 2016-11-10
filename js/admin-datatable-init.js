@@ -1,7 +1,7 @@
 jQuery(document).ready(function(){
     jQuery('#mpdLogTable').DataTable({
         "language": {
-            "emptyTable": "No multisite duplications."
+            "emptyTable": mpd_dt_vars.no_dups
         },
     	 "order": [[ 7, "desc" ]],
     	 "columnDefs": [
@@ -20,7 +20,7 @@ jQuery(document).ready(function(){
     });
     jQuery('#mpdLinkedTable').DataTable({
         "language": {
-            "emptyTable": "There are no linked duplications yet."
+            "emptyTable": mpd_dt_vars.no_linked_dups
         },
          "order": [[ 8, "desc" ]],
          "columnDefs": [
@@ -39,8 +39,8 @@ jQuery(document).ready(function(){
 
     jQuery('.removeURL').click(function(e) {
         e.preventDefault();
-        if (window.confirm("Are you sure you want to delete the link between the source and destination post?")) {
-            location.href = this.href;
-        }
+        if (window.confirm(mpd_dt_vars.delete_link_warning)) {
+             location.href = this.href;
+         }
     });
 });

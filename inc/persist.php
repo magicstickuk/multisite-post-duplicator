@@ -759,27 +759,34 @@ add_action('save_post', 'mpd_persist_post');
 function mpd_enqueue_datatables(){
 
 	wp_enqueue_script(
-		'mdp-admin-datatables-scripts',
+		'mpd-admin-datatables-scripts',
 		'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js',
-		array( 'jquery' ),
+		array( 'jquery'),
 		'1.0'
 	);
 
 	wp_enqueue_script(
-		'mdp-admin-datatables-init',
+		'mpd-admin-datatables-init',
 		plugins_url( '../js/admin-datatable-init.js', __FILE__ ),
-		array( 'mdp-admin-datatables-scripts' ),
+		array( 'mpd-admin-datatables-scripts' ),
 		'1.0'
+	);
+
+	wp_localize_script('mpd-admin-datatables-init', 'mpd_dt_vars', array(
+		'no_dups' => __('No multisite duplications.', MPD_DOMAIN),
+		'no_linked_dups' => __('There are no linked duplications yet.', MPD_DOMAIN),
+		'delete_link_warning' => __('Are you sure you want to delete the link between the source and destination post?', MPD_DOMAIN),
+		)
 	);
 	
 	wp_register_style(
-		'mdp-datatables-styles',
+		'mpd-datatables-styles',
 		'https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css',
 		false,
 		'1.0.0'
 	);
 
-	wp_enqueue_style('mdp-datatables-styles');
+	wp_enqueue_style('mpd-datatables-styles');
 
 }
 

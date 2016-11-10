@@ -41,6 +41,15 @@ function mdp_load_admin_styles(){
 			array( 'mdp-select2-core' ),
 			'1.0'
 		);
+
+		wp_localize_script('admin-scripts', 'mpd_admin_scripts_vars', array(
+				'select_post_type' => __('Select a post post type to duplicate', MPD_DOMAIN),
+				'select_post' => __('Select a post to duplicate', MPD_DOMAIN),
+				'select_site' => __('Select a site to duplicate to', MPD_DOMAIN),
+				'select_user' => __('Select a user to atribute this to', MPD_DOMAIN),
+			)
+		);
+
 	}
 
 	if($screenid == 'tools_page_mpd' || $screenid == 'settings_page_multisite_post_duplicator'){
@@ -86,6 +95,13 @@ function mdp_load_admin_styles(){
 		plugins_url( '../js/admin.js', __FILE__ ),
 		array( 'jquery' ),
 		'1.0'
+	);
+
+	wp_localize_script('mdp-admin-settings-scripts', 'mpd_admin_vars', array(
+		'post_and_update' => __('Post & Update Linked Posts', MPD_DOMAIN),
+		'post_and_dup' => __('Post & Duplicate', MPD_DOMAIN),
+		'dup_and_update' => __('& Duplicate & Update Linked Posts', MPD_DOMAIN)
+		)
 	);
 
 	wp_register_style(
