@@ -166,6 +166,8 @@ function mpd_do_manage_links(){
  */
 function mpd_create_persist_database(){
 
+	global $wpdb;
+	
 	$tableName = $wpdb->base_prefix . "mpd_log";
 
 	$charset_collate = $wpdb->get_charset_collate();
