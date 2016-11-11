@@ -122,8 +122,8 @@ function mpd_bulk_action() {
       $countBatch           = count($results);
       $destination_name     = get_blog_details($get_site[0])->blogname;
       $destination_edit_url = get_admin_url( $get_site[0], 'edit.php?post_type='.$_REQUEST['post_type']);
-      $the_ess              = $countBatch != 1 ? __('posts have', MPD_DOMAIN) : __('post has', MPD_DOMAIN);
-      $notice               = '<div class="updated"><p>'.$countBatch. " " . $the_ess . " " . __('been duplicated to', MPD_DOMAIN ) ." '<a href='".$destination_edit_url."'>". $destination_name ."'</a></p></div>";
+      $the_ess              = $countBatch != 1 ? __('posts have', 'mpd') : __('post has', 'mpd');
+      $notice               = '<div class="updated"><p>'.$countBatch. " " . $the_ess . " " . __('been duplicated to', 'mpd' ) ." '<a href='".$destination_edit_url."'>". $destination_name ."'</a></p></div>";
 
       update_option('mpd_admin_bulk_notice', $notice );
 
@@ -161,7 +161,7 @@ add_action('admin_notices', 'mpd_bulk_admin_notices');
  */
 function add_bulk_settings(){
 
-    mpd_settings_field('add_bulk_settings', '<i class="fa fa-files-o" aria-hidden="true"></i> ' . __( 'Allow batch duplication?', MPD_DOMAIN ), 'mdp_default_batch_render');
+    mpd_settings_field('add_bulk_settings', '<i class="fa fa-files-o" aria-hidden="true"></i> ' . __( 'Allow batch duplication?', 'mpd' ), 'mdp_default_batch_render');
      
 }
 
@@ -181,7 +181,7 @@ function mdp_default_batch_render(){
   </script>
   <input type='checkbox' name='mdp_settings[add_bulk_settings]' <?php mpd_checked_lookup($options, 'add_bulk_settings', 'allow-batch') ;?> value='allow-batch'> <i class="fa fa-info-circle abs-click accord" aria-hidden="true"></i>
 
-  <p class="mpdtip abs-content" style="display:none"><?php _e('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page', MPD_DOMAIN)?></p>
+  <p class="mpdtip abs-content" style="display:none"><?php _e('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page', 'mpd')?></p>
   <?php
 
 }

@@ -15,9 +15,9 @@
  */
 function restrict_addon_mpd_settings(){
 
-	mpd_settings_field('restrict_option_setting', '<i class="fa fa-user-times" aria-hidden="true"></i> ' . __( 'Restrict MPD to certain sites', MPD_DOMAIN ), 'restrict_option_setting_render');
-	mpd_settings_field('restrict_some_option_setting', '<i class="fa fa-user-plus" aria-hidden="true"></i> ' . __( 'Restrict MPD on some sites', MPD_DOMAIN ), 'restrict_some_option_setting_render');
-    mpd_settings_field('master_site_setting', '<i class="fa fa-bank" aria-hidden="true"></i> ' . __( 'Select a Master Site', MPD_DOMAIN ), 'master_site_settings_render');
+	mpd_settings_field('restrict_option_setting', '<i class="fa fa-user-times" aria-hidden="true"></i> ' . __( 'Restrict MPD to certain sites', 'mpd' ), 'restrict_option_setting_render');
+	mpd_settings_field('restrict_some_option_setting', '<i class="fa fa-user-plus" aria-hidden="true"></i> ' . __( 'Restrict MPD on some sites', 'mpd' ), 'restrict_some_option_setting_render');
+    mpd_settings_field('master_site_setting', '<i class="fa fa-bank" aria-hidden="true"></i> ' . __( 'Select a Master Site', 'mpd' ), 'master_site_settings_render');
     
      
 }
@@ -46,20 +46,20 @@ function restrict_option_setting_render(){
 		<div class="mdp-inputcontainer">
 			<input type="radio" class="mdp_radio" name='mdp_settings[restrict_option_setting]' id="mpd_restrict_none" <?php checked($mdp_restrict_radio_label_value, 'none'); ?> value="none">
 		
-			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('No Restrictions', MPD_DOMAIN ) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('No Restrictions', 'mpd' ) ?></label>
 			    
 			<input type="radio" class="mdp_radio" name='mdp_settings[restrict_option_setting]' id="mpd_restrict_some" <?php checked($mdp_restrict_radio_label_value, 'some'); ?> value="some">
 		
-			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Restrict Some Sites', MPD_DOMAIN ) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Restrict Some Sites', 'mpd' ) ?></label>
 		
 			<input type="radio" class="mdp_radio" name='mdp_settings[restrict_option_setting]' id="mpd_restrict_set_master" <?php checked($mdp_restrict_radio_label_value, 'master'); ?> value="master">
 		
-			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('Select a Master Site', MPD_DOMAIN) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('Select a Master Site', 'mpd') ?></label>
 
 			<i class="fa fa-info-circle ros-click accord" aria-hidden="true"></i>
 	    </div>
 
-	    <p class="mpdtip ros-content" style="display:none"><?php _e('You can, if you want, limit MPD functionality to only certain sites.', MPD_DOMAIN ) ?></p>
+	    <p class="mpdtip ros-content" style="display:none"><?php _e('You can, if you want, limit MPD functionality to only certain sites.', 'mpd' ) ?></p>
 
     </div>
 
@@ -121,7 +121,7 @@ function restrict_some_option_setting_render(){
 
 		<?php endforeach;?>
 
-		<p class="mpdtip"><?php _e('Select some sites where you do not want MDP functionality. Note: You should not select all sites here as this will result in no MPD functionality.', MPD_DOMAIN ) ?></p>
+		<p class="mpdtip"><?php _e('Select some sites where you do not want MDP functionality. Note: You should not select all sites here as this will result in no MPD functionality.', 'mpd' ) ?></p>
   <?php
 
 }
@@ -155,7 +155,7 @@ function master_site_settings_render(){
   		
   </select>
 
-  <p class="mpdtip"><?php _e('If you want to only allow duplication to take place from one site then select it here.', MPD_DOMAIN)?></p>
+  <p class="mpdtip"><?php _e('If you want to only allow duplication to take place from one site then select it here.', 'mpd')?></p>
   <?php
 
 }
@@ -186,7 +186,7 @@ function mpd_add_addon_script_to_settings_page(){
 			}
 			
 			jQuery(".mpd-master-site").select2({
-				placeholder: '<?php _e("Select a Master Site", MPD_DOMAIN) ?>'	
+				placeholder: '<?php _e("Select a Master Site", 'mpd') ?>'	
 			});
 
 			if(jQuery('#mpd_restrict_set_master').is(':checked') ){

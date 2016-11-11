@@ -20,7 +20,7 @@
 
  function roleAccess_addon_mpd_settings(){
 
- 	mpd_settings_field('role_option_setting', '<i class="fa fa-users" aria-hidden="true"></i> ' . __( 'Minimum user role allowed to use MPD', MPD_DOMAIN ), 'role_option_setting_render');
+ 	mpd_settings_field('role_option_setting', '<i class="fa fa-users" aria-hidden="true"></i> ' . __( 'Minimum user role allowed to use MPD', 'mpd' ), 'role_option_setting_render');
 
  }
 
@@ -46,7 +46,7 @@ function role_option_setting_render(){
 				
 				<option value="Super-Admin" <?php echo $mdp_restrict_role == 'Super-Admin' ? 'selected="selected"' : ''; ?>>
 
-			    	<?php _e('Super Administrator', MPD_DOMAIN ); ?>
+			    	<?php _e('Super Administrator', 'mpd' ); ?>
 
 			    </option>
 

@@ -74,6 +74,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.0.2 =
+* Fixed text domain issue for translations.
+
 = 1.0.1 =
 * Fixed activation error for some users.
 

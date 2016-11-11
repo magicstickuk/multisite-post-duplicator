@@ -43,10 +43,10 @@ function mdp_load_admin_styles(){
 		);
 
 		wp_localize_script('admin-scripts', 'mpd_admin_scripts_vars', array(
-				'select_post_type' => __('Select a post post type to duplicate', MPD_DOMAIN),
-				'select_post' => __('Select a post to duplicate', MPD_DOMAIN),
-				'select_site' => __('Select a site to duplicate to', MPD_DOMAIN),
-				'select_user' => __('Select a user to atribute this to', MPD_DOMAIN),
+				'select_post_type' => __('Select a post post type to duplicate', 'mpd'),
+				'select_post' => __('Select a post to duplicate', 'mpd'),
+				'select_site' => __('Select a site to duplicate to', 'mpd'),
+				'select_user' => __('Select a user to atribute this to', 'mpd'),
 			)
 		);
 
@@ -98,9 +98,9 @@ function mdp_load_admin_styles(){
 	);
 
 	wp_localize_script('mdp-admin-settings-scripts', 'mpd_admin_vars', array(
-		'post_and_update' => __('Post & Update Linked Posts', MPD_DOMAIN),
-		'post_and_dup' => __('Post & Duplicate', MPD_DOMAIN),
-		'dup_and_update' => __('& Duplicate & Update Linked Posts', MPD_DOMAIN),
+		'post_and_update' => __('Post & Update Linked Posts', 'mpd'),
+		'post_and_dup' => __('Post & Duplicate', 'mpd'),
+		'dup_and_update' => __('& Duplicate & Update Linked Posts', 'mpd'),
 		)
 	);
 
