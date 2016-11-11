@@ -74,6 +74,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.0.1 =
+* Fixed activation error for some users.
+
 = 1.0 =
 Bringing Multisite Post Duplicator into Version 1.0 with a massive update. Really excited to provide this new, continually requested, functionality:
 
