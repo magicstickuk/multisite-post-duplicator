@@ -7,6 +7,8 @@ Description:    Duplicate any individual page, post or custom post type from one
 Version: 		1.0.2
 Author: 		Mario Jaconelli
 Author URI:  	http://www.wpmaz.uk
+Text Domain: 	mpd
+Domain Path: 	/lang
 */
 
 define('MPD_PLUGIN', true);
