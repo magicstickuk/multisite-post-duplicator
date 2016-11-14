@@ -141,7 +141,7 @@ function mpd_create_link_submit(){
 	$post_to_link 	= $_POST['post_to_link'];
 	$post_id 		= $_POST['post_id'];
 
-	$result = $wpdb->replace( 
+	$result = $wpdb->insert( 
 		$wpdb->base_prefix . "mpd_log", 
 		array( 
 			'source_id' 			=> get_current_blog_id(), 
@@ -157,16 +157,6 @@ function mpd_create_link_submit(){
 		) 
 	);
 
-	$args = array(
-		'source_id' 			=> get_current_blog_id(), 
-		'destination_id' 		=> $site,
-		'source_post_id'		=> $post_id,
-		'destination_post_id'	=> $post_to_link,
-
-	);
-
-	mpd_add_persist($args);
-	
 	die();
 }
 
