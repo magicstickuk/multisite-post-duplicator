@@ -23,22 +23,154 @@ function mpd_side_metaboxs($page){
 	// Filter to allow developers to determine thier own metabox priority.
 	$priority 		= apply_filters( 'mpd_metabox_priority', 'high' );
 	$options 		= get_option( 'mdp_settings' );
+	$persists 		= mpd_get_persists_for_post();
+	$source 		= mpd_get_posts_source_post();
 
 	// If the current post is a source post, the add a metabox to list the linked posts.
-	if(mpd_get_persists_for_post() && (isset($options['allow_persist']) || !$options)){
-	 	add_meta_box( 'multisite_linked_list_metabox', "<i class='fa fa-link' aria-hidden='true'></i> " . __('Linked MPD Pages', 'mpd' ), 'mpd_linked_list_metabox_render', $page, 'side', $priority );
+	if($persists && (isset($options['allow_persist']) || !$options)){
+	 	add_meta_box( 'multisite_linked_list_metabox', "<i class='fa fa-link' aria-hidden='true'></i> " . __('Linked MPD Pages', 'multisite-post-duplicator' ), 'mpd_linked_list_metabox_render', $page, 'side', $priority );
 	 	
 	}
 	// If the current post has any souce posts add appropriate metabox
-	if(mpd_get_posts_source_post() && (isset($options['allow_persist']) || !$options)){
+	if($source && (isset($options['allow_persist']) || !$options)){
 		
-		add_meta_box( 'multisite_source_list_metabox', "<i class='fa fa-university' aria-hidden='true'></i> " . __('MPD Source Post', 'mpd' ), 'mpd_source_list_metabox_render', $page, 'side', $priority );
+		add_meta_box( 'multisite_source_list_metabox', "<i class='fa fa-university' aria-hidden='true'></i> " . __('MPD Source Post', 'multisite-post-duplicator' ), 'mpd_source_list_metabox_render', $page, 'side', $priority );
 	 	
+	}
+
+	if(!$persists  && !$source && (isset($options['allow_persist']) || !$options)){
+
+		add_meta_box( 'multisite_create_link', "<i class='fa fa-university' aria-hidden='true'></i> " . __('MPD Create Link', 'multisite-post-duplicator' ), 'mpd_create_link_render', $page, 'side', $priority );
+
 	}
 
 
 }
 add_action('mpd_meta_box', 'mpd_side_metaboxs');
+
+function mpd_create_link_render(){
+	?>
+	<p><?php _e('Do you want to link this page to an existing post?', 'multisite-post-duplicator') ?></p>
+
+	<a class="button-secondary" id="createLink"><?php _e('Create', 'multisite-post-duplicator'); ?></a>
+
+	<div class="create-link-ui">
+			
+			<p><?php _e('Select the site where the post is you want to link to', 'multisite-post-duplicator'); ?>:</p>
+			
+			<?php $sites = mpd_wp_get_sites();?>
+			
+			<select id="create-link-site-select">
+
+				<option value="-1">
+				-- <?php _e('Select Site', 'multisite-post-duplicator'); ?> --
+				</option>
+
+				<?php foreach ($sites as $site) :?>
+
+					<?php 	$siteid 		= $site->blog_id;
+							$blog_details 	= get_blog_details($siteid); ?>
+
+					<option value="<?php echo $siteid ?>">
+
+						<?php echo $blog_details->blogname; ?>
+
+					</option>
+
+				<?php endforeach; ?>
+
+			</select>
+
+	</div>
+
+	<?php 
+}
+
+function mpd_create_link_post_list(){
+
+	global $post;
+
+	$site = $_POST['site'];
+
+	$postStatuses = array_keys(mpd_get_post_statuses());
+
+	switch_to_blog( $site );
+	$args = array(
+			'posts_per_page'   => -1,
+			'post_type'        => $post->post_type,
+			'post_status'      => $postStatuses,
+	);
+
+	$posts = get_posts($args);?>
+
+	<?php if($posts):?>
+
+		<select id="create-link-post-select">
+
+			<option value="-1">
+				-- <?php _e('Select a post to link to', 'multisite-post-duplicator');?> --
+			</option>
+			
+			<?php foreach ($posts as $site_post): ?>
+				
+				<option value="<?php echo $site_post->ID; ?>">
+					<?php echo $site_post->post_title; ?>
+				</option>
+
+			<?php endforeach ?>
+
+		</select>
+	
+	<?php endif; restore_current_blog();?>
+	
+	<a class="button button-primary button-large" id="create-link-submit">Create link</a>
+	<?php
+
+	
+
+	die();
+
+}
+add_action('wp_ajax_mpd_create_link_post_list', 'mpd_create_link_post_list');
+
+function mpd_create_link_submit(){
+
+	global $wpdb;
+
+	$site 			= $_POST['site'];
+	$post_to_link 	= $_POST['post_to_link'];
+	$post_id 		= $_POST['post_id'];
+
+	$result = $wpdb->replace( 
+		$wpdb->base_prefix . "mpd_log", 
+		array( 
+			'source_id' 			=> get_current_blog_id(), 
+			'destination_id' 		=> $site,
+			'source_post_id'		=> $post_id,
+			'destination_post_id'	=> $post_to_link,
+			'persist_action_count'	=> 0,
+			'dup_user_id'			=> get_current_user_id(),
+			'dup_time'				=> date("Y-m-d H:i:s")
+		), 
+		array( 
+			'%d','%d','%d','%d','%d','%d','%d', '%s'
+		) 
+	);
+
+	$args = array(
+		'source_id' 			=> get_current_blog_id(), 
+		'destination_id' 		=> $site,
+		'source_post_id'		=> $post_id,
+		'destination_post_id'	=> $post_to_link,
+
+	);
+
+	mpd_add_persist($args);
+	
+	die();
+}
+
+add_action('wp_ajax_mpd_create_link_submit', 'mpd_create_link_submit');
 
 /**
  * Create the markup for information on the posts source post
@@ -73,7 +205,7 @@ function mpd_source_list_metabox_render(){
     	});
     </script>
 	
-	<p class="notice notice-warning"><small><?php _e('CAUTION: This post is linked to the following post:', 'mpd')?></small></p>
+	<p class="notice notice-warning"><small><?php _e('CAUTION: This post is linked to the following post:', 'multisite-post-duplicator')?></small></p>
 	
 	<span class="mpd-metabox-subtitle"><?php echo $source_details->blogname ?></span>	
 	
@@ -83,7 +215,7 @@ function mpd_source_list_metabox_render(){
 
     </small>
     		
-	<p><small><?php _e('This means that if the source post above is updated it will overwrite any changes made here.', 'mpd')?></small></p>
+	<p><small><?php _e('This means that if the source post above is updated it will overwrite any changes made here.', 'multisite-post-duplicator')?></small></p>
 	
 	<?php
 	
@@ -103,7 +235,7 @@ function mpd_linked_list_metabox_render(){
     $count = 1;
     ?>
     
-    <p><small><?php _e('This post has other posts linked to it. If you update this post the it will also update the following posts in your network:', 'mpd')?></small></p>
+    <p><small><?php _e('This post has other posts linked to it. If you update this post the it will also update the following posts in your network:', 'multisite-post-duplicator')?></small></p>
        
     <?php foreach ($linked_posts as $linked_post) :?>
 
@@ -204,9 +336,9 @@ add_action('mpd_extend_activation', 'mpd_create_persist_database');
  */
 function persist_addon_mpd_settings(){
 
-	mpd_settings_field('persist_option_setting', '<i class="fa fa-list-ul" aria-hidden="true"></i> ' . __( 'Show logging tab?', 'mpd' ), 'persist_option_setting_render');
+	mpd_settings_field('persist_option_setting', '<i class="fa fa-list-ul" aria-hidden="true"></i> ' . __( 'Show logging tab?', 'multisite-post-duplicator' ), 'persist_option_setting_render');
 
-	mpd_settings_field('persist_functionality_setting', '<i class="fa fa-link" aria-hidden="true"></i> ' . __( 'Allow linked duplication functionality?', 'mpd' ), 'persist_functionality_setting_render');
+	mpd_settings_field('persist_functionality_setting', '<i class="fa fa-link" aria-hidden="true"></i> ' . __( 'Allow linked duplication functionality?', 'multisite-post-duplicator' ), 'persist_functionality_setting_render');
 
 }
 add_action( 'mdp_end_plugin_setting_page', 'persist_addon_mpd_settings');
@@ -228,7 +360,7 @@ function persist_option_setting_render(){
 	</script>
   <input type='checkbox' name='mdp_settings[add_logging]' <?php mpd_checked_lookup($options, 'add_logging', 'allow-logging') ;?> value='allow-logging'> <i class="fa fa-info-circle sl-click accord" aria-hidden="true"></i>
 
-  <p class="mpdtip sl-content" style="display:none"><?php _e('Having this option checked will allow you to see the log of duplications made over this network', 'mpd')?></p>
+  <p class="mpdtip sl-content" style="display:none"><?php _e('Having this option checked will allow you to see the log of duplications made over this network', 'multisite-post-duplicator')?></p>
  
   <?php
   
@@ -253,7 +385,7 @@ function persist_functionality_setting_render(){
   </script>
   <input type='checkbox' name='mdp_settings[allow_persist]' <?php mpd_checked_lookup($options, 'allow_persist', 'allow_persist') ;?> value='allow_persist'> <i class="fa fa-info-circle ap-click accord" aria-hidden="true"></i>
 
-  <p class="mpdtip ap-content" style="display:none"><?php _e('Having this option checked will allow you to link a source post to a destination post. If the source is then updated the destination post will always be updated. This link can be added via the MPD Box on the posts page', 'mpd')?></p>
+  <p class="mpdtip ap-content" style="display:none"><?php _e('Having this option checked will allow you to link a source post to a destination post. If the source is then updated the destination post will always be updated. This link can be added via the MPD Box on the posts page', 'multisite-post-duplicator')?></p>
  
   <?php
   
@@ -307,9 +439,7 @@ add_filter('mdp_default_options', 'mpd_logging_add_default_option');
  *
  */
 function mpd_log_duplication($createdPostObject, $mpd_process_info){
-	
-	$options = get_option( 'mdp_settings' );
-		
+			
 	global $wpdb;
 
 	$result = $wpdb->insert( 
@@ -780,16 +910,16 @@ function mpd_enqueue_datatables(){
 	);
 
 	wp_localize_script('mpd-admin-datatables-init', 'mpd_dt_vars', array(
-		'no_dups' => __('No multisite duplications.', 'mpd'),
-		'no_linked_dups' => __('There are no linked duplications yet.', 'mpd'),
-		'delete_link_warning' => __('Are you sure you want to delete the link between the source and destination post?', 'mpd'),
-		'search' => __('Search:', 'mpd'),
-		'first' => __('First', 'mpd'),
-		'last' => __('Last', 'mpd'),
-		'next' => __('Next', 'mpd'),
-		'previous' => __('Previous', 'mpd'),
-		'show' => __('Show', 'mpd'),
-		'entries' => __('entries', 'mpd'),
+		'no_dups' => __('No multisite duplications.', 'multisite-post-duplicator'),
+		'no_linked_dups' => __('There are no linked duplications yet.', 'multisite-post-duplicator'),
+		'delete_link_warning' => __('Are you sure you want to delete the link between the source and destination post?', 'multisite-post-duplicator'),
+		'search' => __('Search:', 'multisite-post-duplicator'),
+		'first' => __('First', 'multisite-post-duplicator'),
+		'last' => __('Last', 'multisite-post-duplicator'),
+		'next' => __('Next', 'multisite-post-duplicator'),
+		'previous' => __('Previous', 'multisite-post-duplicator'),
+		'show' => __('Show', 'multisite-post-duplicator'),
+		'entries' => __('entries', 'multisite-post-duplicator'),
 		)
 	);
 	
@@ -833,23 +963,23 @@ function mpd_persist_page(){
 	$rows = mpd_get_the_persists();
 	?>
 	<div class="wrap">
-	<h2><i class="fa fa-link" aria-hidden="true"></i> <?php _e('Linked Duplication Control', 'mpd'); ?></h2>
+	<h2><i class="fa fa-link" aria-hidden="true"></i> <?php _e('Linked Duplication Control', 'multisite-post-duplicator'); ?></h2>
 		<div class="mpd-loading">
 				<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
-				<span class="sr-only"><?php _e('Loading', 'mpd') ?>...</span>
+				<span class="sr-only"><?php _e('Loading', 'multisite-post-duplicator') ?>...</span>
 		</div>	
 		<table id="mpdLinkedTable" class="display" cellspacing="0" width="100%" style="display:none;">
 
 	        <thead>
 	            <tr>
-	                <th><?php _e('Source Site', 'mpd'); ?></th>
-	                <th><?php _e('Destination Site', 'mpd'); ?></th>
-	                <th><?php _e('Source Post', 'mpd'); ?></th>
-	                <th><?php _e('Destination Post', 'mpd'); ?></th>
-	                <th><?php _e('Update Count', 'mpd'); ?></th>
-	                <th><?php _e('Post Type', 'mpd'); ?></th>
-	                <th><?php _e('User', 'mpd'); ?></th>
-	                <th><?php _e('Action', 'mpd'); ?></th>
+	                <th><?php _e('Source Site', 'multisite-post-duplicator'); ?></th>
+	                <th><?php _e('Destination Site', 'multisite-post-duplicator'); ?></th>
+	                <th><?php _e('Source Post', 'multisite-post-duplicator'); ?></th>
+	                <th><?php _e('Destination Post', 'multisite-post-duplicator'); ?></th>
+	                <th><?php _e('Update Count', 'multisite-post-duplicator'); ?></th>
+	                <th><?php _e('Post Type', 'multisite-post-duplicator'); ?></th>
+	                <th><?php _e('User', 'multisite-post-duplicator'); ?></th>
+	                <th><?php _e('Action', 'multisite-post-duplicator'); ?></th>
 	                
 	            </tr>
 	        </thead>
@@ -907,7 +1037,7 @@ function mpd_persist_page(){
 			                <td><?php echo $destination_post->post_type; ?></td>
 			                <td><?php echo $user_info->user_login; ?></td>
 			                <td>
-			                	<a class="removeURL button-secondary" href="<?php echo $remove_url; ?>"><i class="fa fa-chain-broken" aria-hidden="true"></i>  <?php _e('Remove Link', 'mpd');?></a>
+			                	<a class="removeURL button-secondary" href="<?php echo $remove_url; ?>"><i class="fa fa-chain-broken" aria-hidden="true"></i>  <?php _e('Remove Link', 'multisite-post-duplicator');?></a>
 			                </td>
 			                <td><?php echo $row->dup_time; ?></td>
 			            </tr>
@@ -942,25 +1072,25 @@ function mdp_log_page(){
 	?>
 	<div class="wrap">
 		
-		<h2><i class="fa fa-list-ul" aria-hidden="true"></i> <?php _e('Multisite Post Duplicator Log', 'mpd');?></h2>
+		<h2><i class="fa fa-list-ul" aria-hidden="true"></i> <?php _e('Multisite Post Duplicator Log', 'multisite-post-duplicator');?></h2>
 
 		<div class="mpd-loading">
 				<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
-				<span class="sr-only">L<?php _e('Loading', 'mpd') ?>...</span>
+				<span class="sr-only">L<?php _e('Loading', 'multisite-post-duplicator') ?>...</span>
 		</div>	
 
 		<table id="mpdLogTable" class="display" cellspacing="0" width="100%" style="display:none;">
 	        
 	        <thead>
 	            <tr>
-	                <th><?php _e('Source Site', 'mpd') ?></th>
-	                <th><?php _e('Destination Site', 'mpd') ?></th>
-	                <th><?php _e('Source Post', 'mpd') ?></th>
-	                <th><?php _e('Destination Post', 'mpd') ?></th>
-	                <th><?php _e('Post Type', 'mpd') ?></th>
-	                <th><?php _e('User', 'mpd') ?></th>
-	                <th><?php _e('Time', 'mpd') ?></th>
-	                <th><?php _e('Time Raw', 'mpd') ?></th>
+	                <th><?php _e('Source Site', 'multisite-post-duplicator') ?></th>
+	                <th><?php _e('Destination Site', 'multisite-post-duplicator') ?></th>
+	                <th><?php _e('Source Post', 'multisite-post-duplicator') ?></th>
+	                <th><?php _e('Destination Post', 'multisite-post-duplicator') ?></th>
+	                <th><?php _e('Post Type', 'multisite-post-duplicator') ?></th>
+	                <th><?php _e('User', 'multisite-post-duplicator') ?></th>
+	                <th><?php _e('Time', 'multisite-post-duplicator') ?></th>
+	                <th><?php _e('Time Raw', 'multisite-post-duplicator') ?></th>
 	            </tr>
 	        </thead>
 	       
@@ -1056,7 +1186,7 @@ function mpd_persist_checkbox(){
                             <li><input type="checkbox" name="persist">Create Duplication Link? <i class="fa fa-info-circle pl-link" aria-hidden="true"></i></li>
                         </ul>
                         
-                        <p class="mpdtip pl-content" style="display:none"><?php _e('Checking this option will create a link between this post and the resulting copied post. After the link is created if you ever update this post in the future the changes will automatically be copied over to the linked posts also. If you want to delete the link you can do so <a href="'. esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator&tab=persists') ) .'">here</a>', 'mpd' ) ?></p>
+                        <p class="mpdtip pl-content" style="display:none"><?php _e('Checking this option will create a link between this post and the resulting copied post. After the link is created if you ever update this post in the future the changes will automatically be copied over to the linked posts also. If you want to delete the link you can do so <a href="'. esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator&tab=persists') ) .'">here</a>', 'multisite-post-duplicator' ) ?></p>
 
                     </label>
 

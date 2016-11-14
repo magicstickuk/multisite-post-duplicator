@@ -4,16 +4,18 @@
 Plugin Name: 	Multisite Post Duplicator
 Plugin URI: 	http://www.wpmaz.uk
 Description:    Duplicate any individual page, post or custom post type from one site on your multisite network to another.
-Version: 		1.0.2
+Version: 		1.1
 Author: 		Mario Jaconelli
 Author URI:  	http://www.wpmaz.uk
-Text Domain: 	mpd
+Text Domain: 	multisite-post-duplicator
 Domain Path: 	/lang
 */
+
 
 define('MPD_PLUGIN', true);
 define('MPD_SETTING_PAGE', 'mpd_sp');
 define('MPD_SETTING_SECTION', 'mpd_sps');
+define('MPD_PLUGIN_URL', plugin_dir_path(__FILE__ ) );
 
 include('inc/mpd-functions.php');
 include('inc/load-scripts.php');
@@ -27,6 +29,7 @@ include('addons/bulkaction-mpd-addon.php');
 include('addons/restrictSites-mpd-addon.php');
 include('addons/roleAccess-mpd-addon.php');
 
+
 /**
  * 
  * Setup Internationalisation
@@ -36,7 +39,7 @@ include('addons/roleAccess-mpd-addon.php');
  */
 function mpd_load_textdomain() {
 
-	load_plugin_textdomain( 'mpd', false, dirname( plugin_basename(__FILE__) ) . '/lang/' );
+	load_plugin_textdomain( 'multisite-post-duplicator', false, dirname( plugin_basename(__FILE__) ) . '/lang/' );
 	
 }
 
@@ -58,7 +61,6 @@ function mdp_plugin_activate() {
    foreach ($sites as $site) {
    		
    		$siteid = $site->blog_id;
-
 
    		switch_to_blog($siteid);
 
@@ -113,7 +115,7 @@ function mdp_get_default_options(){
 
 	$mdp_default_options = array(
 
-		'mdp_default_prefix' 			=> __('Copy of', 'mpd' ),
+		'mdp_default_prefix' 			=> __('Copy of', 'multisite-post-duplicator' ),
 		'mdp_default_tags_copy' 		=> 'tags',
 		'mdp_copy_post_categories'		=> 'category',
 		'mdp_copy_post_taxonomies'		=> 'taxonomy',
@@ -157,8 +159,10 @@ function mdp_get_default_options(){
  * 
  */
 function mpd_do_version_log(){
+	
+   $mainfile = MPD_PLUGIN_URL . 'mpd.php';
 
-   $plugin_data = get_plugin_data(__FILE__);
+   $plugin_data = get_plugin_data($mainfile);
 
    if(get_option( 'mdp_version' )){
 

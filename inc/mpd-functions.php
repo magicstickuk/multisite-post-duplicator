@@ -555,7 +555,7 @@ function mpd_checked_lookup($options, $option_key, $option_value, $type = null){
  */
 function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details){
 
-    $message = apply_filters('mpd_admin_notice_text', '<div class="updated"><p>'. __('You succesfully duplicated this post to', 'mpd' ) ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post', 'mpd' ).'</a></p></div>', $site_name, $site_url, $destination_blog_details);
+    $message = apply_filters('mpd_admin_notice_text', '<div class="updated"><p>'. __('You succesfully duplicated this post to', 'multisite-post-duplicator' ) ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post', 'multisite-post-duplicator' ).'</a></p></div>', $site_name, $site_url, $destination_blog_details);
 
     $option_value = get_option('mpd_admin_notice');
 
@@ -609,7 +609,7 @@ function mpd_settings_field($tag, $settings_title, $callback_function_to_markup,
 
   add_settings_field(
       $tag,
-      __( $settings_title, 'mpd' ),
+      __( $settings_title, 'multisite-post-duplicator' ),
       $callback_function_to_markup,
       MPD_SETTING_PAGE,
       MPD_SETTING_SECTION,
@@ -695,7 +695,7 @@ function mpd_non_multisite_admin_notice() {
         ?>
 
         <div class='error'><p>
-            <?php _e('You have activated Multisite Post Duplicator on this WordPress Installation but this is not a Multisite Network. In the interest of your websites efficiency we would advise you deactivate the plugin until you are using a Multisite Network','mpd');?>
+            <?php _e('You have activated Multisite Post Duplicator on this WordPress Installation but this is not a Multisite Network. In the interest of your websites efficiency we would advise you deactivate the plugin until you are using a Multisite Network','multisite-post-duplicator');?>
             </p>
         </div>
 
@@ -708,7 +708,7 @@ function mpd_non_multisite_admin_notice() {
         ?>
             
         <div class='not-subdomain error notice is-dismissible'><p>
-            <?php _e('You have activated Multisite Post Duplicator on this WordPress Installation however this network has the subdomain configuration enabled. This plugin is untested on subdomain configurations. While it should work fine for most functions you may notice issues with images being copied over to destination sites. We are working to bring full subdmain support as soon as possible.', 'mpd' ); ?>
+            <?php _e('You have activated Multisite Post Duplicator on this WordPress Installation however this network has the subdomain configuration enabled. This plugin is untested on subdomain configurations. While it should work fine for most functions you may notice issues with images being copied over to destination sites. We are working to bring full subdmain support as soon as possible.', 'multisite-post-duplicator' ); ?>
             </p>
         </div>
         

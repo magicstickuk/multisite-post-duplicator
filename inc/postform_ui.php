@@ -42,7 +42,7 @@ function mpd_metaboxes(){
 
                     $priority = apply_filters( 'mpd_metabox_priority', 'high' );
 
-                    add_meta_box( 'multisite_clone_metabox', "<i class='fa fa-clone' aria-hidden='true'></i> " . __('Multisite Post Duplicator', 'mpd' ), 'mpd_publish_top_right', $page, 'side', $priority );
+                    add_meta_box( 'multisite_clone_metabox', "<i class='fa fa-clone' aria-hidden='true'></i> " . __('Multisite Post Duplicator', 'multisite-post-duplicator' ), 'mpd_publish_top_right', $page, 'side', $priority );
 
                     do_action('mpd_meta_box', $page);
                    
@@ -81,7 +81,7 @@ function mpd_publish_top_right(){
 
             <?php do_action('mpd_before_metabox_content'); ?>
 
-            <p><?php _e('Duplicated post status', 'mpd' ); ?>:
+            <p><?php _e('Duplicated post status', 'multisite-post-duplicator' ); ?>:
 
             <select id="mpd-new-status" name="mpd-new-status" style="width:100%">
 
@@ -95,7 +95,7 @@ function mpd_publish_top_right(){
                
             </p>
 
-            <p><?php _e('Title prefix for new post', 'mpd' ); ?>:
+            <p><?php _e('Title prefix for new post', 'multisite-post-duplicator' ); ?>:
             
                 <input type="text" style="width:100%" name="mpd-prefix" value="<?php echo mpd_get_prefix(); ?>"/>
                 
@@ -107,9 +107,9 @@ function mpd_publish_top_right(){
                 });
 
             </script>
-            <p><?php _e('Site(s) you want duplicate to', 'mpd' ); ?> <i class="fa fa-info-circle ps-link accord" aria-hidden="true"></i> :</p>
+            <p><?php _e('Site(s) you want duplicate to', 'multisite-post-duplicator' ); ?> <i class="fa fa-info-circle ps-link accord" aria-hidden="true"></i> :</p>
 
-            <p class="mpdtip ps-content" style="display:none"><?php _e('If you have checked any of the checkboxes above then this post will be duplicated on save.', 'mpd' );?></p>
+            <p class="mpdtip ps-content" style="display:none"><?php _e('If you have checked any of the checkboxes above then this post will be duplicated on save.', 'multisite-post-duplicator' );?></p>
 
                 <ul id="mpd_blogschecklist" data-wp-lists="list:category" class="mpd_blogschecklist">
 

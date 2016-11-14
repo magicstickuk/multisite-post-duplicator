@@ -34,3 +34,20 @@
   padding-left: 1em;
   line-height: 2em
 }
+.create-link-ui{
+  display: none;
+  margin-top: 10px;
+  width: 100%
+}
+#createLink{
+  margin-right: 10px;
+}
+.create-link.spinner-container{
+  display: none;
+}
+.create-link-ui select{
+  width: 100%;
+}
+#create-link-post-select{
+  margin: 10px 0;
+}

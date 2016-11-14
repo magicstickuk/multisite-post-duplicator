@@ -17,7 +17,7 @@ function mdp_load_admin_styles(){
 
 	$screenid = get_current_screen()->id;
 
-	if($screenid == 'tools_page_mpd'){
+	if($screenid == 'tools_page_multisite-post-duplicator'){
 
 		wp_register_style(
 			'mdp-select2-styles',
@@ -43,16 +43,16 @@ function mdp_load_admin_styles(){
 		);
 
 		wp_localize_script('admin-scripts', 'mpd_admin_scripts_vars', array(
-				'select_post_type' => __('Select a post post type to duplicate', 'mpd'),
-				'select_post' => __('Select a post to duplicate', 'mpd'),
-				'select_site' => __('Select a site to duplicate to', 'mpd'),
-				'select_user' => __('Select a user to atribute this to', 'mpd'),
+				'select_post_type' => __('Select a post post type to duplicate', 'multisite-post-duplicator'),
+				'select_post' => __('Select a post to duplicate', 'multisite-post-duplicator'),
+				'select_site' => __('Select a site to duplicate to', 'multisite-post-duplicator'),
+				'select_user' => __('Select a user to atribute this to', 'multisite-post-duplicator'),
 			)
 		);
 
 	}
 
-	if($screenid == 'tools_page_mpd' || $screenid == 'settings_page_multisite_post_duplicator'){
+	if($screenid == 'tools_page_multisite-post-duplicator' || $screenid == 'settings_page_multisite_post_duplicator'){
 
 		wp_register_style(
 			'mdp-styles',
@@ -93,14 +93,17 @@ function mdp_load_admin_styles(){
 	wp_enqueue_script(
 		'mdp-admin-settings-scripts',
 		plugins_url( '../js/admin.js', __FILE__ ),
-		array( 'jquery' ),
-		'1.0'
+		array( 'jquery' )
+		
 	);
 
+	global $post;
+	$post_id = $post ? $post->ID : 0;
 	wp_localize_script('mdp-admin-settings-scripts', 'mpd_admin_vars', array(
-		'post_and_update' => __('Post & Update Linked Posts', 'mpd'),
-		'post_and_dup' => __('Post & Duplicate', 'mpd'),
-		'dup_and_update' => __('& Duplicate & Update Linked Posts', 'mpd'),
+		'post_and_update' => __('Post & Update Linked Posts', 'multisite-post-duplicator'),
+		'post_and_dup' => __('Post & Duplicate', 'multisite-post-duplicator'),
+		'dup_and_update' => __('& Duplicate & Update Linked Posts', 'multisite-post-duplicator'),
+		'post_id' => $post_id
 		)
 	);
 

@@ -32,7 +32,7 @@ function mdp_add_admin_menu(  ) {
 
 	if($settingsLogic){
 
-		add_submenu_page( 'options-general.php', __('Multisite Post Duplicator Settings', 'mpd' ), __('Multisite Post Duplicator Settings', 'mpd'), 'manage_options', 'multisite_post_duplicator', 'mdp_options_page' );
+		add_submenu_page( 'options-general.php', __('Multisite Post Duplicator Settings', 'multisite-post-duplicator' ), __('Multisite Post Duplicator Settings', 'multisite-post-duplicator'), 'manage_options', 'multisite_post_duplicator', 'mdp_options_page' );
 		
 	}
 
@@ -60,7 +60,7 @@ function mdp_settings_init(  ) {
 		MPD_SETTING_PAGE
 	);
 
-	mpd_settings_field('meta_box_show_radio', '<i class="fa fa-file-text-o" aria-hidden="true"></i> ' . __( 'What Post Types you want to show the MPD Meta Box?', 'mpd' ), 'meta_box_show_radio_render');
+	mpd_settings_field('meta_box_show_radio', '<i class="fa fa-file-text-o" aria-hidden="true"></i> ' . __( 'What Post Types you want to show the MPD Meta Box?', 'multisite-post-duplicator' ), 'meta_box_show_radio_render');
 
 	$mpd_post_types 		= get_post_types();
 	$loopcount 				= 1;
@@ -73,7 +73,7 @@ function mdp_settings_init(  ) {
 			mpd_settings_field(
 
 					'meta_box_post_type_selector_' . $mpd_post_type,
-					$loopcount == 1 ? '<i class="fa fa-file-text-o" aria-hidden="true"></i> ' . __("Select post types to show the MPD Meta Box on", 'mpd' ) : "",
+					$loopcount == 1 ? '<i class="fa fa-file-text-o" aria-hidden="true"></i> ' . __("Select post types to show the MPD Meta Box on", 'multisite-post-duplicator' ) : "",
 					'meta_box_post_type_selector_render',
 					array(
 						'mdpposttype' => $mpd_post_type
@@ -89,50 +89,50 @@ function mdp_settings_init(  ) {
 	
 	mpd_settings_field(
 		'mdp_default_prefix',
-		'<i class="fa fa-pencil" aria-hidden="true"></i> ' . __( 'Default Prefix', 'mpd' ),
+		'<i class="fa fa-pencil" aria-hidden="true"></i> ' . __( 'Default Prefix', 'multisite-post-duplicator' ),
 		'mdp_default_prefix_render'
 	);
 	mpd_settings_field(
 		'mdp_default_tags_copy',
-		'<i class="fa fa-tags" aria-hidden="true"></i> ' .__( 'Copy post tags when duplicating?', 'mpd' ),
+		'<i class="fa fa-tags" aria-hidden="true"></i> ' .__( 'Copy post tags when duplicating?', 'multisite-post-duplicator' ),
 		'mdp_default_tags_copy_render');
 
 	mpd_settings_field(
 		'mdp_copy_post_categories',
-		'<i class="fa fa-files-o" aria-hidden="true"></i> ' . __( 'Copy post categories?', 'mpd' ),
+		'<i class="fa fa-files-o" aria-hidden="true"></i> ' . __( 'Copy post categories?', 'multisite-post-duplicator' ),
 		'mdp_copy_post_categories_render'
 	);
 
 	mpd_settings_field('mdp_copy_post_taxonomies',
-		'<i class="fa fa-tag" aria-hidden="true"></i> ' . __( 'Copy post taxonomies?', 'mpd' ),
+		'<i class="fa fa-tag" aria-hidden="true"></i> ' . __( 'Copy post taxonomies?', 'multisite-post-duplicator' ),
 		'mdp_copy_post_taxonomies_render'
 	);
 
 	mpd_settings_field(
 		'mdp_default_featured_image',
-		'<i class="fa fa-picture-o" aria-hidden="true"></i> ' . __( 'Copy featured image when duplicating?', 'mpd' ),
+		'<i class="fa fa-picture-o" aria-hidden="true"></i> ' . __( 'Copy featured image when duplicating?', 'multisite-post-duplicator' ),
 		'mdp_default_feat_image_copy_render'
 	);
 	mpd_settings_field(
 		'mdp_copy_content_images',
-		'<i class="fa fa-camera" aria-hidden="true"></i> ' . __( 'Copy post content images to destination media library?', 'mpd' ),
+		'<i class="fa fa-camera" aria-hidden="true"></i> ' . __( 'Copy post content images to destination media library?', 'multisite-post-duplicator' ),
 		'mdp_copy_content_image_render'
 	);
 	mpd_settings_field(
 		'mdp_retain_published_date',
-		'<i class="fa fa-calendar-o" aria-hidden="true"></i> ' . __( 'Retain Published Date from Source?', 'mpd' ),
+		'<i class="fa fa-calendar-o" aria-hidden="true"></i> ' . __( 'Retain Published Date from Source?', 'multisite-post-duplicator' ),
 		'mdp_retain_published_date_render'
 	);
 
 	do_action( 'mdp_end_plugin_setting_page' );
 
 	mpd_settings_field('mdp_ignore_custom_meta',
-		'<i class="fa fa-fast-forward" aria-hidden="true"></i> ' . __( 'Post Meta to ignore?', 'mpd' ),
+		'<i class="fa fa-fast-forward" aria-hidden="true"></i> ' . __( 'Post Meta to ignore?', 'multisite-post-duplicator' ),
 		'mdp_ignore_custom_meta_render'
 	);
 
 	mpd_settings_field('mdp_allow_dev_info',
-		'<i class="fa fa-bar-chart" aria-hidden="true"></i> ' . __( 'Allow anonymous usage data?', 'mpd' ),
+		'<i class="fa fa-bar-chart" aria-hidden="true"></i> ' . __( 'Allow anonymous usage data?', 'multisite-post-duplicator' ),
 		'mdp_allow_dev_info_render'
 	);
 
@@ -169,20 +169,20 @@ function meta_box_show_radio_render(){
 
 			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_all" <?php checked( $mdp_radio_label_value, 'all'); ?> value="all">
 		
-			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('All post types', 'mpd' ) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('All post types', 'multisite-post-duplicator' ) ?></label>
 			    
 			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_some" <?php checked( $mdp_radio_label_value, 'some'); ?> value="some">
 		
-			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Some post types', 'mpd' ) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Some post types', 'multisite-post-duplicator' ) ?></label>
 		
 			<input type="radio" class="mdp_radio" name='mdp_settings[meta_box_show_radio]' id="meta_box_show_choice_none" <?php checked( $mdp_radio_label_value, 'none'); ?> value="none">
 		
-			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('No post types', 'mpd') ?></label>
+			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('No post types', 'multisite-post-duplicator') ?></label>
 
 	    	<i class="fa fa-info-circle mbs-click accord" aria-hidden="true"></i>
 	    </div>
 
-	    <p class="mpdtip mbs-content" style="display:none"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', 'mpd' ) ?></p>
+	    <p class="mpdtip mbs-content" style="display:none"><?php _e('The MDP meta box is shown on the right of your post/page/custom post type. You can control where you would like this meta box to appear using the selection above. If you select "Some post types" you will get a list of all the post types below to toggle their display.', 'multisite-post-duplicator' ) ?></p>
 
     </div>
 	<?php
@@ -234,7 +234,7 @@ function mdp_default_prefix_render(  ) {
 	
 	<input type='text' name='mdp_settings[mdp_default_prefix]' value='<?php echo mpd_get_prefix(); ?>'> <i class="fa fa-info-circle dp-click accord" aria-hidden="true"></i>  
 
-	<p class="mpdtip dp-content" style="display:none"><?php _e('Change the default prefix for your duplication across the network.', 'mpd' )?></p>
+	<p class="mpdtip dp-content" style="display:none"><?php _e('Change the default prefix for your duplication across the network.', 'multisite-post-duplicator' )?></p>
 	
 	<?php
 
@@ -257,7 +257,7 @@ function mdp_ignore_custom_meta_render(  ) {
 	</script>
 	<input id="mdp-ignore-custom-meta" type='text' autocapitalize="none" autocorrect="none" name='mdp_settings[mdp_ignore_custom_meta]' value='<?php echo mpd_get_ignore_keys(); ?>'> <i class="fa fa-info-circle icm-click accord" aria-hidden="true"></i>  
 
-	<p class="mpdtip icm-content" style="display:none"><?php _e('A comma delimerated list of post meta keys you wish to ignore during the duplication process. <em>i.e (without quotes) \'my_custom_meta_key, post_facebook_share_count\'</em></br></br>WARNING: Only edit this option if you are sure what you are doing.', 'mpd' )?></p>
+	<p class="mpdtip icm-content" style="display:none"><?php _e('A comma delimerated list of post meta keys you wish to ignore during the duplication process. <em>i.e (without quotes) \'my_custom_meta_key, post_facebook_share_count\'</em></br></br>WARNING: Only edit this option if you are sure what you are doing.', 'multisite-post-duplicator' )?></p>
 	
 	<?php
 
@@ -281,7 +281,7 @@ function mdp_default_tags_copy_render(  ) {
 
 	<input type='checkbox' name='mdp_settings[mdp_default_tags_copy]' <?php mpd_checked_lookup($options, 'mdp_default_tags_copy', 'tags') ;?> value='tags'> <i class="fa fa-info-circle dtc-click accord" aria-hidden="true"></i>  
 
-	<p class="mpdtip dtc-content" style="display:none"><?php _e('This plugin will automatically copy the tags associated with the post. You can turn off this activity by unchecking the box.', 'mpd' )?></p>
+	<p class="mpdtip dtc-content" style="display:none"><?php _e('This plugin will automatically copy the tags associated with the post. You can turn off this activity by unchecking the box.', 'multisite-post-duplicator' )?></p>
 
 	<?php
 
@@ -307,7 +307,7 @@ function mdp_copy_post_categories_render(  ) {
 	
 	<input type='checkbox' name='mdp_settings[mdp_copy_post_categories]' <?php mpd_checked_lookup($options, 'mdp_copy_post_categories', 'category') ;?> value='category'> <i class="fa fa-info-circle mpdcpt-click accord" aria-hidden="true"></i> 
 
-	<p class="mpdtip mpdcpt-content" style="display:none"><?php _e('This plugin will automatically copy the categories associated with the post. If the category doesn\'t exist in the destination site the category will be created for you. You can turn off this activity by unchecking the box.', 'mpd' )?></p>
+	<p class="mpdtip mpdcpt-content" style="display:none"><?php _e('This plugin will automatically copy the categories associated with the post. If the category doesn\'t exist in the destination site the category will be created for you. You can turn off this activity by unchecking the box.', 'multisite-post-duplicator' )?></p>
 
 	<?php
 
@@ -331,7 +331,7 @@ function mdp_copy_post_taxonomies_render(  ) {
 	
 	<input type='checkbox' name='mdp_settings[mdp_copy_post_taxonomies]' <?php mpd_checked_lookup($options, 'mdp_copy_post_taxonomies', 'taxonomy') ;?> value='taxonomy'> <i class="fa fa-info-circle cpt-click accord" aria-hidden="true"></i>
 
-	<p class="mpdtip cpt-content" style="display:none"><?php _e('This plugin will automatically copy the taxonomy TERMS associated with the post. If the taxonomy TERMS don\'t exist in the destination site the will be created for you. Note: This functionality assumes you have the taxonomies in your source site also registered in your destination site. You can turn off this activity by unchecking the box.', 'mpd' )?></p>
+	<p class="mpdtip cpt-content" style="display:none"><?php _e('This plugin will automatically copy the taxonomy TERMS associated with the post. If the taxonomy TERMS don\'t exist in the destination site the will be created for you. Note: This functionality assumes you have the taxonomies in your source site also registered in your destination site. You can turn off this activity by unchecking the box.', 'multisite-post-duplicator' )?></p>
 
 	<?php
 
@@ -356,7 +356,7 @@ function mdp_default_feat_image_copy_render(  ) {
 	</script>
 	<input type='checkbox' name='mdp_settings[mdp_default_featured_image]' <?php mpd_checked_lookup($options, 'mdp_default_featured_image', 'feat') ;?> value='feat'> <i class="fa fa-info-circle dfi-click accord" aria-hidden="true"></i>
 
-	<p class="mpdtip dfi-content" style="display:none"><?php _e('This plugin will automatically copy any featured image associated with the post. You can turn off this activity by unchecking the box.', 'mpd' )?></p>
+	<p class="mpdtip dfi-content" style="display:none"><?php _e('This plugin will automatically copy any featured image associated with the post. You can turn off this activity by unchecking the box.', 'multisite-post-duplicator' )?></p>
 	
 	<?php
 
@@ -382,7 +382,7 @@ function mdp_copy_content_image_render(  ) {
 	</script>
 	<input type='checkbox' name='mdp_settings[mdp_copy_content_images]' <?php mpd_checked_lookup($options, 'mdp_copy_content_images', 'content-image') ;?> value='content-image'> <i class="fa fa-info-circle cci-click accord" aria-hidden="true"></i>
 
-	<p class="mpdtip cci-content" style="display:none"><?php _e('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It will also change the urls in the duplicated post to reference the new media file. You can turn off this activity by unchecking the box', 'mpd')?></p>
+	<p class="mpdtip cci-content" style="display:none"><?php _e('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It will also change the urls in the duplicated post to reference the new media file. You can turn off this activity by unchecking the box', 'multisite-post-duplicator')?></p>
 	
 	<?php
 
@@ -407,7 +407,7 @@ function mdp_retain_published_date_render(  ) {
 	
 		<input type='checkbox' name='mdp_settings[mdp_retain_published_date]' <?php mpd_checked_lookup($options, 'mdp_retain_published_date', 'retain-published') ;?> value='retain-published'> <i class="fa fa-info-circle rpd-click accord" aria-hidden="true"></i>
 
-		<p class="mpdtip rpd-content" style="display:none"><?php _e('Check this box if you would like the destination post to keep the source published date. NOTE! If you check this option the destination post status will be set to published by default', 'mpd')?></p>
+		<p class="mpdtip rpd-content" style="display:none"><?php _e('Check this box if you would like the destination post to keep the source published date. NOTE! If you check this option the destination post status will be set to published by default', 'multisite-post-duplicator')?></p>
 
 	<?php
 
@@ -432,7 +432,7 @@ function mdp_allow_dev_info_render(  ) {
 		
 		<input type='checkbox' name='mdp_settings[mdp_allow_dev_info]' <?php mpd_checked_lookup($options, 'mdp_allow_dev_info', 'allow-dev') ;?> value='allow-dev'> <i class="fa fa-info-circle aau-click accord" aria-hidden="true"></i>
 
-		<p class="mpdtip aau-content" style="display:none"><?php _e('If this box is checked you are allowing anonymous usage data to be sent to the developers. This provides valuable information in order to improve and maintain this plugin. Thanks so much for your help', 'mpd')?></p>
+		<p class="mpdtip aau-content" style="display:none"><?php _e('If this box is checked you are allowing anonymous usage data to be sent to the developers. This provides valuable information in order to improve and maintain this plugin. Thanks so much for your help', 'multisite-post-duplicator')?></p>
 
 	<?php
 
@@ -447,7 +447,7 @@ function mdp_allow_dev_info_render(  ) {
  */
 function mdp_settings_section_callback(  ) { 
 
-	_e( 'Here you can change the default settings for Multisite Post Duplicator. Note that these settings are used for every site in your network.', 'mpd' );
+	_e( 'Here you can change the default settings for Multisite Post Duplicator. Note that these settings are used for every site in your network.', 'multisite-post-duplicator' );
 
 }
 
@@ -542,7 +542,7 @@ function mdp_options_page(  ) {
 		}else{
 			
 			echo "<div class='wrap'>";
-			echo "<h2><i class='fa fa-link' aria-hidden='true'></i> ". __("Multisite Post Duplicator Settings", 'mpd')."</h2>";
+			echo "<h2><i class='fa fa-link' aria-hidden='true'></i> ". __("Multisite Post Duplicator Settings", 'multisite-post-duplicator')."</h2>";
 			echo "<form action='options.php' method='post'>";
 			settings_fields( MPD_SETTING_PAGE );
 			do_settings_sections( MPD_SETTING_PAGE );

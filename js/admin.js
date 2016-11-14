@@ -1,4 +1,46 @@
 jQuery(document).ready(function($) {
+
+	jQuery("#createLink").click(function(e){
+		e.preventDefault;
+		jQuery('.create-link-ui').show('fast');
+
+	});
+
+	jQuery( "#create-link-site-select" ).change(function() {
+
+		jQuery('#create-link-post-select').remove();
+
+		data =  {
+		 	action : 'mpd_create_link_post_list',
+		 	site   : jQuery( "#create-link-site-select" ).val()
+		};
+
+		jQuery.post(ajaxurl,data,function(response) {
+
+			jQuery( "#create-link-site-select" ).after(response);
+
+			jQuery("#create-link-submit").click(function(e){
+				e.preventDefault;
+				
+				datasubmit =  {
+				 	action 			: 'mpd_create_link_submit',
+				 	site   			: jQuery( "#create-link-site-select" ).val(),
+				 	post_to_link 	: jQuery( "#create-link-post-select" ).val(),
+				 	post_id 		: mpd_admin_vars.post_id
+				};
+
+				jQuery.post(ajaxurl,datasubmit,function(response) {
+
+					location.reload();
+
+				});
+
+			});
+		
+		});
+
+	});
+
 	sb = jQuery('#publishing-action #publish');
 	sV = sb.val();
 	jQuery('#delete-action a').css('font-size','11px');
