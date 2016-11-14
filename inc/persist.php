@@ -90,6 +90,8 @@ function mpd_create_link_render(){
 
 			<p class="create-link-site-spin mpd-spinner-container"><img src="<?php echo plugins_url('../css/select2-spinner.gif',__FILE__); ?>"/></p>
 
+			<p class="link-created-confirm"><img src="<?php echo plugins_url('../images/tick.png',__FILE__); ?>" alt=""> <?php _e('Link Created','multisite-post-duplicator'); ?></p>
+
 	</div>
 
 	<?php 
