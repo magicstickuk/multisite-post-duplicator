@@ -22,8 +22,7 @@ function mdp_load_admin_styles(){
 		wp_register_style(
 			'mdp-select2-styles',
 			plugins_url( '../css/select2.min.css', __FILE__ ),
-			false,
-			'1.0.0'
+			false
 		);
 
 		wp_enqueue_style( 'mdp-select2-styles');
@@ -31,15 +30,13 @@ function mdp_load_admin_styles(){
 		wp_enqueue_script(
 			'mdp-select2-core',
 			plugins_url( '../js/select2.min.js', __FILE__ ),
-			array( 'jquery' ),
-			'1.0'
+			array( 'jquery' )
 		);
 
 		wp_enqueue_script(
 			'admin-scripts',
 			plugins_url( '../js/admin-scripts.js', __FILE__ ),
-			array( 'mdp-select2-core' ),
-			'1.0'
+			array( 'mdp-select2-core' )
 		);
 
 		wp_localize_script('admin-scripts', 'mpd_admin_scripts_vars', array(
@@ -57,8 +54,7 @@ function mdp_load_admin_styles(){
 		wp_register_style(
 			'mdp-styles',
 			plugins_url( '../css/mpd.css', __FILE__ ),
-			false,
-			'1.0.0'
+			false
 		);
 
 		wp_enqueue_style( 'mdp-styles');
@@ -70,14 +66,13 @@ function mdp_load_admin_styles(){
 		wp_enqueue_script(
 			'mdp-admin-seetings-scripts',
 			plugins_url( '../js/admin-settings.js', __FILE__ ),
-			array( 'jquery' ),
-			'1.0'
+			array( 'jquery' )
 		);
 
 		wp_register_style(
 			'mdp-select2-styles',
 			plugins_url( '../css/select2.min.css', __FILE__ ),
-			false,'1.0.0'
+			false
 		);
 
 		wp_enqueue_style( 'mdp-select2-styles');
@@ -85,7 +80,7 @@ function mdp_load_admin_styles(){
 		wp_enqueue_script(
 			'mdp-select2-core',
 			plugins_url( '../js/select2.min.js', __FILE__ ),
-			array( 'jquery' ),'1.0'
+			array( 'jquery' )
 		);
 
 	}
@@ -110,8 +105,7 @@ function mdp_load_admin_styles(){
 	wp_register_style(
 		'mdp-font-awesome',
 		plugins_url( '../css/font-awesome.min.css', __FILE__ )
-		, false,
-		'1.0.0'
+		, false
 	);
 
 	wp_enqueue_style( 'mdp-font-awesome');
@@ -119,8 +113,7 @@ function mdp_load_admin_styles(){
 	wp_register_style(
 			'mdp-metabox-styles',
 			plugins_url( '../css/mpd-mb.css', __FILE__ ),
-			false,
-			'1.0.0'
+			false
 		);
 
 	wp_enqueue_style( 'mdp-metabox-styles');

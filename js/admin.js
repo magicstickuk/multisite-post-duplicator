@@ -1,6 +1,7 @@
 jQuery(document).ready(function($) {
 
 	jQuery("#createLink").click(function(e){
+		
 		e.preventDefault;
 		jQuery('.create-link-ui').show('fast');
 
@@ -8,7 +9,9 @@ jQuery(document).ready(function($) {
 
 	jQuery( "#create-link-site-select" ).change(function() {
 
+		jQuery('.create-link-site-spin.mpd-spinner-container').show();
 		jQuery('#create-link-post-select').remove();
+		jQuery('#create-link-submit').remove();
 
 		data =  {
 		 	action : 'mpd_create_link_post_list',
@@ -17,11 +20,15 @@ jQuery(document).ready(function($) {
 
 		jQuery.post(ajaxurl,data,function(response) {
 
+			jQuery('.create-link-site-spin.mpd-spinner-container').hide();
 			jQuery( "#create-link-site-select" ).after(response);
 
 			jQuery("#create-link-submit").click(function(e){
 				e.preventDefault;
 				
+				jQuery('#create-link-submit').remove();
+				jQuery('.create-link-submit-spin.mpd-spinner-container').show();
+
 				datasubmit =  {
 				 	action 			: 'mpd_create_link_submit',
 				 	site   			: jQuery( "#create-link-site-select" ).val(),

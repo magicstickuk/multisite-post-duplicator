@@ -74,6 +74,11 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.1 =
+* NEW: Create a link to an existing post!
+* Removed unneeded version parameters on enqueued css and javascript files.
+* Improved reliability of 'version compare' function used in determining user settings.
+
 = 1.0.2 =
 * Fixed text domain issue for translations.
 

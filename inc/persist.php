@@ -37,10 +37,10 @@ function mpd_side_metaboxs($page){
 		add_meta_box( 'multisite_source_list_metabox', "<i class='fa fa-university' aria-hidden='true'></i> " . __('MPD Source Post', 'multisite-post-duplicator' ), 'mpd_source_list_metabox_render', $page, 'side', $priority );
 	 	
 	}
-
+	// If no linkage exists add a metabox to allow a link to be created to an existing post
 	if(!$persists  && !$source && (isset($options['allow_persist']) || !$options)){
 
-		add_meta_box( 'multisite_create_link', "<i class='fa fa-university' aria-hidden='true'></i> " . __('MPD Create Link', 'multisite-post-duplicator' ), 'mpd_create_link_render', $page, 'side', $priority );
+		add_meta_box( 'multisite_create_link', "<i class='fa fa-link' aria-hidden='true'></i> " . __('MPD Create Link', 'multisite-post-duplicator' ), 'mpd_create_link_render', $page, 'side', $priority );
 
 	}
 
@@ -48,6 +48,13 @@ function mpd_side_metaboxs($page){
 }
 add_action('mpd_meta_box', 'mpd_side_metaboxs');
 
+/**
+ * Create the markup for 'add link to exsisting post'
+ *
+ * @since 1.1
+ * @return null
+ *
+ */
 function mpd_create_link_render(){
 	?>
 	<p><?php _e('Do you want to link this page to an existing post?', 'multisite-post-duplicator') ?></p>
@@ -56,7 +63,7 @@ function mpd_create_link_render(){
 
 	<div class="create-link-ui">
 			
-			<p><?php _e('Select the site where the post is you want to link to', 'multisite-post-duplicator'); ?>:</p>
+			<p><?php _e('Select the site where the post is that you want to link to', 'multisite-post-duplicator'); ?>:</p>
 			
 			<?php $sites = mpd_wp_get_sites();?>
 			
@@ -81,11 +88,20 @@ function mpd_create_link_render(){
 
 			</select>
 
+			<p class="create-link-site-spin mpd-spinner-container"><img src="<?php echo plugins_url('../css/select2-spinner.gif',__FILE__); ?>"/></p>
+
 	</div>
 
 	<?php 
 }
 
+/**
+ * Create the markup for 'select post' select box. This function is used in ajax
+ *
+ * @since 1.1
+ * @return null
+ *
+ */
 function mpd_create_link_post_list(){
 
 	global $post;
@@ -124,15 +140,23 @@ function mpd_create_link_post_list(){
 	<?php endif; restore_current_blog();?>
 	
 	<a class="button button-primary button-large" id="create-link-submit">Create link</a>
-	<?php
 
+	<p class="create-link-submit-spin mpd-spinner-container"><img src="<?php echo plugins_url('../css/select2-spinner.gif',__FILE__); ?>"/></p>
 	
+	<?php
 
 	die();
 
 }
 add_action('wp_ajax_mpd_create_link_post_list', 'mpd_create_link_post_list');
 
+/**
+ * Ajax fiunction that links desired posts in our custom database
+ *
+ * @since 1.1
+ * @return null
+ *
+ */
 function mpd_create_link_submit(){
 
 	global $wpdb;
@@ -141,6 +165,19 @@ function mpd_create_link_submit(){
 	$post_to_link 	= $_POST['post_to_link'];
 	$post_id 		= $_POST['post_id'];
 
+	$wpdb->delete(
+		$wpdb->base_prefix . "mpd_log", 
+		array(
+			'source_id' 			=> get_current_blog_id(), 
+			'destination_id' 		=> $site,
+			'source_post_id'		=> $post_id,
+			'destination_post_id'	=> $post_to_link,
+		),
+		array( 
+			'%d','%d','%d','%d'
+		)
+		);
+
 	$result = $wpdb->insert( 
 		$wpdb->base_prefix . "mpd_log", 
 		array( 
@@ -148,6 +185,7 @@ function mpd_create_link_submit(){
 			'destination_id' 		=> $site,
 			'source_post_id'		=> $post_id,
 			'destination_post_id'	=> $post_to_link,
+			'persist_active'		=> 1,
 			'persist_action_count'	=> 0,
 			'dup_user_id'			=> get_current_user_id(),
 			'dup_time'				=> date("Y-m-d H:i:s")
@@ -357,7 +395,7 @@ function persist_option_setting_render(){
 }
 
 /**
- * FRender settings markup for logging question
+ * Render settings markup for logging question
  *
  * @since 1.0
  * @return null
@@ -391,7 +429,7 @@ function persist_functionality_setting_render(){
  */
 function addon_mpd_logging_setting_activation($options){
  
-  if(version_compare(mpd_get_version(),'0.9.6', '<=')){
+  if(version_compare(mpd_get_version(),'1.0.2', '<=')){
   		$options['add_logging'] = 'allow-logging';
   		$options['allow_persist'] = 'allow_persist';
   }

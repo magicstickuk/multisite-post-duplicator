@@ -42,7 +42,7 @@
 #createLink{
   margin-right: 10px;
 }
-.create-link.spinner-container{
+.mpd-spinner-container{
   display: none;
 }
 .create-link-ui select{
@@ -51,3 +51,4 @@
 #create-link-post-select{
   margin: 10px 0;
 }
+
