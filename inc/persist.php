@@ -538,9 +538,12 @@ function mpd_is_there_a_persist($args){
 				WHERE 
 				source_id = %d 
 				AND destination_id = %d
-				AND source_post_id = %d", $args['source_id'], $args['destination_id'], $args['source_post_id']  );
+				AND source_post_id = %d", 
+				
+				$args['source_id'],
+				$args['destination_id'],
+				$args['source_post_id']  );
 
-	
 	$result = $wpdb->get_var($query);
 	
 	if($result != null && $result != 0){
@@ -586,7 +589,10 @@ function mpd_get_posts_source_post($blog_id = null, $post_id = null){
 			  destination_id = %d 
 			  AND destination_post_id = %d
 			  AND persist_active = 1
-			  order by destination_id", $blog_id, $post_id);
+			  order by destination_id",
+
+			  $blog_id,
+			  $post_id);
 
 	
 		$result = $wpdb->get_row($query);	
@@ -643,7 +649,10 @@ function mpd_get_persists_for_post($blog_id = null, $post_id = null){
 			  source_id = %d
 			  AND source_post_id = %d
 			  AND persist_active = 1
-			  order by destination_id", $blog_id, $post_id);
+			  order by destination_id",
+
+			  $blog_id,
+			  $post_id);
 
 	
 		$results = $wpdb->get_results($query);	
@@ -807,7 +816,12 @@ function mpd_get_persist_count($args){
 				WHERE source_id 		= %d
 				AND destination_id		= %d
 				AND source_post_id		= %d
-				AND destination_post_id	= %d", $args['source_id'], $args['destination_id'], $args['source_post_id'], $args['destination_post_id']);
+				AND destination_post_id	= %d",
+
+				$args['source_id'],
+				$args['destination_id'],
+				$args['source_post_id'],
+				$args['destination_post_id']);
 	
 	$result = $wpdb->get_var($query);
 
@@ -1204,23 +1218,29 @@ function mpd_persist_checkbox(){
 	$options = get_option( 'mdp_settings' );
 
 	if(isset($options['allow_persist']) || !$options ): ?>     
-            <hr>
-                    <label class="selectit">
-                        <script>
-                            jQuery(document).ready(function($) { 
-                                accordionClick('.pl-link', '.pl-content', 'fast');
-                            });
+        
+        <hr>
+            
+            <label class="selectit">
+                
+                <script>
+                	jQuery(document).ready(function($) { 
+                		accordionClick('.pl-link', '.pl-content', 'fast');
+                     });
+                </script>
 
-                        </script>
-                        <ul>
-                            <li><input type="checkbox" name="persist">Create Duplication Link? <i class="fa fa-info-circle pl-link" aria-hidden="true"></i></li>
-                        </ul>
-                        
-                        <p class="mpdtip pl-content" style="display:none"><?php _e('Checking this option will create a link between this post and the resulting copied post. After the link is created if you ever update this post in the future the changes will automatically be copied over to the linked posts also. If you want to delete the link you can do so <a href="'. esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator&tab=persists') ) .'">here</a>', 'multisite-post-duplicator' ) ?></p>
+                <ul>
+                	<li>
+                		<input type="checkbox" name="persist">Create Duplication Link? <i class="fa fa-info-circle pl-link" aria-hidden="true"></i>
+                	</li>
 
-                    </label>
+                </ul>
 
-            <hr>
+                <p class="mpdtip pl-content" style="display:none"><?php _e('Checking this option will create a link between this post and the resulting copied post. After the link is created if you ever update this post in the future the changes will automatically be copied over to the linked posts also. If you want to delete the link you can do so <a href="'. esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator&tab=persists') ) .'">here</a>', 'multisite-post-duplicator' ) ?></p>
+
+            </label>
+
+        <hr>
 
     <?php endif;
 
