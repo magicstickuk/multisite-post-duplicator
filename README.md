@@ -74,6 +74,10 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.1.1 =
+* Fixed issue with Linked posts not looking at the 'ignore most meta keys' setting.
+* Improved efficiency of core duplication function.
+
 = 1.1 =
 * NEW: Create a link to an existing post!
 * Removed unneeded version parameters on enqueued css and javascript files.
