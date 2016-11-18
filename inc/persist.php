@@ -533,12 +533,12 @@ function mpd_is_there_a_persist($args){
 	
 	$tableName = $wpdb->base_prefix . "mpd_log";
 
-	$query = "SELECT persist_active
+	$query = $wpdb->prepare("SELECT persist_active
 				FROM $tableName
 				WHERE 
-				source_id = ". $args['source_id'] . " 
-				AND destination_id = ". $args['destination_id']. "
-				AND source_post_id = ". $args['source_post_id'];
+				source_id = %d 
+				AND destination_id = %d
+				AND source_post_id = %d", $args['source_id'], $args['destination_id'], $args['source_post_id']  );
 
 	
 	$result = $wpdb->get_var($query);
@@ -580,13 +580,13 @@ function mpd_get_posts_source_post($blog_id = null, $post_id = null){
 		
 		$tableName = $wpdb->base_prefix . "mpd_log";
 	
-		$query = "SELECT *
+		$query = $wpdb->prepare("SELECT *
 			  FROM $tableName
 			  WHERE 
-			  destination_id = ". $blog_id . " 
-			  AND destination_post_id = ". $post_id ."
+			  destination_id = %d 
+			  AND destination_post_id = %d
 			  AND persist_active = 1
-			  order by destination_id";
+			  order by destination_id", $blog_id, $post_id);
 
 	
 		$result = $wpdb->get_row($query);	
@@ -637,13 +637,13 @@ function mpd_get_persists_for_post($blog_id = null, $post_id = null){
 		
 		$tableName = $wpdb->base_prefix . "mpd_log";
 
-		$query = "SELECT *
+		$query = $wpdb->prepare("SELECT *
 			  FROM $tableName
 			  WHERE 
-			  source_id = ". $blog_id . " 
-			  AND source_post_id = ". $post_id ."
+			  source_id = %d
+			  AND source_post_id = %d
 			  AND persist_active = 1
-			  order by destination_id";
+			  order by destination_id", $blog_id, $post_id);
 
 	
 		$results = $wpdb->get_results($query);	
@@ -802,12 +802,12 @@ function mpd_get_persist_count($args){
 	
 	$table 	= $wpdb->base_prefix . "mpd_log";
 
-	$query = "SELECT persist_action_count
+	$query = $wpdb->prepare("SELECT persist_action_count
 				FROM $table
-				WHERE source_id 		= " . $args['source_id'] . "
-				AND destination_id		= " . $args['destination_id'] . "
-				AND source_post_id		= " . $args['source_post_id'] . "
-				AND destination_post_id	= " . $args['destination_post_id'];
+				WHERE source_id 		= %d
+				AND destination_id		= %d
+				AND source_post_id		= %d
+				AND destination_post_id	= %d", $args['source_id'], $args['destination_id'], $args['source_post_id'], $args['destination_post_id']);
 	
 	$result = $wpdb->get_var($query);
 

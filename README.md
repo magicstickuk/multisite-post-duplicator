@@ -77,6 +77,7 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 = 1.1.1 =
 * Fixed issue with Linked posts not looking at the 'ignore most meta keys' setting.
 * Improved efficiency of core duplication function.
+* Queries to our 'Linked Duplications' table are now correctly wrapped in wpdb::prepare() to protect from injection hacks.
 
 = 1.1 =
 * NEW: Create a link to an existing post!
