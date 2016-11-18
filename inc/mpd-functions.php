@@ -1006,8 +1006,9 @@ function mpd_ignore_custom_meta_keys($post_meta_array){
 	return $new_post_meta;
 	
 }
-add_filter('mpd_filter_post_custom', 'mpd_ignore_custom_meta_keys');
+
 add_filter('mpd_filter_post_meta', 'mpd_ignore_custom_meta_keys');
+add_filter('mpd_filter_persist_post_meta', 'mpd_ignore_custom_meta_keys');
 
 /**
  * 

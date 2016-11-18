@@ -77,8 +77,6 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     ), $mpd_process_info);
 
-    //Get all the custom fields associated with the source post
-    $data              = apply_filters('mpd_filter_post_custom', get_post_custom($mdp_post)) ;
     //Get all the meta data associated with the source post
     $meta_values       = apply_filters('mpd_filter_post_meta', get_post_meta($mpd_process_info['source_id'])) ;
     //Get array of data associated with the featured image for this post
@@ -116,16 +114,6 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     //Make the new post
     $post_id = wp_insert_post($mdp_post);
-    //Add the source post meta to the destination post
-    foreach ( $data as $key => $values) {
-
-       foreach ($values as $value) {
-
-           update_post_meta( $post_id, $key, $value );
-
-        }
-
-    }
     
     //Copy the meta data collected from the sourse post to the new post
   	foreach ($meta_values as $key => $values) {
@@ -222,26 +210,10 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function mpd_persist_over_multisite($persist_post) {
 
     
     $persist_post = apply_filters('mpd_persist_source_data', $persist_post );
-
-    
 
     //Get plugin options
     $options    = get_option( 'mdp_settings' );
@@ -272,10 +244,8 @@ function mpd_persist_over_multisite($persist_post) {
 
     ), $persist_post);
 
-    //Get all the custom fields associated with the sourse post
-    $data              = apply_filters('mpd_filter_persist_post_custom', get_post_custom($mdp_post)) ;
     //Get all the meta data associated with the sourse post
-    $meta_values       = apply_filters('mpd_filter__persist_post_meta', get_post_meta($persist_post->source_post_id)) ;
+    $meta_values       = apply_filters('mpd_filter_persist_post_meta', get_post_meta($persist_post->source_post_id)) ;
     //Get array of data associated with the featured image for this post
     $featured_image    = mpd_get_featured_image_from_source($persist_post->source_post_id);
 
@@ -312,17 +282,6 @@ function mpd_persist_over_multisite($persist_post) {
 
     foreach ( $post_meta_ids as $mid ){
         delete_metadata_by_mid( 'post', $mid );
-    }
-    
-    //Add the source post meta to the destination post
-    foreach ( $data as $key => $values) {
-
-       foreach ($values as $value) {
-
-           update_post_meta( $post_id, $key, $value );
-
-        }
-
     }
     
     //Copy the meta data collected from the sourse post to the new post
