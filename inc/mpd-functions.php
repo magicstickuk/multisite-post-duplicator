@@ -38,6 +38,30 @@ function mpd_get_post_types_to_ignore(){
 }
 
 /**
+ * Generate markup for a help icon with content within this plugin
+ *
+ * This function checks the settings for MPD and returns all the option values that are associated with post types
+ *
+ * @since 1.1.1
+ * @param string $c The content of the help text for the icon
+ * @return null
+ *
+*/
+function mpd_information_icon($c){
+    $u = uniqid();
+    ?>
+    <script>
+        jQuery(document).ready(function() {
+            accordionClick('.<?php echo $u; ?>-click', '.<?php echo $u; ?>-content', 'fast');
+        });
+    </script>
+    <i class="fa fa-info-circle <?php echo $u; ?>-click accord" aria-hidden="true"></i>
+    <p class="mpdtip <?php echo $u; ?>-content" style="display:none"><?php _e($c, 'multisite-post-duplicator' )?></p>
+    
+    <?php
+}
+
+/**
  * Get a list of post types the user wants to show the MPD Metabox (if the 'Some Post Types' option was selected in settings)
  *
  * This function checks the settings for MPD and returns all the option values that are associated with post types

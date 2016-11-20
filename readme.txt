@@ -8,11 +8,11 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Duplicate any individual page, post or custom post type from one site on your multisite network to another.
+Duplicate - copy - clone any individual page, post or custom post type from one site on your multisite network to another.
 
 == Description ==
 
-Duplicate any individual page, post or custom post type from one site on your multisite network to another.
+Duplicate - copy - clone any individual page, post or custom post type from one site on your multisite network to another.
 
 Features:
 

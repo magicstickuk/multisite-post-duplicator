@@ -383,14 +383,10 @@ add_action( 'mdp_end_plugin_setting_page', 'persist_addon_mpd_settings');
 function persist_option_setting_render(){
   
   $options = get_option( 'mdp_settings' ); ?>
-  <script>
-		jQuery(document).ready(function() {
-				accordionClick('.sl-click', '.sl-content', 'fast');
-		});
-	</script>
-  <input type='checkbox' name='mdp_settings[add_logging]' <?php mpd_checked_lookup($options, 'add_logging', 'allow-logging') ;?> value='allow-logging'> <i class="fa fa-info-circle sl-click accord" aria-hidden="true"></i>
+ 
+  <input type='checkbox' name='mdp_settings[add_logging]' <?php mpd_checked_lookup($options, 'add_logging', 'allow-logging') ;?> value='allow-logging'>
 
-  <p class="mpdtip sl-content" style="display:none"><?php _e('Having this option checked will allow you to see the log of duplications made over this network', 'multisite-post-duplicator')?></p>
+  <?php mpd_information_icon('Having this option checked will allow you to see the log of duplications made over this network'); ?>
  
   <?php
   
@@ -406,16 +402,11 @@ function persist_option_setting_render(){
 function persist_functionality_setting_render(){
   
   $options = get_option( 'mdp_settings' ); ?>
-  <script>
+ 
+  <input type='checkbox' name='mdp_settings[allow_persist]' <?php mpd_checked_lookup($options, 'allow_persist', 'allow_persist') ;?> value='allow_persist'>
 
-		jQuery(document).ready(function() {
-			accordionClick('.ap-click', '.ap-content', 'fast');
-		});
-
-  </script>
-  <input type='checkbox' name='mdp_settings[allow_persist]' <?php mpd_checked_lookup($options, 'allow_persist', 'allow_persist') ;?> value='allow_persist'> <i class="fa fa-info-circle ap-click accord" aria-hidden="true"></i>
-
-  <p class="mpdtip ap-content" style="display:none"><?php _e('Having this option checked will allow you to link a source post to a destination post. If the source is then updated the destination post will always be updated. This link can be added via the MPD Box on the posts page', 'multisite-post-duplicator')?></p>
+  <?php mpd_information_icon('Having this option checked will allow you to link a source post to a destination post. If the source is then updated the destination post will always be updated. This link can be added via the MPD Box on the posts page'); ?>	
+  
  
   <?php
   
@@ -1235,7 +1226,7 @@ function mpd_persist_checkbox(){
                 	</li>
 
                 </ul>
-
+				
                 <p class="mpdtip pl-content" style="display:none"><?php _e('Checking this option will create a link between this post and the resulting copied post. After the link is created if you ever update this post in the future the changes will automatically be copied over to the linked posts also. If you want to delete the link you can do so <a href="'. esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator&tab=persists') ) .'">here</a>', 'multisite-post-duplicator' ) ?></p>
 
             </label>

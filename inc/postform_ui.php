@@ -69,7 +69,6 @@ function mpd_publish_top_right(){
 
     $post_statuses  = mpd_get_post_statuses();
     $sites          = mpd_wp_get_sites();
-    $options        = get_option( 'mdp_settings' );
 
     add_thickbox();
 

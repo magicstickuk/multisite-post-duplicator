@@ -3,32 +3,36 @@
 /*
 Plugin Name: 	Multisite Post Duplicator
 Plugin URI: 	http://www.wpmaz.uk
-Description:    Duplicate any individual page, post or custom post type from one site on your multisite network to another.
-Version: 		1.1
+Description:    Duplicate any individual page, post or custom post type from one site on your multisite network to another. 
+Version: 		1.1.1
 Author: 		Mario Jaconelli
 Author URI:  	http://www.wpmaz.uk
 Text Domain: 	multisite-post-duplicator
 Domain Path: 	/lang
 */
 
-
 define('MPD_PLUGIN', true);
 define('MPD_SETTING_PAGE', 'mpd_sp');
 define('MPD_SETTING_SECTION', 'mpd_sps');
 define('MPD_PLUGIN_URL', plugin_dir_path(__FILE__ ) );
 
-include('inc/mpd-functions.php');
-include('inc/load-scripts.php');
-include('inc/postform_ui.php');
-include('inc/admin-ui.php');
-include('inc/settings-ui.php');
-include('inc/core.php');
-include('inc/persist.php');
-include('inc/client-log.php');
-include('addons/bulkaction-mpd-addon.php');
-include('addons/restrictSites-mpd-addon.php');
-include('addons/roleAccess-mpd-addon.php');
+$fs = array(
+	'inc/mpd-functions',
+	'inc/load-scripts',
+	'inc/postform_ui',
+	'inc/admin-ui',
+	'inc/settings-ui',
+	'inc/core',
+	'inc/persist',
+	'inc/client-log',
+	'addons/bulkaction-mpd-addon',
+	'addons/restrictSites-mpd-addon',
+	'addons/roleAccess-mpd-addon'
+);
 
+foreach ($fs as $f) {
+	include($f.'.php');
+}
 
 /**
  * 
@@ -55,7 +59,6 @@ add_action('plugins_loaded', 'mpd_load_textdomain');
 function mdp_plugin_activate() {
 
    $mdp_default_options = mdp_get_default_options();
-
    $sites          		= mpd_wp_get_sites();
 
    foreach ($sites as $site) {
@@ -92,11 +95,8 @@ function mdp_plugin_activate() {
 		 mpd_do_version_log();
 
 		 restore_current_blog();
-
 		 
-
    	}
-
    	do_action('mpd_extend_activation', $mdp_default_options, $sites);
 	   
 }

@@ -13,11 +13,6 @@
 /**
  * @ignore
  */
-
-/**
- * @ignore
- */
-
  function roleAccess_addon_mpd_settings(){
 
  	mpd_settings_field('role_option_setting', '<i class="fa fa-users" aria-hidden="true"></i> ' . __( 'Minimum user role allowed to use MPD', 'multisite-post-duplicator' ), 'role_option_setting_render');
@@ -30,7 +25,7 @@ function role_option_setting_render(){
 
 	global $wp_roles;
 
-	$all_roles = $wp_roles->roles;
+	$all_roles 		= $wp_roles->roles;
     $editable_roles = apply_filters('editable_roles', $all_roles);
 
     if($options = get_option( 'mdp_settings' )){

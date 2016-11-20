@@ -42,10 +42,9 @@ add_filter('mdp_activation_options', 'addon_mpd_bulk_setting_activation');
 function mpd_bulk_admin_script() {
 
     if( is_multisite() ){
-
         $defaultoptions = mdp_get_default_options();
         $sites          = mpd_wp_get_sites();
-        $options        = get_option( 'mdp_settings' );
+        $options        = get_option('mdp_settings');
         $post_status    = isset($_REQUEST["post_status"]) ? $_REQUEST["post_status"] : '';
 
         $active_mpd     = apply_filters( 'mpd_is_active', true );
@@ -171,17 +170,14 @@ add_action( 'mdp_end_plugin_setting_page', 'add_bulk_settings');
  * @ignore
  */
 function mdp_default_batch_render(){
-
-  $options = get_option( 'mdp_settings' );
+  
+  $options = get_option('mdp_settings');
   ?>
-  <script>
-    jQuery(document).ready(function() {
-        accordionClick('.abs-click', '.abs-content', 'fast');
-    });
-  </script>
-  <input type='checkbox' name='mdp_settings[add_bulk_settings]' <?php mpd_checked_lookup($options, 'add_bulk_settings', 'allow-batch') ;?> value='allow-batch'> <i class="fa fa-info-circle abs-click accord" aria-hidden="true"></i>
+  
+  <input type='checkbox' name='mdp_settings[add_bulk_settings]' <?php mpd_checked_lookup($options, 'add_bulk_settings', 'allow-batch') ;?> value='allow-batch'>
+  
+  <?php mpd_information_icon('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page'); ?>
 
-  <p class="mpdtip abs-content" style="display:none"><?php _e('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page', 'multisite-post-duplicator')?></p>
   <?php
 
 }
