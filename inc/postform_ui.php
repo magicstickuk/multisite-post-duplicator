@@ -200,4 +200,4 @@ function mpd_clone_post($post_id){
 
 }
 
-add_filter( 'save_post', 'mpd_clone_post' );
+add_filter( 'save_post', 'mpd_clone_post', 100 );

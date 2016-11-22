@@ -675,7 +675,8 @@ function mpd_wp_get_sites(){
             $sites = $new_sites;
 
       }else{
-
+        
+            $args['number'] = null;
             $args = apply_filters('mpd_get_sites_args', $args);
             $sites = get_sites($args);
 

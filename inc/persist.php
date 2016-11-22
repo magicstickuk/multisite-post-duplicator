@@ -918,7 +918,7 @@ function mpd_persist_post($post_id){
 	return;
 	
 }
-add_action('save_post', 'mpd_persist_post');
+add_action('save_post', 'mpd_persist_post', 100);
 
 
 /**

@@ -70,12 +70,13 @@ add_action('mpd_end_of_core', 'mpd_alert_ajax', 10, 1);
 function mpd_do_ajax_log() {
 
 	$options 		= get_option( 'mdp_settings' );
+	$to_be_logged	= get_site_option( 'mpd_inst_to_logged');
 
 	if(isset($options['mdp_allow_dev_info'])){
 
 		mpd_generate_activation_id();
 
-		if(!get_site_option( 'mpd_inst_to_logged')){
+		if(!$to_be_logged){
 
 			add_site_option('mpd_inst_to_logged', 1);
 
@@ -132,7 +133,7 @@ function mpd_do_ajax_log() {
 
 		}
 
-		if(get_site_option( 'mpd_inst_to_logged') && get_site_option( 'mpd_inst_to_logged') == 1){
+		if($to_be_logged && $to_be_logged == 1){
 
 			global $wp_version;
 

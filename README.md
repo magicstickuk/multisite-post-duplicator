@@ -8,11 +8,11 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Duplicate any individual page, post or custom post type from one site on your multisite network to another.
+Duplicate/Copy/Clone any individual page, post or custom post type from one site on your multisite network to another.
 
 == Description ==
 
-Duplicate any individual page, post or custom post type from one site on your multisite network to another.
+Duplicate/Copy/Clone any individual page, post or custom post type from one site on your multisite network to another.
 
 Features
 
@@ -75,9 +75,12 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 == Changelog ==
 
 = 1.1.1 =
-* Fixed issue with Linked posts not looking at the 'ignore most meta keys' setting.
+* Fixed issue with linked posts not looking at the 'ignore most meta keys' setting.
 * Improved efficiency of core duplication function.
-* Queries to our 'Linked Duplications' table are now correctly wrapped in wpdb::prepare() to protect from injection hacks.
+* Queries to our 'Linked Duplications' db table are now correctly wrapped in wpdb::prepare() to protect from injection hacks.
+* Fixed issue where networks with more than 100 sites wouldn't have some sites not listed in thier controls (for installs > 4.6)
+* Fixed issue where other plugin's meta data (that are using the 'save_post' action) might be missed during the duplication
+* General performanace improvements
 
 = 1.1 =
 * NEW: Create a link to an existing post!
