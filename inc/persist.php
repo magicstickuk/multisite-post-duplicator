@@ -106,8 +106,6 @@ function mpd_create_link_render(){
  */
 function mpd_create_link_post_list(){
 
-	global $post;
-
 	$site 			= $_POST['site'];
 	$post_id 		= $_POST['post_id'];
 	$post_type 		= get_post_type( $post_id );
