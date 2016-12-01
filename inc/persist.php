@@ -148,7 +148,7 @@ function mpd_create_link_post_list(){
 	
 	<?php if($posts):?>
 	
-		<a class="button button-primary button-large" id="create-link-submit">Create link</a>
+		<a class="button button-primary button-large" id="create-link-submit"><?php _e('Create Link', 'multisite-post-duplicator') ?></a>
 	
 	<?php endif?>
 	
