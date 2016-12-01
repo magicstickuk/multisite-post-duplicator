@@ -106,25 +106,24 @@ function mpd_create_link_render(){
  */
 function mpd_create_link_post_list(){
 
-	global $post;
-
-	$site = $_POST['site'];
-
-	$postStatuses = array_keys(mpd_get_post_statuses());
+	$site 			= $_POST['site'];
+	$post_id 		= $_POST['post_id'];
+	$post_type 		= get_post_type( $post_id );
+	$postStatuses 	= array_keys(mpd_get_post_statuses());
 
 	switch_to_blog( $site );
 	$args = array(
 			'posts_per_page'   => -1,
-			'post_type'        => $post->post_type,
+			'post_type'        => $post_type,
 			'post_status'      => $postStatuses,
 	);
 
 	$posts = get_posts($args);?>
 
-	<?php if($posts):?>
-
-		<select id="create-link-post-select">
-
+	<select id="create-link-post-select">
+		
+		<?php if($posts):?>
+			
 			<option value="-1">
 				-- <?php _e('Select a post to link to', 'multisite-post-duplicator');?> --
 			</option>
@@ -136,13 +135,21 @@ function mpd_create_link_post_list(){
 				</option>
 
 			<?php endforeach ?>
+			
+			<?php else: ?>
+				<option value="-1">
+					-- <?php _e('No posts available to link to', 'multisite-post-duplicator');?> --
+				</option>
+			<?php endif; restore_current_blog();?>
 
 		</select>
 	
-	<?php endif; restore_current_blog();?>
+	<?php if($posts):?>
 	
-	<a class="button button-primary button-large" id="create-link-submit">Create link</a>
-
+		<a class="button button-primary button-large" id="create-link-submit"><?php _e('Create Link', 'multisite-post-duplicator') ?></a>
+	
+	<?php endif?>
+	
 	<p class="create-link-submit-spin mpd-spinner-container"><img src="<?php echo plugins_url('../css/select2-spinner.gif',__FILE__); ?>"/></p>
 	
 	<?php

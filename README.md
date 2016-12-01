@@ -74,6 +74,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.1.2 =
+* Fixed 'create link to an existing post' functionality only displaying 'Post' Post-Type results
+
 = 1.1.1 =
 * Fixed issue with linked posts not looking at the 'ignore most meta keys' setting.
 * Improved efficiency of core duplication function.
