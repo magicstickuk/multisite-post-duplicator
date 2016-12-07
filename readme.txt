@@ -74,6 +74,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.1.3 =
+* Fixed issue with our custom database table not being created on activation of plugin
+
 = 1.1.2 =
 * Fixed 'create link to an existing post' functionality only displaying 'Post' Post-Type results
 
