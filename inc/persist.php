@@ -1190,8 +1190,8 @@ function mpd_persist_checkbox(){
                 </script>
 
                 <ul>
-                	<li>
-                		<input type="checkbox" name="persist">Create Duplication Link? <i class="fa fa-info-circle pl-link" aria-hidden="true"></i>
+                	<li class="cdl disabled">
+                		<input type="checkbox" disabled="disabled" name="persist">Create Duplication Link? <i class="fa fa-info-circle pl-link" aria-hidden="true"></i>
                 	</li>
 
                 </ul>

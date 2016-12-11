@@ -51,4 +51,7 @@
 #create-link-post-select{
   margin: 10px 0;
 }
+.cdl.disabled{
+  color: #e2e2e2;
+}
 
