@@ -16,7 +16,8 @@ jQuery(document).ready(function($) {
 
 		data =  {
 		 	action : 'mpd_create_link_post_list',
-		 	site   : jQuery( "#create-link-site-select" ).val()
+		 	site   : jQuery( "#create-link-site-select" ).val(),
+		 	post_id : mpd_admin_vars.post_id
 		};
 
 		jQuery.post(ajaxurl,data,function(response) {

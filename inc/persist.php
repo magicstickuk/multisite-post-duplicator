@@ -106,25 +106,24 @@ function mpd_create_link_render(){
  */
 function mpd_create_link_post_list(){
 
-	global $post;
-
-	$site = $_POST['site'];
-
-	$postStatuses = array_keys(mpd_get_post_statuses());
+	$site 			= $_POST['site'];
+	$post_id 		= $_POST['post_id'];
+	$post_type 		= get_post_type( $post_id );
+	$postStatuses 	= array_keys(mpd_get_post_statuses());
 
 	switch_to_blog( $site );
 	$args = array(
 			'posts_per_page'   => -1,
-			'post_type'        => $post->post_type,
+			'post_type'        => $post_type,
 			'post_status'      => $postStatuses,
 	);
 
 	$posts = get_posts($args);?>
 
-	<?php if($posts):?>
-
-		<select id="create-link-post-select">
-
+	<select id="create-link-post-select">
+		
+		<?php if($posts):?>
+			
 			<option value="-1">
 				-- <?php _e('Select a post to link to', 'multisite-post-duplicator');?> --
 			</option>
@@ -136,13 +135,21 @@ function mpd_create_link_post_list(){
 				</option>
 
 			<?php endforeach ?>
+			
+			<?php else: ?>
+				<option value="-1">
+					-- <?php _e('No posts available to link to', 'multisite-post-duplicator');?> --
+				</option>
+			<?php endif; restore_current_blog();?>
 
 		</select>
 	
-	<?php endif; restore_current_blog();?>
+	<?php if($posts):?>
 	
-	<a class="button button-primary button-large" id="create-link-submit">Create link</a>
-
+		<a class="button button-primary button-large" id="create-link-submit"><?php _e('Create Link', 'multisite-post-duplicator') ?></a>
+	
+	<?php endif?>
+	
 	<p class="create-link-submit-spin mpd-spinner-container"><img src="<?php echo plugins_url('../css/select2-spinner.gif',__FILE__); ?>"/></p>
 	
 	<?php
@@ -318,44 +325,6 @@ function mpd_do_manage_links(){
 	<?php
 	
 }
-
-/**
- * On activation of this plugin create a custom table in the database to sort information on linked pages.
- *
- * @since 1.0
- * @return null
- *
- */
-function mpd_create_persist_database(){
-
-	global $wpdb;
-	
-	$tableName = $wpdb->base_prefix . "mpd_log";
-
-	$charset_collate = $wpdb->get_charset_collate();
-
-	$sql ="CREATE TABLE $tableName (
-	
-			  id mediumint(9) unsigned NOT NULL AUTO_INCREMENT,
-			  source_id mediumint(9) DEFAULT NULL,
-			  destination_id mediumint(9) DEFAULT NULL,
-			  source_post_id mediumint(9) DEFAULT NULL,
-			  destination_post_id mediumint(9) DEFAULT NULL,
-			  persist_active mediumint(9) DEFAULT '0' NOT NULL,
-			  persist_action_count mediumint(9) DEFAULT '0' NOT NULL,
-			  dup_user_id mediumint(9) DEFAULT NULL,
-			  dup_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			  UNIQUE KEY id (id)
-			
-			) $charset_collate;";
-
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	
-	dbDelta( $sql );
-
-}
-
-add_action('mpd_extend_activation', 'mpd_create_persist_database');
 
 /**
  * Add the settings required for the persist setting 
