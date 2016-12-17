@@ -108,7 +108,7 @@ function mpd_publish_top_right(){
             </script>
             <p><?php _e('Site(s) you want duplicate to', 'multisite-post-duplicator' ); ?> <i class="fa fa-info-circle ps-link accord" aria-hidden="true"></i> :</p>
 
-            <p class="mpdtip ps-content" style="display:none"><?php _e('If you have checked any of the checkboxes above then this post will be duplicated on save.', 'multisite-post-duplicator' );?></p>
+            <p class="mpdtip ps-content" style="display:none"><?php _e('If you have checked any of the checkboxes below then this post will be duplicated on save.', 'multisite-post-duplicator' );?></p>
 
                 <ul id="mpd_blogschecklist" data-wp-lists="list:category" class="mpd_blogschecklist">
 

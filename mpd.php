@@ -24,7 +24,6 @@ $fs = array(
 	'inc/settings-ui',
 	'inc/core',
 	'inc/persist',
-	'inc/client-log',
 	'addons/bulkaction-mpd-addon',
 	'addons/restrictSites-mpd-addon',
 	'addons/roleAccess-mpd-addon'

@@ -77,6 +77,7 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 = 1.2 =
 * NEW: When using the batch duplication tool if a parent and child are in the duplicate batch then the relationship will be maintained in the desitination site.
 * UI Improvements
+* Corrected some typos
 
 = 1.1.3 =
 * Fixed issue with our custom database table not being created on activation of plugin

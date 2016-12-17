@@ -75,8 +75,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 == Changelog ==
 
 = 1.2 =
-* NEW: When using the batch duplication tool if a parent and child are in the duplicate batch then the relationship will be maintained in the desitination site.
+* NEW: When using the batch duplication tool if a parent and child are in the duplicate batch then the relationship will be maintained in the desitination site
 * UI Improvements
+* Corrected some typos
 
 = 1.1.3 =
 * Fixed issue with our custom database table not being created on activation of plugin
@@ -128,7 +129,6 @@ Bringing Multisite Post Duplicator into Version 1.0 with a massive update. Reall
 
 = 0.9.4 =
 * NEW: Added setting to let you retain the source post publish date if you wish.
-	* Testing
 * NEW: Added font-awesome for some nice icons in our UI
 * Added signposting for users trying to use this plugin on a subdomain configuration.
 * Fixed various typos and spelling mistakes throughout the plugin.
