@@ -3,7 +3,7 @@
 Contributors: MagicStick
 Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, clone
 Requires at least: 3.7
-Tested up to: 4.6
+Tested up to: 4.7
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -73,6 +73,10 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 4. Duplication Tool
 
 == Changelog ==
+
+= 1.2 =
+* NEW: When using the batch duplication tool if a parent and child are in the duplicate batch then the relationship will be maintained in the desitination site.
+* UI Improvements
 
 = 1.1.3 =
 * Fixed issue with our custom database table not being created on activation of plugin
