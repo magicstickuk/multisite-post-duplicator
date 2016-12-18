@@ -27,6 +27,7 @@ Features:
 *	Create a duplication link so if you ever update the source post again it will automatically update the duplicated page also
 *	Activity Log. View information on all dulications performed within your network
 *	Batch Duplication
+*	When using the batch duplication tool if a parent and child are in the duplicate batch then the relationship will be maintained in the desitination site
 *	Settings page to customise the default behaviour
 *	Restrict functionality to only certain sites on your network
 *	Restrict functionality to users of certain roles
