@@ -131,11 +131,6 @@ function mdp_settings_init(  ) {
 		'mdp_ignore_custom_meta_render'
 	);
 
-	mpd_settings_field('mdp_allow_dev_info',
-		'<i class="fa fa-bar-chart" aria-hidden="true"></i> ' . __( 'Allow anonymous usage data?', 'multisite-post-duplicator' ),
-		'mdp_allow_dev_info_render'
-	);
-
 }
 /**
  * 
@@ -243,7 +238,7 @@ function mdp_ignore_custom_meta_render(  ) {
 	
 	<input id="mdp-ignore-custom-meta" type='text' autocapitalize="none" autocorrect="none" name='mdp_settings[mdp_ignore_custom_meta]' value='<?php echo mpd_get_ignore_keys(); ?>'> 
 	
-	<?php mpd_information_icon('A comma delimerated list of post meta keys you wish to ignore during the duplication process. <em>i.e (without quotes) \'my_custom_meta_key, post_facebook_share_count\'</em></br></br>WARNING: Only edit this option if you are sure what you are doing.'); ?>
+	<?php mpd_information_icon('A comma delimited list of post meta keys you wish to ignore during the duplication process. <em>i.e (without quotes) \'my_custom_meta_key, post_facebook_share_count\'</em></br></br>WARNING: Only edit this option if you are sure what you are doing.'); ?>
 	
 	<?php
 
@@ -497,8 +492,7 @@ function mdp_options_page(  ) {
 			do_settings_sections( MPD_SETTING_PAGE );
 			submit_button();
 		
-			echo "</form>";	
-			echo "<p><small>MPD INST ID: ". mpd_get_activation_id() . "</small></p>";
+			echo "</form>";
 
 	}
 

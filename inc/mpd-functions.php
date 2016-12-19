@@ -1114,6 +1114,13 @@ function mpd_set_published_date($mdp_post, $mpd_process_info){
 
 add_filter('mpd_setup_destination_data', 'mpd_set_published_date', 10,2);
 
+/**
+ * 
+ * Do the markup for a link to MDP setting page
+ *
+ * @since 1.0
+ *
+ */
 function mpd_do_settings_link(){
 
     ?> <p class="bottom-para">
@@ -1129,6 +1136,16 @@ function mpd_do_settings_link(){
 }
 add_action('mpd_after_metabox_content', 'mpd_do_settings_link');
 
+/**
+ * 
+ * Custom wraper for WordPress' core is_subdomain_install. Need to wrap this so we don't get errors if the plugin is installed
+ * on a non-multisite istallation
+ *
+ * @since 1.1
+ * 
+ * @return boolean True if this is a multisite network.
+ *
+ */
 function mpd_is_subdomain_install(){
 
     if(function_exists('is_subdomain_install')){
@@ -1141,4 +1158,32 @@ function mpd_is_subdomain_install(){
 
     }
 
+}
+/**
+ * 
+ * Helper function to search a multidimentional array and return results for a matching key/value pair.
+ * Got it from: http://stackoverflow.com/questions/1019076/how-to-search-by-key-value-in-a-multidimensional-array-in-php
+ *
+ * @since 1.2
+ * @param $array Array to be searched
+ * @param $key The key we are looking at
+ * @param $value The value we want to return results for
+ * 
+ * @return array An array of reults matching the criteria
+ *
+ */
+function mpd_search($array, $key, $value){
+    $results = array();
+
+    if (is_array($array)) {
+        if (isset($array[$key]) && $array[$key] == $value) {
+            $results[] = $array;
+        }
+
+        foreach ($array as $subarray) {
+            $results = array_merge($results, mpd_search($subarray, $key, $value));
+        }
+    }
+
+    return $results;
 }

@@ -4,7 +4,7 @@
 Plugin Name: 	Multisite Post Duplicator
 Plugin URI: 	http://www.wpmaz.uk
 Description:    Duplicate/Copy/Clone any individual page, post or custom post type from one site on your multisite network to another. 
-Version: 		1.1.1
+Version: 		1.2
 Author: 		Mario Jaconelli
 Author URI:  	http://www.wpmaz.uk
 Text Domain: 	multisite-post-duplicator
@@ -24,7 +24,6 @@ $fs = array(
 	'inc/settings-ui',
 	'inc/core',
 	'inc/persist',
-	'inc/client-log',
 	'addons/bulkaction-mpd-addon',
 	'addons/restrictSites-mpd-addon',
 	'addons/roleAccess-mpd-addon'
@@ -50,6 +49,42 @@ function mpd_load_textdomain() {
 add_action('plugins_loaded', 'mpd_load_textdomain');
 
 /**
+ * On activation of this plugin create a custom table in the database to sort information on linked pages.
+ *
+ * @since 1.0
+ * @return null
+ *
+ */
+function mpd_create_persist_database(){
+
+	global $wpdb;
+	
+	$tableName = $wpdb->base_prefix . "mpd_log";
+
+	$charset_collate = $wpdb->get_charset_collate();
+
+	$sql ="CREATE TABLE $tableName (
+	
+			  id mediumint(9) unsigned NOT NULL AUTO_INCREMENT,
+			  source_id mediumint(9) DEFAULT NULL,
+			  destination_id mediumint(9) DEFAULT NULL,
+			  source_post_id mediumint(9) DEFAULT NULL,
+			  destination_post_id mediumint(9) DEFAULT NULL,
+			  persist_active mediumint(9) DEFAULT '0' NOT NULL,
+			  persist_action_count mediumint(9) DEFAULT '0' NOT NULL,
+			  dup_user_id mediumint(9) DEFAULT NULL,
+			  dup_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			  UNIQUE KEY id (id)
+			
+			) $charset_collate;";
+
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	
+	dbDelta( $sql );
+
+}
+
+/**
  * 
  * Set the default options in WordPress on activation of the plugin
  * 
@@ -57,6 +92,8 @@ add_action('plugins_loaded', 'mpd_load_textdomain');
  * 
  */
 function mdp_plugin_activate() {
+
+	mpd_create_persist_database();
 
    $mdp_default_options = mdp_get_default_options();
    $sites          		= mpd_wp_get_sites();

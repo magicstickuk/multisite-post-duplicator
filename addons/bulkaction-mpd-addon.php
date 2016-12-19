@@ -101,7 +101,8 @@ function mpd_bulk_action() {
             $post_ids = array_map('intval', $_REQUEST['post']);
       }
 
-      $results = array();
+      $results          = array();
+      $map_family_tree  = array();
 
       foreach($post_ids as $post_id){
           
@@ -116,7 +117,22 @@ function mpd_bulk_action() {
 
           );
 
+          $highest_index = max(array_keys($results));
+
+          // Collect the results data to be used in assigning parent/child data in the destination site
+          $map_family_tree[] = array(
+
+              'old_post_id'  => $post_id,
+              'new_blog_id'  => $get_site[0],
+              'old_parent_id'=> wp_get_post_parent_id($post_id),
+              'new_post_id'  => $results[$highest_index]['id']
+
+          );
+
       }
+
+      //Assign any parent/child relationship that is available within the batch
+      $family_tree          = mpd_map_new_family_tree($map_family_tree);
       
       $countBatch           = count($results);
       $destination_name     = get_blog_details($get_site[0])->blogname;
@@ -132,6 +148,51 @@ function mpd_bulk_action() {
 
 add_action('load-edit.php', 'mpd_bulk_action');
 
+/**
+ * @ignore
+ */
+function mpd_map_new_family_tree($map_family_tree){
+
+  foreach ($map_family_tree as $key => $family_tree) {
+
+    // Does the source have a parent
+    if($old_parent_id = $family_tree['old_parent_id']){
+      
+      //Is the parent ID in the result set of the source IDS?
+      //If so, return that ID's new post ID and update its parent
+      $search_for = mpd_search($map_family_tree, 'old_post_id', $old_parent_id);
+      
+      if($search_for){
+
+          global $wpdb;
+
+          $new_parent = $search_for[0]['new_post_id'];
+
+          $wpdb->update( 
+            
+            $wpdb->base_prefix . $family_tree['new_blog_id'] . "_posts", 
+            
+            array( 
+              'post_parent' =>  $new_parent
+            ), 
+
+            array(
+              'ID' => $family_tree['new_post_id']
+            ), 
+
+            array( 
+              '%d' 
+            ), 
+            array( '%d' ) 
+
+          );
+      } 
+    } 
+  }
+
+  return $map_family_tree;
+
+}
 /**
  * @ignore
  */

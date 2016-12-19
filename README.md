@@ -3,7 +3,7 @@
 Contributors: MagicStick
 Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, clone
 Requires at least: 3.7
-Tested up to: 4.6
+Tested up to: 4.7
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -27,6 +27,7 @@ Features
 *	Create a duplication link so if you ever update the source post again it will automatically update the duplicated page also
 *	Activity Log. View information on all dulications performed within your network
 *	Batch Duplication
+*	When using the batch duplication tool if a parent and child are in the duplicate batch then the relationship will be maintained in the desitination site
 *	Settings page to customise the default behaviour
 *	Restrict functionality to only certain sites on your network
 *	Restrict functionality to users of certain roles
@@ -74,6 +75,14 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.2 =
+* NEW: When using the batch duplication tool if a parent and child are in the duplicate batch then the relationship will be maintained in the desitination site.
+* UI Improvements
+* Corrected some typos
+
+= 1.1.3 =
+* Fixed issue with our custom database table not being created on activation of plugin
+
 = 1.1.2 =
 * Fixed 'create link to an existing post' functionality only displaying 'Post' Post-Type results
 
@@ -81,7 +90,7 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 * Fixed issue with linked posts not looking at the 'ignore most meta keys' setting.
 * Improved efficiency of core duplication function.
 * Queries to our 'Linked Duplications' db table are now correctly wrapped in wpdb::prepare() to protect from injection hacks.
-* Fixed issue where networks with more than 100 sites wouldn't have some sites not listed in thier controls (for installs > 4.6)
+* Fixed issue where networks with more than 100 sites would have some sites not listed in thier controls (for installs > 4.6)
 * Fixed issue where other plugin's meta data (that are using the 'save_post' action) might be missed during the duplication
 * General performanace improvements
 
