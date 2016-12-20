@@ -106,6 +106,8 @@ function mpd_bulk_action() {
 
       foreach($post_ids as $post_id){
           
+          do_action('mpd_single_batch_before', $post_id);
+
           $results[] = mpd_duplicate_over_multisite(
               
               $post_id, 
@@ -129,6 +131,8 @@ function mpd_bulk_action() {
 
           );
 
+          do_action('mpd_single_batch_after', $post_id);
+
       }
 
       //Assign any parent/child relationship that is available within the batch
@@ -142,6 +146,8 @@ function mpd_bulk_action() {
 
       update_option('mpd_admin_bulk_notice', $notice );
 
+      do_action('mpd_batch_after', $results);
+
   }
  
 }
@@ -152,6 +158,8 @@ add_action('load-edit.php', 'mpd_bulk_action');
  * @ignore
  */
 function mpd_map_new_family_tree($map_family_tree){
+
+  $map_family_tree = apply_filters( $map_family_tree );
 
   foreach ($map_family_tree as $key => $family_tree) {
 
@@ -189,6 +197,8 @@ function mpd_map_new_family_tree($map_family_tree){
       } 
     } 
   }
+
+  do_action( 'mpd_map_destination_family', $map_family_tree);
 
   return $map_family_tree;
 
