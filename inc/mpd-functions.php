@@ -159,6 +159,31 @@ function mpd_get_prefix(){
 
 }
 /**
+ * This function returns the current default status for the duplication.
+ *
+ * Returns either the core default value or the value of status saved by user in settings
+ *
+ * @since 1.2.1
+ * @param none
+ * @return string
+*/
+function mpd_get_status(){
+
+      if($options = get_option( 'mdp_settings' )){
+
+            $status = $options['mdp_default_status'];
+
+      }else{
+
+            $defaultOptions   = mdp_get_default_options();
+            $status           = $defaultOptions['mdp_default_status'];
+
+      }
+
+      return $status;
+
+}
+/**
  * This function returns the value of custom meta keys to ignore upon duplication.
  *
  * @since 0.9

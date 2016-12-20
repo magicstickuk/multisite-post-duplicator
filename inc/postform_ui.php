@@ -68,6 +68,7 @@ function mpd_metaboxes(){
 function mpd_publish_top_right(){
 
     $post_statuses  = mpd_get_post_statuses();
+    $status         = mpd_get_status();
     $sites          = mpd_wp_get_sites();
 
     add_thickbox();
@@ -86,7 +87,7 @@ function mpd_publish_top_right(){
 
                 <?php foreach ($post_statuses as $post_status_key => $post_status_value): ?>
                     
-                    <option value="<?php echo $post_status_key;?>" <?php echo $post_status_key == 'draft' ? 'selected' : '' ?>><?php echo $post_status_value;?></option>
+                    <option value="<?php echo $post_status_key;?>" <?php echo $post_status_key == $status ? 'selected' : '' ?>><?php echo $post_status_value;?></option>
                 
                 <?php endforeach ?>
             

@@ -113,7 +113,7 @@ function mpd_bulk_action() {
               $_REQUEST['post_type'],
               get_current_user_id(),
               mpd_get_prefix(),
-              'draft'
+              mpd_get_status()
 
           );
 

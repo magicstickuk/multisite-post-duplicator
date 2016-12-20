@@ -93,6 +93,11 @@ function mdp_settings_init(  ) {
 		'mdp_default_prefix_render'
 	);
 	mpd_settings_field(
+		'mdp_default_status',
+		'<i class="fa fa-eye-slash" aria-hidden="true"></i> ' . __( 'Default Status', 'multisite-post-duplicator' ),
+		'mdp_default_status_render'
+	);
+	mpd_settings_field(
 		'mdp_default_tags_copy',
 		'<i class="fa fa-tags" aria-hidden="true"></i> ' .__( 'Copy post tags when duplicating?', 'multisite-post-duplicator' ),
 		'mdp_default_tags_copy_render');
@@ -220,6 +225,42 @@ function mdp_default_prefix_render(  ) {
 	<input type='text' name='mdp_settings[mdp_default_prefix]' value='<?php echo mpd_get_prefix(); ?>'>
 
 	<?php mpd_information_icon('Change the default prefix for your duplication across the network.'); ?>
+	
+	<?php
+
+}
+/**
+ * 
+ * Create the UI for the Status Setting
+ * 
+ * @since 1.2.1
+ * @return null
+ * 
+ */
+function mdp_default_status_render(  ) { 
+
+	$options = get_option( 'mdp_settings' );
+    $post_statuses = mpd_get_post_statuses();
+    $status = mpd_get_status();
+
+	?>
+	<select name="mdp_settings[mdp_default_status]">
+
+			<?php foreach ($post_statuses as $post_status_key => $post_status_value):?>
+
+			    <option value="<?php echo $post_status_key; ?>" <?php echo $status == $post_status_key ? 'selected="selected"' : ''; ?>>
+
+			    	<?php echo  $post_status_value;?>
+
+			    </option>
+			
+			<?php endforeach; ?>
+
+	</select>
+
+	
+
+	<?php mpd_information_icon('Change the default status for your duplication across the network. This will be applied to batch processing'); ?>
 	
 	<?php
 

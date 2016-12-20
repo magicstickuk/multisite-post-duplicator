@@ -92,11 +92,15 @@ function mpd_admin_menu_markup(){
 
     			<h3><?php _e('Select the status of the new post that will be created.', 'multisite-post-duplicator'); ?></h3>
 
-    			<?php $post_statuses = mpd_get_post_statuses(); ?>
+    			<?php 
+    					$post_statuses 	= mpd_get_post_statuses();
+    					$status 		= mpd_get_status();
+
+    			?>
 
     			<?php  foreach ($post_statuses as $post_status_key => $post_status_value):?>
 
-    				<input type="radio" name="mpd-post-status" value="<?php echo $post_status_key ?>" <?php echo $post_status_key == 'draft' ? 'checked' : '' ?>/><?php echo $post_status_value; ?>
+    				<input type="radio" name="mpd-post-status" value="<?php echo $post_status_key ?>" <?php echo $post_status_key == $status ? 'checked' : '' ?>/><?php echo $post_status_value; ?>
 
 
     			<?php endforeach; ?>

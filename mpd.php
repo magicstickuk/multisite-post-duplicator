@@ -160,8 +160,8 @@ function mdp_get_default_options(){
 		'mdp_copy_content_images' 		=> 'content-image',
 		'meta_box_show_radio' 			=> 'all',
 		'mdp_ignore_custom_meta'		=> '',
-		'mdp_allow_dev_info'			=> 'allow-dev'
-
+		'mdp_allow_dev_info'			=> 'allow-dev',
+		'mdp_default_status'			=> 'draft'
 	);
 
 	$mpd_post_types 		= get_post_types();
