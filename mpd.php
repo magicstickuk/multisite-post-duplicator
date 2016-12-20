@@ -221,3 +221,22 @@ function mpd_do_version_log(){
    return $type_of_activation;
 
 }
+/**
+ * 
+ * Add settings link to the plugin list.
+ * 
+ * @since 1.2.1
+ * @return null
+ * 
+ */
+function mpd_add_plugin_action_links( $links ) {
+	return array_merge(
+		array(
+			'settings' => "<a href='" . esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ) . "'>Settings</a>",
+		),
+		$links
+	);
+}
+
+add_filter( 'network_admin_plugin_action_links_' . plugin_basename( __FILE__ ), 'mpd_add_plugin_action_links' );
+add_filter( 'admin_plugin_action_links_' . plugin_basename( __FILE__ ), 'mpd_add_plugin_action_links' );
