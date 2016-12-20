@@ -94,7 +94,7 @@ function mdp_settings_init(  ) {
 	);
 	mpd_settings_field(
 		'mdp_default_status',
-		'<i class="fa fa-eye-slash" aria-hidden="true"></i> ' . __( 'Default Status', 'multisite-post-duplicator' ),
+		'<i class="fa fa-eye-slash" aria-hidden="true"></i> ' . __( 'Default Post Status', 'multisite-post-duplicator' ),
 		'mdp_default_status_render'
 	);
 	mpd_settings_field(

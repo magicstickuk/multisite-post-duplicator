@@ -75,8 +75,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
-<<<<<<< HEAD
-=======
+= 1.2.1 =
+* Added ability to change 'Default Post Status' in settings.
+
 = 1.2 =
 * NEW: When using the batch duplication tool if a parent and child are in the duplicate batch then the relationship will be maintained in the desitination site
 * UI Improvements
@@ -85,7 +86,6 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 = 1.1.3 =
 * Fixed issue with our custom database table not being created on activation of plugin
 
->>>>>>> b299fee1b49946ab0dbc55976889c04436801d18
 = 1.1.2 =
 * Fixed 'create link to an existing post' functionality only displaying 'Post' Post-Type results
 
