@@ -78,7 +78,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     ), $mpd_process_info);
 
     //Get all the meta data associated with the source post
-    $meta_values       = apply_filters('mpd_filter_post_meta', get_post_meta($mpd_process_info['source_id'])) ;
+    $meta_values       = apply_filters('mpd_filter_post_meta', get_post_meta($mpd_process_info['source_id']));
     //Get array of data associated with the featured image for this post
     $featured_image    = mpd_get_featured_image_from_source($mpd_process_info['source_id']);
 
@@ -101,7 +101,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     }
 
     //Hook for actions just before we switch to the destination blog to start processing our collected data
-    do_action('mpd_during_core_in_source', $mdp_post, $attached_images);
+    do_action('mpd_during_core_in_source', $mdp_post, $attached_images, $meta_values);
     
 
 

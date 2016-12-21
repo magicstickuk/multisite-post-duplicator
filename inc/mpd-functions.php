@@ -1212,3 +1212,36 @@ function mpd_search($array, $key, $value){
 
     return $results;
 }
+
+function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values){
+
+   
+
+         foreach ($meta_values as $key => $meta) {
+            update_site_option( 'got_in_for_loop', 1 );
+            //Indicates it could be a ACF Value
+            if(isset($meta_values["_" . $key])){
+                global $wpdb;
+                $siteid = $wpdb->blogid != 1 ? $wpdb->blogid . "_" : ''; 
+                
+                //Get the ACF post controller
+               $result = $wpdb->get_row(  "SELECT ID, post_content FROM $wpdb->prefix" . $siteid . "posts  WHERE post_name = '". $meta_values["_" . $key][0]."'" );
+               
+                if($result){
+                    $acf_control = unserialize($result->post_content);
+                    $acf_type  = $acf_control['type'];
+                    update_site_option( 'the_site_acf_type', $acf_type );
+                    if($acf_type == 'image'){
+                        //update_site_option( 'the_site_acf_image', $result->ID . "yesImage" );
+                    }
+                    
+                }
+            }
+        }
+
+    
+   
+
+}
+add_action('mpd_during_core_in_source', 'mpd_do_acf_images_from_source', 10, 3);
+
