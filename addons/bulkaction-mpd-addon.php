@@ -174,11 +174,13 @@ function mpd_map_new_family_tree($map_family_tree){
 
           global $wpdb;
 
+          $siteid     = $family_tree['new_blog_id'] != 1 ? $family_tree['new_blog_id'] . "_" : ''; 
+
           $new_parent = $search_for[0]['new_post_id'];
 
           $wpdb->update( 
             
-            $wpdb->base_prefix . $family_tree['new_blog_id'] . "_posts", 
+            $wpdb->base_prefix . $siteid . "posts", 
             
             array( 
               'post_parent' =>  $new_parent

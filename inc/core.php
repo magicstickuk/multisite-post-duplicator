@@ -101,7 +101,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     }
 
     //Hook for actions just before we switch to the destination blog to start processing our collected data
-    do_action('mpd_during_core_in_source', $mdp_post, $attached_images, $meta_values);
+    do_action('mpd_during_core_in_source', $mdp_post, $attached_images, $meta_values, $mpd_process_info['source_id']);
     
 
 
@@ -180,6 +180,8 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $site_edit_url = get_edit_post_link( $post_id );
     $blog_details  = get_blog_details($mpd_process_info['destination_id']);
     $site_name     = $blog_details->blogname;
+
+    do_action('mpd_end_of_core_before_return', $post_id);
 
     //////////////////////////////////////
     //Go back to the current blog so we can update information about the action that just took place
