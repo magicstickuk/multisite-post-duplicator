@@ -1244,7 +1244,6 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
 
                     if($acf_type == 'image'){
 
-
                         $acf_image_data_source = array(
 
                             'image_id'  => $meta[0],
@@ -1254,7 +1253,6 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                             'img_url'   => wp_get_attachment_url( $meta[0] ),
                             'img_meta'  => wp_get_attachment_metadata($meta[0]),
                             'img_post_mime'  => get_post_mime_type($meta[0])
-
 
                         );
 
@@ -1271,12 +1269,12 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
 
             update_site_option( 'source_acf_images', $acf_collected);
 
-        }
-        
+        }   
 
     }  
    
 }
+
 add_action('mpd_during_core_in_source', 'mpd_do_acf_images_from_source', 10, 4);
 
 function mpd_do_acf_images_to_destination($post_id){
@@ -1305,7 +1303,7 @@ function mpd_do_acf_images_to_destination($post_id){
                     $file = $upload_dir['basedir'] . '/' . $file_name .'.'. $info['extension'];
 
                 }
-                update_site_option( 'new_file_url', $file );
+
                 $image_data             = file_get_contents(mpd_fix_wordpress_urls($acf_image['img_url']));
 
                 // Add the file contents to the new path with the new filename
@@ -1329,7 +1327,6 @@ function mpd_do_acf_images_to_destination($post_id){
                 
                 update_field($acf_image['field'], $attach_id, $post_id);
                 
-             
             }
         }
         
