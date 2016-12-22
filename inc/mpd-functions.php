@@ -1236,6 +1236,7 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                                          FROM $wpdb->prefix" . $siteid . "posts
                                          WHERE post_name = '". $acf_field_key ."'"
                                   );
+                
                
                 if($result){
 
