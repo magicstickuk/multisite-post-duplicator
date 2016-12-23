@@ -67,11 +67,8 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
             }
 
         }
-        if(!empty($acf_collected)){
-
-            update_site_option( 'source_acf_images', $acf_collected);
-
-        }   
+       
+        update_site_option( 'source_acf_images', $acf_collected);   
 
     }  
    
