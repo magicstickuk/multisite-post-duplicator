@@ -159,8 +159,6 @@ add_action('load-edit.php', 'mpd_bulk_action');
  */
 function mpd_map_new_family_tree($map_family_tree){
 
-  $map_family_tree = apply_filters( $map_family_tree );
-
   foreach ($map_family_tree as $key => $family_tree) {
 
     // Does the source have a parent
@@ -174,13 +172,11 @@ function mpd_map_new_family_tree($map_family_tree){
 
           global $wpdb;
 
-          $siteid     = $family_tree['new_blog_id'] != 1 ? $family_tree['new_blog_id'] . "_" : ''; 
-
           $new_parent = $search_for[0]['new_post_id'];
 
           $wpdb->update( 
             
-            $wpdb->base_prefix . $siteid . "posts", 
+            $wpdb->base_prefix . $family_tree['new_blog_id'] . "_posts", 
             
             array( 
               'post_parent' =>  $new_parent
@@ -197,7 +193,9 @@ function mpd_map_new_family_tree($map_family_tree){
 
           );
       } 
+
     } 
+    
   }
 
   do_action( 'mpd_map_destination_family', $map_family_tree);
