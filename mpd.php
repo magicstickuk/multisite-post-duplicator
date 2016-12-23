@@ -24,9 +24,11 @@ $fs = array(
 	'inc/settings-ui',
 	'inc/core',
 	'inc/persist',
+	'inc/acf-functions',
 	'addons/bulkaction-mpd-addon',
 	'addons/restrictSites-mpd-addon',
-	'addons/roleAccess-mpd-addon'
+	'addons/roleAccess-mpd-addon',
+
 );
 
 foreach ($fs as $f) {

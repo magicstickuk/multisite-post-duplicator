@@ -1247,13 +1247,13 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
 
                         $acf_image_data_source = array(
 
-                            'image_id'  => $meta[0],
-                            'field'     => $key,
-                            'field_key' => $acf_field_key,
-                            'post_id'   => $post_id_to_copy,
-                            'img_url'   => wp_get_attachment_url( $meta[0] ),
-                            'img_meta'  => wp_get_attachment_metadata($meta[0]),
-                            'img_post_mime'  => get_post_mime_type($meta[0])
+                            'image_id'      => $meta[0],
+                            'field'         => $key,
+                            'field_key'     => $acf_field_key,
+                            'post_id'       => $post_id_to_copy,
+                            'img_url'       => wp_get_attachment_url( $meta[0] ),
+                            'img_meta'      => wp_get_attachment_metadata($meta[0]),
+                            'img_post_mime' => get_post_mime_type($meta[0])
 
                         );
 
@@ -1288,9 +1288,9 @@ function mpd_do_acf_images_to_destination($post_id){
           
             foreach ($acf_images as $acf_image) {
                 
-                $file = $acf_image['img_url'];
-                $info = pathinfo($file);
-                $file_name =  basename($file,'.'.$info['extension']);
+                $file       = $acf_image['img_url'];
+                $info       = pathinfo($file);
+                $file_name  = basename($file,'.'.$info['extension']);
 
                  // Get the upload directory for the current site
                 $upload_dir = wp_upload_dir();
@@ -1305,7 +1305,7 @@ function mpd_do_acf_images_to_destination($post_id){
 
                 }
 
-                $image_data             = file_get_contents(mpd_fix_wordpress_urls($acf_image['img_url']));
+                $image_data = file_get_contents(mpd_fix_wordpress_urls($acf_image['img_url']));
 
                 // Add the file contents to the new path with the new filename
                 file_put_contents( $file, $image_data );
@@ -1329,6 +1329,7 @@ function mpd_do_acf_images_to_destination($post_id){
                 update_field($acf_image['field'], $attach_id, $post_id);
                 
             }
+
         }
         
     }
