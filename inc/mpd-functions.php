@@ -1212,3 +1212,39 @@ function mpd_search($array, $key, $value){
 
     return $results;
 }
+
+function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
+
+    $info       = pathinfo($img_url);
+    $file_name  = basename($img_url,'.'.$info['extension']);
+
+     // Get the upload directory for the current site
+    $upload_dir = wp_upload_dir();
+    // Make the path to the desired path to the new file we are about to create
+    if( wp_mkdir_p( $upload_dir['path'] ) ) {
+
+        $file = $upload_dir['path'] . '/' . $file_name .'.'. $info['extension'];
+
+    } else {
+
+        $file = $upload_dir['basedir'] . '/' . $file_name .'.'. $info['extension'];
+
+    }
+
+    $image_data = file_get_contents(mpd_fix_wordpress_urls($img_url));
+
+    // Add the file contents to the new path with the new filename
+    file_put_contents( $file, $image_data );
+
+    $attach_id = wp_insert_attachment( $attachment, $file, $post_id );
+     // Include code to process functions below:
+    require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+    // Define attachment metadata
+    $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+
+    wp_update_attachment_metadata( $attach_id, $attach_data );
+
+    return $attach_id;
+
+}

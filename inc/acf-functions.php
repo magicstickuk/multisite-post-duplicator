@@ -14,12 +14,14 @@
  * @return null
  *
 */
-function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values, $post_id_to_copy){
+function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values, $post_id_to_copy, $destination_blog_id){
    
    $acf_collected = array();
 
-   //Is Advanced Custom Fields active?
-   if(class_exists('acf')){
+   $current_blog_id = get_current_blog_id();
+
+   //Is Advanced Custom Fields active and the source site is different from the destination
+   if(class_exists('acf') && ($current_blog_id != $destination_blog_id)){
 
         foreach ($meta_values as $key => $meta) {
 
@@ -34,7 +36,7 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                 //Get the posssible ACF controller post for this image
                 $result         = $wpdb->get_row(
                                         "SELECT ID, post_content
-                                         FROM $wpdb->prefix" . $siteid . "posts
+                                         FROM " . $wpdb->base_prefix . $siteid . "posts
                                          WHERE post_name = '". $acf_field_key ."'"
                                   );
                 
@@ -74,7 +76,8 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
    
 }
 
-add_action('mpd_during_core_in_source', 'mpd_do_acf_images_from_source', 10, 4);
+add_action('mpd_during_core_in_source', 'mpd_do_acf_images_from_source', 10, 5);
+add_action('mpd_persist_during_core_in_source', 'mpd_do_acf_images_from_source', 10, 5);
 
 /**
  * Copy the source ACF images to the destination site.
@@ -99,24 +102,6 @@ function mpd_do_acf_images_to_destination($post_id){
                 $info       = pathinfo($file);
                 $file_name  = basename($file,'.'.$info['extension']);
 
-                 // Get the upload directory for the current site
-                $upload_dir = wp_upload_dir();
-                // Make the path to the desired path to the new file we are about to create
-                if( wp_mkdir_p( $upload_dir['path'] ) ) {
-
-                    $file = $upload_dir['path'] . '/' . $file_name .'.'. $info['extension'];
-
-                } else {
-
-                    $file = $upload_dir['basedir'] . '/' . $file_name .'.'. $info['extension'];
-
-                }
-
-                $image_data = file_get_contents(mpd_fix_wordpress_urls($acf_image['img_url']));
-
-                // Add the file contents to the new path with the new filename
-                file_put_contents( $file, $image_data );
-
                 $attachment = array(
                      'post_mime_type' => $acf_image['img_post_mime'],
                      'post_title'     => $file_name,
@@ -124,14 +109,7 @@ function mpd_do_acf_images_to_destination($post_id){
                      'post_status'    => 'inherit'
                 );
 
-                $attach_id = wp_insert_attachment( $attachment, $file, $post_id );
-                 // Include code to process functions below:
-                require_once(ABSPATH . 'wp-admin/includes/image.php');
-
-                // Define attachment metadata
-                $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
-
-                wp_update_attachment_metadata( $attach_id, $attach_data );
+                $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id);
                 
                 update_field($acf_image['field'], $attach_id, $post_id);
                 
@@ -146,3 +124,4 @@ function mpd_do_acf_images_to_destination($post_id){
 }
 
 add_action('mpd_end_of_core_before_return', 'mpd_do_acf_images_to_destination', 10, 1);
+add_action('mpd_persist_end_of_core_before_return', 'mpd_do_acf_images_from_source', 10, 1);
