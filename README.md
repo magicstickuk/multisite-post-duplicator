@@ -76,8 +76,10 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 == Changelog ==
 
 = 1.2.1 =
-* Added ability to change 'Default Post Status' in settings.
-* Add settings link to the plugin list page.
+* NEW: Advanced Custom Field Images from source are now copied to the destination site and are assigned to post properly
+* NEW: Added ability to change 'Default Post Status' in settings.
+* Add settings link to the plugin list.
+* Fixed bug with post's ancestry not being copied to the root site on a network
 
 = 1.2 =
 * NEW: When using the batch duplication tool if a parent and child are in the duplicate batch then the relationship will be maintained in the desitination site.
