@@ -124,4 +124,4 @@ function mpd_do_acf_images_to_destination($post_id){
 }
 
 add_action('mpd_end_of_core_before_return', 'mpd_do_acf_images_to_destination', 10, 1);
-add_action('mpd_persist_end_of_core_before_return', 'mpd_do_acf_images_from_source', 10, 1);
+add_action('mpd_persist_end_of_core_before_return', 'mpd_do_acf_images_to_destination', 10, 1);
