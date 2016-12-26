@@ -16,7 +16,8 @@
 */
 function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values, $post_id_to_copy, $destination_blog_id){
    
-   $acf_collected = array();
+   $acf_collected           = array();
+   $acf_gallery_collected   = array();
 
    $current_blog_id = get_current_blog_id();
 
@@ -37,7 +38,9 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                 $result         = $wpdb->get_row(
                                         "SELECT ID, post_content
                                          FROM " . $wpdb->base_prefix . $siteid . "posts
-                                         WHERE post_name = '". $acf_field_key ."'"
+                                         WHERE post_name = '". $acf_field_key ."'
+                                         AND post_type = 'acf-field'
+                                         "
                                   );
                 
                
@@ -46,9 +49,9 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                     $acf_control    = unserialize($result->post_content);
                     $acf_type       = $acf_control['type'];
 
-                    if($acf_type == 'image'){
-
-                        $acf_image_data_source = array(
+                    switch ($acf_type) {
+                        case 'image':
+                            $acf_image_data_source = array(
 
                             'image_id'      => $meta[0],
                             'field'         => $key,
@@ -58,11 +61,50 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                             'img_meta'      => wp_get_attachment_metadata($meta[0]),
                             'img_post_mime' => get_post_mime_type($meta[0])
 
-                        );
+                            );
 
-                        array_push($acf_collected, $acf_image_data_source);
+                            array_push($acf_collected, $acf_image_data_source);
 
-                    }
+                            break;
+
+                        case 'gallery':
+                            
+                            $source_ids = unserialize($meta[0]);
+                            $image_urls = array();
+                            $image_metas = array();
+                            $img_post_mimes = array();
+
+                            foreach ($source_ids as $source_id) {
+
+                                $image_url = wp_get_attachment_url( $source_id);
+                                $image_meta = wp_get_attachment_metadata($source_id);
+                                $img_post_mime = get_post_mime_type($source_id);
+
+                                array_push($image_urls, $image_url);
+                                array_push($image_metas, $image_meta);
+                                array_push($img_post_mimes, $img_post_mime);
+
+                            }
+                            
+
+                            $acf_image_gallery_data_source = array(
+
+                                'image_ids'     => $source_ids,
+                                'field'         => $key,
+                                'field_key'     => $acf_field_key,
+                                'post_id'       => $post_id_to_copy,
+                                'img_url'       => $image_urls,
+                                'img_meta'      => $image_metas,
+                                'img_post_mime' => $img_post_mimes
+
+                            );
+
+                            array_push($acf_gallery_collected, $acf_image_gallery_data_source);
+
+                        default:
+                            # code...
+                            break;
+                    }  
                     
                 }
 
@@ -70,7 +112,8 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
 
         }
        
-        update_site_option( 'source_acf_images', $acf_collected);   
+        update_site_option( 'source_acf_images', $acf_collected);
+        update_site_option( 'source_acf_gallery_images', $acf_gallery_collected);   
 
     }  
    
@@ -118,6 +161,43 @@ function mpd_do_acf_images_to_destination($post_id){
             delete_site_option('source_acf_images');
 
         }
+
+        $acf_gallerys = get_site_option( 'source_acf_gallery_images' );
+
+        if($acf_gallerys){
+
+            $attach_ids = array();
+
+            foreach ($acf_gallerys as $gallery_key => $acf_gallery) {
+
+                foreach($acf_gallery['image_ids'] as $key => $acf_image){
+
+                    $file       = $acf_gallerys[$gallery_key]['img_url'][$key];
+                    $info       = pathinfo($file);
+                    $file_name  = basename($file,'.'.$info['extension']);
+
+                    $attachment = array(
+                         'post_mime_type' => $acf_gallerys[$gallery_key]['img_post_mime'][$key],
+                         'post_title'     => $file_name,
+                         'post_content'   => '',
+                         'post_status'    => 'inherit'
+                    );
+
+                    $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id);
+
+                    array_push($attach_ids,$attach_id);
+
+                    update_field($acf_gallerys[$gallery_key]['field'], $attach_ids, $post_id);
+
+                }
+
+
+            }  
+
+            delete_site_option('source_acf_gallery_images');
+            
+        }
+
         
     }
 
