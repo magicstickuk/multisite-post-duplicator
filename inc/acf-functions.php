@@ -36,14 +36,13 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                 
                 //Get the posssible ACF controller post for this image
                 $result         = $wpdb->get_row(
-                                        "SELECT ID, post_content
+                                        "SELECT post_content
                                          FROM " . $wpdb->base_prefix . $siteid . "posts
                                          WHERE post_name = '". $acf_field_key ."'
                                          AND post_type = 'acf-field'
                                          "
                                   );
                 
-               
                 if($result){
 
                     $acf_control    = unserialize($result->post_content);
@@ -51,15 +50,14 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
 
                     switch ($acf_type) {
                         case 'image':
+
                             $acf_image_data_source = array(
 
-                            'image_id'      => $meta[0],
-                            'field'         => $key,
-                            'field_key'     => $acf_field_key,
-                            'post_id'       => $post_id_to_copy,
-                            'img_url'       => wp_get_attachment_url( $meta[0] ),
-                            'img_meta'      => wp_get_attachment_metadata($meta[0]),
-                            'img_post_mime' => get_post_mime_type($meta[0])
+                                'image_id'      => $meta[0],
+                                'field'         => $key,
+                                'post_id'       => $post_id_to_copy,
+                                'img_url'       => wp_get_attachment_url( $meta[0] ),
+                                'img_post_mime' => get_post_mime_type($meta[0])
 
                             );
 
@@ -77,11 +75,9 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                             foreach ($source_ids as $source_id) {
 
                                 $image_url      = wp_get_attachment_url( $source_id);
-                                $image_meta     = wp_get_attachment_metadata($source_id);
                                 $img_post_mime  = get_post_mime_type($source_id);
 
                                 array_push($image_urls, $image_url);
-                                array_push($image_metas, $image_meta);
                                 array_push($img_post_mimes, $img_post_mime);
 
                             }
@@ -90,14 +86,15 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
 
                                 'image_ids'     => $source_ids,
                                 'field'         => $key,
-                                'field_key'     => $acf_field_key,
                                 'post_id'       => $post_id_to_copy,
                                 'img_url'       => $image_urls,
-                                'img_meta'      => $image_metas,
                                 'img_post_mime' => $img_post_mimes
 
                             );
+
                             array_push($acf_gallery_collected, $acf_image_gallery_data_source);
+
+                            break;
 
                         default:
                             
@@ -176,10 +173,12 @@ function mpd_do_acf_images_to_destination($post_id){
                     $file_name  = basename($file,'.'.$info['extension']);
 
                     $attachment = array(
+
                          'post_mime_type' => $acf_gallerys[$gallery_key]['img_post_mime'][$key],
                          'post_title'     => $file_name,
                          'post_content'   => '',
                          'post_status'    => 'inherit'
+
                     );
 
                     $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id);
