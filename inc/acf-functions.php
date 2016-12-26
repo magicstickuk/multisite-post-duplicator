@@ -69,23 +69,22 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
 
                         case 'gallery':
                             
-                            $source_ids = unserialize($meta[0]);
-                            $image_urls = array();
-                            $image_metas = array();
+                            $source_ids     = unserialize($meta[0]);
+                            $image_urls     = array();
+                            $image_metas    = array();
                             $img_post_mimes = array();
 
                             foreach ($source_ids as $source_id) {
 
-                                $image_url = wp_get_attachment_url( $source_id);
-                                $image_meta = wp_get_attachment_metadata($source_id);
-                                $img_post_mime = get_post_mime_type($source_id);
+                                $image_url      = wp_get_attachment_url( $source_id);
+                                $image_meta     = wp_get_attachment_metadata($source_id);
+                                $img_post_mime  = get_post_mime_type($source_id);
 
                                 array_push($image_urls, $image_url);
                                 array_push($image_metas, $image_meta);
                                 array_push($img_post_mimes, $img_post_mime);
 
                             }
-                            
 
                             $acf_image_gallery_data_source = array(
 
@@ -98,12 +97,12 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                                 'img_post_mime' => $img_post_mimes
 
                             );
-
                             array_push($acf_gallery_collected, $acf_image_gallery_data_source);
 
                         default:
-                            # code...
+                            
                             break;
+
                     }  
                     
                 }
@@ -191,14 +190,12 @@ function mpd_do_acf_images_to_destination($post_id){
 
                 }
 
-
             }  
 
             delete_site_option('source_acf_gallery_images');
-            
-        }
 
-        
+        }
+      
     }
 
 }
