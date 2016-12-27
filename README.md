@@ -75,7 +75,7 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
-= 1.2.1 =
+= 1.3 =
 * NEW: Advanced Custom Field Images from source are now copied to the destination site and are assigned to post properly
 * NEW: Now supports copying Advanced Custom Field Gallery field type.
 * NEW: Added ability to change 'Default Post Status' in settings.

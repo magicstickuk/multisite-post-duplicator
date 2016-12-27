@@ -1213,6 +1213,19 @@ function mpd_search($array, $key, $value){
     return $results;
 }
 
+/**
+ * 
+ * Helper function process a duplication of an image file from the source to the destination. Has to be run while 'in' the destination site
+ *
+ * @since 1.3
+ * @param $attachment Array Array of data about the attachment that will be written into the wp_posts table of the database.
+ * @param $img_url The URL of the image to be copied
+ * @param $post_id The new post ID that the image has to be assigned to.
+ * 
+ * @return int The id of the newly created image
+ *
+ */
+
 function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
 
     $info       = pathinfo($img_url);

@@ -6,11 +6,12 @@
  * then identifies which ones are related to the ACF plugin and processes required info about them.
  * The data is then added to database for use later.
  *
- * @since 1.2.1
+ * @since 1.3
  * @param array $mdp_post Data used to set up the destination post
  * @param array $attached_images Data about the images in the main content of the source post
  * @param array $meta_values All meta aatached to the source post
  * @param int $post_id_to_copy The ID of the source post
+ * @param int $destination_blog_id The ID destination site
  * @return null
  *
 */
@@ -40,7 +41,7 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                     WHERE post_name = '$acf_field_key'
                     AND post_type = 'acf-field'"
                 );
-                
+
                 //Get the posssible ACF controller post for this image
                 $result         = $wpdb->get_row($query);
                 
