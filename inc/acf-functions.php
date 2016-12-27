@@ -33,15 +33,16 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
 
                 $acf_field_key  = $meta_values["_" . $key][0];
                 $siteid         = $wpdb->blogid != 1 ? $wpdb->blogid . "_" : ''; 
+                $tablename      = $wpdb->base_prefix . $siteid . "posts";
+                $query          = $wpdb->prepare("
+                    SELECT post_content
+                    FROM $tablename 
+                    WHERE post_name = '$acf_field_key'
+                    AND post_type = 'acf-field'"
+                );
                 
                 //Get the posssible ACF controller post for this image
-                $result         = $wpdb->get_row(
-                                        "SELECT post_content
-                                         FROM " . $wpdb->base_prefix . $siteid . "posts
-                                         WHERE post_name = '". $acf_field_key ."'
-                                         AND post_type = 'acf-field'
-                                         "
-                                  );
+                $result         = $wpdb->get_row($query);
                 
                 if($result){
 
