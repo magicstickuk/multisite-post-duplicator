@@ -15,7 +15,7 @@
  * @return null
  *
 */
-function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values, $post_id_to_copy, $destination_blog_id = null){
+function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values, $post_id_to_copy, $destination_blog_id){
    
    $acf_collected           = array();
    $acf_gallery_collected   = array();
@@ -118,7 +118,7 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
 }
 
 add_action('mpd_during_core_in_source', 'mpd_do_acf_images_from_source', 10, 5);
-add_action('mpd_persist_during_core_in_source', 'mpd_do_acf_images_from_source', 10, 4);
+add_action('mpd_persist_during_core_in_source', 'mpd_do_acf_images_from_source', 10, 5);
 
 /**
  * Copy the source ACF images to the destination site.

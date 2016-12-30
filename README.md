@@ -75,7 +75,7 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
-= 1.3.1 =
+= 1.3.2 =
 * Fixed issue with new ACF image functions not playing nice with 'linked' posts
 
 = 1.3 =
