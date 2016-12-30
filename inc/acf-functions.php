@@ -15,7 +15,7 @@
  * @return null
  *
 */
-function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values, $post_id_to_copy, $destination_blog_id){
+function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values, $post_id_to_copy, $destination_blog_id = null){
    
    $acf_collected           = array();
    $acf_gallery_collected   = array();
