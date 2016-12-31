@@ -118,7 +118,7 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
 }
 
 add_action('mpd_during_core_in_source', 'mpd_do_acf_images_from_source', 10, 5);
-add_action('mpd_persist_during_core_in_source', 'mpd_do_acf_images_from_source', 10, 5);
+add_action('mpd_persist_during_core_in_source', 'mpd_do_acf_images_from_source', 10, 4);
 
 /**
  * Copy the source ACF images to the destination site.

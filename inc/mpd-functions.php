@@ -1261,3 +1261,38 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
     return $attach_id;
 
 }
+
+function mpd_check_destination_post_types($post_id, $mdp_post){
+
+    $post_type = $mdp_post['post_type'];
+
+    //check that post type exsists in the destination site
+   // switch_to_blog($destination_id);
+
+    $post_types = get_post_types();
+
+   // restore_current_blog();
+    //if it doesnt create a notice to be displayed on landing on page
+    // if(!in_array($post_type, $post_types) ){
+    //     update_site_option('custom_post_type_match', 'custom post types do not exsist');
+    // }else{
+    //     update_site_option('custom_post_type_match', 'custom post types does exsist');
+    // }
+    update_site_option('testing_sourse_type', $post_types);
+    //if it does do nothing.
+
+}
+add_action('mpd_end_of_core_before_return', 'mpd_check_destination_post_types', 5, 2);
+
+function testing(){
+
+switch_to_blog(1);
+
+    $post_types = get_post_types();
+
+restore_current_blog();
+   var_dump($post_types);
+
+
+}
+add_action('admin_notices', 'testing');
