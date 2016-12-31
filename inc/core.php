@@ -270,7 +270,7 @@ function mpd_persist_over_multisite($persist_post) {
     }
 
     //Hook for actions just before we switch to the destination blog to start processing our collected data
-    do_action('mpd_persist_during_core_in_source', $mdp_post, $attached_images, $meta_values, $persist_post->source_post_id);
+    do_action('mpd_persist_during_core_in_source', $mdp_post, $attached_images, $meta_values, $persist_post->source_post_id, $persist_post->destination_id);
 
     ////////////////////////////////////////////////
     //Tell WordPress to work in the destination site
