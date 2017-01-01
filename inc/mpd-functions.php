@@ -604,10 +604,14 @@ function mpd_checked_lookup($options, $option_key, $option_value, $type = null){
  */
 function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details){
 
-    $message = apply_filters('mpd_admin_notice_text', '<div class="updated"><p>'. __('You succesfully duplicated this post to', 'multisite-post-duplicator' ) ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post', 'multisite-post-duplicator' ).'</a></p></div>', $site_name, $site_url, $destination_blog_details);
+    $message        = '<div class="updated"><p>';
+    $message       .= apply_filters('mpd_admin_notice_text', __('You succesfully duplicated this post to', 'multisite-post-duplicator' ) ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post', 'multisite-post-duplicator' ).'</a>', $site_name, $site_url, $destination_blog_details);
+
+    $message       .= get_option('mpd_considerations') ? " ". __('with the following considerations:', 'multisite-post-duplicator' ) : '';
+    $message       .= '</p></div>';
 
     $option_value = get_option('mpd_admin_notice');
-
+    
     if($option_value){
 
         $message = $option_value . $message;
@@ -630,13 +634,22 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
 function mpd_plugin_admin_notices(){
 
     // If there is a notice in the database display it.
-    if($notices= get_option('mpd_admin_notice')){
+    if($notices = get_option('mpd_admin_notice')){
 
-         echo $notices;
+        echo $notices;
+        // Now that we know the notice has been displayed we can delete its database entry
+        delete_option('mpd_admin_notice');
 
     }
-    // Now that we know the notice has been displayed we can delete its database entry
-    delete_option('mpd_admin_notice');
+    // If there are any considerations in the database display them.
+    if($considerations = get_option('mpd_considerations')){
+
+        echo $considerations;
+        delete_option('mpd_considerations');
+
+    }
+
+    
 
 }
 
@@ -1001,7 +1014,21 @@ function mpd_get_post_taxonomy_terms($post_id){
  * @return array An array of term objects used in the post
  *
  */
-function mpd_set_post_taxonomy_terms($source_taxonomy_terms_object, $post_id){
+function mpd_set_post_taxonomy_terms($source_taxonomy_terms_object, $post_id, $persist = null){
+
+    if($persist){
+
+        foreach ($source_taxonomy_terms_object as $source_taxonomy_terms) {
+
+            foreach ($source_taxonomy_terms as $term) {
+
+                wp_remove_object_terms( $post_id, $term->slug, $term->taxonomy );
+
+            }
+            
+        }
+        
+    }
 
     foreach ($source_taxonomy_terms_object as $source_taxonomy_terms) {
 
@@ -1262,37 +1289,64 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
 
 }
 
-function mpd_check_destination_post_types($post_id, $mdp_post){
+function mpd_take_note_of_posttypes(){
 
-    $post_type = $mdp_post['post_type'];
+    $wp_post_types  = get_post_types();
+    $post_types     = get_option('mpd_noted_posttypes');
 
-    //check that post type exsists in the destination site
-   // switch_to_blog($destination_id);
+    if($wp_post_types !== $post_types ){
 
-    $post_types = get_post_types();
+        update_option('mpd_noted_posttypes', $wp_post_types );
 
-   // restore_current_blog();
-    //if it doesnt create a notice to be displayed on landing on page
-    // if(!in_array($post_type, $post_types) ){
-    //     update_site_option('custom_post_type_match', 'custom post types do not exsist');
-    // }else{
-    //     update_site_option('custom_post_type_match', 'custom post types does exsist');
-    // }
-    update_site_option('testing_sourse_type', $post_types);
-    //if it does do nothing.
+    }
 
 }
-add_action('mpd_end_of_core_before_return', 'mpd_check_destination_post_types', 5, 2);
 
-function testing(){
+add_action('admin_head', 'mpd_take_note_of_posttypes');
 
-switch_to_blog(1);
+function mpd_take_note_of_taxonomies(){
 
-    $post_types = get_post_types();
+    $wp_taxonomies  = get_taxonomies();
+    $mpd_taxonomies = get_option('mpd_noted_taxonomies');
 
-restore_current_blog();
-   var_dump($post_types);
+    if($wp_taxonomies !== $mpd_taxonomies ){
 
+        update_option('mpd_noted_taxonomies', $wp_taxonomies );
+
+    }
 
 }
-add_action('admin_notices', 'testing');
+
+add_action('admin_head', 'mpd_take_note_of_taxonomies');
+
+function mpd_post_type_considerations($mdp_post, $attached_images, $meta_values, $source_id, $destination_id){
+
+    $current_considerations = get_option('mpd_considerations');
+    if($current_considerations){
+
+        $considerations = $current_considerations;
+
+    }
+
+    $post_type              = $mdp_post['post_type'];
+    $destination_post_types = get_blog_option($destination_id, 'mpd_noted_posttypes');
+
+    if($destination_post_types){
+
+        if(!in_array($destination_post_types, $post_type)){
+
+            $considerations .= "<div class='notice notice-info notice-considerations'><p>";
+            $considerations .= __("The post type of this post", 'multisite-post-duplicator'  );
+            $considerations .= " '<em>" . $post_type . "</em>' ";
+            $considerations .= __("doesn't exist in the destination site. In order for you to see the post you just created would will have to register a post-type called", 'multisite-post-duplicator' );
+            $considerations .= " '<em>" . $post_type . "</em>' ";
+            $considerations .= " " . __("in that site",  'multisite-post-duplicator' );
+            $considerations .= ".</p></div>";
+
+            update_option('mpd_considerations', $considerations);
+        }
+        
+    }
+    
+}
+add_action('mpd_during_core_in_source', 'mpd_post_type_considerations', 20, 5);
