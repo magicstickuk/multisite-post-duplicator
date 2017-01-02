@@ -56,7 +56,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     //Get the categories for the post
     $source_categories = mpd_get_objects_of_post_categories($mpd_process_info['source_id'], $mpd_process_info['post_type']);
     //Get the taxonomy terms for the post
-    $source_taxonomies = mpd_get_post_taxonomy_terms($mpd_process_info['source_id']);
+    $source_taxonomies = mpd_get_post_taxonomy_terms($mpd_process_info['source_id'], $mpd_process_info['destination_id']);
 
     //Format the prefix into the correct format if the user adds their own whitespace
     if($mpd_process_info['prefix'] != ''){
@@ -243,7 +243,7 @@ function mpd_persist_over_multisite($persist_post) {
     //Get the categories for the post
     $source_categories = mpd_get_objects_of_post_categories($persist_post->source_post_id, get_post_type($persist_post->source_post_id));
     //Get the taxonomy terms for the post
-    $source_taxonomies = mpd_get_post_taxonomy_terms($persist_post->source_post_id);
+    $source_taxonomies = mpd_get_post_taxonomy_terms($persist_post->source_post_id, false);
 
     //Using the orgininal post object we now want to insert our any new data based on user settings for use
     //in the post object that we will be adding to the destination site

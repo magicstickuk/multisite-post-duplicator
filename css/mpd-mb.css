@@ -57,4 +57,7 @@
 .notice-considerations{
   margin-left: 3em !important;
 }
+.notice-considerations p{
+  font-size: 0.9em;
+}
 

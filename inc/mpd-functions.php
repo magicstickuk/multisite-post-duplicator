@@ -262,7 +262,7 @@ function mpd_get_featured_image_from_source($post_id){
  *
  */
 function mpd_set_featured_image_to_destination($destination_id, $image_details){
-
+    
     // Get the upload directory for the current site
     $upload_dir = wp_upload_dir();
     // Get all the data inside a file and attach it to a variable
@@ -606,8 +606,6 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
 
     $message        = '<div class="updated"><p>';
     $message       .= apply_filters('mpd_admin_notice_text', __('You succesfully duplicated this post to', 'multisite-post-duplicator' ) ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post', 'multisite-post-duplicator' ).'</a>', $site_name, $site_url, $destination_blog_details);
-
-    $message       .= get_option('mpd_considerations') ? " ". __('with the following considerations:', 'multisite-post-duplicator' ) : '';
     $message       .= '</p></div>';
 
     $option_value = get_option('mpd_admin_notice');
@@ -641,16 +639,9 @@ function mpd_plugin_admin_notices(){
         delete_option('mpd_admin_notice');
 
     }
-    // If there are any considerations in the database display them.
-    if($considerations = get_option('mpd_considerations')){
 
-        echo $considerations;
-        delete_option('mpd_considerations');
-
-    }
-
+    do_action('mpd_after_notices');
     
-
 }
 
 /**
@@ -977,11 +968,11 @@ function mpd_set_destination_categories($post_id, $source_categories, $post_type
  *
  * @since 0.9
  * @param $post_id The the ID of post being copied
- * 
+ * @param $destination_id The the ID destination site (for validations)
  * @return array An array of term objects used in the post
  *
  */
-function mpd_get_post_taxonomy_terms($post_id){
+function mpd_get_post_taxonomy_terms($post_id, $destination_id){
 
     $source_taxonomy_terms_object = array();
 
@@ -997,7 +988,7 @@ function mpd_get_post_taxonomy_terms($post_id){
 
     }
 
-    return $source_taxonomy_terms_object;
+    return apply_filters('mpd_post_taxonomy_terms', $source_taxonomy_terms_object, $destination_id);
 
 }
 
@@ -1025,7 +1016,7 @@ function mpd_set_post_taxonomy_terms($source_taxonomy_terms_object, $post_id, $p
                 wp_remove_object_terms( $post_id, $term->slug, $term->taxonomy );
 
             }
-            
+
         }
         
     }
@@ -1288,65 +1279,3 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
     return $attach_id;
 
 }
-
-function mpd_take_note_of_posttypes(){
-
-    $wp_post_types  = get_post_types();
-    $post_types     = get_option('mpd_noted_posttypes');
-
-    if($wp_post_types !== $post_types ){
-
-        update_option('mpd_noted_posttypes', $wp_post_types );
-
-    }
-
-}
-
-add_action('admin_head', 'mpd_take_note_of_posttypes');
-
-function mpd_take_note_of_taxonomies(){
-
-    $wp_taxonomies  = get_taxonomies();
-    $mpd_taxonomies = get_option('mpd_noted_taxonomies');
-
-    if($wp_taxonomies !== $mpd_taxonomies ){
-
-        update_option('mpd_noted_taxonomies', $wp_taxonomies );
-
-    }
-
-}
-
-add_action('admin_head', 'mpd_take_note_of_taxonomies');
-
-function mpd_post_type_considerations($mdp_post, $attached_images, $meta_values, $source_id, $destination_id){
-
-    $current_considerations = get_option('mpd_considerations');
-    if($current_considerations){
-
-        $considerations = $current_considerations;
-
-    }
-
-    $post_type              = $mdp_post['post_type'];
-    $destination_post_types = get_blog_option($destination_id, 'mpd_noted_posttypes');
-
-    if($destination_post_types){
-
-        if(!in_array($destination_post_types, $post_type)){
-
-            $considerations .= "<div class='notice notice-info notice-considerations'><p>";
-            $considerations .= __("The post type of this post", 'multisite-post-duplicator'  );
-            $considerations .= " '<em>" . $post_type . "</em>' ";
-            $considerations .= __("doesn't exist in the destination site. In order for you to see the post you just created would will have to register a post-type called", 'multisite-post-duplicator' );
-            $considerations .= " '<em>" . $post_type . "</em>' ";
-            $considerations .= " " . __("in that site",  'multisite-post-duplicator' );
-            $considerations .= ".</p></div>";
-
-            update_option('mpd_considerations', $considerations);
-        }
-        
-    }
-    
-}
-add_action('mpd_during_core_in_source', 'mpd_post_type_considerations', 20, 5);

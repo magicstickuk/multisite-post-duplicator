@@ -25,6 +25,7 @@ $fs = array(
 	'inc/core',
 	'inc/persist',
 	'inc/acf-functions',
+	'inc/considerations',
 	'addons/bulkaction-mpd-addon',
 	'addons/restrictSites-mpd-addon',
 	'addons/roleAccess-mpd-addon',
