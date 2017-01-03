@@ -45,6 +45,7 @@ function mpd_take_note_of_posttypes(){
 }
 
 add_action('admin_head', 'mpd_take_note_of_posttypes');
+add_action('wp_head', 'mpd_take_note_of_posttypes');
 
 function mpd_take_note_of_taxonomies(){
 
@@ -60,6 +61,7 @@ function mpd_take_note_of_taxonomies(){
 }
 
 add_action('admin_head', 'mpd_take_note_of_taxonomies');
+add_action('wp_head', 'mpd_take_note_of_taxonomies');
 
 function mpd_post_type_considerations($mdp_post, $attached_images, $meta_values, $source_id, $destination_id){
 
@@ -166,7 +168,7 @@ function mpd_acf_considerations($acf_control_row, $meta, $acf_field_key, $destin
         $considerations .= "<div class='notice notice-info notice-considerations'><p>";
         $considerations .= __("The Advanced Custom Field", 'multisite-post-duplicator'  );
         $considerations .= " '<em>" . $acf_field_source['label'] . "</em>' ";
-        $considerations .= __("doesn't exsist in the destination site so will not appear unless you export this field from this site and import into the destination site.", 'multisite-post-duplicator' );
+        $considerations .= __("doesn't exsist in the destination site so will not appear unless you export this field from this site and import into the destination site", 'multisite-post-duplicator' );
         $considerations .= ".</p></div>";
 
     }

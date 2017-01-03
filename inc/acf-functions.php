@@ -47,7 +47,9 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                 
                 if($result){
 
-                    do_action('mpd_acf_field_found', $result, $meta, $acf_field_key, $destination_blog_id);
+                    if(current_filter() == 'mpd_during_core_in_source'){
+                        do_action('mpd_acf_field_found', $result, $meta, $acf_field_key, $destination_blog_id);
+                    }
 
                     $acf_control    = unserialize($result->post_content);
                     $acf_type       = $acf_control['type'];
