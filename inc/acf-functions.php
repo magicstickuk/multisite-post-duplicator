@@ -9,7 +9,7 @@
  * @since 1.3
  * @param array $mdp_post Data used to set up the destination post
  * @param array $attached_images Data about the images in the main content of the source post
- * @param array $meta_values All meta aatached to the source post
+ * @param array $meta_values All meta attached to the source post
  * @param int $post_id_to_copy The ID of the source post
  * @param int $destination_blog_id The ID destination site
  * @return null
