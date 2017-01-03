@@ -38,8 +38,8 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                 $query          = $wpdb->prepare("
                     SELECT post_content
                     FROM $tablename 
-                    WHERE post_name = '$acf_field_key'
-                    AND post_type = 'acf-field'"
+                    WHERE post_name = '%s'
+                    AND post_type = 'acf-field'", $acf_field_key
                 );
 
                 //Get the posssible ACF controller post for this image
