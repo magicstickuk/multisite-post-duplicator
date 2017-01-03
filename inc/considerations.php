@@ -160,7 +160,7 @@ add_action('mpd_during_core_in_source', 'mpd_post_type_considerations', 20, 5);
  *
 */
 function mpd_taxonomy_considerations($source_taxonomy_terms_object, $destination_id){
-    
+    update_site_option('source_taxonomy_terms_object', $source_taxonomy_terms_object);
     if($destination_id){
         // Get any considerations currently in database
         $current_considerations = get_option('mpd_considerations');
@@ -173,13 +173,15 @@ function mpd_taxonomy_considerations($source_taxonomy_terms_object, $destination
                 $destination_blog       = get_blog_details( $destination_id);
                 $destination_blog_name  = $destination_blog->blogname;
                 $destination_blog_url   = $destination_blog->siteurl;
-                
+                $i = 0;
+                update_site_option('source_taxonomy_objectlenght', count(source_taxonomy_terms_object));
                 // For each taxonomey object on the source site we are looking to see if the taxonomy has been
                 // noted in the destination site. If it hasn't create a notice to be displayed at 'admin_notices' action
                 foreach ($source_taxonomy_terms_object as $taxonomy_object) {
 
                     $looking_for    = $taxonomy_object[0]->taxonomy;
-                   
+                    update_site_option('source_taxonomy_lookingfor'.$i, $looking_for);
+
                     if(!in_array($looking_for, $taxonomies)){
 
                         $considerations .= "<div class='notice notice-info notice-considerations'><p>";
@@ -194,7 +196,7 @@ function mpd_taxonomy_considerations($source_taxonomy_terms_object, $destination
                         $considerations .= ".</p></div>";
                         //Store the markup in a database for use at 'admin_notice' action
                         update_option('mpd_considerations', $considerations);
-
+                        $i++;
                     }
 
                 }
@@ -253,3 +255,15 @@ function mpd_acf_considerations($acf_control_row, $meta, $acf_field_key, $destin
 }
 
 add_action('mpd_acf_field_found', 'mpd_acf_considerations', 10, 4);
+
+function testing(){
+    global $post;
+    //$getoptions = mpd_get_post_taxonomy_terms($post->ID);
+       $getoptions =              get_site_option('source_taxonomy_terms_object');
+    foreach ($getoptions as $option) {
+        print_r($option[0]->taxonomy);
+    }
+    //print_r($getoptions);
+}
+add_action('admin_notices','testing' );
+
