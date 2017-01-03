@@ -26,7 +26,7 @@ function mpd_add_consideration_text($message){
     $message       .= get_option('mpd_considerations') ? " ". __('with the following considerations:', 'multisite-post-duplicator' ) : '';
     
     return $message;
-    
+
 }
 add_filter('mpd_admin_notice_text','mpd_add_consideration_text');
 
@@ -153,3 +153,58 @@ function mpd_taxonomy_considerations($source_taxonomy_terms_object, $destination
     
 }
 add_filter('mpd_post_taxonomy_terms', 'mpd_taxonomy_considerations', 20, 2);
+
+function mpd_acf_considerations($acf_control_row, $meta, $acf_field_key, $destination_blog_id){
+
+    $acf_field_source = get_field_object($acf_field_key);
+    $acf_field_source = mpd_process_field_object($acf_field_source);
+    update_site_option('acf_field_source', $acf_field_source);
+    switch_to_blog($destination_blog_id);
+
+        $acf_field_destination = get_field_object($acf_field_key);
+        $acf_field_destination = mpd_process_field_object($acf_field_destination);
+        update_site_option('acf_field_destination', $acf_field_destination);
+    restore_current_blog();
+
+    $current_considerations = get_option('mpd_considerations');
+        
+    if($current_considerations){
+
+        $considerations = $current_considerations;
+
+    }
+
+    if(!$acf_field_destination){
+        //The acf field doesnt exist in the destination site.
+        $considerations .= "<div class='notice notice-info notice-considerations'><p>";
+        $considerations .= __("The Advanced Custom Field", 'multisite-post-duplicator'  );
+        $considerations .= " '<em>" . $acf_field_source['label'] . "</em>' ";
+        $considerations .= __("doesn't exsist in the destination site so will not appear unless you export this field from this site and import into the destination site.", 'multisite-post-duplicator' );
+        $considerations .= ".</p></div>";
+
+    }
+    if($acf_field_source !== $acf_field_destination){
+        //ACF Field exists but no not appear to sync identically. Be carefult
+        $considerations .= "<div class='notice notice-info notice-considerations'><p>";
+        $considerations .= __("The Advanced Custom Field", 'multisite-post-duplicator'  );
+        $considerations .= " '<em>" . $acf_field_source['label'] . "</em>' ";
+        $considerations .= __("exists in the destination site. However, the field configuaration appears to be out of sync with the configuation on the destination site. This could produce some undesired results", 'multisite-post-duplicator' );
+        $considerations .= ".</p></div>";
+
+        
+
+    }
+
+    update_option('mpd_considerations', $considerations);
+
+}
+add_action('mpd_acf_field_found', 'mpd_acf_considerations', 10, 4);
+
+function mpd_process_field_object($acf_field_object){
+
+    unset($acf_field_object['ID']);
+    unset($acf_field_object['parent']);
+    unset($acf_field_object['menu_order']);
+
+    return $acf_field_object;
+}

@@ -1279,3 +1279,16 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
     return $attach_id;
 
 }
+
+// function testing(){
+//     global $post;
+//     $wp_post_types  = get_post_types();
+//     $taxonomies_to_post_types = array();
+//     foreach ($wp_post_types as $key => $post_type){
+//         $taxonomies_to_post_types[$key] = get_object_taxonomies($post_type);
+//     }
+    
+
+//     print_r($taxonomies_to_post_types);
+// }
+// add_action('admin_notices','testing');
