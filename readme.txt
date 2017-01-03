@@ -77,8 +77,10 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 = 1.4 =
 * NEW: Signposting for networks where custom post types and taxonomies are not synced throughout.
-* Improved performance of taxonomy duplication on linked posts
+* NEW: Signposting for instances where user's 'Advanced Custom Fields Field Groups' don't exist in the destination site.
+* Improved performance of taxonomy duplication on linked posts.
 * Fixed issue where taxonomy terms would not copy in some senarios.
+* Removed some PHP warnings if running in debug mode.
 
 = 1.3.2 =
 * Fixed issue with new ACF image functions not playing nice with 'linked' posts
