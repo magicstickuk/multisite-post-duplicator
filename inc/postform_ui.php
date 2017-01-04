@@ -159,41 +159,34 @@ function mpd_publish_top_right(){
 
 function mpd_clone_post($post_id){
 
-
     if (!count($_POST)){
-
         return $post_id;
-        
     }
     
-    if(    ( isset($_POST["post_status"] ) )
-        && ( $_POST["post_status"] != "auto-draft" )
-        && ( isset($_POST['mpd_blogs'] ) )
-        && ( count( $_POST['mpd_blogs'] ) )
-        && ( $_POST["post_ID"] == $post_id ) //hack to avoid execution in cloning process
-    ){
+    if(( isset($_POST["post_status"] ) ) && ( $_POST["post_status"] != "auto-draft" ) && ( isset($_POST['mpd_blogs'] ) ) && ( count( $_POST['mpd_blogs'] ) ) && ( $_POST["post_ID"] == $post_id ) ){
 
-    $mpd_blogs = $_POST['mpd_blogs'];
+        $mpd_blogs = $_POST['mpd_blogs'];
 
         foreach( $mpd_blogs as $mpd_blog_id ){
 
-
-                $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
+            $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
                 
-                if(isset($_POST['persist'])){
+            if(isset($_POST['persist'])){
 					
-					$args = array();
-					
-                    $args['source_id'] = get_current_blog_id();
-                    $args['destination_id'] = $mpd_blog_id;
-                    $args['source_post_id'] = $_POST['ID'];
-                    $args['destination_post_id'] = $createdPost['id'];
+				$args = array(
+
+                    'source_id'      => get_current_blog_id(),
+                    'destination_id' => $mpd_blog_id,
+                    'source_post_id' => $_POST['ID'],
+                    'destination_post_id' => $createdPost['id']
+
+                );
                     
-                    mpd_add_persist($args);
+                mpd_add_persist($args);
 
-                }
+            }
                 
-            }      
+        }      
 
     }
 

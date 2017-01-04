@@ -160,44 +160,49 @@ add_action('mpd_during_core_in_source', 'mpd_post_type_considerations', 20, 5);
  *
 */
 function mpd_taxonomy_considerations($source_taxonomy_terms_object, $destination_id){
-    update_site_option('source_taxonomy_terms_object', $source_taxonomy_terms_object);
+   
     if($destination_id){
+
         // Get any considerations currently in database
         $current_considerations = get_option('mpd_considerations');
-        $considerations = $current_considerations ? $current_considerations : '';
+        $considerations         = $current_considerations ? $current_considerations : '';
 
         if($source_taxonomy_terms_object){
 
             if($taxonomies = get_blog_option($destination_id , 'mpd_noted_taxonomies')){
+                
                 // Get destination blog details so we can use in admin notice
                 $destination_blog       = get_blog_details( $destination_id);
                 $destination_blog_name  = $destination_blog->blogname;
                 $destination_blog_url   = $destination_blog->siteurl;
                 
-                
                 // For each taxonomey object on the source site we are looking to see if the taxonomy has been
                 // noted in the destination site. If it hasn't create a notice to be displayed at 'admin_notices' action
                 foreach ($source_taxonomy_terms_object as $taxonomy_object) {
 
-                    $looking_for    = $taxonomy_object[0]->taxonomy;
+                    if(isset( $taxonomy_object[0])){
 
-                    if(!in_array($looking_for, $taxonomies)){
+                        $looking_for    = $taxonomy_object[0]->taxonomy;
 
-                        $considerations .= "<div class='notice notice-info notice-considerations'><p>";
-                        $considerations .= __("The taxonomy from this post", 'multisite-post-duplicator'  );
-                        $considerations .= " '<em>" . $looking_for . "</em>' ";
-                        $considerations .= __("doesn't exist in the destination site. In order for you to see and use the taxonomy's terms you just copied would will have to register a taxonomy called", 'multisite-post-duplicator' );
-                        $considerations .= " '<em>" . $looking_for . "</em>' ";
-                        $considerations .= __("in site",  'multisite-post-duplicator' );
-                        $considerations .= " " . "<a target='_blank' href='" . $destination_blog_url.  "/wp-admin'>";
-                        $considerations .= $destination_blog_name;
-                        $considerations .= "</a>";
-                        $considerations .= ".</p></div>";
-                        //Store the markup in a database for use at 'admin_notice' action
-                        update_option('mpd_considerations', $considerations);
-                        
+                        if(!in_array($looking_for, $taxonomies)){
+
+                            $considerations .= "<div class='notice notice-info notice-considerations'><p>";
+                            $considerations .= __("The taxonomy from this post", 'multisite-post-duplicator'  );
+                            $considerations .= " '<em>" . $looking_for . "</em>' ";
+                            $considerations .= __("doesn't exist in the destination site. In order for you to see and use the taxonomy's terms you just copied would will have to register a taxonomy called", 'multisite-post-duplicator' );
+                            $considerations .= " '<em>" . $looking_for . "</em>' ";
+                            $considerations .= __("in site",  'multisite-post-duplicator' );
+                            $considerations .= " " . "<a target='_blank' href='" . $destination_blog_url.  "/wp-admin'>";
+                            $considerations .= $destination_blog_name;
+                            $considerations .= "</a>";
+                            $considerations .= ".</p></div>";
+                            //Store the markup in a database for use at 'admin_notice' action
+                            update_option('mpd_considerations', $considerations);
+                            
+                        }
+                    
                     }
-
+                   
                 }
 
             }

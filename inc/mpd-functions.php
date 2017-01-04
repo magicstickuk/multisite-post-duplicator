@@ -28,7 +28,9 @@ function mpd_get_post_types_to_ignore(){
 
             'revision',
             'nav_menu_item',
-            'attachment'
+            'attachment',
+            'acf-field-group',
+            'acf-field'
 
         )
     );
