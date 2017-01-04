@@ -42,7 +42,9 @@ function mpd_metaboxes(){
 
                     $priority = apply_filters( 'mpd_metabox_priority', 'high' );
 
-                    add_meta_box( 'multisite_clone_metabox', "<i class='fa fa-clone' aria-hidden='true'></i> " . __('Multisite Post Duplicator', 'multisite-post-duplicator' ), 'mpd_publish_top_right', $page, 'side', $priority );
+                  //  add_meta_box( 'multisite_clone_metabox', "<i class='fa fa-clone' aria-hidden='true'></i> " . __('Multisite Post Duplicator', 'multisite-post-duplicator' ), 'mpd_publish_top_right', $page, 'side', $priority );
+                        add_meta_box( 'multisite_clone_metabox', "<img style='width:1em; height:auto;float:left' src='". plugins_url('../',__FILE__) ."/images/Asset_2.svg'> " . __('Multisite Post Duplicator', 'multisite-post-duplicator' ), 'mpd_publish_top_right', $page, 'side', $priority );
+
 
                     do_action('mpd_meta_box', $page);
                    
