@@ -207,3 +207,81 @@ function mpd_do_acf_images_to_destination($post_id){
 
 add_action('mpd_end_of_core_before_return', 'mpd_do_acf_images_to_destination', 10, 1);
 add_action('mpd_persist_end_of_core_before_return', 'mpd_do_acf_images_to_destination', 10, 1);
+
+function copy_acf_field_group($post_id, $destination_id){
+       
+    $post_type = get_post_type($post_id);
+
+    if($post_type == 'acf-field-group'){
+                
+        update_option('skip_standard_dup', 1);
+           
+        //find out field key exists in destination.
+
+        global $wpdb;
+        
+        $source_tablename       = mpd_get_tablename(get_current_blog_id());
+        $destination_tablename  = mpd_get_tablename($destination_id);
+
+        update_site_option('acf_source_tablename', $source_tablename  );
+        update_site_option('acf_destination_tablename',  $destination_tablename  );
+
+        $source_field_key       = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $source_tablename WHERE ID = %d AND post_type='acf-field-group'", $post_id ) );
+
+        update_site_option('acf_the_soruce_field_key',  $source_field_key->post_name  );
+
+        $does_exist             = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $destination_tablename WHERE post_name = %s AND post_type='acf-field-group'", $source_field_key->post_name ) );
+
+        update_site_option('acf_does_exsist',  $does_exist );
+
+        //If it does update post and update all of its children
+        
+        if($does_exist){
+
+            $source_child_posts            = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $source_tablename WHERE post_parent = %d", $post_id ));
+            $destination_child_posts       = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $destination_tablename WHERE post_parent = %d", $does_exist->ID ));
+            
+            wp_update_post(array(
+                
+                'ID'           => $does_exist->ID,
+                'post_content' => $does_exist->post_content,
+                'post_title'   => $does_exist->post_title,
+                'post_excerpt' => $does_exist->post_excerpt,
+
+            ));
+
+            foreach ($source_child_posts as $source_child_post) {
+                
+                //Check that the child exists
+                $does_child_exist = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $destination_tablename WHERE post_name = %s", $source_child_post->post_name) );
+
+                //if it does update the post with source child data
+                if($does_child_exist){
+                    
+                    wp_update_post(array(
+                    
+                        'ID' => $child_post->ID,
+    
+                    ));
+                }else{
+
+                    
+                }
+                
+                //if it doesn't create a post with source child data
+        
+            // }
+    
+        // }else{
+
+        //         //If it does update post and update all of its children
+                
+        //         //If it doesnt Duplicate the acf field group and all its children.
+
+        // }
+
+    }
+
+    return;
+}
+add_action('mpd_single_batch_before', 'copy_acf_field_group', 10, 2);

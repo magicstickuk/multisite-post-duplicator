@@ -106,7 +106,12 @@ function mpd_bulk_action() {
 
       foreach($post_ids as $post_id){
           
-          do_action('mpd_single_batch_before', $post_id);
+          do_action('mpd_single_batch_before', $post_id, $get_site[0]);
+
+          if(get_option('skip_standard_dup')){
+                  delete_option('skip_standard_dup' );
+                  continue;
+          }
 
           $results[] = mpd_duplicate_over_multisite(
               
@@ -139,13 +144,17 @@ function mpd_bulk_action() {
       $family_tree          = mpd_map_new_family_tree($map_family_tree);
       
       $countBatch           = count($results);
-      $destination_name     = get_blog_details($get_site[0])->blogname;
-      $destination_edit_url = get_admin_url( $get_site[0], 'edit.php?post_type='.$_REQUEST['post_type']);
-      $the_ess              = $countBatch != 1 ? __('posts have', 'multisite-post-duplicator') : __('post has', 'multisite-post-duplicator');
-      $notice               = '<div class="updated"><p>'.$countBatch. " " . $the_ess . " " . __('been duplicated to', 'multisite-post-duplicator' ) ." '<a href='".$destination_edit_url."'>". $destination_name ."'</a></p></div>";
 
-      update_option('mpd_admin_bulk_notice', $notice );
+      if($countBatch){
+          $destination_name     = get_blog_details($get_site[0])->blogname;
+          $destination_edit_url = get_admin_url( $get_site[0], 'edit.php?post_type='.$_REQUEST['post_type']);
+          $the_ess              = $countBatch != 1 ? __('posts have', 'multisite-post-duplicator') : __('post has', 'multisite-post-duplicator');
+          $notice               = '<div class="updated"><p>'.$countBatch. " " . $the_ess . " " . __('been duplicated to', 'multisite-post-duplicator' ) ." '<a href='".$destination_edit_url."'>". $destination_name ."'</a></p></div>";
 
+          update_option('mpd_admin_bulk_notice', $notice );
+
+      }
+     
       do_action('mpd_batch_after', $results);
 
   }
