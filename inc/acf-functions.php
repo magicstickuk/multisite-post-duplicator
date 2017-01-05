@@ -223,14 +223,12 @@ function copy_acf_field_group($post_id, $destination_id){
         $source_tablename       = mpd_get_tablename(get_current_blog_id());
         $destination_tablename  = mpd_get_tablename($destination_id);
 
-        update_site_option('acf_source_tablename', $source_tablename  );
-        update_site_option('acf_destination_tablename',  $destination_tablename  );
 
-        $source_field_key       = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $source_tablename WHERE ID = %d AND post_type='acf-field-group'", $post_id ) );
+        $source_post       = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $source_tablename WHERE ID = %d AND post_type='acf-field-group'", $post_id ) );
 
-        update_site_option('acf_the_soruce_field_key',  $source_field_key->post_name  );
+        update_site_option('acf_the_soruce_field_key',  $source_post->post_name  );
 
-        $does_exist             = $wpdb->get_row($wpdb->prepare( "SELECT * FROM $destination_tablename WHERE post_name = %s AND post_type='acf-field-group'", $source_field_key->post_name ) );
+        $does_exist             = $wpdb->get_row($wpdb->prepare( "SELECT * FROM $destination_tablename WHERE post_name = %s AND post_type='acf-field-group'", $source_post->post_name ) );
 
         update_site_option('acf_does_exsist',  $does_exist );
 
@@ -242,22 +240,18 @@ function copy_acf_field_group($post_id, $destination_id){
             wp_update_post(array(
                 
                 'ID'           => $does_exist->ID,
-                'post_content' => $does_exist->post_content,
-                'post_title'   => $does_exist->post_title,
-                'post_excerpt' => $does_exist->post_excerpt,
+                'post_content' => $source_post->post_content,
+                'post_title'   => $source_post->post_title,
+                'post_excerpt' => $source_post->post_excerpt,
 
             ));
 
-            $source_child_posts            = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $source_tablename WHERE post_parent = %d", $post_id ));
-            
-            update_site_option('acf_does_exsist',  $source_child_posts );
-            
+            $source_child_posts = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $source_tablename WHERE post_parent = %d", $post_id ));
 
             foreach ($source_child_posts as $source_child_post) {
                 
                 //Check that the child exists
-                $does_child_exist = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $destination_tablename WHERE post_name = %s", $source_child_post->post_name) );
-
+                $does_child_exist = $wpdb->get_row($wpdb->prepare( "SELECT * FROM $destination_tablename WHERE post_name = %s", $source_child_post->post_name) );
 
                 $matching_source_post = $wpdb->get_row($wpdb->prepare( "SELECT * FROM $source_tablename WHERE post_name = %s", $source_child_post->post_name) );
 
@@ -296,6 +290,50 @@ function copy_acf_field_group($post_id, $destination_id){
             }
 
             restore_current_blog();
+        
+        }else{
+            //Insert new post into destination. get children insert the children and assign children's parent as the new posts id.
+            switch_to_blog($destination_id);
+
+            $new_group_id = wp_insert_post(array(
+
+                        'post_content' => $source_post->post_content,
+                        'post_title'   => $source_post->post_title,
+                        'post_excerpt' => $source_post->post_excerpt,
+                        'post_status'  => $source_post->post_status,
+                        'post_type'  => $source_post->post_type,
+                        'post_name'  => $source_post->post_name,
+                        'comment_status' => $source_post->comment_status,
+                        'ping_status' => $source_post->ping_status,
+                        'menu_order' => $source_post->menu_order
+    
+            ));
+
+            $source_child_posts = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $source_tablename WHERE post_parent = %d", $post_id ));
+
+            foreach ($source_child_posts as $source_child_post) {
+
+                    wp_insert_post(array(
+
+                        'post_content' => $source_child_post->post_content,
+                        'post_title'   => $source_child_post->post_title,
+                        'post_excerpt' => $source_child_post->post_excerpt,
+                        'post_parent'  => $new_group_id,
+                        'post_status'  => $source_child_post->post_status,
+                        'post_type'  => $source_child_post->post_type,
+                        'post_name'  => $source_child_post->post_name,
+                        'comment_status' => $source_child_post->comment_status,
+                        'ping_status' => $source_child_post->ping_status,
+                        'menu_order' => $source_child_post->menu_order
+    
+                    ));
+
+            }
+
+
+
+            restore_current_blog();
+
         }
        
 
