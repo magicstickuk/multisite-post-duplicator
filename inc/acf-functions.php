@@ -230,17 +230,15 @@ function copy_acf_field_group($post_id, $destination_id){
 
         update_site_option('acf_the_soruce_field_key',  $source_field_key->post_name  );
 
-        $does_exist             = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $destination_tablename WHERE post_name = %s AND post_type='acf-field-group'", $source_field_key->post_name ) );
+        $does_exist             = $wpdb->get_row($wpdb->prepare( "SELECT * FROM $destination_tablename WHERE post_name = %s AND post_type='acf-field-group'", $source_field_key->post_name ) );
 
         update_site_option('acf_does_exsist',  $does_exist );
 
         //If it does update post and update all of its children
-        
         if($does_exist){
 
-            $source_child_posts            = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $source_tablename WHERE post_parent = %d", $post_id ));
-            $destination_child_posts       = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $destination_tablename WHERE post_parent = %d", $does_exist->ID ));
-            
+            switch_to_blog($destination_id);
+
             wp_update_post(array(
                 
                 'ID'           => $does_exist->ID,
@@ -250,35 +248,56 @@ function copy_acf_field_group($post_id, $destination_id){
 
             ));
 
+            $source_child_posts            = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $source_tablename WHERE post_parent = %d", $post_id ));
+            
+            update_site_option('acf_does_exsist',  $source_child_posts );
+            
+
             foreach ($source_child_posts as $source_child_post) {
                 
                 //Check that the child exists
                 $does_child_exist = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $destination_tablename WHERE post_name = %s", $source_child_post->post_name) );
+
+
+                $matching_source_post = $wpdb->get_row($wpdb->prepare( "SELECT * FROM $source_tablename WHERE post_name = %s", $source_child_post->post_name) );
 
                 //if it does update the post with source child data
                 if($does_child_exist){
                     
                     wp_update_post(array(
                     
-                        'ID' => $child_post->ID,
+                        'ID' => $does_child_exist->ID,
+                        'post_content' => $matching_source_post->post_content,
+                        'post_title'   => $matching_source_post->post_title,
+                        'post_excerpt' => $matching_source_post->post_excerpt,
+                        'post_parent'  => $does_child_exist->post_parent
     
                     ));
+
                 }else{
 
-                    
-                }
-                
-                //if it doesn't create a post with source child data
-        
-            // }
+                    wp_insert_post(array(
+
+                        'post_content' => $matching_source_post->post_content,
+                        'post_title'   => $matching_source_post->post_title,
+                        'post_excerpt' => $matching_source_post->post_excerpt,
+                        'post_parent'  => $does_exist->ID,
+                        'post_status'  => $matching_source_post->post_status,
+                        'post_type'  => $matching_source_post->post_type,
+                        'post_name'  => $matching_source_post->post_name,
+                        'comment_status' => $matching_source_post->comment_status,
+                        'ping_status' => $matching_source_post->ping_status,
+                        'menu_order' => $matching_source_post->menu_order
     
-        // }else{
+                    ));
+                    
+                 }
 
-        //         //If it does update post and update all of its children
-                
-        //         //If it doesnt Duplicate the acf field group and all its children.
+            }
 
-        // }
+            restore_current_blog();
+        }
+       
 
     }
 
