@@ -169,6 +169,15 @@ function mpd_clone_post($post_id){
 
         foreach( $mpd_blogs as $mpd_blog_id ){
 
+            do_action('mpd_single_metabox_before', $_POST['ID'], $mpd_blog_id);
+
+            if(get_option('skip_standard_dup')){
+                
+                delete_option('skip_standard_dup' );
+                continue;
+
+            }
+
             $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
                 
             if(isset($_POST['persist'])){
