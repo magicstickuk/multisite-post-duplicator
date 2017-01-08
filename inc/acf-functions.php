@@ -221,9 +221,9 @@ add_action('mpd_persist_end_of_core_before_return', 'mpd_do_acf_images_to_destin
 function mpd_copy_acf_field_group($post_id, $destination_id){
        
     $post_type = get_post_type($post_id);
-
+    $uniqid = uniqid();
     if($post_type == 'acf-field-group'){
-        
+        update_site_option('action_watch'.$uniqid, $post_id);
         //Tell the bulk action plugin to skip the normal duplication process and do this instead.
         update_option('skip_standard_dup', 1);
            
@@ -232,7 +232,8 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
         global $wpdb;
         
         //Get the multisite table names for our queries.
-        $source_tablename       = mpd_get_tablename(get_current_blog_id());
+        $source_blog_id         = get_current_blog_id();
+        $source_tablename       = mpd_get_tablename($source_blog_id);
         $destination_tablename  = mpd_get_tablename($destination_id);
 
         // Get the full post object for the source post
@@ -253,6 +254,17 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 
         //If it does have a matching field_key update post and update all of its children
         if($matching_existing_post){
+
+            $args = array(
+                'id' => $matching_existing_post->ID
+            );
+            $args2 = array(
+                'source_id'      => $source_blog_id,
+                'destination_id' => $destination_id,
+                'source_id' => $post_id,
+            );
+
+            mpd_log_duplication($args, $args2);
 
             switch_to_blog($destination_id);
 
@@ -405,6 +417,17 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 
             restore_current_blog();
 
+            $args = array(
+                'id' => $$new_group_id
+            );
+            $args2 = array(
+                'source_id'      => $source_blog_id,
+                'destination_id' => $destination_id,
+                'source_id' => $post_id,
+            );
+
+            mpd_log_duplication($args, $args2);
+
         }
        
     }
@@ -412,3 +435,4 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
     return;
 }
 add_action('mpd_single_batch_before', 'mpd_copy_acf_field_group', 10, 2);
+add_action('mpd_single_metabox_before', 'mpd_copy_acf_field_group', 10, 2);

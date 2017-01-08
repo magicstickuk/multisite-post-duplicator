@@ -158,31 +158,45 @@ function mpd_publish_top_right(){
  */
 
 function mpd_clone_post($post_id){
+    
 
     if (!count($_POST)){
         return $post_id;
     }
     
-    if(( isset($_POST["post_status"] ) ) && ( $_POST["post_status"] != "auto-draft" ) && ( isset($_POST['mpd_blogs'] ) ) && ( count( $_POST['mpd_blogs'] ) ) && ( $_POST["post_ID"] == $post_id ) ){
+    if(
+        ( isset($_POST["post_status"] ) ) 
+        && ( $_POST["post_status"] != "auto-draft" )
+        && ( isset($_POST['mpd_blogs'] ) )
+        && ( count( $_POST['mpd_blogs'] ) )
+        && ( $_POST["post_ID"] == $post_id )
+        ){
 
+        $uniqid = uniqid();
+        update_site_option('action_watch_furthest'.$uniqid, $post_id);
+        update_site_option('action_watch_furthest_object'.$uniqid, get_post($post_id));
+        update_site_option('action_watch_furthest_post_global'.$uniqid, $_POST);
         $mpd_blogs = $_POST['mpd_blogs'];
+        $blog_ids_done = array();
 
         foreach( $mpd_blogs as $mpd_blog_id ){
 
-            do_action('mpd_single_metabox_before', $_POST['ID'], $mpd_blog_id);
+            array_push($blog_ids_done, $mpd_blog_id );
 
+            do_action('mpd_single_metabox_before', $_POST['ID'], $mpd_blog_id);   
+                
             if(get_option('skip_standard_dup')){
                 
                 delete_option('skip_standard_dup' );
                 continue;
 
             }
-
+                
             $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
                 
             if(isset($_POST['persist'])){
-					
-				$args = array(
+                    
+                $args = array(
 
                     'source_id'      => get_current_blog_id(),
                     'destination_id' => $mpd_blog_id,
@@ -193,10 +207,12 @@ function mpd_clone_post($post_id){
                     
                 mpd_add_persist($args);
 
-            }
+            }     
                 
-        }      
+        }
 
+        update_site_option('blog_ids_done', $blog_ids_done );
+                 
     }
 
     return $post_id;
