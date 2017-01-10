@@ -158,7 +158,6 @@ function mpd_publish_top_right(){
  */
 
 function mpd_clone_post($post_id){
-    
 
     if (!count($_POST)){
         return $post_id;
@@ -172,12 +171,7 @@ function mpd_clone_post($post_id){
         && ( $_POST["post_ID"] == $post_id )
         ){
 
-        $uniqid = uniqid();
-        update_site_option('action_watch_furthest'.$uniqid, $post_id);
-        update_site_option('action_watch_furthest_object'.$uniqid, get_post($post_id));
-        update_site_option('action_watch_furthest_post_global'.$uniqid, $_POST);
         $mpd_blogs = $_POST['mpd_blogs'];
-        $blog_ids_done = array();
 
         foreach( $mpd_blogs as $mpd_blog_id ){
 
@@ -211,7 +205,7 @@ function mpd_clone_post($post_id){
                 
         }
 
-        update_site_option('blog_ids_done', $blog_ids_done );
+       
                  
     }
 

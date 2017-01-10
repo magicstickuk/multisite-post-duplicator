@@ -432,23 +432,45 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 			
 	global $wpdb;
 
-	$result = $wpdb->insert( 
-		$wpdb->base_prefix . "mpd_log", 
-		array( 
-			'source_id' 			=> get_current_blog_id(), 
-			'destination_id' 		=> $mpd_process_info['destination_id'],
-			'source_post_id'		=> $mpd_process_info['source_id'],
-			'destination_post_id'	=> $createdPostObject['id'],
-			'persist_action_count'	=> 0,
-			'dup_user_id'			=> get_current_user_id(),
-			'dup_time'				=> date("Y-m-d H:i:s")
-		), 
-		array( 
-			'%d','%d','%d','%d','%d','%d', '%s'
-		) 
-	);
+	$tableName = $wpdb->base_prefix . "mpd_log";
+	$current_blog_id = get_current_blog_id();
+
+	//Check if the log already exsists (avoiding duplication through save_post actions and filters)
+	$query = $wpdb->prepare("SELECT persist_active
+				FROM $tableName
+				WHERE 
+				source_id = %d 
+				AND destination_id = %d
+				AND source_post_id = %d
+				AND destination_post_id = %d", 
+				
+				$current_blog_id,
+				$mpd_process_info['destination_id'],
+				$mpd_process_info['source_id'],
+				$createdPostObject['id']);
+
+	$result = $wpdb->get_var($query);
+
+	//If the log doesn't exist then add to the database
+	if(!result){
+		$resultSubmitted = $wpdb->insert( 
+		$tableName, 
+			array( 
+				'source_id' 			=> $current_blog_id, 
+				'destination_id' 		=> $mpd_process_info['destination_id'],
+				'source_post_id'		=> $mpd_process_info['source_id'],
+				'destination_post_id'	=> $createdPostObject['id'],
+				'persist_action_count'	=> 0,
+				'dup_user_id'			=> get_current_user_id(),
+				'dup_time'				=> date("Y-m-d H:i:s")
+			), 
+			array( 
+				'%d','%d','%d','%d','%d','%d', '%s'
+			) 
+		);
+	}
 	
-	return $result;
+	return $resultSubmitted;
 	
 	
 }
@@ -993,7 +1015,7 @@ function mpd_persist_page(){
 	        	<?php foreach($rows as $row):?>
 		        	
 		        	<?php
-
+		        		//TODO!! Bring these variables in via mySQL query for increased performance.
 	        			$source_details 		= get_blog_details($row->source_id);
 	        			$destination_details 	= get_blog_details($row->destination_id);
 	        			$source_post 			= get_blog_post($row->source_id, $row->source_post_id);

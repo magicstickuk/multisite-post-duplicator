@@ -221,9 +221,9 @@ add_action('mpd_persist_end_of_core_before_return', 'mpd_do_acf_images_to_destin
 function mpd_copy_acf_field_group($post_id, $destination_id){
        
     $post_type = get_post_type($post_id);
-    $uniqid = uniqid();
+   
     if($post_type == 'acf-field-group'){
-        update_site_option('action_watch'.$uniqid, $post_id);
+        
         //Tell the bulk action plugin to skip the normal duplication process and do this instead.
         update_option('skip_standard_dup', 1);
            
@@ -254,6 +254,8 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 
         //If it does have a matching field_key update post and update all of its children
         if($matching_existing_post){
+
+            remove_action( 'save_post', 'mpd_copy_acf_field_group' );
 
             $args = array(
                 'id' => $matching_existing_post->ID
@@ -369,7 +371,7 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
             }
 
             restore_current_blog();
-        
+            
         }else{
             //Insert new post into destination. get children insert the children and assign children's parent as the new posts id.
             switch_to_blog($destination_id);
@@ -429,10 +431,11 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
             mpd_log_duplication($args, $args2);
 
         }
-       
+
     }
 
     return;
 }
+
 add_action('mpd_single_batch_before', 'mpd_copy_acf_field_group', 10, 2);
 add_action('mpd_single_metabox_before', 'mpd_copy_acf_field_group', 10, 2);
