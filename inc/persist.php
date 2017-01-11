@@ -432,11 +432,12 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 			
 	global $wpdb;
 
+	update_site_option('i_got_here', 1);
 	$tableName = $wpdb->base_prefix . "mpd_log";
 	$current_blog_id = get_current_blog_id();
 
 	//Check if the log already exsists (avoiding duplication through save_post actions and filters)
-	$query = $wpdb->prepare("SELECT persist_active
+	$query = $wpdb->prepare("SELECT *
 				FROM $tableName
 				WHERE 
 				source_id = %d 
@@ -449,10 +450,11 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 				$mpd_process_info['source_id'],
 				$createdPostObject['id']);
 
-	$result = $wpdb->get_var($query);
-
+	$result = $wpdb->get_results($query);
+	update_site_option('i_got_here_result', $result);
 	//If the log doesn't exist then add to the database
-	if(!result){
+	if(!$result){
+		update_site_option('i_got_here_noresult', 1);
 		$resultSubmitted = $wpdb->insert( 
 		$tableName, 
 			array( 
@@ -469,7 +471,7 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 			) 
 		);
 	}
-	
+	update_site_option('i_got_here_after', $resultSubmitted);
 	return $resultSubmitted;
 	
 	
