@@ -266,6 +266,19 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 
             mpd_log_duplication($args, $args2);
 
+            if(isset($_POST['persist'])){
+                
+                $args = array(
+                    'source_id' => $source_blog_id,
+                    'destination_id' => $destination_id,  
+                    'source_post_id' => $post_id,
+                    'destination_post_id' => $matching_existing_post->ID
+                    );
+
+                mpd_add_persist($args);
+
+            }
+
             switch_to_blog($destination_id);
 
             // Update the acf field group
@@ -369,20 +382,6 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
             }
 
             restore_current_blog();
-            
-
-            // if(isset($_POST['persist'])){
-                
-            //     $args = array(
-            //         'source_id' => get_current_blog_id(),
-            //         'destination_id' => $destination_id,  
-            //         'source_post_id' => $post_id,
-            //         'destination_post_id' => $matching_existing_post->ID
-            //         );
-
-            //     mpd_add_persist($args);
-
-            // }
 
 
         }else{

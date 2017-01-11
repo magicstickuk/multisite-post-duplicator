@@ -159,58 +159,71 @@ function mpd_publish_top_right(){
 
 function mpd_clone_post($post_id){
 
-    if (!count($_POST)){
-        return $post_id;
-    }
-    
-    if(
-        ( isset($_POST["post_status"] ) ) 
-        && ( $_POST["post_status"] != "auto-draft" )
-        && ( isset($_POST['mpd_blogs'] ) )
-        && ( count( $_POST['mpd_blogs'] ) )
-        && ( $_POST["post_ID"] == $post_id )
-        ){
+    $here = get_site_option('avoid_infinite');
 
-        $mpd_blogs = $_POST['mpd_blogs'];
-
-        foreach( $mpd_blogs as $mpd_blog_id ){
-
-            do_action('mpd_single_metabox_before', $_POST['ID'], $mpd_blog_id);   
-                
-            if(get_option('skip_standard_dup')){
-                
-                delete_option('skip_standard_dup' );
-                continue;
-
-            }
-                
-            $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
-                
-            if(isset($_POST['persist'])){
-                    
-                $args = array(
-
-                    'source_id'      => get_current_blog_id(),
-                    'destination_id' => $mpd_blog_id,
-                    'source_post_id' => $_POST['ID'],
-                    'destination_post_id' => $createdPost['id']
-
-                );
-                    
-                mpd_add_persist($args);
-
-                do_action('mpd_after_persist', $args);
-
-            }     
-                
+    if(!$here){
+        if (!count($_POST)){
+            return $post_id;
         }
+    
+        if(
+            ( isset($_POST["post_status"] ) ) 
+            && ( $_POST["post_status"] != "auto-draft" )
+            && ( isset($_POST['mpd_blogs'] ) )
+            && ( count( $_POST['mpd_blogs'] ) )
+            && ( $_POST["post_ID"] == $post_id )
+            ){
 
-       
-                 
+            $mpd_blogs = $_POST['mpd_blogs'];
+
+            foreach( $mpd_blogs as $mpd_blog_id ){
+
+                do_action('mpd_single_metabox_before', $_POST['ID'], $mpd_blog_id);   
+                
+                if(get_option('skip_standard_dup')){
+                
+                    delete_option('skip_standard_dup' );
+                    continue;
+
+                }
+                
+                $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
+                
+                if(isset($_POST['persist'])){
+                    
+                    $args = array(
+
+                        'source_id'      => get_current_blog_id(),
+                        'destination_id' => $mpd_blog_id,
+                        'source_post_id' => $_POST['ID'],
+                        'destination_post_id' => $createdPost['id']
+
+                    );
+                    
+                    mpd_add_persist($args);
+
+                    do_action('mpd_after_persist', $args);
+
+                }     
+                
+            }
+
+        }
+        
+        update_site_option('avoid_infinite', 1 );
+    
     }
-
+   
     return $post_id;
 
 }
 
 add_filter( 'save_post', 'mpd_clone_post', 100 );
+
+function mpd_weve_seen_the_page(){
+
+    delete_site_option('avoid_infinite');
+
+}
+
+add_action('shutdown', 'mpd_weve_seen_the_page');
