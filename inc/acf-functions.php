@@ -255,8 +255,6 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
         //If it does have a matching field_key update post and update all of its children
         if($matching_existing_post){
 
-            remove_action( 'save_post', 'mpd_copy_acf_field_group' );
-
             $args = array(
                 'id' => $matching_existing_post->ID
             );
@@ -372,6 +370,21 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 
             restore_current_blog();
             
+
+            // if(isset($_POST['persist'])){
+                
+            //     $args = array(
+            //         'source_id' => get_current_blog_id(),
+            //         'destination_id' => $destination_id,  
+            //         'source_post_id' => $post_id,
+            //         'destination_post_id' => $matching_existing_post->ID
+            //         );
+
+            //     mpd_add_persist($args);
+
+            // }
+
+
         }else{
             //Insert new post into destination. get children insert the children and assign children's parent as the new posts id.
             switch_to_blog($destination_id);
@@ -420,7 +433,7 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
             restore_current_blog();
 
             $args = array(
-                'id' => $$new_group_id
+                'id' => $new_group_id
             );
             $args2 = array(
                 'source_id'      => $source_blog_id,
@@ -430,12 +443,56 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 
             mpd_log_duplication($args, $args2);
 
+            // if(isset($_POST['persist'])){
+            //     update_site_option('post_is_set',1);
+            //     $args = array(
+            //         'source_id' => get_current_blog_id(),
+            //         'destination_id' => $destination_id,  
+            //         'source_post_id' => $_POST['ID'],
+            //         'destination_post_id' => $new_group_id
+            //         );
+
+            //     mpd_add_persist($args);
+
+            // }
+
         }
 
     }
 
     return;
+
 }
 
 add_action('mpd_single_batch_before', 'mpd_copy_acf_field_group', 10, 2);
 add_action('mpd_single_metabox_before', 'mpd_copy_acf_field_group', 10, 2);
+
+// function mpd_set_for_acf_group_persist($args){
+
+//     $the_post_type = get_post_type($args['source_post_id']);
+
+//     if($the_post_type == 'acf-field-group'){
+
+//         $args['skip_normal_persist'] == 1;
+
+//         update_option('mpd_do_acf_persist_post', $args);
+
+//     }
+
+//     return $args;
+
+// }
+// add_filter('mpd_persist_post_args', 'mpd_set_for_acf_group_persist');
+
+// function mpd_do_acf_group_persist($args){
+
+//     if(get_option('mpd_do_acf_persist_post')){
+
+//         mpd_copy_acf_field_group($args['source_post_id'], $args['destination_id']);
+
+//         delete_option('skip_standard_dup', 1);
+//         update_option('mpd_do_acf_persist_post', $args);
+
+//     }
+    
+// }

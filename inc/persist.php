@@ -432,7 +432,6 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 			
 	global $wpdb;
 
-	update_site_option('i_got_here', 1);
 	$tableName = $wpdb->base_prefix . "mpd_log";
 	$current_blog_id = get_current_blog_id();
 
@@ -451,10 +450,10 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 				$createdPostObject['id']);
 
 	$result = $wpdb->get_results($query);
-	update_site_option('i_got_here_result', $result);
+
 	//If the log doesn't exist then add to the database
 	if(!$result){
-		update_site_option('i_got_here_noresult', 1);
+
 		$resultSubmitted = $wpdb->insert( 
 		$tableName, 
 			array( 
@@ -471,7 +470,7 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 			) 
 		);
 	}
-	update_site_option('i_got_here_after', $resultSubmitted);
+
 	return $resultSubmitted;
 	
 	
@@ -891,13 +890,17 @@ function mpd_persist_post($post_id){
 		                'source_post_id' 		=> intval($persist_post->source_post_id),
 		                'destination_post_id' 	=> intval($persist_post->destination_post_id)
 		            ));
+
+		            if(!isset($args['skip_normal_persist'])){
+		            	mpd_persist_over_multisite($persist_post);
+
+		            	// Increment the count
+		            	mpd_set_persist_count($args);
+		            }
 		            
-		            mpd_persist_over_multisite($persist_post);
+		            
 
-		            // Increment the count
-		            mpd_set_persist_count($args);
-
-		            do_action('after_persist');
+		            do_action('mpd_after_persist');
 
 		        }
 		        

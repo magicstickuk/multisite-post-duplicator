@@ -175,8 +175,6 @@ function mpd_clone_post($post_id){
 
         foreach( $mpd_blogs as $mpd_blog_id ){
 
-            array_push($blog_ids_done, $mpd_blog_id );
-
             do_action('mpd_single_metabox_before', $_POST['ID'], $mpd_blog_id);   
                 
             if(get_option('skip_standard_dup')){
@@ -200,6 +198,8 @@ function mpd_clone_post($post_id){
                 );
                     
                 mpd_add_persist($args);
+
+                do_action('mpd_after_persist', $args);
 
             }     
                 
