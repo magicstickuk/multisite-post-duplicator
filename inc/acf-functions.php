@@ -291,20 +291,10 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
             ));
 
             //Get all source child posts
-            $source_child_posts = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT * FROM $source_tablename WHERE post_parent = %d AND post_status = 'publish'",
-                    $post_id
-                )
-            );
+            $source_child_posts      = mpd_acf_child_fields($post_id, $source_blog_id);
 
             //Get all destination child posts (this is for comparisson purposes further down the line)
-            $destination_child_posts = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT * FROM $destination_tablename WHERE post_parent = %d AND post_status = 'publish'",
-                    $matching_existing_post->ID
-                )
-            );
+            $destination_child_posts = mpd_acf_child_fields($matching_existing_post->ID, $destination_id);
 
             //We need an array of the source field key so we can compare with current destination keys at the end so
             //we can delete any from the destination that are no longer in the source (sync).
@@ -401,12 +391,7 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
     
             ));
 
-            $source_child_posts = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT * FROM $source_tablename WHERE post_parent = %d",
-                    $post_id
-                )
-            );
+            $source_child_posts = mpd_acf_child_fields($post_id, $source_blog_id);
 
             foreach ($source_child_posts as $source_child_post) {
 
@@ -425,6 +410,8 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
                     'menu_order'        => $source_child_post->menu_order
     
                 ));
+
+                $source_grandchild_posts = mpd_acf_child_fields($source_child_post->ID, $source_blog_id);
 
             }
 
@@ -456,6 +443,39 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 add_action('mpd_single_batch_before', 'mpd_copy_acf_field_group', 10, 2);
 add_action('mpd_single_metabox_before', 'mpd_copy_acf_field_group', 10, 2);
 
+function mpd_acf_child_fields($post_id, $blog_id){
+
+    global $wpdb;
+
+    $tablename  = mpd_get_tablename($blog_id);
+
+    $results    = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT * FROM $tablename WHERE post_parent = %d AND post_status = 'publish'",
+            $post_id
+        )
+    );
+
+    return $results;
+
+}
+
+function mpd_acf_decendant_fields($post_id, $blog_id){
+
+    global $wpdb;
+
+    $tablename  = mpd_get_tablename($blog_id);
+
+    $results    = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT * FROM $tablename WHERE post_parent = %d AND post_status = 'publish'",
+            $post_id
+        )
+    );
+
+    return $results;
+
+}
 
 function mpd_dont_show_acf_post_status($show){
 
