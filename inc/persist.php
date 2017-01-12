@@ -432,8 +432,10 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 			
 	global $wpdb;
 
-	$tableName = $wpdb->base_prefix . "mpd_log";
-	$current_blog_id = get_current_blog_id();
+	$desitnation_post_id = isset($mpd_process_info['desitnation_post_id']) ? $mpd_process_info['desitnation_post_id'] : $createdPostObject['id'];
+
+	$tableName 			= $wpdb->base_prefix . "mpd_log";
+	$current_blog_id 	= get_current_blog_id();
 
 	//Check if the log already exsists (avoiding duplication through save_post actions and filters)
 	$query = $wpdb->prepare("SELECT *
@@ -446,8 +448,9 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 				
 				$current_blog_id,
 				$mpd_process_info['destination_id'],
-				$mpd_process_info['source_id'],
-				$createdPostObject['id']);
+				$mpd_process_info['source_post_id'],
+				$desitnation_post_id
+			);
 
 	$result = $wpdb->get_results($query);
 
@@ -459,8 +462,8 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 			array( 
 				'source_id' 			=> $current_blog_id, 
 				'destination_id' 		=> $mpd_process_info['destination_id'],
-				'source_post_id'		=> $mpd_process_info['source_id'],
-				'destination_post_id'	=> $createdPostObject['id'],
+				'source_post_id'		=> $mpd_process_info['source_post_id'],
+				'destination_post_id'	=> $desitnation_post_id,
 				'persist_action_count'	=> 0,
 				'dup_user_id'			=> get_current_user_id(),
 				'dup_time'				=> date("Y-m-d H:i:s")
@@ -866,50 +869,55 @@ function mpd_set_persist_count($args){
  */
 function mpd_persist_post($post_id){
 	
-	$options = get_option( 'mdp_settings' );
+	$here = get_site_option('avoid_infinite_persist');
 
-	if((isset($options['allow_persist']) || !$options)){
+	if(!$here){
 
-		if( ! ( wp_is_post_revision( $post_id) || wp_is_post_autosave( $post_id ) ) ) {
+		$options = get_option( 'mdp_settings' );
 
-		    global $post;
+		if((isset($options['allow_persist']) || !$options)){
 
-			$blog_id = get_current_blog_id();
-		    
-			// Check if there is a link
-			$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
-			
-			// Do the duplications if there are any links
-		    if($persist_posts){
-		        
-		        foreach($persist_posts as $persist_post){
-		            
-		            $args = apply_filters('persist_post_args', array(
-		                'source_id' 			=> intval($persist_post->source_id),
-		                'destination_id' 		=> intval($persist_post->destination_id),
-		                'source_post_id' 		=> intval($persist_post->source_post_id),
-		                'destination_post_id' 	=> intval($persist_post->destination_post_id)
-		            ));
+			if( ! ( wp_is_post_revision( $post_id) || wp_is_post_autosave( $post_id ) ) ) {
 
-		            if(!isset($args['skip_normal_persist'])){
-		            	mpd_persist_over_multisite($persist_post);
+			    global $post;
 
-		            	// Increment the count
-		            	mpd_set_persist_count($args);
-		            }
-		            
-		            
+				$blog_id = get_current_blog_id();
+			    
+				// Check if there is a link
+				$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
+				
+				// Do the duplications if there are any links
+			    if($persist_posts){
+			        
+			        foreach($persist_posts as $persist_post){
+			            
+			            $args = apply_filters('persist_post_args', array(
+			                'source_id' 			=> intval($persist_post->source_id),
+			                'destination_id' 		=> intval($persist_post->destination_id),
+			                'source_post_id' 		=> intval($persist_post->source_post_id),
+			                'destination_post_id' 	=> intval($persist_post->destination_post_id)
+			            ));
 
-		            do_action('mpd_after_persist');
+			            if(!isset($args['skip_normal_persist'])){
+			            	mpd_persist_over_multisite($persist_post);
 
-		        }
-		        
-		    }
+			            	// Increment the count
+			            	mpd_set_persist_count($args);
+			            }
+
+			            do_action('mpd_after_persist');
+
+			        }
+			        
+			    }
+
+			}
 
 		}
+	
+	update_site_option('avoid_infinite_persist', 1 );
 
 	}
-	
  
 	return;
 	
@@ -1204,7 +1212,7 @@ function mpd_persist_checkbox(){
 
 	$options = get_option( 'mdp_settings' );
 
-	if(isset($options['allow_persist']) || !$options ): ?>     
+	if(isset($options['allow_persist']) || !$options || apply_filters('mpd_show_metabox_persist', true) ): ?>     
         
         <hr>
             

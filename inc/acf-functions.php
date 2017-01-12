@@ -33,8 +33,7 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                 global $wpdb;
 
                 $acf_field_key  = $meta_values["_" . $key][0];
-                $siteid         = $wpdb->blogid != 1 ? $wpdb->blogid . "_" : ''; 
-                $tablename      = $wpdb->base_prefix . $siteid . "posts";
+                $tablename      = mpd_get_tablename($wpdb->blogid);
                 $query          = $wpdb->prepare("
                     SELECT post_content
                     FROM $tablename 
@@ -144,19 +143,24 @@ function mpd_do_acf_images_to_destination($post_id){
             foreach ($acf_images as $acf_image) {
                 
                 $file       = $acf_image['img_url'];
-                $info       = pathinfo($file);
-                $file_name  = basename($file,'.'.$info['extension']);
 
-                $attachment = array(
-                     'post_mime_type' => $acf_image['img_post_mime'],
-                     'post_title'     => $file_name,
-                     'post_content'   => '',
-                     'post_status'    => 'inherit'
-                );
+                if($file){
+                    
+                    $info       = pathinfo($file);
+                    $file_name  = basename($file,'.'.$info['extension']);
 
-                $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id);
-                
-                update_field($acf_image['field'], $attach_id, $post_id);
+                    $attachment = array(
+                         'post_mime_type' => $acf_image['img_post_mime'],
+                         'post_title'     => $file_name,
+                         'post_content'   => '',
+                         'post_status'    => 'inherit'
+                    );
+
+                    $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id);
+                    
+                    update_field($acf_image['field'], $attach_id, $post_id);
+                }
+               
                 
             }
 
@@ -175,24 +179,28 @@ function mpd_do_acf_images_to_destination($post_id){
                 foreach($acf_gallery['image_ids'] as $key => $acf_image){
 
                     $file       = $acf_gallerys[$gallery_key]['img_url'][$key];
-                    $info       = pathinfo($file);
-                    $file_name  = basename($file,'.'.$info['extension']);
 
-                    $attachment = array(
+                    if($file){
+                        $info       = pathinfo($file);
+                        $file_name  = basename($file,'.'.$info['extension']);
 
-                         'post_mime_type' => $acf_gallerys[$gallery_key]['img_post_mime'][$key],
-                         'post_title'     => $file_name,
-                         'post_content'   => '',
-                         'post_status'    => 'inherit'
+                        $attachment = array(
 
-                    );
+                             'post_mime_type' => $acf_gallerys[$gallery_key]['img_post_mime'][$key],
+                             'post_title'     => $file_name,
+                             'post_content'   => '',
+                             'post_status'    => 'inherit'
 
-                    $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id);
+                        );
 
-                    array_push($attach_ids,$attach_id);
+                        $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id);
 
-                    update_field($acf_gallerys[$gallery_key]['field'], $attach_ids, $post_id);
+                        array_push($attach_ids,$attach_id);
 
+                        update_field($acf_gallerys[$gallery_key]['field'], $attach_ids, $post_id);
+
+                    }
+                    
                 }
 
             }  
@@ -256,24 +264,15 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
         if($matching_existing_post){
 
             $args = array(
-                'id' => $matching_existing_post->ID
-            );
-            $args2 = array(
-                'source_id'      => $source_blog_id,
-                'destination_id' => $destination_id,
-                'source_id' => $post_id,
+                'source_id'           => $source_blog_id,
+                'destination_id'      => $destination_id,
+                'source_post_id'      => $post_id,
+                'desitnation_post_id' => $matching_existing_post->ID
             );
 
-            mpd_log_duplication($args, $args2);
+            mpd_log_duplication(false, $args);
 
             if(isset($_POST['persist'])){
-                
-                $args = array(
-                    'source_id' => $source_blog_id,
-                    'destination_id' => $destination_id,  
-                    'source_post_id' => $post_id,
-                    'destination_post_id' => $matching_existing_post->ID
-                    );
 
                 mpd_add_persist($args);
 
@@ -432,28 +431,19 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
             restore_current_blog();
 
             $args = array(
-                'id' => $new_group_id
-            );
-            $args2 = array(
-                'source_id'      => $source_blog_id,
-                'destination_id' => $destination_id,
-                'source_id' => $post_id,
+                'source_id'           => $source_blog_id,
+                'destination_id'      => $destination_id,
+                'source_post_id'      => $post_id,
+                'desitnation_post_id' => $new_group_id
             );
 
-            mpd_log_duplication($args, $args2);
+            mpd_log_duplication(false, $args);
 
-            // if(isset($_POST['persist'])){
-            //     update_site_option('post_is_set',1);
-            //     $args = array(
-            //         'source_id' => get_current_blog_id(),
-            //         'destination_id' => $destination_id,  
-            //         'source_post_id' => $_POST['ID'],
-            //         'destination_post_id' => $new_group_id
-            //         );
+            if(isset($_POST['persist'])){
 
-            //     mpd_add_persist($args);
+                mpd_add_persist($args);
 
-            // }
+            }
 
         }
 
@@ -465,6 +455,37 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 
 add_action('mpd_single_batch_before', 'mpd_copy_acf_field_group', 10, 2);
 add_action('mpd_single_metabox_before', 'mpd_copy_acf_field_group', 10, 2);
+
+
+function mpd_dont_show_acf_post_status($show){
+
+    global $post;
+
+    $post_type = get_post_type($post->ID);
+
+    if($post_type == 'acf-field-group'){
+
+        return false;
+
+    }
+
+}
+add_filter('mpd_show_metabox_post_status', 'mpd_dont_show_acf_post_status');
+
+function mpd_dont_show_acf_prefix($show){
+
+    global $post;
+    
+    $post_type = get_post_type($post->ID);
+
+    if($post_type == 'acf-field-group'){
+
+        return false;
+
+    }
+
+}
+add_filter('mpd_show_metabox_prefix', 'mpd_dont_show_acf_prefix');
 
 // function mpd_set_for_acf_group_persist($args){
 

@@ -81,32 +81,42 @@ function mpd_publish_top_right(){
 
             <?php do_action('mpd_before_metabox_content'); ?>
 
-            <p><?php _e('Duplicated post status', 'multisite-post-duplicator' ); ?>:
+            <?php if(apply_filters('mpd_show_metabox_post_status', true)) :?>
 
-            <select id="mpd-new-status" name="mpd-new-status" style="width:100%">
+                <p><?php _e('Duplicated post status', 'multisite-post-duplicator' ); ?>:
 
-                <?php foreach ($post_statuses as $post_status_key => $post_status_value): ?>
+                <select id="mpd-new-status" name="mpd-new-status" style="width:100%">
+
+                    <?php foreach ($post_statuses as $post_status_key => $post_status_value): ?>
+                        
+                        <option value="<?php echo $post_status_key;?>" <?php echo $post_status_key == $status ? 'selected' : '' ?>><?php echo $post_status_value;?></option>
                     
-                    <option value="<?php echo $post_status_key;?>" <?php echo $post_status_key == $status ? 'selected' : '' ?>><?php echo $post_status_value;?></option>
+                    <?php endforeach ?>
                 
-                <?php endforeach ?>
-            
-            </select>
-               
-            </p>
+                </select>
+                   
+                </p>
 
-            <p><?php _e('Title prefix for new post', 'multisite-post-duplicator' ); ?>:
-            
-                <input type="text" style="width:100%" name="mpd-prefix" value="<?php echo mpd_get_prefix(); ?>"/>
+            <?php endif;?>
+
+            <?php if(apply_filters('mpd_show_metabox_prefix', true)) :?>
+
+                <p><?php _e('Title prefix for new post', 'multisite-post-duplicator' ); ?>:
                 
-            </p>
-             <script>
+                    <input type="text" style="width:100%" name="mpd-prefix" value="<?php echo mpd_get_prefix(); ?>"/>
+                    
+                </p>
+
+            <?php endif;?>
+            
+            <script>
 
                 jQuery(document).ready(function($) { 
                     accordionClick('.ps-link', '.ps-content', 'fast');
                 });
 
             </script>
+            
             <p><?php _e('Site(s) you want duplicate to', 'multisite-post-duplicator' ); ?> <i class="fa fa-info-circle ps-link accord" aria-hidden="true"></i> :</p>
 
             <p class="mpdtip ps-content" style="display:none"><?php _e('If you have checked any of the checkboxes below then this post will be duplicated on save.', 'multisite-post-duplicator' );?></p>
@@ -223,6 +233,7 @@ add_filter( 'save_post', 'mpd_clone_post', 100 );
 function mpd_weve_seen_the_page(){
 
     delete_site_option('avoid_infinite');
+    delete_site_option('avoid_infinite_persist');
 
 }
 

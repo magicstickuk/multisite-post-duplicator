@@ -32,7 +32,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     //Collect function arguments into a single variable
     $mpd_process_info = apply_filters('mpd_source_data', array(
 
-        'source_id'             => $post_id_to_copy,
+        'source_post_id'        => $post_id_to_copy,
         'destination_id'        => $new_blog_id,
         'post_type'             => $post_type,
         'post_author'           => $post_author,
@@ -46,17 +46,17 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     //Get plugin options
     $options    = get_option( 'mdp_settings' );
     //Get the object of the post we are copying
-    $mdp_post   = get_post($mpd_process_info['source_id']);
+    $mdp_post   = get_post($mpd_process_info['source_post_id']);
     //Get the title of the post we are copying
     $title      = get_the_title($mdp_post);
     //Get the tags from the post we are copying
-    $sourcetags = wp_get_post_tags( $mpd_process_info['source_id'], array( 'fields' => 'names' ) );
+    $sourcetags = wp_get_post_tags( $mpd_process_info['source_post_id'], array( 'fields' => 'names' ) );
     //Get the ID of the sourse blog
     $source_blog_id  = get_current_blog_id();
     //Get the categories for the post
-    $source_categories = mpd_get_objects_of_post_categories($mpd_process_info['source_id'], $mpd_process_info['post_type']);
+    $source_categories = mpd_get_objects_of_post_categories($mpd_process_info['source_post_id'], $mpd_process_info['post_type']);
     //Get the taxonomy terms for the post
-    $source_taxonomies = mpd_get_post_taxonomy_terms($mpd_process_info['source_id'], $mpd_process_info['destination_id']);
+    $source_taxonomies = mpd_get_post_taxonomy_terms($mpd_process_info['source_post_id'], $mpd_process_info['destination_id']);
 
     //Format the prefix into the correct format if the user adds their own whitespace
     if($mpd_process_info['prefix'] != ''){
@@ -80,15 +80,15 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     ), $mpd_process_info);
 
     //Get all the meta data associated with the source post
-    $meta_values       = apply_filters('mpd_filter_post_meta', get_post_meta($mpd_process_info['source_id']));
+    $meta_values       = apply_filters('mpd_filter_post_meta', get_post_meta($mpd_process_info['source_post_id']));
     //Get array of data associated with the featured image for this post
-    $featured_image    = mpd_get_featured_image_from_source($mpd_process_info['source_id']);
+    $featured_image    = mpd_get_featured_image_from_source($mpd_process_info['source_post_id']);
 
     //If we are copying the source post to another site on the network we will collect data about those 
     //images.
     if($mpd_process_info['destination_id'] != $source_blog_id){
 
-        $attached_images = mpd_get_images_from_the_content($mpd_process_info['source_id']);
+        $attached_images = mpd_get_images_from_the_content($mpd_process_info['source_post_id']);
 
         if($attached_images){
 
@@ -103,7 +103,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     }
 
     //Hook for actions just before we switch to the destination blog to start processing our collected data
-    do_action('mpd_during_core_in_source', $mdp_post, $attached_images, $meta_values, $mpd_process_info['source_id'], $mpd_process_info['destination_id']);
+    do_action('mpd_during_core_in_source', $mdp_post, $attached_images, $meta_values, $mpd_process_info['source_post_id'], $mpd_process_info['destination_id']);
     
 
 
