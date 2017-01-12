@@ -432,7 +432,7 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 			
 	global $wpdb;
 
-	$desitnation_post_id = isset($mpd_process_info['desitnation_post_id']) ? $mpd_process_info['desitnation_post_id'] : $createdPostObject['id'];
+	$desitnation_post_id = isset($mpd_process_info['destination_post_id']) ? $mpd_process_info['destination_post_id'] : $createdPostObject['id'];
 
 	$tableName 			= $wpdb->base_prefix . "mpd_log";
 	$current_blog_id 	= get_current_blog_id();
@@ -770,7 +770,7 @@ function mpd_update_persist($args, $dataValue){
 	);	
 	$format = array('%d');	
 	$where_format = array( 
-		'%d','%d','%d','%d','%d'
+		'%d','%d','%d','%d'
 	);
 	
 	$result = $wpdb->update( $table, $data, $where, $format, $where_format);
@@ -869,53 +869,47 @@ function mpd_set_persist_count($args){
  */
 function mpd_persist_post($post_id){
 	
-	$here = get_site_option('avoid_infinite_persist');
+	$options = get_option( 'mdp_settings' );
 
-	if(!$here){
+	if((isset($options['allow_persist']) || !$options)){
 
-		$options = get_option( 'mdp_settings' );
+		if( ! ( wp_is_post_revision( $post_id) || wp_is_post_autosave( $post_id ) ) ) {
 
-		if((isset($options['allow_persist']) || !$options)){
+		    global $post;
 
-			if( ! ( wp_is_post_revision( $post_id) || wp_is_post_autosave( $post_id ) ) ) {
+			$blog_id = get_current_blog_id();
+		    
+			// Check if there is a link
+			$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
+			
+			// Do the duplications if there are any links
+		    if($persist_posts){
+		        
+		        foreach($persist_posts as $persist_post){
+		            
+		            $args = apply_filters('mpd_persist_post_args', array(
+		                'source_id' 			=> intval($persist_post->source_id),
+		                'destination_id' 		=> intval($persist_post->destination_id),
+		                'source_post_id' 		=> intval($persist_post->source_post_id),
+		                'destination_post_id' 	=> intval($persist_post->destination_post_id)
+		            ));
 
-			    global $post;
+		            if(!array_key_exists('skip_normal_persist', $args)){
 
-				$blog_id = get_current_blog_id();
-			    
-				// Check if there is a link
-				$persist_posts = mpd_get_persists_for_post($blog_id, $post_id);
-				
-				// Do the duplications if there are any links
-			    if($persist_posts){
-			        
-			        foreach($persist_posts as $persist_post){
-			            
-			            $args = apply_filters('persist_post_args', array(
-			                'source_id' 			=> intval($persist_post->source_id),
-			                'destination_id' 		=> intval($persist_post->destination_id),
-			                'source_post_id' 		=> intval($persist_post->source_post_id),
-			                'destination_post_id' 	=> intval($persist_post->destination_post_id)
-			            ));
+		            	mpd_persist_over_multisite($persist_post);
 
-			            if(!isset($args['skip_normal_persist'])){
-			            	mpd_persist_over_multisite($persist_post);
+		            	// Increment the count
+		            	mpd_set_persist_count($args);
 
-			            	// Increment the count
-			            	mpd_set_persist_count($args);
-			            }
+		           }
 
-			            do_action('mpd_after_persist');
+		            do_action('mpd_after_persist', $args);
 
-			        }
-			        
-			    }
-
-			}
+		        }
+		        
+		    }
 
 		}
-	
-	update_site_option('avoid_infinite_persist', 1 );
 
 	}
  

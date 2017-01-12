@@ -267,7 +267,7 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
                 'source_id'           => $source_blog_id,
                 'destination_id'      => $destination_id,
                 'source_post_id'      => $post_id,
-                'desitnation_post_id' => $matching_existing_post->ID
+                'destination_post_id' => $matching_existing_post->ID
             );
 
             mpd_log_duplication(false, $args);
@@ -434,13 +434,13 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
                 'source_id'           => $source_blog_id,
                 'destination_id'      => $destination_id,
                 'source_post_id'      => $post_id,
-                'desitnation_post_id' => $new_group_id
+                'destination_post_id' => $new_group_id
             );
 
             mpd_log_duplication(false, $args);
-
+            
             if(isset($_POST['persist'])){
-
+               
                 mpd_add_persist($args);
 
             }
@@ -469,6 +469,8 @@ function mpd_dont_show_acf_post_status($show){
 
     }
 
+    return $show;
+
 }
 add_filter('mpd_show_metabox_post_status', 'mpd_dont_show_acf_post_status');
 
@@ -484,35 +486,30 @@ function mpd_dont_show_acf_prefix($show){
 
     }
 
+    return $show;
+
 }
 add_filter('mpd_show_metabox_prefix', 'mpd_dont_show_acf_prefix');
 
-// function mpd_set_for_acf_group_persist($args){
+function mpd_set_for_acf_group_persist($args){
 
-//     $the_post_type = get_post_type($args['source_post_id']);
+    $the_post_type = get_post_type($args['source_post_id']);
 
-//     if($the_post_type == 'acf-field-group'){
+    if($the_post_type == 'acf-field-group'){
 
-//         $args['skip_normal_persist'] == 1;
+        $args['skip_normal_persist'] = 1;
 
-//         update_option('mpd_do_acf_persist_post', $args);
+    }
 
-//     }
+    return $args;
 
-//     return $args;
+}
+add_filter('mpd_persist_post_args', 'mpd_set_for_acf_group_persist');
 
-// }
-// add_filter('mpd_persist_post_args', 'mpd_set_for_acf_group_persist');
+function mpd_do_acf_group_persist($args){
 
-// function mpd_do_acf_group_persist($args){
-
-//     if(get_option('mpd_do_acf_persist_post')){
-
-//         mpd_copy_acf_field_group($args['source_post_id'], $args['destination_id']);
-
-//         delete_option('skip_standard_dup', 1);
-//         update_option('mpd_do_acf_persist_post', $args);
-
-//     }
-    
-// }
+    mpd_copy_acf_field_group($args['source_post_id'], $args['destination_id']);
+    delete_option('skip_standard_dup');
+ 
+}
+add_action('mpd_after_persist','mpd_do_acf_group_persist');
