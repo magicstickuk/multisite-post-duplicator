@@ -291,10 +291,10 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
             ));
 
             //Get all source child posts
-            $source_child_posts      = mpd_acf_child_fields($post_id, $source_blog_id);
+            $source_child_posts      = mpd_acf_decendant_fields($post_id, $source_blog_id);
 
             //Get all destination child posts (this is for comparisson purposes further down the line)
-            $destination_child_posts = mpd_acf_child_fields($matching_existing_post->ID, $destination_id);
+            $destination_child_posts = mpd_acf_decendant_fields($matching_existing_post->ID, $destination_id);
 
             //We need an array of the source field key so we can compare with current destination keys at the end so
             //we can delete any from the destination that are no longer in the source (sync).
@@ -391,11 +391,12 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
     
             ));
 
-            $source_child_posts = mpd_acf_child_fields($post_id, $source_blog_id);
+            $source_child_posts = mpd_acf_decendant_fields($post_id, $source_blog_id);
+            $family_tree        = array();
 
             foreach ($source_child_posts as $source_child_post) {
 
-                wp_insert_post(array(
+                $new_child = wp_insert_post(array(
 
                     'post_parent'       => $new_group_id,
 
@@ -411,8 +412,18 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
     
                 ));
 
-                $source_grandchild_posts = mpd_acf_child_fields($source_child_post->ID, $source_blog_id);
+               // $family_tree[] = array($new_child_id, $source_child_post->ID, $source_child_post->post_parent);
 
+
+            }
+
+            foreach ($family_tree as $key => $relationship) {
+
+                // From the source set get the key of the the row where the destination set parent 
+                        // wp_update_post(
+                        //         'ID' => $key,
+                        //         'post_parent' => $relationship[]
+                        // )
             }
 
             restore_current_blog();
@@ -465,14 +476,9 @@ function mpd_acf_decendant_fields($post_id, $blog_id){
 
     global $wpdb;
 
-    $tablename   = mpd_get_tablename($blog_id);
+    $tablename     = mpd_get_tablename($blog_id);
 
-    $children    = $wpdb->get_results(
-        $wpdb->prepare(
-            "SELECT * FROM $tablename WHERE post_parent = %d AND post_status = 'publish'",
-            $post_id
-        )
-    );
+    $children      = mpd_acf_child_fields($post_id, $blog_id); 
 
     $totalchildren = $children;
 
@@ -483,12 +489,7 @@ function mpd_acf_decendant_fields($post_id, $blog_id){
 
         foreach ($parents as $parent) {
             
-            $innerchildren = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT * FROM $tablename WHERE post_parent = %d AND post_status = 'publish'",
-                    $parent->ID
-                )
-            );
+            $innerchildren = mpd_acf_child_fields($parent->ID, $blog_id);
 
             if($innerchildren){
 
@@ -498,7 +499,7 @@ function mpd_acf_decendant_fields($post_id, $blog_id){
                     array_push($totalchildren, $innerchild);
 
                 }
-                
+
             }
             
         }
@@ -515,7 +516,7 @@ function mpd_acf_decendant_fields($post_id, $blog_id){
 
 function testing(){
 
-    var_dump(mpd_acf_decendant_fields(403, 1));
+   ///var_dump(mpd_acf_decendant_fields(403, 1));
 
 
 }
