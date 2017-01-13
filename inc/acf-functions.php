@@ -460,22 +460,66 @@ function mpd_acf_child_fields($post_id, $blog_id){
 
 }
 
+
 function mpd_acf_decendant_fields($post_id, $blog_id){
 
     global $wpdb;
 
-    $tablename  = mpd_get_tablename($blog_id);
+    $tablename   = mpd_get_tablename($blog_id);
 
-    $results    = $wpdb->get_results(
+    $children    = $wpdb->get_results(
         $wpdb->prepare(
             "SELECT * FROM $tablename WHERE post_parent = %d AND post_status = 'publish'",
             $post_id
         )
     );
 
-    return $results;
+    $totalchildren = $children;
+
+    for ($depth = 0; $depth <= 5; $depth++) {
+
+        $parents  = $children;
+        $children = array();
+
+        foreach ($parents as $parent) {
+            
+            $innerchildren = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT * FROM $tablename WHERE post_parent = %d AND post_status = 'publish'",
+                    $parent->ID
+                )
+            );
+
+            if($innerchildren){
+
+                foreach ($innerchildren as $innerchild) {
+                    
+                    array_push($children, $innerchild);
+                    array_push($totalchildren, $innerchild);
+
+                }
+                
+            }
+            
+        }
+
+        if(count($children) == 0){
+            break;
+        }
+
+    }
+
+    return $totalchildren;
 
 }
+
+function testing(){
+
+    var_dump(mpd_acf_decendant_fields(403, 1));
+
+
+}
+add_action( 'admin_notices', 'testing' );
 
 function mpd_dont_show_acf_post_status($show){
 
@@ -533,3 +577,5 @@ function mpd_do_acf_group_persist($args){
  
 }
 add_action('mpd_after_persist','mpd_do_acf_group_persist');
+
+
