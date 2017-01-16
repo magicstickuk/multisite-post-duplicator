@@ -1280,13 +1280,3 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
     return $attach_id;
 
 }
-
-function mpd_get_tablename($blogid, $table = 'posts'){
-    
-    global $wpdb;
-
-    $siteid         = $blogid != 1 ? $blogid . "_" : ''; 
-    $tablename      = $wpdb->base_prefix . $siteid . $table;
-
-    return $tablename;
-}
