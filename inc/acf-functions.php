@@ -234,8 +234,6 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
         
         //Tell the bulk action plugin to skip the normal duplication process and do this instead.
         update_option('skip_standard_dup', 1);
-           
-        //find out field key exists in destination.
 
         global $wpdb;
         
@@ -391,13 +389,13 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
     
             ));
 
-            $source_child_posts = mpd_acf_child_fields($post_id, $source_blog_id);
+            $source_child_posts = mpd_acf_decendant_fields($post_id, $source_blog_id);
+
+            $destination_posts = array();
 
             foreach ($source_child_posts as $source_child_post) {
 
-                wp_insert_post(array(
-
-                    'post_parent'       => $new_group_id,
+                $destination_post = wp_insert_post(array(
 
                     'post_content'      => $source_child_post->post_content,
                     'post_title'        => $source_child_post->post_title,
@@ -411,8 +409,30 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
     
                 ));
 
-                $source_grandchild_posts = mpd_acf_child_fields($source_child_post->ID, $source_blog_id);
+                $destination_posts[] = $destination_post;
 
+            }
+
+            foreach ($destination_posts as $key => $destination_post_id) {
+                $source_parent_id = $source_child_posts[$key]->post_parent;
+
+                //Find source posts key whos id = $source_parent_id 
+                foreach ($source_child_posts as $innerkey => $source_child_post) {
+                    
+                    if($source_child_post->ID == $source_parent_id){
+
+                        $source_parent_key = $innerkey;
+                        
+                    }
+                }
+
+                $destination_parent_id = $source_parent_key ? $destination_posts[$source_parent_key] : $new_group_id;
+            
+                wp_update_post(array(
+                    'ID'           => $destination_post_id,
+                    'post_parent'  => $destination_parent_id
+                ));
+                
             }
 
             restore_current_blog();
@@ -463,16 +483,7 @@ function mpd_acf_child_fields($post_id, $blog_id){
 
 function mpd_acf_decendant_fields($post_id, $blog_id){
 
-    global $wpdb;
-
-    $tablename   = mpd_get_tablename($blog_id);
-
-    $children    = $wpdb->get_results(
-        $wpdb->prepare(
-            "SELECT * FROM $tablename WHERE post_parent = %d AND post_status = 'publish'",
-            $post_id
-        )
-    );
+    $children    = mpd_acf_child_fields($post_id, $blog_id);
 
     $totalchildren = $children;
 
@@ -483,12 +494,7 @@ function mpd_acf_decendant_fields($post_id, $blog_id){
 
         foreach ($parents as $parent) {
             
-            $innerchildren = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT * FROM $tablename WHERE post_parent = %d AND post_status = 'publish'",
-                    $parent->ID
-                )
-            );
+            $innerchildren = mpd_acf_child_fields($parent->ID, $blog_id);
 
             if($innerchildren){
 
@@ -513,13 +519,6 @@ function mpd_acf_decendant_fields($post_id, $blog_id){
 
 }
 
-function testing(){
-
-    var_dump(mpd_acf_decendant_fields(403, 1));
-
-
-}
-add_action( 'admin_notices', 'testing' );
 
 function mpd_dont_show_acf_post_status($show){
 
