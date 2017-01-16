@@ -75,6 +75,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.4.1 =
+* Fixed php warnings on Advanced custom field image duplications in some senarios.
+
 = 1.4 =
 * NEW: Signposting for networks where custom post types and taxonomies are not synced throughout.
 * NEW: Signposting for instances where user's 'Advanced Custom Fields Field Groups' don't exist in the destination site.
