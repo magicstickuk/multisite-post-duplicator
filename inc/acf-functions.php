@@ -414,9 +414,15 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 
             restore_current_blog();
 
-            $notice = mdp_make_admin_notice($site_name, $site_edit_url, $blog_details);
+             if(!isset($_POST['persist'])){
+               
+                $notice = mdp_make_admin_notice($site_name, $site_edit_url, $blog_details);
             
-            update_option('mpd_admin_notice', $notice );
+                update_option('mpd_admin_notice', $notice );
+
+            }
+
+            
 
 
         }else{
@@ -483,11 +489,15 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
                
                 mpd_add_persist($args);
 
+            }else{
+
+                $notice = mdp_make_admin_notice($site_name, $site_edit_url, $blog_details);
+            
+                update_option('mpd_admin_notice', $notice );
+
             }
 
-            $notice = mdp_make_admin_notice($site_name, $site_edit_url, $blog_details);
             
-            update_option('mpd_admin_notice', $notice );
 
         }
 
@@ -664,19 +674,25 @@ function mpd_flush_acf_trash($post_id, $destination_id){
 
                 foreach ($decendants as $decendant) {
                     $wpdb->query( 
+
                         $wpdb->prepare( 
                             "DELETE FROM $tablename WHERE ID = %s",
                             $decendant->ID
                         )
+
                     ); 
+
                 }
+
             }
             
-            $wpdb->query( 
+            $wpdb->query(
+
                 $wpdb->prepare( 
                     "DELETE FROM $tablename WHERE ID = %s",
                     $binned_acf_group ->ID
                 )
+
             );
 
         }
