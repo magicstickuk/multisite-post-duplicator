@@ -391,7 +391,7 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 
             $source_child_posts = mpd_acf_decendant_fields($post_id, $source_blog_id);
 
-            $destination_posts = array();
+            $destination_post_ids = array();
 
             foreach ($source_child_posts as $source_child_post) {
 
@@ -409,31 +409,11 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
     
                 ));
 
-                $destination_posts[] = $destination_post;
+                $destination_post_ids[] = $destination_post;
 
             }
 
-            foreach ($destination_posts as $key => $destination_post_id) {
-                $source_parent_id = $source_child_posts[$key]->post_parent;
-
-                //Find source posts key whos id = $source_parent_id 
-                foreach ($source_child_posts as $innerkey => $source_child_post) {
-                    
-                    if($source_child_post->ID == $source_parent_id){
-
-                        $source_parent_key = $innerkey;
-                        
-                    }
-                }
-
-                $destination_parent_id = $source_parent_key ? $destination_posts[$source_parent_key] : $new_group_id;
-            
-                wp_update_post(array(
-                    'ID'           => $destination_post_id,
-                    'post_parent'  => $destination_parent_id
-                ));
-                
-            }
+            mpd_acf_setup_destination_parents($source_child_posts, $destination_post_ids, $new_group_id);
 
             restore_current_blog();
 
@@ -516,6 +496,34 @@ function mpd_acf_decendant_fields($post_id, $blog_id){
     }
 
     return $totalchildren;
+
+}
+
+function mpd_acf_setup_destination_parents($source_decendants, $destination_post_ids, $group_id){
+
+    foreach ($destination_post_ids as $key => $destination_post_id) {
+        
+        $source_parent_id = $source_decendants[$key]->post_parent;
+
+        //Find source posts key whos id = $source_parent_id 
+        foreach ($source_decendants as $innerkey => $source_child_post) {
+                    
+            if($source_child_post->ID == $source_parent_id){
+
+                $source_parent_key = $innerkey;
+                        
+            }
+        
+        }
+
+        $destination_parent_id = $source_parent_key ? $destination_post_ids[$source_parent_key] : $group_id;
+            
+        wp_update_post(array(
+            'ID'           => $destination_post_id,
+            'post_parent'  => $destination_parent_id
+        ));
+                
+    }
 
 }
 
