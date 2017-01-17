@@ -500,15 +500,17 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 add_action('mpd_single_batch_before', 'mpd_copy_acf_field_group', 10, 2);
 add_action('mpd_single_metabox_before', 'mpd_copy_acf_field_group', 10, 2);
 
-function mpd_acf_child_fields($post_id, $blog_id){
+function mpd_acf_child_fields($post_id, $blog_id, $status = 'publish'){
 
     global $wpdb;
+
+    $and_clause = $status == 'publish' ? "post_status = 'publish'" : "1=1";
 
     $tablename  = mpd_get_tablename($blog_id);
 
     $results    = $wpdb->get_results(
         $wpdb->prepare(
-            "SELECT * FROM $tablename WHERE post_parent = %d AND post_status = 'publish'",
+            "SELECT * FROM $tablename WHERE post_parent = %d AND " . $and_clause,
             $post_id
         )
     );
@@ -518,9 +520,9 @@ function mpd_acf_child_fields($post_id, $blog_id){
 }
 
 
-function mpd_acf_decendant_fields($post_id, $blog_id){
+function mpd_acf_decendant_fields($post_id, $blog_id, $status = 'publish'){
 
-    $children    = mpd_acf_child_fields($post_id, $blog_id);
+    $children    = mpd_acf_child_fields($post_id, $blog_id, $status);
 
     $totalchildren = $children;
 
@@ -531,7 +533,7 @@ function mpd_acf_decendant_fields($post_id, $blog_id){
 
         foreach ($parents as $parent) {
             
-            $innerchildren = mpd_acf_child_fields($parent->ID, $blog_id);
+            $innerchildren = mpd_acf_child_fields($parent->ID, $blog_id, $status);
 
             if($innerchildren){
 
@@ -656,7 +658,7 @@ function mpd_flush_acf_trash($post_id, $destination_id){
 
         foreach ($binned_acf_groups as $binned_acf_group) {
 
-           $decendants = mpd_acf_decendant_fields($binned_acf_group->ID, $destination_id);
+           $decendants = mpd_acf_decendant_fields($binned_acf_group->ID, $destination_id, 'any');
 
            if($decendants){
 
