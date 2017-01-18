@@ -272,7 +272,7 @@ function mpd_linked_list_metabox_render(){
     $count = 1;
     ?>
     
-    <p><small><?php _e('This post has other posts linked to it. If you update this post the it will also update the following posts in your network:', 'multisite-post-duplicator')?></small></p>
+    <p><small><?php _e('This post it linked to other posts. If you update this post the it will also update the following posts in your network:', 'multisite-post-duplicator')?></small></p>
        
     <?php foreach ($linked_posts as $linked_post) :?>
 
