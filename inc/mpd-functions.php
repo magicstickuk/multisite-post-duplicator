@@ -605,17 +605,54 @@ function mpd_checked_lookup($options, $option_key, $option_value, $type = null){
  */
 function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details){
 
+    $option_value = get_option('mpd_admin_notice'); 
+
+    update_option('option_value_test_thing_way_before' .uniqid(), $option_value);
+
     $message        = '<div class="updated"><p>';
     $message       .= apply_filters('mpd_admin_notice_text', __('You succesfully duplicated this post to', 'multisite-post-duplicator' ) ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post', 'multisite-post-duplicator' ).'</a>', $site_name, $site_url, $destination_blog_details);
     $message       .= '</p></div>';
 
-    $option_value = get_option('mpd_admin_notice');
     
-    if($option_value){
+    if(isset($option_value['message'])){
 
-        $message = $option_value . $message;
+        $message = $option_value['message'] . $message;
 
     }
+    
+    if(!$option_value){
+
+        $notice_data    = array(
+            'name'        => $site_name,
+            'url'         => $site_url,
+            'blog_object' =>  $destination_blog_details
+        );
+
+        $option_value   = array('message' => $message, 'data' => $notice_data );   
+       
+    }else{
+
+        $notice_data_new = array(
+            'name'        => $site_name,
+            'url'         => $site_url,
+            'blog_object' => $destination_blog_details
+        );
+        
+        array_push($option_value['data'], $notice_data_new);
+       
+        // Prevent Duplicate notices going on screen.
+        foreach ($option_value['data'] as $key => $value) {
+
+            if($value === $notice_data_new){
+                return;
+           }
+
+        }
+
+    }
+    //Add this collected notice to the database because the new page needs a method of getting this data
+    //when the page refreshes
+    update_option('mpd_admin_notice', $option_value );
 
     return $message;
 
@@ -635,7 +672,7 @@ function mpd_plugin_admin_notices(){
     // If there is a notice in the database display it.
     if($notices = get_option('mpd_admin_notice')){
 
-        echo $notices;
+        echo $notices['message'];
         // Now that we know the notice has been displayed we can delete its database entry
         delete_option('mpd_admin_notice');
 

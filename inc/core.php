@@ -202,9 +202,6 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     //Use the collected information about the new post to generate a status notice and a link for the user
     $notice = mdp_make_admin_notice($site_name, $site_edit_url, $blog_details);
-    //Add this collected notice to the database because the new page needs a method of getting this data
-    //when the page refreshes
-    update_option('mpd_admin_notice', $notice );
 
     //Lets also create an array to return to function call incase it is required (extensibility)
     $createdPostObject = apply_filters('mpd_returned_information', array(
@@ -386,9 +383,6 @@ function mpd_persist_over_multisite($persist_post) {
 
     //Use the collected information about the new post to generate a status notice and a link for the user
     $notice = mdp_make_admin_notice($site_name, $site_edit_url, $blog_details);
-    //Add this collected notice to the database because the new page needs a method of getting this data
-    //when the page refreshes
-    update_option('mpd_persist_admin_notice', $notice );
 
     //Lets also create an array to return to function call incase it is required (extensibility)
     $createdPostObject = apply_filters('mpd_persist_returned_information', array(
