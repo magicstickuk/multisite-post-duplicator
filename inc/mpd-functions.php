@@ -605,22 +605,14 @@ function mpd_checked_lookup($options, $option_key, $option_value, $type = null){
  */
 function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details){
 
-    $option_value = get_option('mpd_admin_notice'); 
-
-    update_option('option_value_test_thing_way_before' .uniqid(), $option_value);
+    $option_value = get_option('mpd_admin_notice');
 
     $message        = '<div class="updated"><p>';
     $message       .= apply_filters('mpd_admin_notice_text', __('You succesfully duplicated this post to', 'multisite-post-duplicator' ) ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post', 'multisite-post-duplicator' ).'</a>', $site_name, $site_url, $destination_blog_details);
-    $message       .= '</p></div>';
-
-    
-    if(isset($option_value['message'])){
-
-        $message = $option_value['message'] . $message;
-
-    }
+    $message       .= '</p></div>'; 
     
     if(!$option_value){
+
 
         $notice_data    = array(
             'name'        => $site_name,
@@ -629,8 +621,19 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
         );
 
         $option_value   = array('message' => $message, 'data' => $notice_data );   
-       
+        
     }else{
+
+        // Prevent Duplicate notices going on screen.
+        foreach ($option_value['data'] as $key => $value) {
+
+            if($value == $notice_data_new){
+                return;
+            }
+
+        }
+
+        $option_value['message'] = $option_value['message'] . $message;
 
         $notice_data_new = array(
             'name'        => $site_name,
@@ -639,15 +642,6 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
         );
         
         array_push($option_value['data'], $notice_data_new);
-       
-        // Prevent Duplicate notices going on screen.
-        foreach ($option_value['data'] as $key => $value) {
-
-            if($value === $notice_data_new){
-                return;
-           }
-
-        }
 
     }
     //Add this collected notice to the database because the new page needs a method of getting this data
