@@ -27,7 +27,7 @@ function mpd_add_considerations(){
     }
 
 }
-add_action('mpd_after_notices', 'mpd_add_considerations');
+//add_action('mpd_after_notices', 'mpd_add_considerations');
 
 /**
  * If there are any considerations in the database adust the main notice text using
@@ -44,7 +44,7 @@ function mpd_add_consideration_text($message){
     return $message;
 
 }
-add_filter('mpd_admin_notice_text','mpd_add_consideration_text');
+//add_filter('mpd_admin_notice_text','mpd_add_consideration_text');
 
 /**
  * This is us logging the post types on a site into a site option. On multisite switch_to_blog doesn't
@@ -146,7 +146,7 @@ function mpd_post_type_considerations($mdp_post, $attached_images, $meta_values,
     
 }
 
-add_action('mpd_during_core_in_source', 'mpd_post_type_considerations', 20, 5);
+//add_action('mpd_during_core_in_source', 'mpd_post_type_considerations', 20, 5);
 
 /**
  * Here we are filtering into the source taxonomy terms as collected at source in the core.
@@ -258,4 +258,4 @@ function mpd_acf_considerations($acf_control_row, $meta, $acf_field_key, $destin
 
 }
 
-add_action('mpd_acf_field_found', 'mpd_acf_considerations', 10, 4);
+//add_action('mpd_acf_field_found', 'mpd_acf_considerations', 10, 4);

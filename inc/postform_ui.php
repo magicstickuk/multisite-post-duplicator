@@ -135,7 +135,7 @@ function mpd_publish_top_right(){
 
                                     <label class="selectit">
 
-                                        <input value="<?php echo $site->blog_id; ?>" type="checkbox" name="mpd_blogs[]" id="in_blog_<?php echo $site->blog_id; ?>">  <?php echo $site->blog_id == $current_blog_id ? '<em>' : ''; ?><?php echo $blog_details->blogname; ?> <?php echo $site->blog_id == $current_blog_id ? ' <small>(' . __('Current Site',  'multisite-post-duplicator' ) . ')</small></em>' : ''; ?>
+                                        <input class="<?php echo $site->blog_id == $current_blog_id ? 'mpd-current-site' : '';?>" value="<?php echo $site->blog_id; ?>" type="checkbox" name="mpd_blogs[]" id="in_blog_<?php echo $site->blog_id; ?>">  <?php echo $site->blog_id == $current_blog_id ? '<em>' : ''; ?><?php echo $blog_details->blogname; ?> <?php echo $site->blog_id == $current_blog_id ? ' <small>(' . __('Current Site',  'multisite-post-duplicator' ) . ')</small></em>' : ''; ?>
 
                                     </label>
 

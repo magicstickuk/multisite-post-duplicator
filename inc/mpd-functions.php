@@ -1328,3 +1328,37 @@ function mpd_get_tablename($blogid, $table = 'posts'){
 
     return $tablename;
 }
+
+add_action('mpd_after_metabox_content', 'mpd_select_all_checkboxes', 5);
+
+function  mpd_select_all_checkboxes(){
+
+    if(apply_filters('mpd_show_select_all_checkboxes', true)) :?>
+        
+        <?php
+            $first_text     = __('Select all except current', 'multisite-post-duplicator');
+            $second_text    = __('Select none', 'multisite-post-duplicator');
+        ?>
+        <p><small><a id="mpd-select-all" href="#"><?php echo $first_text; ?></a></small></p>
+
+         <script>
+            jQuery(document).ready(function() {
+
+                jQuery("#mpd-select-all").click(function(){
+                    
+                    if(jQuery(this).html() == '<?php echo $first_text; ?>'){ 
+                        jQuery('#mpd_blogschecklist input:checkbox:not(.mpd-current-site)').prop('checked', 'checked');
+                        jQuery(this).html('<?php echo $second_text; ?>');
+                    }else{
+                        jQuery(this).html('<?php echo $first_text; ?>');
+                        jQuery('#mpd_blogschecklist input:checkbox').removeProp('checked');
+                    }
+                        
+                });
+
+            });
+        </script>
+
+    <?php endif; 
+
+}

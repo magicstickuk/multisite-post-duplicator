@@ -139,7 +139,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     //If there were media attached to the source post content then copy that over
     if($attached_images){
         //Check that the users plugin settings actually want this process to happen
-        if(isset($options['mdp_copy_content_images']) || !$options ){
+        if(isset($options['mdp_copy_content_images']) || !$options || apply_filters('mdp_copy_content_images', true) ){
             
             mpd_process_post_media_attachements($post_id, $attached_images, $attached_images_alt_tags, $source_blog_id, $new_blog_id);
 
@@ -149,7 +149,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     //If there was a featured image in the source post then copy it over
     if($featured_image){
         //Check that the users plugin settings actually want this process to happen
-        if(isset($options['mdp_default_featured_image']) || !$options ){
+        if(isset($options['mdp_default_featured_image']) || !$options || apply_filters('mdp_default_featured_image', true) ){
 
             mpd_set_featured_image_to_destination( $post_id, $featured_image ); 
 
@@ -159,7 +159,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     //If there were tags in the source post then copy them over
     if($sourcetags){
         //Check that the users plugin settings actually want this process to happen
-        if(isset($options['mdp_default_tags_copy']) || !$options ){
+        if(isset($options['mdp_default_tags_copy']) || !$options || apply_filters('mdp_default_tags_copy', true)  ){
 
             wp_set_post_tags( $post_id, $sourcetags );
 
@@ -170,7 +170,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     //If there were categories in the source post then copy them over
     if($source_categories){
 
-        if(isset($options['mdp_copy_post_categories']) || !$options ){
+        if(isset($options['mdp_copy_post_categories']) || !$options || apply_filters('mdp_copy_post_categories', true) ){
 
             mpd_set_destination_categories($post_id, $source_categories, $mdp_post['post_type']);
 
@@ -180,7 +180,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     //If there were taxonomies in the source post then copy them over
     if($source_taxonomies){
 
-        if(isset($options['mdp_copy_post_taxonomies']) || !$options ){
+        if(isset($options['mdp_copy_post_taxonomies']) || !$options || apply_filters('mdp_copy_post_taxonomies', true) ){
 
             mpd_set_post_taxonomy_terms($source_taxonomies, $post_id);
 
@@ -320,17 +320,17 @@ function mpd_persist_over_multisite($persist_post) {
     //If there were media attached to the sourse post content then copy that over
     if($attached_images){
         //Check that the users plugin settings actually want this process to happen
-        if(isset($options['mdp_copy_content_images']) || !$options ){
-            
+        if(isset($options['mdp_copy_content_images']) || !$options || apply_filters('mdp_copy_content_images', true) ){
+
             mpd_process_post_media_attachements($post_id, $attached_images, $attached_images_alt_tags, $persist_post->source_id, $persist_post->destination_id);
-
         }
-
+        
     }
+
     //If there was a featured image in the sourse post then copy it over
     if($featured_image){
         //Check that the users plugin settings actually want this process to happen
-        if(isset($options['mdp_default_featured_image']) || !$options ){
+        if(isset($options['mdp_default_featured_image']) || !$options || apply_filters('mdp_default_featured_image', true) ){
 
             mpd_set_featured_image_to_destination( $post_id, $featured_image ); 
 
@@ -340,7 +340,7 @@ function mpd_persist_over_multisite($persist_post) {
     //If there were tags in the sourse post then copy them over
     if($sourcetags){
         //Check that the users plugin settings actually want this process to happen
-        if(isset($options['mdp_default_tags_copy']) || !$options ){
+        if(isset($options['mdp_default_tags_copy']) || !$options || apply_filters('mdp_default_tags_copy', true)  ){
 
             wp_set_post_tags( $post_id, $sourcetags );
 
@@ -351,7 +351,7 @@ function mpd_persist_over_multisite($persist_post) {
     //If there were categories in the sourse post then copy them over
     if($source_categories){
 
-        if(isset($options['mdp_copy_post_categories']) || !$options ){
+        if(isset($options['mdp_copy_post_categories']) || !$options || apply_filters('mdp_copy_post_categories', true)  ){
 
             mpd_set_destination_categories($post_id, $source_categories, $mdp_post['post_type']);
 
@@ -361,7 +361,7 @@ function mpd_persist_over_multisite($persist_post) {
     //If there were taxonomies in the source post then copy them over
     if($source_taxonomies){
 
-        if(isset($options['mdp_copy_post_taxonomies']) || !$options ){
+        if(isset($options['mdp_copy_post_taxonomies']) || !$options || apply_filters('mdp_copy_post_taxonomies', true) ){
 
             mpd_set_post_taxonomy_terms($source_taxonomies, $post_id, true);
 
@@ -396,4 +396,3 @@ function mpd_persist_over_multisite($persist_post) {
     return $createdPostObject;
  
 }
-
