@@ -93,7 +93,9 @@ function mdp_load_admin_styles(){
 	);
 
 	global $post;
+
 	$post_id = $post ? $post->ID : 0;
+	
 	wp_localize_script('mdp-admin-settings-scripts', 'mpd_admin_vars', array(
 		'post_and_update' => __('Post & Update Linked Posts', 'multisite-post-duplicator'),
 		'post_and_dup' => __('Post & Duplicate', 'multisite-post-duplicator'),

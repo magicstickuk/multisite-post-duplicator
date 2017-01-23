@@ -229,12 +229,3 @@ function mpd_clone_post($post_id){
 }
 
 add_filter( 'save_post', 'mpd_clone_post', 100 );
-
-function mpd_weve_seen_the_page(){
-
-    delete_site_option('avoid_infinite');
-    delete_site_option('avoid_infinite_persist');
-
-}
-
-add_action('shutdown', 'mpd_weve_seen_the_page');

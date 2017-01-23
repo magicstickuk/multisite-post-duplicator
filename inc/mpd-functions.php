@@ -1362,3 +1362,12 @@ function  mpd_select_all_checkboxes(){
     <?php endif; 
 
 }
+
+function mpd_weve_seen_the_page(){
+
+    delete_site_option('avoid_infinite');
+    delete_site_option('avoid_infinite_persist');
+
+}
+
+add_action('shutdown', 'mpd_weve_seen_the_page');
