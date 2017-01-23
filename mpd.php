@@ -26,9 +26,11 @@ $fs = array(
 	'inc/persist',
 	'inc/acf-functions',
 	'inc/considerations',
+	'inc/media',
 	'addons/bulkaction-mpd-addon',
 	'addons/restrictSites-mpd-addon',
 	'addons/roleAccess-mpd-addon',
+
 
 );
 

@@ -229,6 +229,7 @@ function mpd_clone_post($post_id){
 }
 
 add_filter( 'save_post', 'mpd_clone_post', 100 );
+add_filter( 'edit_attachment', 'mpd_clone_post', 100 );
 
 function mpd_weve_seen_the_page(){
 
