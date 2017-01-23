@@ -84,7 +84,7 @@ function mpd_bulk_admin_script() {
 }
 
 add_action('admin_footer-edit.php', 'mpd_bulk_admin_script');
-
+add_action('admin_footer-upload.php', 'mpd_bulk_admin_script');
 /**
  * @ignore
  */
