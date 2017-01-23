@@ -232,10 +232,11 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
    
     if($post_type == 'acf-field-group'){
         
+        //flush trash
+        mpd_flush_acf_trash($destination_id);
+
         //Tell the bulk action plugin to skip the normal duplication process and do this instead.
         update_option('skip_standard_dup', 1);
-           
-        //find out field key exists in destination.
 
         global $wpdb;
         
@@ -299,8 +300,9 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
             //We need an array of the source field key so we can compare with current destination keys at the end so
             //we can delete any from the destination that are no longer in the source (sync).
             $source_child_field_keys = array();
+            $new_acf_fields = array();
 
-            foreach ($source_child_posts as $source_child_post) {
+            foreach ($source_child_posts as $key => $source_child_post) {
                 //Collect the field key
                 array_push($source_child_field_keys, $source_child_post->post_name);
 
@@ -335,7 +337,8 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 
                 }else{
 
-                    wp_insert_post(array(
+
+                    $new_acf_field_id = wp_insert_post(array(
 
                         'post_parent'    => $matching_existing_post->ID,
 
@@ -350,27 +353,51 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
                         'menu_order'     => $matching_source_post->menu_order
 
                     ));
+
+                    array_push($new_acf_fields, array('field_key' => $matching_source_post->post_name, 'id' => $new_acf_field_id));
                     
                  }
 
             }
-            // Delete any child posts (acf fields) from the field group that exsists in the destination but is not in the source.
+
+            foreach ($new_acf_fields as $new_acf_field) {
+                     
+                     $new_id   = $new_acf_field['id'];
+                     $its_key  = $new_acf_field['field_key'];
+
+                     mpd_set_acf_destination_parent_id_by_id($new_id, $its_key, $source_blog_id, $destination_id);
+
+                     
+            }
+
+            // Delete any child posts (acf fields) from the field group that exists in the destination but is not in the source.
              foreach ($destination_child_posts as $destination_child_post) {
                     
                 $field_key = $destination_child_post->post_name;
 
                 if(!in_array($field_key, $source_child_field_keys)){
+
                     $wpdb->query( 
                         $wpdb->prepare( 
-                                "DELETE FROM $destination_tablename WHERE post_name = %s",
-                                $field_key
+                            "DELETE FROM $destination_tablename WHERE post_name = %s",
+                            $field_key
                         )
-                    );  
+                    ); 
+
                 }
 
             }
 
+            //Collect information about the new post 
+            $site_edit_url = get_edit_post_link($matching_existing_post->ID);
+            $blog_details  = get_blog_details($destination_id);
+            $site_name     = $blog_details->blogname;
+
             restore_current_blog();
+
+            mdp_make_admin_notice($site_name, $site_edit_url, $blog_details);
+
+            
 
 
         }else{
@@ -392,13 +419,12 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
             ));
 
             $source_child_posts = mpd_acf_decendant_fields($post_id, $source_blog_id);
-            $family_tree        = array();
+
+            $destination_post_ids = array();
 
             foreach ($source_child_posts as $source_child_post) {
 
-                $new_child = wp_insert_post(array(
-
-                    'post_parent'       => $new_group_id,
+                $destination_post = wp_insert_post(array(
 
                     'post_content'      => $source_child_post->post_content,
                     'post_title'        => $source_child_post->post_title,
@@ -412,19 +438,16 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
     
                 ));
 
-               // $family_tree[] = array($new_child_id, $source_child_post->ID, $source_child_post->post_parent);
-
+                $destination_post_ids[] = $destination_post;
 
             }
 
-            foreach ($family_tree as $key => $relationship) {
+            mpd_acf_setup_destination_parents($source_child_posts, $destination_post_ids, $new_group_id);
 
-                // From the source set get the key of the the row where the destination set parent 
-                        // wp_update_post(
-                        //         'ID' => $key,
-                        //         'post_parent' => $relationship[]
-                        // )
-            }
+            //Collect information about the new post 
+            $site_edit_url = get_edit_post_link($new_group_id);
+            $blog_details  = get_blog_details($destination_id);
+            $site_name     = $blog_details->blogname;
 
             restore_current_blog();
 
@@ -443,6 +466,8 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 
             }
 
+            mdp_make_admin_notice($site_name, $site_edit_url, $blog_details);
+
         }
 
     }
@@ -454,15 +479,17 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 add_action('mpd_single_batch_before', 'mpd_copy_acf_field_group', 10, 2);
 add_action('mpd_single_metabox_before', 'mpd_copy_acf_field_group', 10, 2);
 
-function mpd_acf_child_fields($post_id, $blog_id){
+function mpd_acf_child_fields($post_id, $blog_id, $status = 'publish'){
 
     global $wpdb;
+
+    $and_clause = $status == 'publish' ? "post_status = 'publish'" : "1=1";
 
     $tablename  = mpd_get_tablename($blog_id);
 
     $results    = $wpdb->get_results(
         $wpdb->prepare(
-            "SELECT * FROM $tablename WHERE post_parent = %d AND post_status = 'publish'",
+            "SELECT * FROM $tablename WHERE post_parent = %d AND " . $and_clause,
             $post_id
         )
     );
@@ -472,13 +499,9 @@ function mpd_acf_child_fields($post_id, $blog_id){
 }
 
 
-function mpd_acf_decendant_fields($post_id, $blog_id){
+function mpd_acf_decendant_fields($post_id, $blog_id, $status = 'publish'){
 
-    global $wpdb;
-
-    $tablename     = mpd_get_tablename($blog_id);
-
-    $children      = mpd_acf_child_fields($post_id, $blog_id); 
+    $children    = mpd_acf_child_fields($post_id, $blog_id, $status);
 
     $totalchildren = $children;
 
@@ -489,7 +512,7 @@ function mpd_acf_decendant_fields($post_id, $blog_id){
 
         foreach ($parents as $parent) {
             
-            $innerchildren = mpd_acf_child_fields($parent->ID, $blog_id);
+            $innerchildren = mpd_acf_child_fields($parent->ID, $blog_id, $status);
 
             if($innerchildren){
 
@@ -499,7 +522,7 @@ function mpd_acf_decendant_fields($post_id, $blog_id){
                     array_push($totalchildren, $innerchild);
 
                 }
-
+                
             }
             
         }
@@ -514,13 +537,72 @@ function mpd_acf_decendant_fields($post_id, $blog_id){
 
 }
 
-function testing(){
+function mpd_acf_setup_destination_parents($source_decendants, $destination_post_ids, $group_id){
 
-   ///var_dump(mpd_acf_decendant_fields(403, 1));
+    foreach ($destination_post_ids as $key => $destination_post_id) {
+        
+        $source_parent_id = $source_decendants[$key]->post_parent;
 
+        //Find source posts key whos id = $source_parent_id 
+        foreach ($source_decendants as $innerkey => $source_child_post) {
+                    
+            if($source_child_post->ID == $source_parent_id){
+
+                $source_parent_key = $innerkey;
+                        
+            }
+        
+        }
+
+        $destination_parent_id = $source_parent_key ? $destination_post_ids[$source_parent_key] : $group_id;
+            
+        wp_update_post(array(
+            'ID'           => $destination_post_id,
+            'post_parent'  => $destination_parent_id
+        ));
+                
+    }
 
 }
-add_action( 'admin_notices', 'testing' );
+
+function mpd_set_acf_destination_parent_id_by_id($new_id, $its_key, $source_blog_id, $destination_blog_id){
+
+    global $wpdb;
+
+    $source_tablename       = mpd_get_tablename($source_blog_id);
+    $destination_tablename  = mpd_get_tablename($destination_blog_id);
+
+    //Get field key of parent_id
+     $matching_source_post = $wpdb->get_row(
+        $wpdb->prepare(
+            "SELECT * FROM $source_tablename WHERE post_name = %s AND post_status = 'publish'",
+            $its_key
+        )
+    );
+
+    $matching_source_post_parent_id = $matching_source_post->post_parent;
+
+     //Get the id of the source Parent
+    $matching_source_post_parent = $wpdb->get_row(
+        $wpdb->prepare(
+            "SELECT * FROM $source_tablename WHERE ID = %s AND post_status = 'publish'",
+            $matching_source_post->post_parent
+        )
+    );
+    $destination_parent_id = $wpdb->get_row(
+        $wpdb->prepare(
+            "SELECT * FROM $destination_tablename WHERE post_name = %s AND post_status = 'publish'",
+            $matching_source_post_parent->post_name
+        )
+    );
+
+     wp_update_post(array(
+        'ID'           => $new_id,
+        'post_parent'  => $destination_parent_id->ID
+    ));
+
+}
+
 
 function mpd_dont_show_acf_post_status($show){
 
@@ -574,9 +656,55 @@ add_filter('mpd_persist_post_args', 'mpd_set_for_acf_group_persist');
 function mpd_do_acf_group_persist($args){
 
     mpd_copy_acf_field_group($args['source_post_id'], $args['destination_id']);
+    
     delete_option('skip_standard_dup');
  
 }
 add_action('mpd_after_persist','mpd_do_acf_group_persist');
 
+function mpd_flush_acf_trash($destination_id){
 
+    global $wpdb;
+    
+    $tablename = mpd_get_tablename($destination_id);
+
+    $binned_acf_groups = $wpdb->get_results(
+        "SELECT * FROM $tablename WHERE post_type='acf-field-group' AND post_status = 'trash'"
+    );
+
+    if($binned_acf_groups){
+
+        foreach ($binned_acf_groups as $binned_acf_group) {
+
+           $decendants = mpd_acf_decendant_fields($binned_acf_group->ID, $destination_id, 'any');
+
+           if($decendants){
+
+                foreach ($decendants as $decendant) {
+                    $wpdb->query( 
+
+                        $wpdb->prepare( 
+                            "DELETE FROM $tablename WHERE ID = %s",
+                            $decendant->ID
+                        )
+
+                    ); 
+
+                }
+
+            }
+            
+            $wpdb->query(
+
+                $wpdb->prepare( 
+                    "DELETE FROM $tablename WHERE ID = %s",
+                    $binned_acf_group ->ID
+                )
+
+            );
+
+        }
+
+    }
+
+}

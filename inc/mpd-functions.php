@@ -605,17 +605,48 @@ function mpd_checked_lookup($options, $option_key, $option_value, $type = null){
  */
 function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details){
 
+    $option_value = get_option('mpd_admin_notice');
+
     $message        = '<div class="updated"><p>';
     $message       .= apply_filters('mpd_admin_notice_text', __('You succesfully duplicated this post to', 'multisite-post-duplicator' ) ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post', 'multisite-post-duplicator' ).'</a>', $site_name, $site_url, $destination_blog_details);
-    $message       .= '</p></div>';
-
-    $option_value = get_option('mpd_admin_notice');
+    $message       .= '</p></div>'; 
     
-    if($option_value){
+    if(!$option_value){
 
-        $message = $option_value . $message;
+
+        $notice_data    = array(
+            'name'        => $site_name,
+            'url'         => $site_url,
+            'blog_object' =>  $destination_blog_details
+        );
+
+        $option_value   = array('message' => $message, 'data' => $notice_data );   
+        
+    }else{
+
+        // Prevent Duplicate notices going on screen.
+        foreach ($option_value['data'] as $key => $value) {
+
+            if($value == $notice_data_new){
+                return;
+            }
+
+        }
+
+        $option_value['message'] = $option_value['message'] . $message;
+
+        $notice_data_new = array(
+            'name'        => $site_name,
+            'url'         => $site_url,
+            'blog_object' => $destination_blog_details
+        );
+        
+        array_push($option_value['data'], $notice_data_new);
 
     }
+    //Add this collected notice to the database because the new page needs a method of getting this data
+    //when the page refreshes
+    update_option('mpd_admin_notice', $option_value );
 
     return $message;
 
@@ -635,7 +666,7 @@ function mpd_plugin_admin_notices(){
     // If there is a notice in the database display it.
     if($notices = get_option('mpd_admin_notice')){
 
-        echo $notices;
+        echo $notices['message'];
         // Now that we know the notice has been displayed we can delete its database entry
         delete_option('mpd_admin_notice');
 
@@ -1262,20 +1293,27 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
         $file = $upload_dir['basedir'] . '/' . $file_name .'.'. $info['extension'];
 
     }
+    
+    $filtered_url = mpd_fix_wordpress_urls($img_url);
 
-    $image_data = file_get_contents(mpd_fix_wordpress_urls($img_url));
+    if($filtered_url && $filtered_url != ''){
 
-    // Add the file contents to the new path with the new filename
-    file_put_contents( $file, $image_data );
+         $image_data = file_get_contents($filtered_url);
 
-    $attach_id = wp_insert_attachment( $attachment, $file, $post_id );
-     // Include code to process functions below:
-    require_once(ABSPATH . 'wp-admin/includes/image.php');
+        // Add the file contents to the new path with the new filename
+        file_put_contents( $file, $image_data );
 
-    // Define attachment metadata
-    $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+        $attach_id = wp_insert_attachment( $attachment, $file, $post_id );
+        // Include code to process functions below:
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
 
-    wp_update_attachment_metadata( $attach_id, $attach_data );
+        // Define attachment metadata
+        $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+
+        wp_update_attachment_metadata( $attach_id, $attach_data );
+        
+    }
+   
 
     return $attach_id;
 
@@ -1289,4 +1327,38 @@ function mpd_get_tablename($blogid, $table = 'posts'){
     $tablename      = $wpdb->base_prefix . $siteid . $table;
 
     return $tablename;
+}
+
+add_action('mpd_after_metabox_content', 'mpd_select_all_checkboxes', 5);
+
+function  mpd_select_all_checkboxes(){
+
+    if(apply_filters('mpd_show_select_all_checkboxes', true)) :?>
+        
+        <?php
+            $first_text     = __('Select all except current', 'multisite-post-duplicator');
+            $second_text    = __('Select none', 'multisite-post-duplicator');
+        ?>
+        <p><small><a id="mpd-select-all" href="#"><?php echo $first_text; ?></a></small></p>
+
+         <script>
+            jQuery(document).ready(function() {
+
+                jQuery("#mpd-select-all").click(function(){
+                    
+                    if(jQuery(this).html() == '<?php echo $first_text; ?>'){ 
+                        jQuery('#mpd_blogschecklist input:checkbox:not(.mpd-current-site)').prop('checked', 'checked');
+                        jQuery(this).html('<?php echo $second_text; ?>');
+                    }else{
+                        jQuery(this).html('<?php echo $first_text; ?>');
+                        jQuery('#mpd_blogschecklist input:checkbox').removeProp('checked');
+                    }
+                        
+                });
+
+            });
+        </script>
+
+    <?php endif; 
+
 }

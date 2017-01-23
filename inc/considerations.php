@@ -27,7 +27,7 @@ function mpd_add_considerations(){
     }
 
 }
-add_action('mpd_after_notices', 'mpd_add_considerations');
+//add_action('mpd_after_notices', 'mpd_add_considerations');
 
 /**
  * If there are any considerations in the database adust the main notice text using
@@ -44,7 +44,7 @@ function mpd_add_consideration_text($message){
     return $message;
 
 }
-add_filter('mpd_admin_notice_text','mpd_add_consideration_text');
+//add_filter('mpd_admin_notice_text','mpd_add_consideration_text');
 
 /**
  * This is us logging the post types on a site into a site option. On multisite switch_to_blog doesn't
@@ -146,7 +146,7 @@ function mpd_post_type_considerations($mdp_post, $attached_images, $meta_values,
     
 }
 
-add_action('mpd_during_core_in_source', 'mpd_post_type_considerations', 20, 5);
+//add_action('mpd_during_core_in_source', 'mpd_post_type_considerations', 20, 5);
 
 /**
  * Here we are filtering into the source taxonomy terms as collected at source in the core.
@@ -214,7 +214,7 @@ function mpd_taxonomy_considerations($source_taxonomy_terms_object, $destination
     return $source_taxonomy_terms_object;
     
 }
-add_filter('mpd_post_taxonomy_terms', 'mpd_taxonomy_considerations', 20, 2);
+//add_filter('mpd_post_taxonomy_terms', 'mpd_taxonomy_considerations', 20, 2);
 
 /**
  * Here we are hooking into the data of an meta key that has been idenified as an ACF field during mpd_do_acf_images_from_source()
@@ -235,7 +235,7 @@ function mpd_acf_considerations($acf_control_row, $meta, $acf_field_key, $destin
     $acf_field_source = get_field_object($acf_field_key);
  
     switch_to_blog($destination_blog_id);
-        // Get data on the ACF field in the destination site. See https://www.advancedcustomfields.com/resources/get_field_object/
+        // Get data on the ACF field in the destination site.
         $acf_field_destination = get_field_object($acf_field_key);
         
     restore_current_blog();
@@ -249,7 +249,7 @@ function mpd_acf_considerations($acf_control_row, $meta, $acf_field_key, $destin
         $considerations .= "<div class='notice notice-info notice-considerations'><p>";
         $considerations .= __("The Advanced Custom Field", 'multisite-post-duplicator'  );
         $considerations .= " '<em>" . $acf_field_source['label'] . "</em>' ";
-        $considerations .= __("doesn't exsist in the destination site so will not appear unless you export this field from this site and import into the destination site", 'multisite-post-duplicator' );
+        $considerations .= __("doesn't exsist in the destination site. Why not use MPD to duplicate <a href='". get_admin_url( $blog_id, 'edit.php?post_type=acf-field-group') ."'>your acf group</a>?", 'multisite-post-duplicator' );
         $considerations .= ".</p></div>";
 
     }
@@ -258,4 +258,4 @@ function mpd_acf_considerations($acf_control_row, $meta, $acf_field_key, $destin
 
 }
 
-add_action('mpd_acf_field_found', 'mpd_acf_considerations', 10, 4);
+//add_action('mpd_acf_field_found', 'mpd_acf_considerations', 10, 4);
