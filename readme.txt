@@ -90,6 +90,7 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 * Select all sites on your network quickly with our new 'select all button'
 * Improved performance
 * Improved access for developers with the addition of several new hooks.
+* Removed signposting added in previous release. Rethinking a better approach
 
 = 1.4 =
 * NEW: Signposting for networks where custom post types and taxonomies are not synced throughout.
