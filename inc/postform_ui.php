@@ -170,7 +170,7 @@ function mpd_publish_top_right(){
 function mpd_clone_post($post_id){
 
     $here = get_site_option('avoid_infinite');
-    update_option('current_filter' . uniqid() ,current_filter());
+
     if(!$here){
         if (!count($_POST)){
             return $post_id;
@@ -227,11 +227,4 @@ function mpd_clone_post($post_id){
     return $post_id;
 
 }
-add_filter( 'attachment_updated', 'mpd_clone_post', 100 );
 add_filter( 'save_post', 'mpd_clone_post', 100 );
-
-function testing(){
-    global $post;
-    var_dump($post->post_type);
-}
-add_action('admin_head', 'testing');

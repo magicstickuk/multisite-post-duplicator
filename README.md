@@ -87,6 +87,12 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.5 =
+* NEW: Duplicate Advanced Custom Field's 'field groups' and keep them in sync throughout your network by using our 'duplication link' functionality.
+* Select all sites on your network quickly with our new 'select all button'
+* Improved performance
+* Improved access for developers with the addition of several new hooks.
+
 = 1.4 =
 * NEW: Signposting for networks where custom post types and taxonomies are not synced throughout.
 * NEW: Signposting for instances where user's 'Advanced Custom Fields Field Groups' don't exist in the destination site.
