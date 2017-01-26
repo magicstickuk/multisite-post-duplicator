@@ -479,6 +479,17 @@ function mpd_copy_acf_field_group($post_id, $destination_id){
 add_action('mpd_single_batch_before', 'mpd_copy_acf_field_group', 10, 2);
 add_action('mpd_single_metabox_before', 'mpd_copy_acf_field_group', 10, 2);
 
+/**
+ * Get of all children post of a given parent
+ *
+ *
+ * @since 1.5
+ * @param int $post_id The ID of the post
+ * @param int $blog_id The ID of site to where the parent exists
+ * @param string $status 'publish' to get all published posts or any other string to get all post statues
+ * @return array An array of post objects
+ *
+*/
 function mpd_acf_child_fields($post_id, $blog_id, $status = 'publish'){
 
     global $wpdb;
@@ -498,7 +509,16 @@ function mpd_acf_child_fields($post_id, $blog_id, $status = 'publish'){
 
 }
 
-
+/**
+ * Get of all decentants of a given post. Functions for a maximum of 6 generations
+ *
+ * @since 1.5
+ * @param int $post_id The ID of the post
+ * @param int $blog_id The ID of site to where the parent exists
+ * @param string $status 'publish' to get all published posts or any other string to get all post statues
+ * @return array An array of post objects
+ *
+*/
 function mpd_acf_decendant_fields($post_id, $blog_id, $status = 'publish'){
 
     $children    = mpd_acf_child_fields($post_id, $blog_id, $status);
@@ -537,6 +557,16 @@ function mpd_acf_decendant_fields($post_id, $blog_id, $status = 'publish'){
 
 }
 
+/**
+ * Process the destination posts so that their hierarchy persists into the destination site
+ *
+ * @since 1.5
+ * @param array $source_decendants All the decendants of a specific 'acf-field-group' $group_id
+ * @param array $destination_post_ids An array of the destination post ids. The order of which matches the array of the source $source_decendants
+ * @param int $group_id The id of the parent acf field group
+ * @return null
+ *
+*/
 function mpd_acf_setup_destination_parents($source_decendants, $destination_post_ids, $group_id){
 
     foreach ($destination_post_ids as $key => $destination_post_id) {
@@ -565,6 +595,17 @@ function mpd_acf_setup_destination_parents($source_decendants, $destination_post
 
 }
 
+/**
+ * Process a destination posts so that its hierarchy persists from the source site
+ *
+ * @since 1.5
+ * @param int $new_id The id of the post you wish to set its corresponding parent
+ * @param string $its_key The acf key of the new acf field in the destination
+ * @param int $source_blog_id The id of the source blog
+ * @param int $destination_blog_id The id of the destination blog
+ * @return null
+ *
+*/
 function mpd_set_acf_destination_parent_id_by_id($new_id, $its_key, $source_blog_id, $destination_blog_id){
 
     global $wpdb;
@@ -603,7 +644,14 @@ function mpd_set_acf_destination_parent_id_by_id($new_id, $its_key, $source_blog
 
 }
 
-
+/**
+ * Hook to prevent destination post status being selected for acf posts. It doesnt apply to this post type
+ *
+ * @since 1.5
+ * @param boolean $show Show the post status control?
+ * @return boolean
+ *
+*/
 function mpd_dont_show_acf_post_status($show){
 
     global $post;
@@ -621,6 +669,14 @@ function mpd_dont_show_acf_post_status($show){
 }
 add_filter('mpd_show_metabox_post_status', 'mpd_dont_show_acf_post_status');
 
+/**
+ * Hook to prevent destination prefix being added for acf posts. It doesnt apply to this post type
+ *
+ * @since 1.5
+ * @param boolean $show Show the prefix control?
+ * @return boolean
+ *
+*/
 function mpd_dont_show_acf_prefix($show){
 
     global $post;
@@ -638,6 +694,14 @@ function mpd_dont_show_acf_prefix($show){
 }
 add_filter('mpd_show_metabox_prefix', 'mpd_dont_show_acf_prefix');
 
+/**
+ * Hook to ensure that ACF posts dont go down the normal route of duplication
+ *
+ * @since 1.5
+ * @param array $args The args past in to process the 'linked post'
+ * @return array filtered $args
+ *
+*/
 function mpd_set_for_acf_group_persist($args){
 
     $the_post_type = get_post_type($args['source_post_id']);
@@ -653,6 +717,14 @@ function mpd_set_for_acf_group_persist($args){
 }
 add_filter('mpd_persist_post_args', 'mpd_set_for_acf_group_persist');
 
+/**
+ * Hook to ensure that ACF posts are copied to the destination site via function mpd_copy_acf_field_group();
+ *
+ * @since 1.5
+ * @param array $args The args past in to process the 'linked post'
+ * @return null
+ *
+*/
 function mpd_do_acf_group_persist($args){
 
     mpd_copy_acf_field_group($args['source_post_id'], $args['destination_id']);
@@ -662,6 +734,14 @@ function mpd_do_acf_group_persist($args){
 }
 add_action('mpd_after_persist','mpd_do_acf_group_persist');
 
+/**
+ * Flush all the acf posts that are in the trash
+ *
+ * @since 1.5
+ * @param int $destination_id The blog id of the site you wish to empty the trash
+ * @return null
+ *
+*/
 function mpd_flush_acf_trash($destination_id){
 
     global $wpdb;

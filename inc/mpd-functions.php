@@ -1275,7 +1275,6 @@ function mpd_search($array, $key, $value){
  * @return int The id of the newly created image
  *
  */
-
 function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
 
     $info       = pathinfo($img_url);
@@ -1318,7 +1317,17 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
     return $attach_id;
 
 }
-
+/**
+ * 
+ * Helper function to get the table name of a perticular table on a specific site
+ *
+ * @since 1.5
+ * @param int $blogid The id of the blog to want the table name from
+ * @param string $table The standard table name without prefix. Default is posts
+ * 
+ * @return string The rtable name with appropriate prefix
+ *
+ */
 function mpd_get_tablename($blogid, $table = 'posts'){
     
     global $wpdb;
@@ -1331,6 +1340,15 @@ function mpd_get_tablename($blogid, $table = 'posts'){
 
 add_action('mpd_after_metabox_content', 'mpd_select_all_checkboxes', 5);
 
+/**
+ * 
+ * UI Function which provides a button to select all checkboxes in the MPD post metabox
+ *
+ * @since 1.5
+ * 
+ * @return null
+ *
+ */
 function  mpd_select_all_checkboxes(){
 
     if(apply_filters('mpd_show_select_all_checkboxes', true)) :?>
@@ -1362,7 +1380,15 @@ function  mpd_select_all_checkboxes(){
     <?php endif; 
 
 }
-
+/**
+ * 
+ * Function to control the possibility of infinite loops when duplicating.
+ *
+ * @since 1.5
+ * 
+ * @return null
+ *
+ */
 function mpd_weve_seen_the_page(){
 
     delete_site_option('avoid_infinite');
