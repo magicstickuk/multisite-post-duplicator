@@ -169,9 +169,9 @@ function mpd_publish_top_right(){
 
 function mpd_clone_post($post_id){
 
-    //$here = get_site_option('avoid_infinite');
+    $here = get_site_option('avoid_infinite');
 
-   // if(!$here){
+   if(!$here){
         if (!count($_POST)){
             return $post_id;
         }
@@ -220,9 +220,9 @@ function mpd_clone_post($post_id){
 
         }
         
-        //update_site_option('avoid_infinite', 1 );
+        update_site_option('avoid_infinite', 1 );
     
-    //}
+    }
    
     return $post_id;
 
