@@ -85,6 +85,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.5.1 =
+* Fixed 'duplicating on publish' bug introduced in v1.5
+
 = 1.5 =
 * NEW: Duplicate Advanced Custom Field's 'field groups' and keep them in sync throughout your network by using our 'duplication link' functionality.
 * Select all sites on your network quickly with our new 'select all button'
