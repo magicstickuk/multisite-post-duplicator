@@ -1397,3 +1397,61 @@ function mpd_weve_seen_the_page(){
 }
 
 add_action('shutdown', 'mpd_weve_seen_the_page');
+
+function mpd_process_persist( $post_id, $destination_id, $created_post = false){
+
+    if(isset($_POST['persist'])){
+                    
+        $args = array(
+
+            'source_id'      => get_current_blog_id(),
+            'destination_id' => $destination_id,
+            'source_post_id' => $_POST['ID'],
+            'destination_post_id' => $created_post['id']
+
+        );
+                    
+        mpd_add_persist($args);
+
+        do_action('mpd_after_persist', $args);
+
+    }
+
+}
+add_action('mpd_single_metabox_after', 'mpd_process_persist');
+
+function mpd_skip_standard_duplication($choice){
+
+    if(get_option('skip_standard_dup')){
+                
+        delete_option('skip_standard_dup' );
+        
+        return $choice = false;
+
+    }
+
+    return $choice;
+
+}
+
+add_filter('mpd_single_metabox_before', 'mpd_skip_standard_duplication', 20); //Note priority higher than mpd_copy_acf_field_group()
+
+function mpd_access_to_metabox_loop($choice, $post_id){
+
+    if(
+            ( isset($_POST["post_status"] ) ) 
+            && ( $_POST["post_status"] != "auto-draft" )
+            && ( isset($_POST['mpd_blogs'] ) )
+            && ( count( $_POST['mpd_blogs'] ) )
+            && ( $_POST["post_ID"] == $post_id )){
+
+        return $choice = true;
+
+    }
+
+    return choice;
+
+}
+
+
+add_filter('mpd_access_to_metabox_loop', 'mpd_access_to_metabox_loop', 10, 2 );
