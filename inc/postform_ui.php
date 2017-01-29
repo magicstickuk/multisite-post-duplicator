@@ -190,7 +190,8 @@ function mpd_clone_post($post_id){
 
                     $createdPost = mpd_duplicate_over_multisite(
 
-                        $_POST["ID"], $mpd_blog_id, 
+                        $_POST["ID"],
+                        $mpd_blog_id, 
                         $_POST["post_type"],
                         get_current_user_id(),
                         $_POST["mpd-prefix"],

@@ -1400,6 +1400,11 @@ add_action('shutdown', 'mpd_weve_seen_the_page');
 
 function mpd_process_persist( $post_id, $destination_id, $created_post = false){
 
+    update_option('post_id', $post_id);
+    update_option('destination_id', $destination_id);
+    update_option('created_post', $created_post);
+    update_option('post_object', $_POST);
+
     if(isset($_POST['persist'])){
                     
         $args = array(
@@ -1412,8 +1417,6 @@ function mpd_process_persist( $post_id, $destination_id, $created_post = false){
         );
                     
         mpd_add_persist($args);
-
-        do_action('mpd_after_persist', $args);
 
     }
 
