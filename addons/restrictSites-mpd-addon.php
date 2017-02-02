@@ -227,7 +227,7 @@ add_action('admin_head', 'mpd_add_addon_script_to_settings_page');
 /**
  * @ignore
  */
-function checkSiteStatus(){
+function mpd_is_site_active(){
 
   $options 			= get_option( 'mdp_settings' );
   $currentSite 		= get_current_blog_id();
@@ -280,4 +280,4 @@ function checkSiteStatus(){
 
 }
 
-add_filter( 'mpd_is_active', 'checkSiteStatus');
+add_filter( 'mpd_is_active', 'mpd_is_site_active');

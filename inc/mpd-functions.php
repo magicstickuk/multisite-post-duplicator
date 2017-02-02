@@ -1338,8 +1338,6 @@ function mpd_get_tablename($blogid, $table = 'posts'){
     return $tablename;
 }
 
-add_action('mpd_after_metabox_content', 'mpd_select_all_checkboxes', 5);
-
 /**
  * 
  * UI Function which provides a button to select all checkboxes in the MPD post metabox
@@ -1380,6 +1378,9 @@ function  mpd_select_all_checkboxes(){
     <?php endif; 
 
 }
+
+add_action('mpd_after_metabox_content', 'mpd_select_all_checkboxes', 5);
+
 /**
  * 
  * Function to control the possibility of infinite loops when duplicating.
@@ -1400,11 +1401,6 @@ add_action('shutdown', 'mpd_weve_seen_the_page');
 
 function mpd_process_persist( $post_id, $destination_id, $created_post = false){
 
-    update_option('post_id', $post_id);
-    update_option('destination_id', $destination_id);
-    update_option('created_post', $created_post);
-    update_option('post_object', $_POST);
-
     if(isset($_POST['persist'])){
                     
         $args = array(
@@ -1421,7 +1417,7 @@ function mpd_process_persist( $post_id, $destination_id, $created_post = false){
     }
 
 }
-add_action('mpd_single_metabox_after', 'mpd_process_persist');
+add_action('mpd_single_metabox_after', 'mpd_process_persist', 10, 3);
 
 function mpd_skip_standard_duplication($choice){
 
@@ -1438,23 +1434,3 @@ function mpd_skip_standard_duplication($choice){
 }
 
 add_filter('mpd_single_metabox_before', 'mpd_skip_standard_duplication', 20); //Note priority higher than mpd_copy_acf_field_group()
-
-function mpd_access_to_metabox_loop($choice, $post_id){
-
-    if(
-            ( isset($_POST["post_status"] ) ) 
-            && ( $_POST["post_status"] != "auto-draft" )
-            && ( isset($_POST['mpd_blogs'] ) )
-            && ( count( $_POST['mpd_blogs'] ) )
-            && ( $_POST["post_ID"] == $post_id )){
-
-        return $choice = true;
-
-    }
-
-    return choice;
-
-}
-
-
-add_filter('mpd_access_to_metabox_loop', 'mpd_access_to_metabox_loop', 10, 2 );

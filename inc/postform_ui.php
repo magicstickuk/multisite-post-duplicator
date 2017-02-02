@@ -178,7 +178,12 @@ function mpd_clone_post($post_id){
 
         }
 
-        if(apply_filters('mpd_access_to_metabox_loop', false, $post_id) ){
+        if(
+            ( isset($_POST["post_status"] ) ) 
+            && ( $_POST["post_status"] != "auto-draft" )
+            && ( isset($_POST['mpd_blogs'] ) )
+            && ( count( $_POST['mpd_blogs'] ) )
+            && ( $_POST["post_ID"] == $post_id )){
 
             $mpd_blogs = $_POST['mpd_blogs'];
 
