@@ -85,6 +85,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.5.2 =
+* Fixed php warnings experienced in some senarios.
+
 = 1.5.1 =
 * Fixed 'duplicating on publish' bug introduced in v1.5
 
