@@ -25,93 +25,103 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
    //Is Advanced Custom Fields active and the source site is different from the destination
    if(class_exists('acf') && ($current_blog_id != $destination_blog_id)){
 
-        foreach ($meta_values as $key => $meta) {
+        if($meta_values){
 
-            //Indicates it could be a ACF Value
-            if(isset($meta_values["_" . $key])){
+            foreach ($meta_values as $key => $meta) {
 
-                global $wpdb;
+                //Indicates it could be a ACF Value
+                if(isset($meta_values["_" . $key])){
 
-                $acf_field_key  = $meta_values["_" . $key][0];
-                $tablename      = mpd_get_tablename($wpdb->blogid);
-                $query          = $wpdb->prepare("
-                    SELECT post_content
-                    FROM $tablename 
-                    WHERE post_name = '%s'
-                    AND post_type = 'acf-field'", $acf_field_key
-                );
+                    global $wpdb;
 
-                //Get the posssible ACF controller post for this image
-                $result         = $wpdb->get_row($query);
-                
-                if($result){
+                    $acf_field_key  = $meta_values["_" . $key][0];
+                    $tablename      = mpd_get_tablename($wpdb->blogid);
+                    $query          = $wpdb->prepare("
+                        SELECT post_content
+                        FROM $tablename 
+                        WHERE post_name = '%s'
+                        AND post_type = 'acf-field'", $acf_field_key
+                    );
 
-                    if(current_filter() == 'mpd_during_core_in_source'){
-                        do_action('mpd_acf_field_found', $result, $meta, $acf_field_key, $destination_blog_id);
+                    //Get the posssible ACF controller post for this image
+                    $result         = $wpdb->get_row($query);
+                    
+                    if($result){
+
+                        if(current_filter() == 'mpd_during_core_in_source'){
+                            do_action('mpd_acf_field_found', $result, $meta, $acf_field_key, $destination_blog_id);
+                        }
+
+                        $acf_control    = unserialize($result->post_content);
+                        $acf_type       = $acf_control['type'];
+
+                        switch ($acf_type) {
+                            case 'image':
+
+                                $acf_image_data_source = array(
+
+                                    'image_id'      => $meta[0],
+                                    'field'         => $key,
+                                    'post_id'       => $post_id_to_copy,
+                                    'img_url'       => wp_get_attachment_url( $meta[0] ),
+                                    'img_post_mime' => get_post_mime_type($meta[0])
+
+                                );
+
+                                array_push($acf_collected, $acf_image_data_source);
+
+                                break;
+
+                            case 'gallery':
+                                
+                                $source_ids     = maybe_unserialize($meta[0]);
+                                $image_urls     = array();
+                                $image_metas    = array();
+                                $img_post_mimes = array();
+
+                                if($source_ids && is_array($source_ids)){
+
+                                    foreach ($source_ids as $source_id) {
+
+                                        $image_url      = wp_get_attachment_url( $source_id);
+                                        $img_post_mime  = get_post_mime_type($source_id);
+
+                                        array_push($image_urls, $image_url);
+                                        array_push($img_post_mimes, $img_post_mime);
+
+                                    }
+
+                                }
+
+                                $acf_image_gallery_data_source = array(
+
+                                    'image_ids'     => $source_ids,
+                                    'field'         => $key,
+                                    'post_id'       => $post_id_to_copy,
+                                    'img_url'       => $image_urls,
+                                    'img_post_mime' => $img_post_mimes
+
+                                );
+
+                                array_push($acf_gallery_collected, $acf_image_gallery_data_source);
+
+                                break;
+
+                            default:
+                                
+                                break;
+
+                        }  
+                        
                     }
 
-                    $acf_control    = unserialize($result->post_content);
-                    $acf_type       = $acf_control['type'];
-
-                    switch ($acf_type) {
-                        case 'image':
-
-                            $acf_image_data_source = array(
-
-                                'image_id'      => $meta[0],
-                                'field'         => $key,
-                                'post_id'       => $post_id_to_copy,
-                                'img_url'       => wp_get_attachment_url( $meta[0] ),
-                                'img_post_mime' => get_post_mime_type($meta[0])
-
-                            );
-
-                            array_push($acf_collected, $acf_image_data_source);
-
-                            break;
-
-                        case 'gallery':
-                            
-                            $source_ids     = unserialize($meta[0]);
-                            $image_urls     = array();
-                            $image_metas    = array();
-                            $img_post_mimes = array();
-
-                            foreach ($source_ids as $source_id) {
-
-                                $image_url      = wp_get_attachment_url( $source_id);
-                                $img_post_mime  = get_post_mime_type($source_id);
-
-                                array_push($image_urls, $image_url);
-                                array_push($img_post_mimes, $img_post_mime);
-
-                            }
-
-                            $acf_image_gallery_data_source = array(
-
-                                'image_ids'     => $source_ids,
-                                'field'         => $key,
-                                'post_id'       => $post_id_to_copy,
-                                'img_url'       => $image_urls,
-                                'img_post_mime' => $img_post_mimes
-
-                            );
-
-                            array_push($acf_gallery_collected, $acf_image_gallery_data_source);
-
-                            break;
-
-                        default:
-                            
-                            break;
-
-                    }  
-                    
                 }
 
             }
 
         }
+
+        
        
         update_site_option( 'source_acf_images', $acf_collected);
         update_site_option( 'source_acf_gallery_images', $acf_gallery_collected);   
@@ -176,32 +186,38 @@ function mpd_do_acf_images_to_destination($post_id){
 
             foreach ($acf_gallerys as $gallery_key => $acf_gallery) {
 
-                foreach($acf_gallery['image_ids'] as $key => $acf_image){
+                if(isset($acf_gallery['image_ids']) || $acf_gallery['image_ids'] !=''){
 
-                    $file       = $acf_gallerys[$gallery_key]['img_url'][$key];
+                    foreach($acf_gallery['image_ids'] as $key => $acf_image){
 
-                    if($file){
-                        $info       = pathinfo($file);
-                        $file_name  = basename($file,'.'.$info['extension']);
+                        $file       = $acf_gallerys[$gallery_key]['img_url'][$key];
 
-                        $attachment = array(
+                        if($file){
 
-                             'post_mime_type' => $acf_gallerys[$gallery_key]['img_post_mime'][$key],
-                             'post_title'     => $file_name,
-                             'post_content'   => '',
-                             'post_status'    => 'inherit'
+                            $info       = pathinfo($file);
+                            $file_name  = basename($file,'.'.$info['extension']);
 
-                        );
+                            $attachment = array(
 
-                        $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id);
+                                 'post_mime_type' => $acf_gallerys[$gallery_key]['img_post_mime'][$key],
+                                 'post_title'     => $file_name,
+                                 'post_content'   => '',
+                                 'post_status'    => 'inherit'
 
-                        array_push($attach_ids,$attach_id);
+                            );
 
-                        update_field($acf_gallerys[$gallery_key]['field'], $attach_ids, $post_id);
+                            $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id);
 
+                            array_push($attach_ids,$attach_id);
+
+                            update_field($acf_gallerys[$gallery_key]['field'], $attach_ids, $post_id);
+
+                        }
+                        
                     }
-                    
+
                 }
+                
 
             }  
 
