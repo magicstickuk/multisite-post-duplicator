@@ -186,7 +186,7 @@ function mpd_do_acf_images_to_destination($post_id){
 
             foreach ($acf_gallerys as $gallery_key => $acf_gallery) {
 
-                if(isset($acf_gallery['image_ids']) || $acf_gallery['image_ids'] !=''){
+                if(isset($acf_gallery['image_ids']) && $acf_gallery['image_ids'] !=''){
 
                     foreach($acf_gallery['image_ids'] as $key => $acf_image){
 

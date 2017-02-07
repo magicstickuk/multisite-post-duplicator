@@ -4,7 +4,7 @@
 Plugin Name: 	Multisite Post Duplicator
 Plugin URI: 	http://www.wpmaz.uk
 Description:    Duplicate/Copy/Clone any individual page, post or custom post type from one site on your multisite network to another. 
-Version: 		1.5.3
+Version: 		1.5.4
 Author: 		Mario Jaconelli
 Author URI:  	http://www.wpmaz.uk
 Text Domain: 	multisite-post-duplicator

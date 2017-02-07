@@ -54,10 +54,10 @@ jQuery(document).ready(function($) {
 	});
 
 	jQuery('#mpd_blogschecklist .mpd-site-checkbox input').change(function(){
-			
+		
   		var rcb = jQuery('.mpd-site-checkbox input:checked');
   		var cdl = jQuery('input[name="persist"]');
-  		
+
   		if(rcb.length >= 1){
   			cdl.prop("disabled", false);
   			cdl.parent().removeClass('disabled');

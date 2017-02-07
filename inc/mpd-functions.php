@@ -1379,7 +1379,8 @@ function  mpd_select_all_checkboxes(){
                         jQuery(this).html('<?php echo $first_text; ?>');
                         jQuery('#mpd_blogschecklist input:checkbox').removeProp('checked');
                     }
-                        
+                    
+                    jQuery('#mpd_blogschecklist .mpd-site-checkbox input').trigger('change');  
                 });
 
             });

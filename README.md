@@ -85,6 +85,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.5.4 =
+* Fixed issue with 'duplication link' checkbox remaining greyed out when some sites were checked.
+
 = 1.5.3 =
 * Fixed php warnings experienced in some senarios.
 
