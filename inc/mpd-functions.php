@@ -1346,8 +1346,6 @@ function mpd_get_tablename($blogid, $table = 'posts'){
     return $tablename;
 }
 
-add_action('mpd_after_metabox_content', 'mpd_select_all_checkboxes', 5);
-
 /**
  * 
  * UI Function which provides a button to select all checkboxes in the MPD post metabox
@@ -1389,6 +1387,8 @@ function  mpd_select_all_checkboxes(){
     <?php endif; 
 
 }
+
+add_action('mpd_after_metabox_content', 'mpd_select_all_checkboxes', 5);
 /**
  * 
  * Function to control the possibility of infinite loops when duplicating.
@@ -1406,3 +1406,33 @@ function mpd_weve_seen_the_page(){
 }
 
 add_action('shutdown', 'mpd_weve_seen_the_page');
+
+
+/**
+ * 
+ * Hooks into mpd_enter_the_loop funciton and set the conditions in which the multisite
+ * post duplication processes can be accessed
+ *
+ * @since 1.5.5
+ * @param boolean $choice The initial state if we are allowed into the loop
+ * @param array $post_global the global post object on the form submit
+ * @param int $post_id the ID of the post being saved
+ * 
+ * @return boolean The desision to continue or not
+ *
+ */
+function mpd_enter_the_loop($choice, $post_global, $post_id){
+
+    if(( isset($post_global["post_status"] ) ) 
+            && ( $post_global["post_status"] != "auto-draft" )
+            && ( isset($post_global['mpd_blogs'] ) )
+            && ( count( $post_global['mpd_blogs'] ) )
+            && ( $post_global["post_ID"] == $post_id )
+            ){
+        return true;
+    }
+
+    return false;
+
+}
+add_filter('mpd_enter_the_loop', 'mpd_enter_the_loop', 10, 3);
