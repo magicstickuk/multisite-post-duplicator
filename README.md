@@ -3,45 +3,56 @@
 Contributors: MagicStick
 Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, clone
 Requires at least: 3.7
-Tested up to: 4.6
+Tested up to: 4.7
+Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Duplicate any individual page, post or custom post type from one site on your multisite network to another.
+Duplicate/Copy/Clone any individual page, post or custom post type from one site on your multisite network to another.
 
 == Description ==
 
-Duplicate any individual page, post or custom post type from one site on your multisite network to another.
+Duplicate/Copy/Clone any individual page, post or custom post type from one site on your multisite network to another.
 
-Features
+*   Multisite Post Duplicator can copy the following:
+	* Custom fields
+	* Related post meta
+	* Custom post types on your network (make sure post type exists in your destination site)
+	* Featured image
+	* Images within post content
+	* Tags
+	* Categories. (If the category doesn't exist in the destination site then the category is created and assigned to the post)
+	* Taxonomy terms. (make sure taxonomy is also registered on your destination site).
+	* Parent and child relationships (must use batch duplication option to achieve this).
+	* ACF Fields
+	* ACF Field Groups (sync field groups within your network!)
 
-*   Copies all custom fields
-*   Copies all related post meta
-*   Includes any custom post type on your network as long as the post type exists in your destination site
-*   Automatically copy your post/page/custom post type from one site to another from within your workflow 
-*   Copies any featured image (Can be turned on or off in Settings)
-*   Copies all image media within post content to the new site's media library for exclusive use in the destination site (Can be turned on or off in Settings)
-*   Copies associated tags (Can be turned on or off in Settings)
-*   Copies post categories. If the category doesn't exist in the destination site then the category is created and assigned to the post (Can be turned on or off in Settings)
-*   Copies post taxonomy terms. (Can be turned on or off in Settings). This behaviour assumes that the taxonomies being duplicated have been registered on the destination site.
-*	Batch Duplication
-*	Settings page to customise the default behaviour
-*	Restrict functionality to only certain sites on your network
-*	Restrict functionality to users of certain roles
-*   Clean and friendly User Interface
-*   Select what status you want your new copy of post to be i.e Published, Draft etc
-*   Specify a prefix for the new post to avoid confusion
-*   Works with Contact Form 7
-*   Works with Advanced Custom Fields
-*	Create your own addons! Multisite Post Duplicator is now fully extendable. Create your own functionality. Check out the API [documentation](http://www.wpmaz.uk/mpddocs/). Check out a list of hooks you can use (http://www.wpmaz.uk/multisite-post-duplicator-actions-and-filters/).
-*	Choose to ignore specific post meta keys in the duplication process.
+*	Create a duplication link/syndication
+	* If you ever update the source post again it will automatically update the duplicated page and keep them in sync.
+
+*	Tools
+	* Batch Duplication
+	* Metabox control within Post/page edit screen
+	* Activity Log. View information on all dulications performed within your network
+
+*	Settings
+	* Settings page to customise the default behaviour
+	* Manage you linked duplications. Add/Remove.
+	* Restrict functionality to only certain sites on your network
+	* Restrict functionality to users of certain roles
+	* Select what status you want your new copy of post to be i.e Published, Draft etc
+	* Specify a prefix for the new post to avoid confusion
+	* Choose to ignore specific post meta keys in the duplication process
+
+*	Developers
+	* Create your own addons! Multisite Post Duplicator is now fully extendable. Create your own functionality. Check out the API [documentation](http://www.wpmaz.uk/mpddocs/).
+	* Check out a list of hooks you can use (http://www.wpmaz.uk/multisite-post-duplicator-actions-and-filters/).
 
 == Installation ==
 
 1. Upload `multisite-post-duplicator` folder to your `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. In WordPress admin on any of your sites within your multisite network go to Tools > Multisite Post Duplicator
-4. Customise the default behaviour by going to Setting > Multisite Post Duplicator Settings
+3. Customise the default behaviour by going to Setting > Multisite Post Duplicator Settings
 
 == Frequently Asked Questions ==
 
@@ -67,15 +78,100 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Screenshots ==
 
-1. User Interface
-2. Meta Box
-3. Setting Page
-4. Batch Duplication
+1. Meta Box
+2. Setting Page
+3. Batch Duplication
+4. Duplication Tool
 
 == Changelog ==
 
-= 0.9.5.1 =
-* Fixed critical error experienced by some users from update v0.9.5 
+= 1.5.5 =
+* Improved access to code for developers via various new filters and actions
+
+= 1.5.4 =
+* Fixed issue with 'duplication link' checkbox remaining greyed out when some sites were checked.
+
+= 1.5.3 =
+* Fixed php warnings experienced in some senarios.
+
+= 1.5.2 =
+* Fixed php warnings experienced in some senarios.
+
+= 1.5.1 =
+* Fixed 'duplicating on publish' bug introduced in v1.5
+
+= 1.5 =
+* NEW: Duplicate Advanced Custom Field's 'field groups' and keep them in sync throughout your network by using our 'duplication link' functionality.
+* Select all sites on your network quickly with our new 'select all button'
+* Improved performance
+* Improved access for developers with the addition of several new hooks.
+
+= 1.4 =
+* NEW: Signposting for networks where custom post types and taxonomies are not synced throughout.
+* NEW: Signposting for instances where user's 'Advanced Custom Fields Field Groups' don't exist in the destination site.
+* Improved performance of taxonomy duplication on linked posts.
+* Fixed issue where taxonomy terms would not copy in some senarios.
+* Removed some PHP warnings if running in debug mode.
+
+= 1.3.2 =
+* Fixed issue with new ACF image functions not playing nice with 'linked' posts
+
+= 1.3 =
+* NEW: Advanced Custom Field Images from source are now copied to the destination site and are assigned to post properly
+* NEW: Now supports copying Advanced Custom Field Gallery field type.
+* NEW: Added ability to change 'Default Post Status' in settings.
+* Add settings link to the plugin list.
+* Fixed bug with post's ancestry not being copied to the root site on a network
+
+= 1.2 =
+* NEW: When using the batch duplication tool if a parent and child are in the duplicate batch then the relationship will be maintained in the desitination site.
+* UI Improvements
+* Corrected some typos
+
+= 1.1.3 =
+* Fixed issue with our custom database table not being created on activation of plugin
+
+= 1.1.2 =
+* Fixed 'create link to an existing post' functionality only displaying 'Post' Post-Type results
+
+= 1.1.1 =
+* Fixed issue with linked posts not looking at the 'ignore most meta keys' setting.
+* Improved efficiency of core duplication function.
+* Queries to our 'Linked Duplications' db table are now correctly wrapped in wpdb::prepare() to protect from injection hacks.
+* Fixed issue where networks with more than 100 sites would have some sites not listed in thier controls (for installs > 4.6)
+* Fixed issue where other plugin's meta data (that are using the 'save_post' action) might be missed during the duplication
+* General performanace improvements
+
+= 1.1 =
+* NEW: Create a link to an existing post!
+* Removed unneeded version parameters on enqueued css and javascript files.
+* Improved reliability of 'version compare' function used in determining user settings.
+
+= 1.0.2 =
+* Fixed text domain issue for translations.
+
+= 1.0.1 =
+* Fixed activation error for some users.
+
+= 1.0 =
+Bringing Multisite Post Duplicator into Version 1.0 with a massive update. Really excited to provide this new, continually requested, functionality:
+
+* NEW: Link a duplication!
+	* If you create a link between the original post and it's 'duplicated post' then whenever you update the original post the 'duplicated post' will be updated also! Simply check the box 'Create Duplication Link' on the MPD metabox before processing your duplication
+	* View and edit your linked posts via a handy user interface
+	* View all posts that a post is linked to via a new MPD Metabox
+	* Behaviour can be turned off in settings
+	* Loads of new filters and actions to help developers customise this functionality
+* NEW: Duplication activity log!
+	* Keep track of all posts that have been duplicated within your multisite network.
+	* Behaviour can be turned off in settings
+* NEW: Settings page has been cleaned up. Looks a lot lets cluttered.
+* Added: Filter 'mpd_list_metabox_priority' and  for developers to change priority of MPD Metaboxes
+* Fixed: Error on activation of plugin in a non-multisite installation.
+* Fixed: Problems with the setup to allow plugin translations
+
+= 0.9.5.1 = 
+* Fixed critical error experienced by some users from update v0.9.5
 
 = 0.9.5 =
 * Subdomain warning message can now be dissmissed. Also has improved signposting.

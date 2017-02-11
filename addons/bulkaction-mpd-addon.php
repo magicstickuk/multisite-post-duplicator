@@ -42,10 +42,9 @@ add_filter('mdp_activation_options', 'addon_mpd_bulk_setting_activation');
 function mpd_bulk_admin_script() {
 
     if( is_multisite() ){
-
         $defaultoptions = mdp_get_default_options();
         $sites          = mpd_wp_get_sites();
-        $options        = get_option( 'mdp_settings' );
+        $options        = get_option('mdp_settings');
         $post_status    = isset($_REQUEST["post_status"]) ? $_REQUEST["post_status"] : '';
 
         $active_mpd     = apply_filters( 'mpd_is_active', true );
@@ -85,7 +84,7 @@ function mpd_bulk_admin_script() {
 }
 
 add_action('admin_footer-edit.php', 'mpd_bulk_admin_script');
-
+add_action('admin_footer-upload.php', 'mpd_bulk_admin_script');
 /**
  * @ignore
  */
@@ -102,10 +101,18 @@ function mpd_bulk_action() {
             $post_ids = array_map('intval', $_REQUEST['post']);
       }
 
-      $results = array();
+      $results          = array();
+      $map_family_tree  = array();
 
       foreach($post_ids as $post_id){
           
+          do_action('mpd_single_batch_before', $post_id, $get_site[0]);
+
+          if(get_option('skip_standard_dup')){
+                  delete_option('skip_standard_dup' );
+                  continue;
+          }
+
           $results[] = mpd_duplicate_over_multisite(
               
               $post_id, 
@@ -113,19 +120,42 @@ function mpd_bulk_action() {
               $_REQUEST['post_type'],
               get_current_user_id(),
               mpd_get_prefix(),
-              'draft'
+              mpd_get_status()
 
           );
 
+          $highest_index = max(array_keys($results));
+
+          // Collect the results data to be used in assigning parent/child data in the destination site
+          $map_family_tree[] = array(
+
+              'old_post_id'  => $post_id,
+              'new_blog_id'  => $get_site[0],
+              'old_parent_id'=> wp_get_post_parent_id($post_id),
+              'new_post_id'  => $results[$highest_index]['id']
+
+          );
+
+          do_action('mpd_single_batch_after', $post_id);
+
       }
+
+      //Assign any parent/child relationship that is available within the batch
+      $family_tree          = mpd_map_new_family_tree($map_family_tree);
       
       $countBatch           = count($results);
-      $destination_name     = get_blog_details($get_site[0])->blogname;
-      $destination_edit_url = get_admin_url( $get_site[0], 'edit.php?post_type='.$_REQUEST['post_type']);
-      $the_ess              = $countBatch != 1 ? 'posts have' : 'post has';
-      $notice               = '<div class="updated"><p>'.$countBatch. " " . $the_ess . " " . __('been duplicated to', MPD_DOMAIN ) ." '<a href='".$destination_edit_url."'>". $destination_name ."'</a></p></div>";
 
-      update_option('mpd_admin_bulk_notice', $notice );
+      if($countBatch){
+          $destination_name     = get_blog_details($get_site[0])->blogname;
+          $destination_edit_url = get_admin_url( $get_site[0], 'edit.php?post_type='.$_REQUEST['post_type']);
+          $the_ess              = $countBatch != 1 ? __('posts have', 'multisite-post-duplicator') : __('post has', 'multisite-post-duplicator');
+          $notice               = '<div class="updated"><p>'.$countBatch. " " . $the_ess . " " . __('been duplicated to', 'multisite-post-duplicator' ) ." '<a href='".$destination_edit_url."'>". $destination_name ."'</a></p></div>";
+
+          update_option('mpd_admin_bulk_notice', $notice );
+
+      }
+     
+      do_action('mpd_batch_after', $results);
 
   }
  
@@ -133,6 +163,57 @@ function mpd_bulk_action() {
 
 add_action('load-edit.php', 'mpd_bulk_action');
 
+/**
+ * @ignore
+ */
+function mpd_map_new_family_tree($map_family_tree){
+
+  foreach ($map_family_tree as $key => $family_tree) {
+
+    // Does the source have a parent
+    if($old_parent_id = $family_tree['old_parent_id']){
+      
+      //Is the parent ID in the result set of the source IDS?
+      //If so, return that ID's new post ID and update its parent
+      $search_for = mpd_search($map_family_tree, 'old_post_id', $old_parent_id);
+      
+      if($search_for){
+
+          global $wpdb;
+
+          $new_parent = $search_for[0]['new_post_id'];
+
+          $blogText = $family_tree['new_blog_id'] != 1 ? $family_tree['new_blog_id'] . "_" : '';
+
+          $wpdb->update( 
+            
+            $wpdb->base_prefix . $blogText  . "posts", 
+            
+            array( 
+              'post_parent' =>  $new_parent
+            ), 
+
+            array(
+              'ID' => $family_tree['new_post_id']
+            ), 
+
+            array( 
+              '%d' 
+            ), 
+            array( '%d' ) 
+
+          );
+      } 
+
+    } 
+
+  }
+
+  do_action( 'mpd_map_destination_family', $map_family_tree);
+
+  return $map_family_tree;
+
+}
 /**
  * @ignore
  */
@@ -161,7 +242,9 @@ add_action('admin_notices', 'mpd_bulk_admin_notices');
  */
 function add_bulk_settings(){
 
-    mpd_settings_field('add_bulk_settings', '<i class="fa fa-files-o" aria-hidden="true"></i> ' . __( 'Allow batch duplication?', MPD_DOMAIN ), 'mdp_default_batch_render');
+
+    mpd_settings_field('add_bulk_settings', '<i class="fa fa-files-o" aria-hidden="true"></i> ' . __( 'Allow batch duplication?', 'multisite-post-duplicator' ), 'mdp_default_batch_render');
+
      
 }
 
@@ -171,12 +254,14 @@ add_action( 'mdp_end_plugin_setting_page', 'add_bulk_settings');
  * @ignore
  */
 function mdp_default_batch_render(){
-
-  $options = get_option( 'mdp_settings' );
+  
+  $options = get_option('mdp_settings');
   ?>
+  
   <input type='checkbox' name='mdp_settings[add_bulk_settings]' <?php mpd_checked_lookup($options, 'add_bulk_settings', 'allow-batch') ;?> value='allow-batch'>
+  
+  <?php mpd_information_icon('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page'); ?>
 
-  <p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i> <?php _e('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page', MPD_DOMAIN)?></p>
   <?php
 
 }

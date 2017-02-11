@@ -1,0 +1,63 @@
+.mpdtip{
+	font-size: 84% !important;
+  padding: 9px;
+  border: 1px solid #cdcdcd;
+  margin-top: 16px !important;
+  margin-bottom: 16px !important;
+  background-color: #f5f5f5;
+  width: 100%;
+	-webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.accord{
+	cursor: pointer;
+}
+.no-dec{
+  text-decoration: none
+}
+.bottom-para{
+  text-align: right;
+  margin-bottom: 0;
+}
+.mpd-metabox-subtitle{
+  font-size:1.2em;
+  width: 100%;
+  clear: both;
+  display: inline-block;
+  padding: 0.2em 0 ;
+}
+.mpd-metabox-list{
+  display: inline-block;
+  clear:both;
+  width: 100%;
+  padding-left: 1em;
+  line-height: 2em
+}
+.create-link-ui{
+  display: none;
+  margin-top: 10px;
+  width: 100%
+}
+#createLink{
+  margin-right: 10px;
+}
+.mpd-spinner-container, .link-created-confirm{
+  display: none;
+}
+.create-link-ui select{
+  width: 100%;
+}
+#create-link-post-select{
+  margin: 10px 0;
+}
+.cdl.disabled{
+  color: #e2e2e2;
+}
+.notice-considerations{
+  margin-left: 3em !important;
+}
+.notice-considerations p{
+  font-size: 0.9em;
+}
+

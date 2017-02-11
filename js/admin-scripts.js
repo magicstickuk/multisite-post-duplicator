@@ -21,7 +21,7 @@ function do_the_responce(response_ident, placeholdertext, response){
 
 jQuery(document).ready(function($) {
 
-	set_placeholder(".el0", "Select a post post type to duplicate");
+	set_placeholder(".el0", mpd_admin_scripts_vars.select_post_type);
 
 	$( ".el0" ).change(function() {
 
@@ -36,7 +36,7 @@ jQuery(document).ready(function($) {
 
 		$.post(ajaxurl,data,function(response) {
 
-			do_the_responce("1", "Select a post to duplicate", response);
+			do_the_responce("1", mpd_admin_scripts_vars.select_post, response);
 
 			$( ".el1" ).change(function() {
 
@@ -51,7 +51,7 @@ jQuery(document).ready(function($) {
 
 					$.post(ajaxurl,data,function(response) {
 
-							do_the_responce("2", "Select a site to duplicate to", response);
+							do_the_responce("2", mpd_admin_scripts_vars.select_site, response);
 
 							$( ".el2" ).change(function() {
 
@@ -67,7 +67,7 @@ jQuery(document).ready(function($) {
 
 									$.post(ajaxurl,data,function(response) {
 
-											do_the_responce("3", "Select a user to atribute this to", response);
+											do_the_responce("3", mpd_admin_scripts_vars.select_user, response);
 
 											$( ".el3" ).change(function() {
 													$('.el3sc.spinner-container img').show();

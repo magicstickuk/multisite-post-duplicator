@@ -41,7 +41,7 @@
 	font-size: 84% !important;
     padding: 9px;
     border: 1px solid #cdcdcd;
-    margin-top: 16px!important;
+    margin-top: 16px !important;
     width: 80%;
     background-color: #f5f5f5;
 }
@@ -53,7 +53,26 @@
 #mdp-ignore-custom-meta{
 	width:80%;
 }
-.mpdtip i{ 
-    font-size:1em;
-    margin-right: 0.5em;
+.nav-tab-wrapper{
+	border-bottom: 1px solid #ccc;
+}
+.wrap > h2:first-child{
+	margin-bottom: 20px;
+}
+.mpd-loading{
+	width: 100%;
+	text-align:center;
+}
+.accord{
+	cursor: pointer;
+}
+.mpd-smile{
+	background-image: url('../images/smile.png');
+	background-position: right;
+	background-repeat: no-repeat;
+	padding-right:25px;
+}
+.donate-link{
+	float: right;
+	margin-right:20px !important;
 }

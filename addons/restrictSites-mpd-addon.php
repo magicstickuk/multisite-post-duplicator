@@ -15,11 +15,10 @@
  */
 function restrict_addon_mpd_settings(){
 
-	mpd_settings_field('restrict_option_setting', '<i class="fa fa-user-times" aria-hidden="true"></i> ' . __( 'Restrict MPD to certain sites', MPD_DOMAIN ), 'restrict_option_setting_render');
-	mpd_settings_field('restrict_some_option_setting', '<i class="fa fa-user-plus" aria-hidden="true"></i> ' . __( 'Restrict MPD on some sites', MPD_DOMAIN ), 'restrict_some_option_setting_render');
-    mpd_settings_field('master_site_setting', '<i class="fa fa-bank" aria-hidden="true"></i> ' . __( 'Select a Master Site', MPD_DOMAIN ), 'master_site_settings_render');
-    
-     
+	mpd_settings_field('restrict_option_setting', '<i class="fa fa-user-times" aria-hidden="true"></i> ' . __( 'Restrict MPD to certain sites', 'multisite-post-duplicator' ), 'restrict_option_setting_render');
+	mpd_settings_field('restrict_some_option_setting', '<i class="fa fa-user-plus" aria-hidden="true"></i> ' . __( 'Restrict MPD on some sites', 'multisite-post-duplicator' ), 'restrict_some_option_setting_render');
+  mpd_settings_field('master_site_setting', '<i class="fa fa-bank" aria-hidden="true"></i> ' . __( 'Select a Master Site', 'multisite-post-duplicator' ), 'master_site_settings_render');
+ 
 }
 
 add_action( 'mdp_end_plugin_setting_page', 'restrict_addon_mpd_settings');
@@ -36,23 +35,25 @@ function restrict_option_setting_render(){
 	};
 
   ?>
+  
 	<div id="mpd_restrict_radio_choice_wrap">
 
 		<div class="mdp-inputcontainer">
 			<input type="radio" class="mdp_radio" name='mdp_settings[restrict_option_setting]' id="mpd_restrict_none" <?php checked($mdp_restrict_radio_label_value, 'none'); ?> value="none">
 		
-			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('No Restrictions', MPD_DOMAIN ) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('No Restrictions', 'multisite-post-duplicator' ) ?></label>
 			    
 			<input type="radio" class="mdp_radio" name='mdp_settings[restrict_option_setting]' id="mpd_restrict_some" <?php checked($mdp_restrict_radio_label_value, 'some'); ?> value="some">
 		
-			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Restrict Some Sites', MPD_DOMAIN ) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Restrict Some Sites', 'multisite-post-duplicator' ) ?></label>
 		
 			<input type="radio" class="mdp_radio" name='mdp_settings[restrict_option_setting]' id="mpd_restrict_set_master" <?php checked($mdp_restrict_radio_label_value, 'master'); ?> value="master">
 		
-			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('Select a Master Site', MPD_DOMAIN) ?></label>
+			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('Select a Master Site', 'multisite-post-duplicator') ?></label>
+			
+			<?php mpd_information_icon('You can, if you want, limit MPD functionality to only certain sites.'); ?>
+			
 	    </div>
-
-	    <p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i> <?php _e('You can, if you want, limit MPD functionality to only certain sites.', MPD_DOMAIN ) ?></p>
 
     </div>
 
@@ -114,7 +115,7 @@ function restrict_some_option_setting_render(){
 
 		<?php endforeach;?>
 
-		<p class="mpdtip"><?php _e('Select some sites where you do not want MDP functionality. Note: You should not select all sites here as this will result in no MPD functionality.', MPD_DOMAIN ) ?></p>
+		<p class="mpdtip"><?php _e('Select some sites where you do not want MDP functionality. Note: You should not select all sites here as this will result in no MPD functionality.', 'multisite-post-duplicator' ) ?></p>
   <?php
 
 }
@@ -148,7 +149,7 @@ function master_site_settings_render(){
   		
   </select>
 
-  <p class="mpdtip"><?php _e('If you want to only allow duplication to take place from one site then select it here.', MPD_DOMAIN)?></p>
+  <p class="mpdtip"><?php _e('If you want to only allow duplication to take place from one site then select it here.', 'multisite-post-duplicator')?></p>
   <?php
 
 }
@@ -179,7 +180,7 @@ function mpd_add_addon_script_to_settings_page(){
 			}
 			
 			jQuery(".mpd-master-site").select2({
-				placeholder: '<?php _e("Select a Master Site", MPD_DOMAIN) ?>'	
+				placeholder: '<?php _e("Select a Master Site", 'multisite-post-duplicator') ?>'	
 			});
 
 			if(jQuery('#mpd_restrict_set_master').is(':checked') ){
@@ -279,18 +280,3 @@ function checkSiteStatus(){
 }
 
 add_filter( 'mpd_is_active', 'checkSiteStatus');
-
-// function mpd_user_level_for_restrict(){
-
-// 	$is_super_admin = current_user_can('manage_sites');
-// 	return $is_super_admin;
-
-// }
-
-// add_filter( 'mpd_show_settings_page', 'mpd_user_level_for_restrict');
-
-// function mpd_check_for_super_admin(){
-// 	$is_super_admin = current_user_can('manage_sites');
-// 	return $is_super_admin;
-// }
-// add_filter('mpd_show_settings_page', 'mpd_check_for_super_admin');
