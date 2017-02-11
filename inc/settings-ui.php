@@ -393,26 +393,6 @@ function mdp_copy_content_image_render(  ) {
  */
 function mdp_retain_published_date_render(  ) { 
 
-	$options = get_option( 'mdp_settings' );
-	?>
-
-	<input type='checkbox' name='mdp_settings[mdp_copy_content_images]' <?php mpd_checked_lookup($options, 'mdp_copy_content_images', 'content-image') ;?> value='content-image'>
-	
-	<?php mpd_information_icon('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It will also change the urls in the duplicated post to reference the new media file. You can turn off this activity by unchecking the box'); ?>
-	
-	<?php
-
-}
-/**
- * 
- * Create the UI for the Retain Published Date Option
- * 
- * @since 0.9.4
- * @return null
- * 
- */
-function mdp_retain_published_date_render(  ) { 
-
 	$options = get_option( 'mdp_settings' ); ?>
 	
 		<input type='checkbox' name='mdp_settings[mdp_retain_published_date]' <?php mpd_checked_lookup($options, 'mdp_retain_published_date', 'retain-published') ;?> value='retain-published'>
