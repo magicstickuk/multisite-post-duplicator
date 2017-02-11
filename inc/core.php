@@ -204,7 +204,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $notice = mdp_make_admin_notice($site_name, $site_edit_url, $blog_details);
 
     //Lets also create an array to return to function call incase it is required (extensibility)
-    $createdPostObject = apply_filters('mpd_returned_information', array(
+    $created_post_details = apply_filters('mpd_returned_information', array(
 
         'id'           => $post_id,
         'edit_url'     => $site_edit_url,
@@ -212,11 +212,11 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     ));
 
-    do_action('mpd_end_of_core', $createdPostObject);
+    do_action('mpd_end_of_core', $created_post_details);
 
-    do_action('mpd_log', $createdPostObject, $mpd_process_info);
+    do_action('mpd_log', $created_post_details, $mpd_process_info);
      
-    return $createdPostObject;
+    return $created_post_details;
  
 }
 
@@ -385,7 +385,7 @@ function mpd_persist_over_multisite($persist_post) {
     $notice = mdp_make_admin_notice($site_name, $site_edit_url, $blog_details);
 
     //Lets also create an array to return to function call incase it is required (extensibility)
-    $createdPostObject = apply_filters('mpd_persist_returned_information', array(
+    $created_post_details = apply_filters('mpd_persist_returned_information', array(
 
         'id'           => $post_id,
         'edit_url'     => $site_edit_url,
@@ -393,6 +393,6 @@ function mpd_persist_over_multisite($persist_post) {
 
     ));
      
-    return $createdPostObject;
+    return $created_post_details;
  
 }
