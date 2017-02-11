@@ -615,9 +615,31 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
 
     $option_value = get_option('mpd_admin_notice');
 
+    global $post;
+
+    $args= array(
+
+        'source_id' => get_current_blog_id(),
+        'destination_id' => $destination_blog_details->blog_id,
+        'source_post_id' => $post->ID
+
+    );
+
     $message        = '<div class="updated"><p>';
-    $message       .= apply_filters('mpd_admin_notice_text', __('You succesfully duplicated this post to', 'multisite-post-duplicator' ) ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post', 'multisite-post-duplicator' ).'</a>', $site_name, $site_url, $destination_blog_details);
-    $message       .= '</p></div>'; 
+
+    if(mpd_is_there_a_persist($args)){
+
+        $message       .= apply_filters('mpd_admin_persist_notice_text', __('You updated your linked post on ', 'multisite-post-duplicator'), $site_name, $site_url, $destination_blog_details);
+        $message       .= $site_name.' <a href="'.$site_url.'">'.__('Edit updated post', 'multisite-post-duplicator' ).'</a>';
+        $message       .= '</p></div>'; 
+
+    }else{
+
+        $message       .= apply_filters('mpd_admin_notice_text', __('You succesfully duplicated this post to ', 'multisite-post-duplicator' ), $site_name, $site_url, $destination_blog_details);
+        $message       .= $site_name.' <a href="'.$site_url.'">'.__('Edit duplicated post', 'multisite-post-duplicator' ).'</a>';
+        $message       .= '</p></div>'; 
+
+    }
     
     if(!$option_value){
 
