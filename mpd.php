@@ -139,6 +139,7 @@ function mdp_plugin_activate() {
 		 restore_current_blog();
 		 
    	}
+
    	do_action('mpd_extend_activation', $mdp_default_options, $sites);
 	   
 }

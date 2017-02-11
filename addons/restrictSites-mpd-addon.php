@@ -17,9 +17,8 @@ function restrict_addon_mpd_settings(){
 
 	mpd_settings_field('restrict_option_setting', '<i class="fa fa-user-times" aria-hidden="true"></i> ' . __( 'Restrict MPD to certain sites', 'multisite-post-duplicator' ), 'restrict_option_setting_render');
 	mpd_settings_field('restrict_some_option_setting', '<i class="fa fa-user-plus" aria-hidden="true"></i> ' . __( 'Restrict MPD on some sites', 'multisite-post-duplicator' ), 'restrict_some_option_setting_render');
-    mpd_settings_field('master_site_setting', '<i class="fa fa-bank" aria-hidden="true"></i> ' . __( 'Select a Master Site', 'multisite-post-duplicator' ), 'master_site_settings_render');
-    
-     
+  mpd_settings_field('master_site_setting', '<i class="fa fa-bank" aria-hidden="true"></i> ' . __( 'Select a Master Site', 'multisite-post-duplicator' ), 'master_site_settings_render');
+ 
 }
 
 add_action( 'mdp_end_plugin_setting_page', 'restrict_addon_mpd_settings');
