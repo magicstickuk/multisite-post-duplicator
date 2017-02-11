@@ -6,14 +6,12 @@
  * @author Mario Jaconelli <mariojaconelli@gmail.com>
  * 
  */
-
-
 if ( is_multisite() ) {
 
 	add_action( 'admin_menu', 'mdp_add_admin_menu' );
 	
 	add_action( 'admin_init', 'mdp_settings_init' );
-	
+
 }
 
 /**
@@ -104,6 +102,7 @@ function mdp_settings_init(  ) {
 
 	mpd_settings_field(
 		'mdp_copy_post_categories',
+
 		'<i class="fa fa-files-o" aria-hidden="true"></i> ' . __( 'Copy post categories?', 'multisite-post-duplicator' ),
 		'mdp_copy_post_categories_render'
 	);
@@ -244,6 +243,7 @@ function mdp_default_status_render(  ) {
     $status = mpd_get_status();
 
 	?>
+
 	<select name="mdp_settings[mdp_default_status]">
 
 			<?php foreach ($post_statuses as $post_status_key => $post_status_value):?>
@@ -374,13 +374,12 @@ function mdp_default_feat_image_copy_render(  ) {
 function mdp_copy_content_image_render(  ) { 
 
 	$options = get_option( 'mdp_settings' );
-
 	?>
+		
+		<input type='checkbox' name='mdp_settings[mdp_copy_content_images]' <?php mpd_checked_lookup($options, 'mdp_copy_content_images', 'content-image') ;?> value='content-image'>
 
-	<input type='checkbox' name='mdp_settings[mdp_copy_content_images]' <?php mpd_checked_lookup($options, 'mdp_copy_content_images', 'content-image') ;?> value='content-image'>
-	
-	<?php mpd_information_icon('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It will also change the urls in the duplicated post to reference the new media file. You can turn off this activity by unchecking the box'); ?>
-	
+		<p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i><?php _e('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It will also change the urls in the duplicated post to reference the new media file. You can turn off this activity by unchecking the box', MPD_DOMAIN)?></p>
+
 	<?php
 
 }

@@ -85,6 +85,18 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.5.5 =
+* Improved access to code for developers via various new filters and actions
+
+= 1.5.4 =
+* Fixed issue with 'duplication link' checkbox remaining greyed out when some sites were checked.
+
+= 1.5.3 =
+* Fixed php warnings experienced in some senarios.
+
+= 1.5.2 =
+* Fixed php warnings experienced in some senarios.
+
 = 1.5.1 =
 * Fixed 'duplicating on publish' bug introduced in v1.5
 

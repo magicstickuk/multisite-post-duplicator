@@ -242,7 +242,9 @@ add_action('admin_notices', 'mpd_bulk_admin_notices');
  */
 function add_bulk_settings(){
 
+
     mpd_settings_field('add_bulk_settings', '<i class="fa fa-files-o" aria-hidden="true"></i> ' . __( 'Allow batch duplication?', 'multisite-post-duplicator' ), 'mdp_default_batch_render');
+
      
 }
 

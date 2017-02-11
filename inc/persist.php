@@ -1206,7 +1206,7 @@ function mpd_persist_checkbox(){
 
 	$options = get_option( 'mdp_settings' );
 
-	if(isset($options['allow_persist']) || !$options || apply_filters('mpd_show_metabox_persist', true) ): ?>     
+	if((isset($options['allow_persist']) || !$options) && apply_filters('mpd_show_metabox_persist', true) ): ?>     
         
         <hr>
             

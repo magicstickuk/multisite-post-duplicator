@@ -4,7 +4,7 @@
 Plugin Name: 	Multisite Post Duplicator
 Plugin URI: 	http://www.wpmaz.uk
 Description:    Duplicate/Copy/Clone any individual page, post or custom post type from one site on your multisite network to another. 
-Version: 		1.5.1
+Version: 		1.5.5
 Author: 		Mario Jaconelli
 Author URI:  	http://www.wpmaz.uk
 Text Domain: 	multisite-post-duplicator
@@ -139,6 +139,7 @@ function mdp_plugin_activate() {
 		 restore_current_blog();
 		 
    	}
+
    	do_action('mpd_extend_activation', $mdp_default_options, $sites);
 	   
 }

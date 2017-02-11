@@ -471,6 +471,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
             // Assign metadata to attachment
             wp_update_attachment_metadata( $attach_id, $attach_data );
 
+
             // Now that we have all the data for the newly created file and its post we need to manipulate the old content so that
             // it now reflects the destination post
             $new_image_URL_without_EXT  = mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_blog_id, $new_file_url);
@@ -615,9 +616,31 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
 
     $option_value = get_option('mpd_admin_notice');
 
+    global $post;
+
+    $args= array(
+
+        'source_id' => get_current_blog_id(),
+        'destination_id' => $destination_blog_details->blog_id,
+        'source_post_id' => $post->ID
+
+    );
+
     $message        = '<div class="updated"><p>';
-    $message       .= apply_filters('mpd_admin_notice_text', __('You succesfully duplicated this post to', 'multisite-post-duplicator' ) ." ". $site_name.'. <a href="'.$site_url.'">'.__('Edit duplicated post', 'multisite-post-duplicator' ).'</a>', $site_name, $site_url, $destination_blog_details);
-    $message       .= '</p></div>'; 
+
+    if(mpd_is_there_a_persist($args)){
+
+        $message       .= apply_filters('mpd_admin_persist_notice_text', __('You updated your linked post on ', 'multisite-post-duplicator'), $site_name, $site_url, $destination_blog_details);
+        $message       .= $site_name.' <a href="'.$site_url.'">'.__('Edit updated post', 'multisite-post-duplicator' ).'</a>';
+        $message       .= '</p></div>'; 
+
+    }else{
+
+        $message       .= apply_filters('mpd_admin_notice_text', __('You succesfully duplicated this post to ', 'multisite-post-duplicator' ), $site_name, $site_url, $destination_blog_details);
+        $message       .= $site_name.' <a href="'.$site_url.'">'.__('Edit duplicated post', 'multisite-post-duplicator' ).'</a>';
+        $message       .= '</p></div>'; 
+
+    }
     
     if(!$option_value){
 
@@ -1377,7 +1400,8 @@ function  mpd_select_all_checkboxes(){
                         jQuery(this).html('<?php echo $first_text; ?>');
                         jQuery('#mpd_blogschecklist input:checkbox').removeProp('checked');
                     }
-                        
+                    
+                    jQuery('#mpd_blogschecklist .mpd-site-checkbox input').trigger('change');  
                 });
 
             });
@@ -1442,3 +1466,32 @@ function mpd_skip_standard_duplication($choice){
 }
 
 add_filter('mpd_single_metabox_before', 'mpd_skip_standard_duplication', 20); //Note priority higher than mpd_copy_acf_field_group()
+
+/**
+ * 
+ * Hooks into mpd_enter_the_loop funciton and set the conditions in which the multisite
+ * post duplication processes can be accessed
+ *
+ * @since 1.5.5
+ * @param boolean $choice The initial state if we are allowed into the loop
+ * @param array $post_global the global post object on the form submit
+ * @param int $post_id the ID of the post being saved
+ * 
+ * @return boolean The desision to continue or not
+ *
+ */
+function mpd_enter_the_loop($choice, $post_global, $post_id){
+
+    if(( isset($post_global["post_status"] ) ) 
+            && ( $post_global["post_status"] != "auto-draft" )
+            && ( isset($post_global['mpd_blogs'] ) )
+            && ( count( $post_global['mpd_blogs'] ) )
+            && ( $post_global["post_ID"] == $post_id )
+            ){
+        return true;
+    }
+
+    return false;
+
+}
+add_filter('mpd_enter_the_loop', 'mpd_enter_the_loop', 10, 3);

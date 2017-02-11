@@ -117,36 +117,40 @@ function mpd_publish_top_right(){
 
             </script>
             
-            <p><?php _e('Site(s) you want duplicate to', 'multisite-post-duplicator' ); ?> <i class="fa fa-info-circle ps-link accord" aria-hidden="true"></i> :</p>
+            <?php if(apply_filters('mpd_show_site_list', true)) :?>
 
-            <p class="mpdtip ps-content" style="display:none"><?php _e('If you have checked any of the checkboxes below then this post will be duplicated on save.', 'multisite-post-duplicator' );?></p>
+                <p><?php _e('Site(s) you want duplicate to', 'multisite-post-duplicator' ); ?> <i class="fa fa-info-circle ps-link accord" aria-hidden="true"></i> :</p>
 
-                <ul id="mpd_blogschecklist" data-wp-lists="list:category" class="mpd_blogschecklist">
+                <p class="mpdtip ps-content" style="display:none"><?php _e('If you have checked any of the checkboxes below then this post will be duplicated on save.', 'multisite-post-duplicator' );?></p>
 
-                    <?php $current_blog_id = get_current_blog_id(); ?>
+                    <ul id="mpd_blogschecklist" data-wp-lists="list:category" class="mpd_blogschecklist">
 
-                    <?php foreach ($sites as $site): ?>
+                        <?php $current_blog_id = get_current_blog_id(); ?>
 
-                        <?php if (current_user_can_for_blog($site->blog_id, mpd_get_required_cap()) && !in_array($site->blog_id, mpd_get_restrict_some_sites_options())) : ?>
+                        <?php foreach ($sites as $site): ?>
 
-                            <?php $blog_details = get_blog_details($site->blog_id); ?>
-                            
-                                <li id="mpd_blog_<?php echo $site->blog_id; ?>" class="mpd-site-checkbox">
+                            <?php if (current_user_can_for_blog($site->blog_id, mpd_get_required_cap()) && !in_array($site->blog_id, mpd_get_restrict_some_sites_options())) : ?>
 
-                                    <label class="selectit">
+                                <?php $blog_details = get_blog_details($site->blog_id); ?>
+                                
+                                    <li id="mpd_blog_<?php echo $site->blog_id; ?>" class="mpd-site-checkbox">
 
-                                        <input class="<?php echo $site->blog_id == $current_blog_id ? 'mpd-current-site' : '';?>" value="<?php echo $site->blog_id; ?>" type="checkbox" name="mpd_blogs[]" id="in_blog_<?php echo $site->blog_id; ?>">  <?php echo $site->blog_id == $current_blog_id ? '<em>' : ''; ?><?php echo $blog_details->blogname; ?> <?php echo $site->blog_id == $current_blog_id ? ' <small>(' . __('Current Site',  'multisite-post-duplicator' ) . ')</small></em>' : ''; ?>
+                                        <label class="selectit">
 
-                                    </label>
+                                            <input class="<?php echo $site->blog_id == $current_blog_id ? 'mpd-current-site' : '';?>" value="<?php echo $site->blog_id; ?>" type="checkbox" name="mpd_blogs[]" id="in_blog_<?php echo $site->blog_id; ?>">  <?php echo $site->blog_id == $current_blog_id ? '<em>' : ''; ?><?php echo $blog_details->blogname; ?> <?php echo $site->blog_id == $current_blog_id ? ' <small>(' . __('Current Site',  'multisite-post-duplicator' ) . ')</small></em>' : ''; ?>
 
-                                </li>
-                            
-                        <?php endif; ?>
+                                        </label>
 
-                    <?php endforeach; ?>
+                                    </li>
+                                
+                            <?php endif; ?>
 
-                </ul>
-            </p>
+                        <?php endforeach; ?>
+
+                    </ul>
+                </p>
+                
+            <?php endif?>
            
             <?php do_action('mpd_after_metabox_content'); ?>
             
@@ -178,14 +182,9 @@ function mpd_clone_post($post_id){
 
         }
 
-        if(
-            ( isset($_POST["post_status"] ) ) 
-            && ( $_POST["post_status"] != "auto-draft" )
-            && ( isset($_POST['mpd_blogs'] ) )
-            && ( count( $_POST['mpd_blogs'] ) )
-            && ( $_POST["post_ID"] == $post_id )){
+        if($choice = apply_filters('mpd_enter_the_loop', false, $_POST, $post_id)){  
 
-            $mpd_blogs = $_POST['mpd_blogs'];
+            $mpd_blogs = apply_filters('mpd_selected_blogs', $_POST['mpd_blogs'], $_POST['ID']);
 
             foreach( $mpd_blogs as $mpd_blog_id ){
 
@@ -207,6 +206,7 @@ function mpd_clone_post($post_id){
                 }
                  
                 do_action('mpd_single_metabox_after', $_POST['ID'], $mpd_blog_id, $createdPost );     
+   
                 
             }
 
