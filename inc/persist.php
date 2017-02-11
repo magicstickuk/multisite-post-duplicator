@@ -352,10 +352,14 @@ add_action( 'mdp_end_plugin_setting_page', 'persist_addon_mpd_settings');
 function persist_option_setting_render(){
   
   $options = get_option( 'mdp_settings' ); ?>
- 
-  <input type='checkbox' name='mdp_settings[add_logging]' <?php mpd_checked_lookup($options, 'add_logging', 'allow-logging') ;?> value='allow-logging'>
+ 	<div class="checkbox checkbox-slider--b-flat">
+		
+		<label>
+  			<input type='checkbox' name='mdp_settings[add_logging]' <?php mpd_checked_lookup($options, 'add_logging', 'allow-logging') ;?> value='allow-logging'>
 
-  <?php mpd_information_icon('Having this option checked will allow you to see the log of duplications made over this network'); ?>
+  			<span><?php mpd_information_icon('Having this option checked will allow you to see the log of duplications made over this network'); ?></span>
+  			</label>
+  			</div>
  
   <?php
   
@@ -371,11 +375,17 @@ function persist_option_setting_render(){
 function persist_functionality_setting_render(){
   
   $options = get_option( 'mdp_settings' ); ?>
- 
-  <input type='checkbox' name='mdp_settings[allow_persist]' <?php mpd_checked_lookup($options, 'allow_persist', 'allow_persist') ;?> value='allow_persist'>
 
-  <?php mpd_information_icon('Having this option checked will allow you to link a source post to a destination post. If the source is then updated the destination post will always be updated. This link can be added via the MPD Box on the posts page'); ?>	
-  
+ 	<div class="checkbox checkbox-slider--b-flat">
+		
+		<label>
+  			<input type='checkbox' name='mdp_settings[allow_persist]' <?php mpd_checked_lookup($options, 'allow_persist', 'allow_persist') ;?> value='allow_persist'>
+			<span>
+  				<?php mpd_information_icon('Having this option checked will allow you to link a source post to a destination post. If the source is then updated the destination post will always be updated. This link can be added via the MPD Box on the posts page'); ?>	
+  			</span>
+  		</label>
+
+  	</div>
  
   <?php
   
