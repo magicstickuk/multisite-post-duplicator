@@ -37,6 +37,13 @@
 .form-table tr{
 	border-bottom: 1px solid #cdcdcd;
 }
+*:focus {
+    outline: none;
+    border: 0;
+   -webkit-box-shadow: 0;
+    box-shadow: 0;
+}
+
 .mpdtip{
 	font-size: 84% !important;
     padding: 9px;
