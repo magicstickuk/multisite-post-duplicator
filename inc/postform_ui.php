@@ -177,9 +177,11 @@ function mpd_clone_post($post_id){
 
    // if(!$here){
         if (!count($_POST)){
+
             return $post_id;
+
         }
-    
+
         if($choice = apply_filters('mpd_enter_the_loop', false, $_POST, $post_id)){  
 
             $mpd_blogs = apply_filters('mpd_selected_blogs', $_POST['mpd_blogs'], $_POST['ID']);
@@ -188,33 +190,23 @@ function mpd_clone_post($post_id){
 
                 do_action('mpd_single_metabox_before', $_POST['ID'], $mpd_blog_id);   
                 
-                if(get_option('skip_standard_dup')){
-                
-                    delete_option('skip_standard_dup' );
-                    continue;
+                if(apply_filters('mpd_do_single_metabox_duplication', true)){
 
-                }
-                
-                $createdPost = mpd_duplicate_over_multisite($_POST["ID"], $mpd_blog_id, $_POST["post_type"], get_current_user_id(), $_POST["mpd-prefix"], $_POST["mpd-new-status"]);
-                
-                if(isset($_POST['persist'])){
-                    
-                    $args = array(
+                    $createdPost = mpd_duplicate_over_multisite(
 
-                        'source_id'      => get_current_blog_id(),
-                        'destination_id' => $mpd_blog_id,
-                        'source_post_id' => $_POST['ID'],
-                        'destination_post_id' => $createdPost['id']
+                        $_POST["ID"],
+                        $mpd_blog_id, 
+                        $_POST["post_type"],
+                        get_current_user_id(),
+                        $_POST["mpd-prefix"],
+                        $_POST["mpd-new-status"]
 
                     );
-                    
-                    mpd_add_persist($args);
-
-                    do_action('mpd_after_persist', $args);
 
                 }
-
-                do_action('mpd_single_metabox_after', $_POST['ID'], $mpd_blog_id, $createdPost['id']);      
+                 
+                do_action('mpd_single_metabox_after', $_POST['ID'], $mpd_blog_id, $createdPost );     
+   
                 
             }
 

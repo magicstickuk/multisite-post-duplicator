@@ -471,6 +471,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
             // Assign metadata to attachment
             wp_update_attachment_metadata( $attach_id, $attach_data );
 
+
             // Now that we have all the data for the newly created file and its post we need to manipulate the old content so that
             // it now reflects the destination post
             $new_image_URL_without_EXT  = mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_blog_id, $new_file_url);
@@ -1411,6 +1412,7 @@ function  mpd_select_all_checkboxes(){
 }
 
 add_action('mpd_after_metabox_content', 'mpd_select_all_checkboxes', 5);
+
 /**
  * 
  * Function to control the possibility of infinite loops when duplicating.
@@ -1429,6 +1431,41 @@ function mpd_weve_seen_the_page(){
 
 add_action('shutdown', 'mpd_weve_seen_the_page');
 
+function mpd_process_persist( $post_id, $destination_id, $created_post = false){
+
+    if(isset($_POST['persist'])){
+                    
+        $args = array(
+
+            'source_id'      => get_current_blog_id(),
+            'destination_id' => $destination_id,
+            'source_post_id' => $_POST['ID'],
+            'destination_post_id' => $created_post['id']
+
+        );
+                    
+        mpd_add_persist($args);
+
+    }
+
+}
+add_action('mpd_single_metabox_after', 'mpd_process_persist', 10, 3);
+
+function mpd_skip_standard_duplication($choice){
+
+    if(get_option('skip_standard_dup')){
+                
+        delete_option('skip_standard_dup' );
+        
+        return $choice = false;
+
+    }
+
+    return $choice;
+
+}
+
+add_filter('mpd_single_metabox_before', 'mpd_skip_standard_duplication', 20); //Note priority higher than mpd_copy_acf_field_group()
 
 /**
  * 

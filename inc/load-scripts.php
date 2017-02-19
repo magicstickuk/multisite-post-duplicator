@@ -77,6 +77,14 @@ function mdp_load_admin_styles(){
 
 		wp_enqueue_style( 'mdp-select2-styles');
 
+		wp_register_style(
+			'mdp-toggle-styles',
+			plugins_url( '../css/ti-ta-toggle.css', __FILE__ ),
+			false
+		);
+
+		wp_enqueue_style( 'mdp-toggle-styles');
+
 		wp_enqueue_script(
 			'mdp-select2-core',
 			plugins_url( '../js/select2.min.js', __FILE__ ),
