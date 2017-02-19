@@ -1465,7 +1465,7 @@ function mpd_skip_standard_duplication($choice){
 
 }
 
-add_filter('mpd_single_metabox_before', 'mpd_skip_standard_duplication', 20); //Note priority higher than mpd_copy_acf_field_group()
+add_filter('mpd_do_single_metabox_duplication', 'mpd_skip_standard_duplication', 20); //Note priority higher than mpd_copy_acf_field_group()
 
 /**
  * 
