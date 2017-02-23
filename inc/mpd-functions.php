@@ -656,8 +656,6 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
         );
 
         $option_value   = array('message' => $message, 'data' => array($notice_data) );  
-
-        update_site_option('first_admin_notice', $option_value);
         
     }else{
 
@@ -679,8 +677,6 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
         $option_value['message'] = $option_value['message'] . $message;
 
         array_push($option_value['data'], $notice_data_new);
-
-        update_site_option('nth_admin_notice' . uniqid(), $option_value);
 
     }
     //Add this collected notice to the database because the new page needs a method of getting this data
