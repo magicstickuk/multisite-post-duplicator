@@ -549,6 +549,46 @@ function mpd_is_there_a_persist($args){
 	}
 
 }
+/**
+ * Check to see if a persist request is made on a set of arguments
+ *
+ * @since 1.6
+ * @param $args Array 
+ * 		Required Params
+ * 		'source_id' : The ID of the source site 
+ *		'destination_id' : The ID of the destination site  
+ *		'source_post_id' : The ID of the source post that was copied
+ * 		'destination_post_id' : The ID of the source post that was copied
+ * @return bool True if persist request exsists on arguments
+ */
+function mpd_is_there_a_persist_exact($args){
+	
+	global $wpdb;
+	
+	$tableName = $wpdb->base_prefix . "mpd_log";
+
+	$query = $wpdb->prepare("SELECT persist_active
+				FROM $tableName
+				WHERE 
+				source_id = %d 
+				AND destination_id = %d
+				AND source_post_id = %d
+				AND destination_post_id = %d",  
+				
+				$args['source_id'],
+				$args['destination_id'],
+				$args['source_post_id'],
+				$args['destination_post_id']   );
+
+	$result = $wpdb->get_var($query);
+	
+	if($result != null && $result != 0){
+		return true;
+	}else{
+		return false;
+	}
+
+}
 
 /**
  * Get the source post, if any, for a given post

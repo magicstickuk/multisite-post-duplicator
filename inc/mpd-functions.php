@@ -618,17 +618,21 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
 
     global $post;
 
+    $parts = parse_url($site_url);
+    parse_str($parts['query'], $query);
+    
     $args= array(
 
         'source_id' => get_current_blog_id(),
         'destination_id' => $destination_blog_details->blog_id,
-        'source_post_id' => $post->ID
+        'source_post_id' => $post->ID,
+        'destination_post_id' => $query['post']
 
     );
 
     $message        = '<div class="updated"><p>';
 
-    if(mpd_is_there_a_persist($args)){
+    if(mpd_is_there_a_persist_exact($args)){
 
         $message       .= apply_filters('mpd_admin_persist_notice_text', __('You updated your linked post on ', 'multisite-post-duplicator'), $site_name, $site_url, $destination_blog_details);
         $message       .= $site_name.' <a href="'.$site_url.'">'.__('Edit updated post', 'multisite-post-duplicator' ).'</a>';
@@ -648,12 +652,20 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
         $notice_data    = array(
             'name'        => $site_name,
             'url'         => $site_url,
-            'blog_object' =>  $destination_blog_details
+            'blog_object' =>  $destination_blog_details->blogname
         );
 
-        $option_value   = array('message' => $message, 'data' => $notice_data );   
+        $option_value   = array('message' => $message, 'data' => array($notice_data) );  
+
+        update_site_option('first_admin_notice', $option_value);
         
     }else{
+
+        $notice_data_new = array(
+            'name'        => $site_name,
+            'url'         => $site_url,
+            'blog_object' => $destination_blog_details->blogname
+        );
 
         // Prevent Duplicate notices going on screen.
         foreach ($option_value['data'] as $key => $value) {
@@ -666,13 +678,9 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
 
         $option_value['message'] = $option_value['message'] . $message;
 
-        $notice_data_new = array(
-            'name'        => $site_name,
-            'url'         => $site_url,
-            'blog_object' => $destination_blog_details
-        );
-        
         array_push($option_value['data'], $notice_data_new);
+
+        update_site_option('nth_admin_notice' . uniqid(), $option_value);
 
     }
     //Add this collected notice to the database because the new page needs a method of getting this data
@@ -682,6 +690,7 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
     return $message;
 
 }
+
 /**
  * Displays the admin notice.
  *
