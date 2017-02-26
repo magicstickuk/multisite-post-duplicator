@@ -49,14 +49,21 @@ function mpd_get_post_types_to_ignore(){
  *
 */
 function mpd_information_icon($c){
-    $u = uniqid();
-    ?>
+
+    $u = uniqid(); ?>
+
     <script>
+    
         jQuery(document).ready(function() {
+
             accordionClick('.<?php echo $u; ?>-click', '.<?php echo $u; ?>-content', 'fast');
+
         });
+
     </script>
+
     <i class="fa fa-info-circle <?php echo $u; ?>-click accord" aria-hidden="true"></i>
+
     <p class="mpdtip <?php echo $u; ?>-content" style="display:none"><?php _e($c, 'multisite-post-duplicator' )?></p>
     
     <?php
@@ -147,12 +154,11 @@ function mpd_get_prefix(){
 
       if($options = get_option( 'mdp_settings' )){
 
-            $prefix = $options['mdp_default_prefix'];
+            $prefix   = isset($options['mdp_default_prefix']) ? $options['mdp_default_prefix'] : mdp_get_default_options()['mdp_default_prefix'];
 
       }else{
 
-            $defaultOptions   = mdp_get_default_options();
-            $prefix           = $defaultOptions['mdp_default_prefix'];
+            $prefix   = mdp_get_default_options()['mdp_default_prefix'];
 
       }
 
@@ -172,12 +178,11 @@ function mpd_get_status(){
 
       if($options = get_option( 'mdp_settings' )){
 
-            $status = $options['mdp_default_status'];
+            $status    = isset($options['mdp_default_status']) ? $options['mdp_default_status'] : mdp_get_default_options()['mdp_default_status'];
 
       }else{
 
-            $defaultOptions   = mdp_get_default_options();
-            $status           = $defaultOptions['mdp_default_status'];
+            $status    = mdp_get_default_options()['mdp_default_status'];
 
       }
 
@@ -195,12 +200,11 @@ function mpd_get_ignore_keys(){
 
       if($options = get_option( 'mdp_settings' )){
 
-            $ignore_keys = $options['mdp_ignore_custom_meta'];
+            $ignore_keys = isset($options['mdp_ignore_custom_meta']) ? $options['mdp_ignore_custom_meta'] : mdp_get_default_options()['mdp_ignore_custom_meta'];
 
       }else{
 
-            $defaultOptions	= mdp_get_default_options();
-            $ignore_keys    = $defaultOptions['mdp_ignore_custom_meta'];
+            $ignore_keys = mdp_get_default_options()['mdp_ignore_custom_meta'];
 
       }
 

@@ -573,4 +573,5 @@ function mdp_options_page(  ) {
 	}
 
 }
+
 ?>

@@ -32,9 +32,7 @@ function mpd_metaboxes(){
     
     $active_mpd = apply_filters( 'mpd_is_active', true );
 
-    $post_types = mpd_get_postype_decision_from_options();
-
-    if($post_types){
+    if($post_types = mpd_get_postype_decision_from_options()){
 
         foreach ($post_types as $page ){
 
@@ -88,7 +86,14 @@ function mpd_publish_top_right(){
 <?php
 
 }
-
+/**
+*
+* This function generates the markup for the default post status selection in the MPD Metabox
+*
+* @since 1.6
+* @return null
+*
+*/
 function mpd_metabox_post_status(){
 
     $post_statuses = mpd_get_post_statuses();
@@ -115,6 +120,14 @@ function mpd_metabox_post_status(){
 }
 add_action('mpd_before_metabox_content', 'mpd_metabox_post_status', 5);
 
+/**
+*
+* This function generates the markup for the default prefix selection in the MPD Metabox
+*
+* @since 1.6
+* @return null
+*
+*/
 function mpd_metabox_prefix(){
 
     if(apply_filters('mpd_show_metabox_prefix', true)) :?>
@@ -130,6 +143,14 @@ function mpd_metabox_prefix(){
 }
 add_action('mpd_before_metabox_content', 'mpd_metabox_prefix', 10);
 
+/**
+*
+* This function generates the markup for the site-list checkoxes in the MPD Metabox
+*
+* @since 1.6
+* @return null
+*
+*/
 function mpd_do_metabox_site_list(){
 
     $sites = mpd_wp_get_sites();

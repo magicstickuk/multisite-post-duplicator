@@ -31,7 +31,6 @@ $fs = array(
 	'addons/restrictSites-mpd-addon',
 	'addons/roleAccess-mpd-addon',
 
-
 );
 
 foreach ($fs as $f) {
