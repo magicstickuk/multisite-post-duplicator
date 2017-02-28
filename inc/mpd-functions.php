@@ -152,13 +152,17 @@ function mpd_get_postype_decision_from_options(){
 */
 function mpd_get_prefix(){
 
+    $default_opps = mdp_get_default_options();
+
       if($options = get_option( 'mdp_settings' )){
 
-            $prefix   = isset($options['mdp_default_prefix']) ? $options['mdp_default_prefix'] : mdp_get_default_options()['mdp_default_prefix'];
+            
+
+            $prefix   = isset($options['mdp_default_prefix']) ? $options['mdp_default_prefix'] : $default_opps['mdp_default_prefix'];
 
       }else{
 
-            $prefix   = mdp_get_default_options()['mdp_default_prefix'];
+            $prefix   = $default_opps['mdp_default_prefix'];
 
       }
 
@@ -176,13 +180,15 @@ function mpd_get_prefix(){
 */
 function mpd_get_status(){
 
+    $default_opps = mdp_get_default_options();
+
       if($options = get_option( 'mdp_settings' )){
 
-            $status    = isset($options['mdp_default_status']) ? $options['mdp_default_status'] : mdp_get_default_options()['mdp_default_status'];
+            $status    = isset($options['mdp_default_status']) ? $options['mdp_default_status'] : $default_opps['mdp_default_status'];
 
       }else{
 
-            $status    = mdp_get_default_options()['mdp_default_status'];
+            $status    = $default_opps['mdp_default_status'];
 
       }
 
@@ -198,13 +204,15 @@ function mpd_get_status(){
 */
 function mpd_get_ignore_keys(){
 
+    $default_opps = mdp_get_default_options();
+
       if($options = get_option( 'mdp_settings' )){
 
-            $ignore_keys = isset($options['mdp_ignore_custom_meta']) ? $options['mdp_ignore_custom_meta'] : mdp_get_default_options()['mdp_ignore_custom_meta'];
+            $ignore_keys = isset($options['mdp_ignore_custom_meta']) ? $options['mdp_ignore_custom_meta'] : $default_opps['mdp_ignore_custom_meta'];
 
       }else{
 
-            $ignore_keys = mdp_get_default_options()['mdp_ignore_custom_meta'];
+            $ignore_keys = $default_opps['mdp_ignore_custom_meta'];
 
       }
 
