@@ -85,6 +85,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.6.1 =
+* Fixed: Activation error on some versions of php.
+
 = 1.6 =
 * NEW: More intelligent duplication messages.
 * NEW: Cool new checkboxes in the settings page (Thanks to http://kleinejan.github.io/titatoggle/)
