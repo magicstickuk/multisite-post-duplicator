@@ -49,14 +49,21 @@ function mpd_get_post_types_to_ignore(){
  *
 */
 function mpd_information_icon($c){
-    $u = uniqid();
-    ?>
+
+    $u = uniqid(); ?>
+
     <script>
+    
         jQuery(document).ready(function() {
+
             accordionClick('.<?php echo $u; ?>-click', '.<?php echo $u; ?>-content', 'fast');
+
         });
+
     </script>
+
     <i class="fa fa-info-circle <?php echo $u; ?>-click accord" aria-hidden="true"></i>
+
     <p class="mpdtip <?php echo $u; ?>-content" style="display:none"><?php _e($c, 'multisite-post-duplicator' )?></p>
     
     <?php
@@ -145,14 +152,17 @@ function mpd_get_postype_decision_from_options(){
 */
 function mpd_get_prefix(){
 
+    $default_opps = mdp_get_default_options();
+
       if($options = get_option( 'mdp_settings' )){
 
-            $prefix = $options['mdp_default_prefix'];
+            
+
+            $prefix   = isset($options['mdp_default_prefix']) ? $options['mdp_default_prefix'] : $default_opps['mdp_default_prefix'];
 
       }else{
 
-            $defaultOptions   = mdp_get_default_options();
-            $prefix           = $defaultOptions['mdp_default_prefix'];
+            $prefix   = $default_opps['mdp_default_prefix'];
 
       }
 
@@ -170,14 +180,15 @@ function mpd_get_prefix(){
 */
 function mpd_get_status(){
 
+    $default_opps = mdp_get_default_options();
+
       if($options = get_option( 'mdp_settings' )){
 
-            $status = $options['mdp_default_status'];
+            $status    = isset($options['mdp_default_status']) ? $options['mdp_default_status'] : $default_opps['mdp_default_status'];
 
       }else{
 
-            $defaultOptions   = mdp_get_default_options();
-            $status           = $defaultOptions['mdp_default_status'];
+            $status    = $default_opps['mdp_default_status'];
 
       }
 
@@ -193,14 +204,15 @@ function mpd_get_status(){
 */
 function mpd_get_ignore_keys(){
 
+    $default_opps = mdp_get_default_options();
+
       if($options = get_option( 'mdp_settings' )){
 
-            $ignore_keys = $options['mdp_ignore_custom_meta'];
+            $ignore_keys = isset($options['mdp_ignore_custom_meta']) ? $options['mdp_ignore_custom_meta'] : $default_opps['mdp_ignore_custom_meta'];
 
       }else{
 
-            $defaultOptions	= mdp_get_default_options();
-            $ignore_keys    = $defaultOptions['mdp_ignore_custom_meta'];
+            $ignore_keys = $default_opps['mdp_ignore_custom_meta'];
 
       }
 
@@ -471,6 +483,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
             // Assign metadata to attachment
             wp_update_attachment_metadata( $attach_id, $attach_data );
 
+
             // Now that we have all the data for the newly created file and its post we need to manipulate the old content so that
             // it now reflects the destination post
             $new_image_URL_without_EXT  = mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_blog_id, $new_file_url);
@@ -617,17 +630,21 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
 
     global $post;
 
+    $parts = parse_url($site_url);
+    parse_str($parts['query'], $query);
+    
     $args= array(
 
         'source_id' => get_current_blog_id(),
         'destination_id' => $destination_blog_details->blog_id,
-        'source_post_id' => $post->ID
+        'source_post_id' => $post->ID,
+        'destination_post_id' => $query['post']
 
     );
 
     $message        = '<div class="updated"><p>';
 
-    if(mpd_is_there_a_persist($args)){
+    if(mpd_is_there_a_persist_exact($args)){
 
         $message       .= apply_filters('mpd_admin_persist_notice_text', __('You updated your linked post on ', 'multisite-post-duplicator'), $site_name, $site_url, $destination_blog_details);
         $message       .= $site_name.' <a href="'.$site_url.'">'.__('Edit updated post', 'multisite-post-duplicator' ).'</a>';
@@ -647,12 +664,18 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
         $notice_data    = array(
             'name'        => $site_name,
             'url'         => $site_url,
-            'blog_object' =>  $destination_blog_details
+            'blog_object' =>  $destination_blog_details->blogname
         );
 
-        $option_value   = array('message' => $message, 'data' => $notice_data );   
+        $option_value   = array('message' => $message, 'data' => array($notice_data) );  
         
     }else{
+
+        $notice_data_new = array(
+            'name'        => $site_name,
+            'url'         => $site_url,
+            'blog_object' => $destination_blog_details->blogname
+        );
 
         // Prevent Duplicate notices going on screen.
         foreach ($option_value['data'] as $key => $value) {
@@ -665,12 +688,6 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
 
         $option_value['message'] = $option_value['message'] . $message;
 
-        $notice_data_new = array(
-            'name'        => $site_name,
-            'url'         => $site_url,
-            'blog_object' => $destination_blog_details
-        );
-        
         array_push($option_value['data'], $notice_data_new);
 
     }
@@ -681,6 +698,7 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
     return $message;
 
 }
+
 /**
  * Displays the admin notice.
  *
@@ -1411,6 +1429,7 @@ function  mpd_select_all_checkboxes(){
 }
 
 add_action('mpd_after_metabox_content', 'mpd_select_all_checkboxes', 5);
+
 /**
  * 
  * Function to control the possibility of infinite loops when duplicating.
@@ -1429,6 +1448,41 @@ function mpd_weve_seen_the_page(){
 
 add_action('shutdown', 'mpd_weve_seen_the_page');
 
+function mpd_process_persist( $post_id, $destination_id, $created_post = false){
+
+    if(isset($_POST['persist'])){
+                    
+        $args = array(
+
+            'source_id'      => get_current_blog_id(),
+            'destination_id' => $destination_id,
+            'source_post_id' => $_POST['ID'],
+            'destination_post_id' => $created_post['id']
+
+        );
+                    
+        mpd_add_persist($args);
+
+    }
+
+}
+add_action('mpd_single_metabox_after', 'mpd_process_persist', 10, 3);
+
+function mpd_skip_standard_duplication($choice){
+
+    if(get_option('skip_standard_dup')){
+                
+        delete_option('skip_standard_dup' );
+        
+        return $choice = false;
+
+    }
+
+    return $choice;
+
+}
+
+add_filter('mpd_do_single_metabox_duplication', 'mpd_skip_standard_duplication', 20); //Note priority higher than mpd_copy_acf_field_group()
 
 /**
  * 

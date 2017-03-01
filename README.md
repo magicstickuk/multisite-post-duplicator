@@ -85,6 +85,17 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.6.1 =
+* Fixed: Activation error on some versions of php.
+
+= 1.6 =
+* NEW: More intelligent duplication messages.
+* NEW: Cool new checkboxes in the settings page (Thanks to http://kleinejan.github.io/titatoggle/)
+* Fixed: Issue with default 'post status' setting giving php notice in debug mode
+* Fixed: Issue with multiple duplicate messages showing the same details.
+* Fixed: Setting producing undesired behaviour for tags and taxonomies in some senarios.
+* Improved filters used to build the metabox markup
+
 = 1.5.5 =
 * Improved access to code for developers via various new filters and actions
 

@@ -276,10 +276,12 @@ function mdp_default_status_render(  ) {
 function mdp_ignore_custom_meta_render(  ) { 
 
 	$options = get_option( 'mdp_settings' ); ?>
-	
-	<input id="mdp-ignore-custom-meta" type='text' autocapitalize="none" autocorrect="none" name='mdp_settings[mdp_ignore_custom_meta]' value='<?php echo mpd_get_ignore_keys(); ?>'> 
-	
-	<?php mpd_information_icon('A comma delimited list of post meta keys you wish to ignore during the duplication process. <em>i.e (without quotes) \'my_custom_meta_key, post_facebook_share_count\'</em></br></br>WARNING: Only edit this option if you are sure what you are doing.'); ?>
+
+			<input id="mdp-ignore-custom-meta" type='text' autocapitalize="none" autocorrect="none" name='mdp_settings[mdp_ignore_custom_meta]' value='<?php echo mpd_get_ignore_keys(); ?>'> 
+		
+				<?php mpd_information_icon('A comma delimited list of post meta keys you wish to ignore during the duplication process. <em>i.e (without quotes) \'my_custom_meta_key, post_facebook_share_count\'</em></br></br>WARNING: Only edit this option if you are sure what you are doing.'); ?>
+			
+		
 	
 	<?php
 
@@ -295,11 +297,19 @@ function mdp_ignore_custom_meta_render(  ) {
 function mdp_default_tags_copy_render(  ) { 
 
 	$options = get_option( 'mdp_settings' ); ?>
-
-	<input type='checkbox' name='mdp_settings[mdp_default_tags_copy]' <?php mpd_checked_lookup($options, 'mdp_default_tags_copy', 'tags') ;?> value='tags'> 
 	
-	<?php mpd_information_icon('This plugin will automatically copy the tags associated with the post. You can turn off this activity by unchecking the box.'); ?>
+	<div class="checkbox checkbox-slider--b-flat">
+		
+		<label>
 
+			<input type='checkbox' name='mdp_settings[mdp_default_tags_copy]' <?php mpd_checked_lookup($options, 'mdp_default_tags_copy', 'tags') ;?> value='tags'> 
+			<span>
+				<?php mpd_information_icon('This plugin will automatically copy the tags associated with the post. You can turn off this activity by unchecking the box.'); ?>
+			</span>
+		
+		</label>
+	
+	</div>
 	<?php
 
 }
@@ -316,10 +326,16 @@ function mdp_copy_post_categories_render(  ) {
 
 	$options = get_option( 'mdp_settings' ); ?>
 	
-	<input type='checkbox' name='mdp_settings[mdp_copy_post_categories]' <?php mpd_checked_lookup($options, 'mdp_copy_post_categories', 'category') ;?> value='category'>
-	
-	<?php mpd_information_icon('This plugin will automatically copy the categories associated with the post. If the category doesn\'t exist in the destination site the category will be created for you. You can turn off this activity by unchecking the box.'); ?>
+	<div class="checkbox checkbox-slider--b-flat">
+		
+		<label>
+			<input type='checkbox' name='mdp_settings[mdp_copy_post_categories]' <?php mpd_checked_lookup($options, 'mdp_copy_post_categories', 'category') ;?> value='category'>
+			<span>
+			<?php mpd_information_icon('This plugin will automatically copy the categories associated with the post. If the category doesn\'t exist in the destination site the category will be created for you. You can turn off this activity by unchecking the box.'); ?>
+			</span>
+		</label>
 
+	</div>
 	<?php
 
 }
@@ -335,10 +351,15 @@ function mdp_copy_post_taxonomies_render(  ) {
 
 	$options = get_option( 'mdp_settings' ); ?>
 	
-	<input type='checkbox' name='mdp_settings[mdp_copy_post_taxonomies]' <?php mpd_checked_lookup($options, 'mdp_copy_post_taxonomies', 'taxonomy') ;?> value='taxonomy'>
-	
-	<?php mpd_information_icon('This plugin will automatically copy the taxonomy TERMS associated with the post. If the taxonomy TERMS don\'t exist in the destination site the will be created for you. Note: This functionality assumes you have the taxonomies in your source site also registered in your destination site. You can turn off this activity by unchecking the box.'); ?>
-
+	<div class="checkbox checkbox-slider--b-flat">
+		
+		<label>
+			<input type='checkbox' name='mdp_settings[mdp_copy_post_taxonomies]' <?php mpd_checked_lookup($options, 'mdp_copy_post_taxonomies', 'taxonomy') ;?> value='taxonomy'>
+			<span>
+				<?php mpd_information_icon('This plugin will automatically copy the taxonomy TERMS associated with the post. If the taxonomy TERMS don\'t exist in the destination site the will be created for you. Note: This functionality assumes you have the taxonomies in your source site also registered in your destination site. You can turn off this activity by unchecking the box.'); ?>
+			</span>
+		</label>
+	</div>
 	<?php
 
 }
@@ -355,9 +376,19 @@ function mdp_default_feat_image_copy_render(  ) {
 
 	$options = get_option( 'mdp_settings' ); ?>
 
-	<input type='checkbox' name='mdp_settings[mdp_default_featured_image]' <?php mpd_checked_lookup($options, 'mdp_default_featured_image', 'feat') ;?> value='feat'>
+	<div class="checkbox checkbox-slider--b-flat">
+		
+		<label>
+
+			<input type='checkbox' name='mdp_settings[mdp_default_featured_image]' <?php mpd_checked_lookup($options, 'mdp_default_featured_image', 'feat') ;?> value='feat'>
+			<span>
 	
-	<?php mpd_information_icon('This plugin will automatically copy any featured image associated with the post. You can turn off this activity by unchecking the box.'); ?>
+				<?php mpd_information_icon('This plugin will automatically copy any featured image associated with the post. You can turn off this activity by unchecking the box.'); ?>
+				
+			</span>
+		
+		</label>
+	</div>
 	
 	<?php
 
@@ -375,11 +406,14 @@ function mdp_copy_content_image_render(  ) {
 
 	$options = get_option( 'mdp_settings' );
 	?>
-		
-		<input type='checkbox' name='mdp_settings[mdp_copy_content_images]' <?php mpd_checked_lookup($options, 'mdp_copy_content_images', 'content-image') ;?> value='content-image'>
-
-		<p class="mpdtip"><i class="fa fa-info-circle" aria-hidden="true"></i><?php _e('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It will also change the urls in the duplicated post to reference the new media file. You can turn off this activity by unchecking the box', MPD_DOMAIN)?></p>
-
+	<div class="checkbox checkbox-slider--b-flat">
+		<label>
+			<input type='checkbox' name='mdp_settings[mdp_copy_content_images]' <?php mpd_checked_lookup($options, 'mdp_copy_content_images', 'content-image') ;?> value='content-image'>
+			<span>
+				<?php mpd_information_icon('On duplication this plugin will look at the content within the main post content field and try to identify any images that have been added from your media library. If it finds any it will duplicate the image and all its meta data to your destinations site`s media library for exclusive use there. It will also change the urls in the duplicated post to reference the new media file. You can turn off this activity by unchecking the box'); ?>
+			</span>
+		</label>
+	</div>	
 	<?php
 
 }
@@ -395,9 +429,11 @@ function mdp_retain_published_date_render(  ) {
 
 	$options = get_option( 'mdp_settings' ); ?>
 	
-		<input type='checkbox' name='mdp_settings[mdp_retain_published_date]' <?php mpd_checked_lookup($options, 'mdp_retain_published_date', 'retain-published') ;?> value='retain-published'>
-
-		<?php mpd_information_icon('Check this box if you would like the destination post to keep the source published date. NOTE! If you check this option the destination post status will be set to published by default'); ?>
+	<div class="checkbox checkbox-slider--b-flat">
+		<label>
+			<input type='checkbox' name='mdp_settings[mdp_retain_published_date]' <?php mpd_checked_lookup($options, 'mdp_retain_published_date', 'retain-published') ;?> value='retain-published'><span><?php mpd_information_icon('Check this box if you would like the destination post to keep the source published date. NOTE! If you check this option the destination post status will be set to published by default'); ?></span>
+		</label>
+	</div>	
 
 	<?php
 
@@ -537,4 +573,5 @@ function mdp_options_page(  ) {
 	}
 
 }
+
 ?>

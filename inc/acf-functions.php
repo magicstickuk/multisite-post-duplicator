@@ -216,6 +216,8 @@ function mpd_do_acf_images_to_destination($post_id){
                    
                     update_field($acf_gallerys[$gallery_key]['field'], $attach_ids, $post_id);
 
+                    update_field($acf_gallerys[$gallery_key]['field'], $attach_ids, $post_id);
+
                 }
                 
 

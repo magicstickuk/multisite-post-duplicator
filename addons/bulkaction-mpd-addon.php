@@ -257,11 +257,15 @@ function mdp_default_batch_render(){
   
   $options = get_option('mdp_settings');
   ?>
-  
-  <input type='checkbox' name='mdp_settings[add_bulk_settings]' <?php mpd_checked_lookup($options, 'add_bulk_settings', 'allow-batch') ;?> value='allow-batch'>
-  
-  <?php mpd_information_icon('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page'); ?>
-
+  <div class="checkbox checkbox-slider--b-flat">
+    
+    <label>
+      <input type='checkbox' name='mdp_settings[add_bulk_settings]' <?php mpd_checked_lookup($options, 'add_bulk_settings', 'allow-batch') ;?> value='allow-batch'>
+        <span>
+          <?php mpd_information_icon('Having this option checked will allow you to duplicate muliple pages at a time via the batch processing options on the WordPress post list page'); ?>
+        </span>
+    </label>
+</div>
   <?php
 
 }
