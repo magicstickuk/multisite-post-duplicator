@@ -482,9 +482,12 @@ function mpd_log_duplication($createdPostObject, $mpd_process_info){
 				'%d','%d','%d','%d','%d','%d', '%s'
 			) 
 		);
+
+		return $resultSubmitted;
+		
 	}
 
-	return $resultSubmitted;
+	
 	
 	
 }

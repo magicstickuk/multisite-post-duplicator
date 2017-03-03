@@ -238,6 +238,7 @@ function mpd_do_metabox_site_list(){
 
 function mpd_clone_post($post_id){
 
+
     //$here = get_site_option('avoid_infinite');
 
    // if(!$here){
@@ -252,6 +253,8 @@ function mpd_clone_post($post_id){
             $mpd_blogs = apply_filters('mpd_selected_blogs', $_POST['mpd_blogs'], $_POST['ID']);
 
             foreach( $mpd_blogs as $mpd_blog_id ){
+
+                $createdPost = false;
 
                 do_action('mpd_single_metabox_before', $_POST['ID'], $mpd_blog_id);   
                 
@@ -269,9 +272,10 @@ function mpd_clone_post($post_id){
                     );
 
                 }
-                 
-                do_action('mpd_single_metabox_after', $_POST['ID'], $mpd_blog_id, $createdPost );     
-   
+                if($createdPost){
+                    do_action('mpd_single_metabox_after', $_POST['ID'], $mpd_blog_id, $createdPost );
+                }
+                     
                 
             }
 
