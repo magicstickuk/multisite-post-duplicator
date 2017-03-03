@@ -589,10 +589,6 @@ function mpd_acf_setup_destination_parents($source_decendants, $destination_post
 
     $source_parent_key = false;
 
-    update_site_option('source_decendants_' . uniqid(), $source_decendants);
-    update_site_option('destination_post_ids_' . uniqid(), $destination_post_ids);
-    update_site_option('group_id_' . uniqid(), $group_id);
-
     foreach ($destination_post_ids as $key => $destination_post_id) {
         
         $source_parent_id = $source_decendants[$key]->post_parent;
