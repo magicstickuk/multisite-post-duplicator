@@ -635,31 +635,45 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
     
     $args= array(
 
-        'source_id' => get_current_blog_id(),
-        'destination_id' => $destination_blog_details->blog_id,
-        'source_post_id' => $post->ID,
-        'destination_post_id' => $query['post']
+        'source_id'             => get_current_blog_id(),
+        'destination_id'        => $destination_blog_details->blog_id,
+        'source_post_id'        => $post->ID,
+        'destination_post_id'   => $query['post']
 
     );
 
-    $message        = '<div class="updated"><p>';
-
     if(mpd_is_there_a_persist_exact($args)){
 
-        $message       .= apply_filters('mpd_admin_persist_notice_text', __('You updated your linked post on ', 'multisite-post-duplicator'), $site_name, $site_url, $destination_blog_details);
-        $message       .= $site_name.' <a href="'.$site_url.'">'.__('Edit updated post', 'multisite-post-duplicator' ).'</a>';
-        $message       .= '</p></div>'; 
+        $filter     = 'mpd_admin_persist_notice_text';
+        $editText   = 'You updated your linked post on ';
+        $editLink   = 'Edit updated post';
 
     }else{
 
-        $message       .= apply_filters('mpd_admin_notice_text', __('You succesfully duplicated this post to ', 'multisite-post-duplicator' ), $site_name, $site_url, $destination_blog_details);
-        $message       .= $site_name.' <a href="'.$site_url.'">'.__('Edit duplicated post', 'multisite-post-duplicator' ).'</a>';
-        $message       .= '</p></div>'; 
+        $filter     = 'mpd_admin_notice_text';
+        $editText   = 'You succesfully duplicated this post to ';
+        $editLink   = 'Edit duplicated post';
 
     }
-    
-    if(!$option_value){
 
+    $message        = '<div class="updated"><p>';
+    
+    $message       .= apply_filters(
+                        $filter,
+                        __($editText, 'multisite-post-duplicator'),
+                        $site_name,
+                        $site_url,
+                        $destination_blog_details
+                      );
+
+    $message       .=   $site_name.
+                        ' <a href="'.$site_url.'">'.
+                        __($editLink, 'multisite-post-duplicator' ).
+                        '</a>';
+    
+    $message       .= '</p></div>';
+
+    if(!$option_value){
 
         $notice_data    = array(
             'name'        => $site_name,
