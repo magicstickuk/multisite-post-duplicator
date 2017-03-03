@@ -85,6 +85,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.6.2 =
+* Fixed: Issue with acf field group duplication not retaining the post heirarchy in some senarios.
+
 = 1.6.1 =
 * Fixed: Activation error on some versions of php.
 

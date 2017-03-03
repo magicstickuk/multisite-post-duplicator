@@ -587,6 +587,12 @@ function mpd_acf_decendant_fields($post_id, $blog_id, $status = 'publish'){
 */
 function mpd_acf_setup_destination_parents($source_decendants, $destination_post_ids, $group_id){
 
+    $source_parent_key = false;
+
+    update_site_option('source_decendants_' . uniqid(), $source_decendants);
+    update_site_option('destination_post_ids_' . uniqid(), $destination_post_ids);
+    update_site_option('group_id_' . uniqid(), $group_id);
+
     foreach ($destination_post_ids as $key => $destination_post_id) {
         
         $source_parent_id = $source_decendants[$key]->post_parent;
@@ -600,14 +606,14 @@ function mpd_acf_setup_destination_parents($source_decendants, $destination_post
                         
             }
         
-        }
+            $destination_parent_id = $source_parent_key !== false ? $destination_post_ids[$source_parent_key] : $group_id;
+                
+            wp_update_post(array(
+                'ID'           => $destination_post_id,
+                'post_parent'  => $destination_parent_id
+            ));
 
-        $destination_parent_id = $source_parent_key ? $destination_post_ids[$source_parent_key] : $group_id;
-            
-        wp_update_post(array(
-            'ID'           => $destination_post_id,
-            'post_parent'  => $destination_parent_id
-        ));
+        }
                 
     }
 

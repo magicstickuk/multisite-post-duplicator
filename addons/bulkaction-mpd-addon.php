@@ -269,3 +269,12 @@ function mdp_default_batch_render(){
   <?php
 
 }
+/**
+ * @ignore
+ */
+function mpd_clean_batch_admin_notices(){
+
+    delete_option('mpd_admin_notice');
+
+}
+add_action('mpd_batch_after', 'mpd_clean_batch_admin_notices');
