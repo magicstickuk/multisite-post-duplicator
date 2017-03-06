@@ -38,7 +38,7 @@ function mpd_side_metaboxs($page){
 	 	
 	}
 	// If no linkage exists add a metabox to allow a link to be created to an existing post
-	if(!$persists  && !$source && (isset($options['allow_persist']) || !$options)){
+	if((isset($options['allow_persist']) || !$options)){
 
 		add_meta_box( 'multisite_create_link', "<i class='fa fa-link' aria-hidden='true'></i> " . __('MPD Create Link', 'multisite-post-duplicator' ), 'mpd_create_link_render', $page, 'side', $priority );
 
@@ -170,7 +170,7 @@ function mpd_create_link_submit(){
 
 	global $wpdb;
 
-	$site 			= $_POST['site'];
+	$site 		= $_POST['site'];
 	$post_to_link 	= $_POST['post_to_link'];
 	$post_id 		= $_POST['post_id'];
 
@@ -185,24 +185,28 @@ function mpd_create_link_submit(){
 		array( 
 			'%d','%d','%d','%d'
 		)
-		);
+	);
 
 	$result = $wpdb->insert( 
 		$wpdb->base_prefix . "mpd_log", 
 		array( 
-			'source_id' 			=> get_current_blog_id(), 
+			'source_id' 		=> get_current_blog_id(), 
 			'destination_id' 		=> $site,
 			'source_post_id'		=> $post_id,
 			'destination_post_id'	=> $post_to_link,
 			'persist_active'		=> 1,
 			'persist_action_count'	=> 0,
-			'dup_user_id'			=> get_current_user_id(),
-			'dup_time'				=> date("Y-m-d H:i:s")
+			'dup_user_id'		=> get_current_user_id(),
+			'dup_time'			=> date("Y-m-d H:i:s")
 		), 
 		array( 
 			'%d','%d','%d','%d','%d','%d','%d', '%s'
 		) 
 	);
+
+	if($result){
+		echo '1';
+	}
 
 	die();
 }

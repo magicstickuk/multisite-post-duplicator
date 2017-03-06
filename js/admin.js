@@ -28,22 +28,29 @@ jQuery(document).ready(function($) {
 			jQuery("#create-link-submit").click(function(e){
 				e.preventDefault;
 				
-				jQuery('#create-link-submit').remove();
-				jQuery('.create-link-submit-spin.mpd-spinner-container').show();
+				if(jQuery('#create-link-post-select').val() != -1){
 
-				datasubmit =  {
-				 	action 			: 'mpd_create_link_submit',
-				 	site   			: jQuery( "#create-link-site-select" ).val(),
-				 	post_to_link 	: jQuery( "#create-link-post-select" ).val(),
-				 	post_id 		: mpd_admin_vars.post_id
-				};
+					jQuery('#create-link-submit').remove();
+					jQuery('.create-link-submit-spin.mpd-spinner-container').show();
 
-				jQuery.post(ajaxurl,datasubmit,function(response) {
+					datasubmit =  {
+					 	action 		: 'mpd_create_link_submit',
+					 	site   		: jQuery( "#create-link-site-select" ).val(),
+					 	post_to_link 	: jQuery( "#create-link-post-select" ).val(),
+					 	post_id 		: mpd_admin_vars.post_id
+					};
 
-					jQuery('.create-link-submit-spin.mpd-spinner-container').hide();
-					jQuery('.link-created-confirm').show();
+					jQuery.post(ajaxurl,datasubmit,function(response) {
+						
+						if(response === '1'){
+							jQuery('.create-link-submit-spin.mpd-spinner-container').hide();
+							jQuery('.link-created-confirm').show();
+						}
+						
+					});
 
-				});
+				}
+				
 
 			});
 		
