@@ -85,6 +85,10 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.6.3 =
+* NEW: You can now create multiple links to exisiting posts.
+* Improved validation on our 'create a link to existing post' metabox.
+
 = 1.6.2 =
 * Fixed: Issue with acf field group duplication not retaining the post heirarchy in some senarios.
 
