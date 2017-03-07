@@ -92,6 +92,8 @@ function mpd_create_link_render(){
 
 			<p class="link-created-confirm"><img src="<?php echo plugins_url('../images/tick.png',__FILE__); ?>" alt=""> <?php _e('Link Created','multisite-post-duplicator'); ?></p>
 
+			<p class="link-created-create-another"><a onclick="location.reload()" href="#multisite_create_link">Create Another Link</a></p>
+
 	</div>
 
 	<?php 

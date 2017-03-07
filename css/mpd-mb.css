@@ -42,7 +42,7 @@
 #createLink{
   margin-right: 10px;
 }
-.mpd-spinner-container, .link-created-confirm{
+.mpd-spinner-container, .link-created-confirm, .link-created-create-another{
   display: none;
 }
 .create-link-ui select{

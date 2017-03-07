@@ -45,7 +45,10 @@ jQuery(document).ready(function($) {
 						if(response === '1'){
 							jQuery('.create-link-submit-spin.mpd-spinner-container').hide();
 							jQuery('.link-created-confirm').show();
+							jQuery('.link-created-create-another').show('slow');
+							
 						}
+
 						
 					});
 
