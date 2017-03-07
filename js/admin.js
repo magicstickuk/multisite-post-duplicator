@@ -1,10 +1,16 @@
 jQuery(document).ready(function($) {
 
 	jQuery("#createLink").click(function(e){
-
+		window.markup = jQuery(this).closest('.inside').html();
 		e.preventDefault;
 		jQuery('.create-link-ui').show('fast');
 
+	});
+
+	jQuery('.link-created-create-another').click(function(e){
+		e.preventDefault;
+		jQuery(this).closest('.inside').hide().empty().append(window.markup);
+		jQuery('.inside').show();
 	});
 
 	jQuery( "#create-link-site-select" ).change(function() {
