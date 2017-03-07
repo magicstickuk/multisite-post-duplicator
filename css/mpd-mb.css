@@ -45,6 +45,9 @@
 .mpd-spinner-container, .link-created-confirm, .link-created-create-another{
   display: none;
 }
+.link-created-create-another{
+  cursor: pointer;
+}
 .create-link-ui select{
   width: 100%;
 }
