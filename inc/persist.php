@@ -23,20 +23,8 @@ function mpd_side_metaboxs($page){
 	// Filter to allow developers to determine thier own metabox priority.
 	$priority 		= apply_filters( 'mpd_metabox_priority', 'high' );
 	$options 		= get_option( 'mdp_settings' );
-	$persists 		= mpd_get_persists_for_post();
-	$source 		= mpd_get_posts_source_post();
 
-	// If the current post is a source post, the add a metabox to list the linked posts.
-	if($persists && (isset($options['allow_persist']) || !$options)){
-	 	add_meta_box( 'multisite_linked_list_metabox', "<i class='fa fa-link' aria-hidden='true'></i> " . __('Linked MPD Pages', 'multisite-post-duplicator' ), 'mpd_linked_list_metabox_render', $page, 'side', $priority );
-	 	
-	}
-	// If the current post has any souce posts add appropriate metabox
-	if($source && (isset($options['allow_persist']) || !$options)){
-		
-		add_meta_box( 'multisite_source_list_metabox', "<i class='fa fa-university' aria-hidden='true'></i> " . __('MPD Source Post', 'multisite-post-duplicator' ), 'mpd_source_list_metabox_render', $page, 'side', $priority );
-	 	
-	}
+	
 	// If no linkage exists add a metabox to allow a link to be created to an existing post
 	if((isset($options['allow_persist']) || !$options)){
 
@@ -47,6 +35,40 @@ function mpd_side_metaboxs($page){
 
 }
 add_action('mpd_meta_box', 'mpd_side_metaboxs');
+
+/**
+ * Create Metaboxs related to the 'Linked Duplication' functionality on a post type as determined my users options ($page).
+ * These metaboxes are not restricted by the user capabilities.
+ *
+ * @since 1.6.4
+ * @param string|array|WP_Screen $page The screen or screens on which to show the box. Generated from mpd_get_postype_decision_from_options();
+ * @return null
+ *
+ */
+function mpd_side_metaboxs_global($page){
+
+	// Filter to allow developers to determine thier own metabox priority.
+	$priority 		= apply_filters( 'mpd_metabox_priority', 'high' );
+	$options 		= get_option( 'mdp_settings' );
+	$persists 		= mpd_get_persists_for_post();
+	$source 		= mpd_get_posts_source_post();
+
+	// If the current post is a source post, the add a metabox to list the linked posts.
+	if($persists){
+	 	add_meta_box( 'multisite_linked_list_metabox', "<i class='fa fa-link' aria-hidden='true'></i> " . __('Linked MPD Pages', 'multisite-post-duplicator' ), 'mpd_linked_list_metabox_render', $page, 'side', $priority );
+	 	
+	}
+	// If the current post has any souce posts add appropriate metabox
+	if($source){
+		add_meta_box( 'multisite_source_list_metabox', "<i class='fa fa-university' aria-hidden='true'></i> " . __('MPD Source Post', 'multisite-post-duplicator' ), 'mpd_source_list_metabox_render', $page, 'side', $priority );
+	 	
+	}
+
+
+
+}
+
+add_action('mpd_meta_box_global', 'mpd_side_metaboxs_global');
 
 /**
  * Create the markup for 'add link to exsisting post'

@@ -46,6 +46,8 @@ function mpd_metaboxes(){
                    
             }
 
+            do_action('mpd_meta_box_global', $page);
+
         } 
 
     }
