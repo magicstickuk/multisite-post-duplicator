@@ -85,6 +85,10 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.6.5 =
+* Now correctly copies post_slug if it has been updated by used.
+* NEW: Now copies ACF file field-type.
+
 = 1.6.4 =
 * Users will now see if there is a linked post no matter their role or restrictions.
 

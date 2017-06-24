@@ -19,6 +19,7 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
    
    $acf_collected           = array();
    $acf_gallery_collected   = array();
+   $acf_file_data_collected = array();
 
    $current_blog_id = get_current_blog_id();
 
@@ -72,6 +73,21 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
 
                                 break;
 
+                            case 'file':
+
+                                $acf_file_data_collected_source = array(
+                                    'url'           => wp_get_attachment_url( $meta[0] ),
+                                    'post_mime'     => get_post_mime_type($meta[0]),
+                                    'file_id'       => $meta[0],
+                                    'field'         => $key,
+                                    'post_id'       => $post_id_to_copy,
+
+                                );
+
+                                array_push($acf_file_data_collected, $acf_file_data_collected_source);
+
+                                break;
+
                             case 'gallery':
                                 
                                 $source_ids     = maybe_unserialize($meta[0]);
@@ -121,8 +137,7 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
 
         }
 
-        
-       
+        update_site_option( 'source_acf_files', $acf_file_data_collected);
         update_site_option( 'source_acf_images', $acf_collected);
         update_site_option( 'source_acf_gallery_images', $acf_gallery_collected);   
 
@@ -132,6 +147,58 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
 
 add_action('mpd_during_core_in_source', 'mpd_do_acf_images_from_source', 10, 5);
 add_action('mpd_persist_during_core_in_source', 'mpd_do_acf_images_from_source', 10, 5);
+
+/**
+ * Copy the source ACF files to the destination site.
+ *
+ *
+ * @since 1.6.5
+ * @param int $post_id The ID of the destination post
+ * @return null
+ *
+*/
+function mpd_do_acf_files_to_destination($post_id){
+  
+    if(class_exists('acf')){
+    
+        $acf_files = get_site_option( 'source_acf_files' );
+
+        if($acf_files){
+          
+            foreach ($acf_files as $acf_file) {
+                
+                $file       = $acf_file['url'];
+
+                if($file){
+                    
+                    $info       = pathinfo($file);
+                    $file_name  = basename($file,'.'.$info['extension']);
+
+                    $attachment = array(
+                         'post_mime_type' => $acf_file['post_mime'],
+                         'post_title'     => $file_name,
+                         'post_content'   => '',
+                         'post_status'    => 'inherit'
+                    );
+
+                    $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id);
+                    
+                    update_field($acf_file['field'], $attach_id, $post_id);
+                }
+               
+                
+            }
+
+            delete_site_option('source_acf_files');
+
+        }
+      
+    }
+
+}
+
+add_action('mpd_end_of_core_before_return', 'mpd_do_acf_files_to_destination', 10, 1);
+add_action('mpd_persist_end_of_core_before_return', 'mpd_do_acf_files_to_destination', 10, 1);
 
 /**
  * Copy the source ACF images to the destination site.
