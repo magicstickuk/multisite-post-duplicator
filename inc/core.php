@@ -75,7 +75,8 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
             'post_author'   => $mpd_process_info['post_author'],
  			'post_content'  => $mdp_post->post_content,
             'post_excerpt'  => $mdp_post->post_excerpt,
-            'post_content_filtered' => $mdp_post->post_content_filtered
+            'post_content_filtered' => $mdp_post->post_content_filtered,
+            'post_name' => $mdp_post->post_name
 
     ), $mpd_process_info);
 
@@ -252,7 +253,8 @@ function mpd_persist_over_multisite($persist_post) {
             'post_author'   => get_post_field( 'post_author', $persist_post->source_post_id ),
             'post_content'  => $mdp_post->post_content,
             'post_excerpt'  => $mdp_post->post_excerpt,
-            'post_content_filtered' => $mdp_post->post_content_filtered
+            'post_content_filtered' => $mdp_post->post_content_filtered,
+            'post_name' => $mdp_post->post_name
 
     ), $persist_post);
 
