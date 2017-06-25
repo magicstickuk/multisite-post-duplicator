@@ -1529,8 +1529,7 @@ add_filter('mpd_enter_the_loop', 'mpd_enter_the_loop', 10, 3);
 
 /**
  * 
- * Hooks into mpd_enter_the_loop funciton and set the conditions in which the multisite
- * post duplication processes can be accessed
+ * Get media URL on any sub site by ID
  *
  * @since 1.6.5
  * @param int $ID The ID of the media we want the URL of

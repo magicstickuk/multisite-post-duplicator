@@ -87,7 +87,7 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 = 1.6.5 =
 * NEW: Now copies ACF file field-type.
-* Now correctly copies post_slug if it has been updated by used.
+* Now correctly copies post_slug if it has been updated by user.
 * Improved method of post content image collection.
 
 = 1.6.4 =
