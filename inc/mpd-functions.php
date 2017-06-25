@@ -416,7 +416,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
             $image_data             = file_get_contents($the_file_name);
             // Break up the source URL into targetable sections
 
-            $image_URL_info         = pathinfo($post_media_attachment->guid);
+            $image_URL_info         = pathinfo(mpd_wp_get_attachment_url($post_media_attachment->ID, $source_id));
             //Just get the url without the filename extension...we are doing this because this will be the standard URL
             //for all the thumbnails attached to this image and we can therefore 'find and replace' all the possible
             //intermediate image sizes later down the line. See: https://codex.wordpress.org/Function_Reference/get_intermediate_image_sizes
@@ -1526,3 +1526,25 @@ function mpd_enter_the_loop($choice, $post_global, $post_id){
 
 }
 add_filter('mpd_enter_the_loop', 'mpd_enter_the_loop', 10, 3);
+
+/**
+ * 
+ * Hooks into mpd_enter_the_loop funciton and set the conditions in which the multisite
+ * post duplication processes can be accessed
+ *
+ * @since 1.6.5
+ * @param int $ID The ID of the media we want the URL of
+ * @param int $source_blog The blog id this media file resides.
+ * 
+ * @return string The URL of the media file
+ *
+ */
+function mpd_wp_get_attachment_url($ID, $source_blog){
+
+    switch_to_blog($source_blog);
+        $attachment_url = wp_get_attachment_url($ID);
+    restore_current_blog();
+
+    return $attachment_url;
+
+}
