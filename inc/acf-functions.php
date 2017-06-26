@@ -157,7 +157,7 @@ add_action('mpd_persist_during_core_in_source', 'mpd_do_acf_images_from_source',
  * @return null
  *
 */
-function mpd_do_acf_files_to_destination($post_id){
+function mpd_do_acf_files_to_destination($post_id, $mpd_post, $source_id){
   
     if(class_exists('acf')){
     
@@ -181,7 +181,7 @@ function mpd_do_acf_files_to_destination($post_id){
                          'post_status'    => 'inherit'
                     );
 
-                    $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id);
+                    $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id, $source_id, $acf_file['file_id']);
                     
                     update_field($acf_file['field'], $attach_id, $post_id);
                 }
@@ -197,8 +197,8 @@ function mpd_do_acf_files_to_destination($post_id){
 
 }
 
-add_action('mpd_end_of_core_before_return', 'mpd_do_acf_files_to_destination', 10, 1);
-add_action('mpd_persist_end_of_core_before_return', 'mpd_do_acf_files_to_destination', 10, 1);
+add_action('mpd_end_of_core_before_return', 'mpd_do_acf_files_to_destination', 10, 3);
+add_action('mpd_persist_end_of_core_before_return', 'mpd_do_acf_files_to_destination', 10, 3);
 
 /**
  * Copy the source ACF images to the destination site.
@@ -209,7 +209,7 @@ add_action('mpd_persist_end_of_core_before_return', 'mpd_do_acf_files_to_destina
  * @return null
  *
 */
-function mpd_do_acf_images_to_destination($post_id){
+function mpd_do_acf_images_to_destination($post_id, $mpd_post, $source_id){
   
     if(class_exists('acf')){
     
@@ -233,7 +233,7 @@ function mpd_do_acf_images_to_destination($post_id){
                          'post_status'    => 'inherit'
                     );
 
-                    $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id);
+                    $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id, $source_id, $acf_image['image_id']);
                     
                     update_field($acf_image['field'], $attach_id, $post_id);
                 }
@@ -273,7 +273,7 @@ function mpd_do_acf_images_to_destination($post_id){
 
                             );
 
-                            $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id);
+                            $attach_id = mpd_copy_file_to_destination($attachment, $file, $post_id, $source_id, $acf_gallerys[$gallery_key]['image_ids'][$key]);
 
                             array_push($attach_ids,$attach_id);
 
@@ -298,8 +298,8 @@ function mpd_do_acf_images_to_destination($post_id){
 
 }
 
-add_action('mpd_end_of_core_before_return', 'mpd_do_acf_images_to_destination', 10, 1);
-add_action('mpd_persist_end_of_core_before_return', 'mpd_do_acf_images_to_destination', 10, 1);
+add_action('mpd_end_of_core_before_return', 'mpd_do_acf_images_to_destination', 10, 3);
+add_action('mpd_persist_end_of_core_before_return', 'mpd_do_acf_images_to_destination', 10, 3);
 
 /**
  * Copy the ACF Field Groups (using the bulk action method) to the destination site.

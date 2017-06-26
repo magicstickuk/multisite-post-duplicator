@@ -152,7 +152,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
         //Check that the users plugin settings actually want this process to happen
         if((isset($options['mdp_default_featured_image']) || !$options) && apply_filters('mdp_default_featured_image', true) ){
 
-            mpd_set_featured_image_to_destination( $post_id, $featured_image ); 
+            mpd_set_featured_image_to_destination( $post_id, $featured_image, $source_blog_id ); 
 
         }
 
@@ -194,7 +194,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $blog_details  = get_blog_details($mpd_process_info['destination_id']);
     $site_name     = $blog_details->blogname;
 
-    do_action('mpd_end_of_core_before_return', $post_id, $mdp_post);
+    do_action('mpd_end_of_core_before_return', $post_id, $mdp_post, $source_blog_id);
 
     //////////////////////////////////////
     //Go back to the current blog so we can update information about the action that just took place
@@ -377,7 +377,7 @@ function mpd_persist_over_multisite($persist_post) {
     $blog_details  = get_blog_details($persist_post->destination_id);
     $site_name     = $blog_details->blogname;
 
-    do_action('mpd_persist_end_of_core_before_return', $post_id, $mdp_post);
+    do_action('mpd_persist_end_of_core_before_return', $post_id, $mdp_post, $source_blog_id);
 
     //////////////////////////////////////
     //Go back to the current blog so we can update information about the action that just took place

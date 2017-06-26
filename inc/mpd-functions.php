@@ -247,6 +247,7 @@ function mpd_get_featured_image_from_source($post_id){
 
         $image_details = array(
 
+            'id'            => $thumbnail_id,
             'url'           => get_attached_file($thumbnail_id),
             'alt'           => get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true ),
             'post_title'    => get_post_field('post_title', $thumbnail_id),
@@ -274,7 +275,7 @@ function mpd_get_featured_image_from_source($post_id){
  * @return null
  *
  */
-function mpd_set_featured_image_to_destination($destination_id, $image_details){
+function mpd_set_featured_image_to_destination($destination_id, $image_details, $source_blog_id){
     
     // Get the upload directory for the current site
     $upload_dir = wp_upload_dir();
@@ -332,6 +333,8 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
 
     // Assign metadata to attachment
     wp_update_attachment_metadata( $attach_id, $attach_data );
+
+    do_action('mpd_media_image_added', $attach_id, $source_blog_id, $image_details['id'] );
 
     // And finally assign featured image to post
     set_post_thumbnail( $destination_id, $attach_id );
@@ -482,6 +485,8 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
 
             // Assign metadata to attachment
             wp_update_attachment_metadata( $attach_id, $attach_data );
+
+            do_action('mpd_media_image_added', $attach_id, $source_id, $post_media_attachment->ID);
 
 
             // Now that we have all the data for the newly created file and its post we need to manipulate the old content so that
@@ -1330,14 +1335,14 @@ function mpd_search($array, $key, $value){
  * Helper function process a duplication of an image file from the source to the destination. Has to be run while 'in' the destination site
  *
  * @since 1.3
- * @param $attachment Array Array of data about the attachment that will be written into the wp_posts table of the database.
+ * @param $attachment Array of data about the attachment that will be written into the wp_posts table of the database.
  * @param $img_url The URL of the image to be copied
  * @param $post_id The new post ID that the image has to be assigned to.
  * 
  * @return int The id of the newly created image
  *
  */
-function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
+function mpd_copy_file_to_destination($attachment, $img_url, $post_id, $source_id, $file_id){
 
     $info       = pathinfo($img_url);
     $file_name  = basename($img_url,'.'.$info['extension']);
@@ -1372,6 +1377,8 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
         $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
 
         wp_update_attachment_metadata( $attach_id, $attach_data );
+
+        do_action('mpd_media_image_added', $attach_id, $source_id, $file_id);
         
     }
    
@@ -1545,5 +1552,25 @@ function mpd_wp_get_attachment_url($ID, $source_blog){
     restore_current_blog();
 
     return $attachment_url;
+
+}
+
+function mpd_log_media_file($attach_id, $source_id, $source_attachment_id){
+
+    $meta_id = update_post_meta($attach_id, 'mpd_media_source_' . $source_id, $source_attachment_id);
+
+    switch_to_blog($source_id);
+        $post_modified = get_post_field('post_modified', $source_attachment_id, 'raw');
+    restore_current_blog();
+
+    update_post_meta($attach_id, $meta_id, $post_modified);
+}
+
+
+add_action('mpd_media_image_added', 'mpd_log_media_file', 10, 3);
+
+function mpd_does_file_exist($source_file_id, $source_id, $destination_id, $current_mod_time){
+
+    return false;
 
 }
