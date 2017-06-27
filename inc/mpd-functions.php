@@ -1584,7 +1584,7 @@ function mpd_does_file_exist($source_file_id, $source_id, $destination_id){
     );
 
     //If there is a catch check if the current mod time matches the logged
-    if($meta_id){
+    if(null !== $meta_id){
 
         $source_tablename = mpd_get_tablename($source_id);
 
@@ -1595,19 +1595,24 @@ function mpd_does_file_exist($source_file_id, $source_id, $destination_id){
             )
         );
 
-        $past_mod_time = $wpdb->get_var(
+        $row = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT meta_value FROM $destination_tablename  WHERE meta_key = %d",
+                "SELECT * FROM $destination_tablename  WHERE meta_key = %d",
                 $meta_id
             )
         );
 
-        if($past_mod_time == $current_mod_time){
-            return true;
+        if(null !== $row){
+           $past_mod_time = $row->meta_value;
 
-        }else{
-            return $source_file_id;
+            if($past_mod_time == $current_mod_time){
+                return true;
+
+            }else{
+                return $row->post_id;
+            } 
         }
+        
     }
 
     return false;
