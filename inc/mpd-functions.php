@@ -1569,7 +1569,46 @@ function mpd_log_media_file($attach_id, $source_id, $source_attachment_id){
 
 add_action('mpd_media_image_added', 'mpd_log_media_file', 10, 3);
 
-function mpd_does_file_exist($source_file_id, $source_id, $destination_id, $current_mod_time){
+function mpd_does_file_exist($source_file_id, $source_id, $destination_id){
+
+    //If source file id exists for source site on destination site
+    global $wpdb;
+
+    $destination_tablename = mpd_get_tablename($destination_id, 'postmeta');
+
+    $meta_id = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT meta_id FROM $destination_tablename  WHERE meta_key = %s AND meta_value = %d",
+            'mpd_media_source_' .$source_id, $source_file_id
+        )
+    );
+
+    //If there is a catch check if the current mod time matches the logged
+    if($meta_id){
+
+        $source_tablename = mpd_get_tablename($source_id);
+
+        $current_mod_time = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT post_modified FROM $source_tablename WHERE ID = %d",
+                $source_file_id
+            )
+        );
+
+        $past_mod_time = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT meta_value FROM $destination_tablename  WHERE meta_key = %d",
+                $meta_id
+            )
+        );
+
+        if($past_mod_time == $current_mod_time){
+            return true;
+
+        }else{
+            return $source_file_id;
+        }
+    }
 
     return false;
 
