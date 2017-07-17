@@ -445,51 +445,83 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
 
             }
 
-            // Get the URL (not the URI) of the new file
+             // Get the URL (not the URI) of the new file
             $new_file_url = $upload_dir['url'] . '/' . $filename;
             $new_file_url = str_replace(get_blog_details($source_id)->siteurl, get_blog_details($new_blog_id)->siteurl, $new_file_url);
 
-            // Add the file contents to the new path with the new filename
-            file_put_contents( $file, $image_data );
-            // Get the mime type of the new file extension
-            $wp_filetype = wp_check_filetype( $filename, null );
+            if($the_original_id = mpd_does_file_exist($post_media_attachment->ID, $source_id, $new_blog_id)){
+                
+                // Get the mime type of the new file extension
+                $wp_filetype = wp_check_filetype( $filename, null );
+                
+                $attachment = array(
+                    'ID' => $the_original_id,
+                    'post_parent' => $destination_post_id,
+                    'post_mime_type' => $wp_filetype,
+                    'post_title'     => sanitize_file_name( $filename ),
+                    'post_content'   => $post_media_attachment->post_content,
+                    'post_status'    => 'inherit',
+                    'post_excerpt'   => $post_media_attachment->post_excerpt,
+                    'post_name'      => $post_media_attachment->post_name,
+                    'guid'           => $new_file_url
+                );
 
-            $attachment = apply_filters('mpd_post_media_attachments', array(
+                $attach_id = wp_insert_attachment( $attachment );
 
-                'post_mime_type' => 'image/jpeg',
-                'post_title'     => sanitize_file_name( $filename ),
-                'post_content'   => $post_media_attachment->post_content,
-                'post_status'    => 'inherit',
-                'post_excerpt'   => $post_media_attachment->post_excerpt,
-                'post_name'      => $post_media_attachment->post_name,
-                'guid'           => $new_file_url
+                // Include code to process functions below:
+                require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+                // Define attachment metadata
+                $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+
+                // Assign metadata to attachment
+                wp_update_attachment_metadata( $attach_id, $attach_data );
+
+            }else{
+
+                // Add the file contents to the new path with the new filename
+                file_put_contents( $file, $image_data );
+                // Get the mime type of the new file extension
+                $wp_filetype = wp_check_filetype( $filename, null );
+
+                $attachment = apply_filters('mpd_post_media_attachments', array(
+
+                    'post_mime_type' => $wp_filetype,
+                    'post_title'     => sanitize_file_name( $filename ),
+                    'post_content'   => $post_media_attachment->post_content,
+                    'post_status'    => 'inherit',
+                    'post_excerpt'   => $post_media_attachment->post_excerpt,
+                    'post_name'      => $post_media_attachment->post_name,
+                    'guid'           => $new_file_url
 
 
-            ), $post_media_attachment);
+                ), $post_media_attachment);
 
-            // Attach the new file and its information to the database
-            $attach_id = wp_insert_attachment( $attachment, $file, $destination_post_id );
+                // Attach the new file and its information to the database
+                $attach_id = wp_insert_attachment( $attachment, $file, $destination_post_id );
 
-            // Add alt text to the destination image
-            if($attached_images_alt_tags){
+                // Add alt text to the destination image
+                if($attached_images_alt_tags){
 
-                  update_post_meta($attach_id,'_wp_attachment_image_alt', $attached_images_alt_tags[$image_count]);
+                      update_post_meta($attach_id,'_wp_attachment_image_alt', $attached_images_alt_tags[$image_count]);
+
+                }
+
+                // Include code to process functions below:
+                require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+                // Define attachment metadata
+                $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+
+                // Assign metadata to attachment
+                wp_update_attachment_metadata( $attach_id, $attach_data );
+
+                do_action('mpd_media_image_added', $attach_id, $source_id, $post_media_attachment->ID);
+
 
             }
 
-            // Include code to process functions below:
-            require_once(ABSPATH . 'wp-admin/includes/image.php');
-
-            // Define attachment metadata
-            $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
-
-            // Assign metadata to attachment
-            wp_update_attachment_metadata( $attach_id, $attach_data );
-
-            do_action('mpd_media_image_added', $attach_id, $source_id, $post_media_attachment->ID);
-
-
-            // Now that we have all the data for the newly created file and its post we need to manipulate the old content so that
+             // Now that we have all the data for the newly created file and its post we need to manipulate the old content so that
             // it now reflects the destination post
             $new_image_URL_without_EXT  = mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_blog_id, $new_file_url);
             $old_content                = get_post_field('post_content', $destination_post_id);
@@ -1360,6 +1392,12 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id, $source_i
 
     }
     
+    if($the_original_id = mpd_does_file_exist($file_id, $source_id, get_current_blog_id())){
+        
+        return $the_original_id;
+
+    }
+    
     $filtered_url = mpd_fix_wordpress_urls($img_url);
 
     if($filtered_url && $filtered_url != ''){
@@ -1606,10 +1644,10 @@ function mpd_does_file_exist($source_file_id, $source_id, $destination_id){
            $past_mod_time = $row->meta_value;
 
             if($past_mod_time == $current_mod_time){
-                return true;
+                return $row->post_id;
 
             }else{
-                return $row->post_id;
+                return false;
             } 
         }
         
