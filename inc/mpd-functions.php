@@ -453,7 +453,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
                 
                 // Get the mime type of the new file extension
                 $wp_filetype = wp_check_filetype( $filename, null );
-                
+
                 $attachment = array(
                     'ID' => $the_original_id,
                     'post_parent' => $destination_post_id,
@@ -1601,7 +1601,7 @@ function mpd_log_media_file($attach_id, $source_id, $source_attachment_id){
         $post_modified = get_post_field('post_modified', $source_attachment_id, 'raw');
     restore_current_blog();
 
-    update_post_meta($attach_id, $meta_id, $post_modified);
+    update_post_meta($attach_id, 'mpd_meta_id_' . $meta_id, $post_modified);
 }
 
 
@@ -1635,7 +1635,7 @@ function mpd_does_file_exist($source_file_id, $source_id, $destination_id){
 
         $row = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT * FROM $destination_tablename  WHERE meta_key = %d",
+                "SELECT * FROM $destination_tablename  WHERE meta_key = mpd_meta_id_%d",
                 $meta_id
             )
         );
