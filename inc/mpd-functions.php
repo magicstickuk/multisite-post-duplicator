@@ -457,7 +457,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
                 $attachment = array(
                     'ID' => $the_original_id,
                     'post_parent' => $destination_post_id,
-                    'post_mime_type' => $wp_filetype,
+                    'post_mime_type' => $wp_filetype['type'],
                     'post_title'     => sanitize_file_name( $filename ),
                     'post_content'   => $post_media_attachment->post_content,
                     'post_status'    => 'inherit',
@@ -486,7 +486,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
 
                 $attachment = apply_filters('mpd_post_media_attachments', array(
 
-                    'post_mime_type' => $wp_filetype,
+                    'post_mime_type' => $wp_filetype['type'],
                     'post_title'     => sanitize_file_name( $filename ),
                     'post_content'   => $post_media_attachment->post_content,
                     'post_status'    => 'inherit',
@@ -1635,7 +1635,7 @@ function mpd_does_file_exist($source_file_id, $source_id, $destination_id){
 
         $row = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT * FROM $destination_tablename  WHERE meta_key = mpd_meta_id_%d",
+                "SELECT * FROM $destination_tablename  WHERE meta_key = 'mpd_meta_id_%d'",
                 $meta_id
             )
         );
