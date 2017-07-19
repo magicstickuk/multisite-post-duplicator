@@ -88,6 +88,7 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 = 1.6.6 =
 * NEW: MPD now recognises previously copied media files to prevent duplicate media instances when copying the same page multiple times.
 * Fixed: Media files are no longer assigned the wrong post_mime_type in some senarios
+* Fixed: A linked post's 'status' will now be correctly replicated upon copy.
 
 = 1.6.5 =
 * NEW: Now copies ACF file field-type.

@@ -1629,6 +1629,18 @@ function mpd_wp_get_attachment_url($ID, $source_blog){
 
 }
 
+/**
+ * 
+ * Log the duplication of a media file by creating two meta files
+ *
+ * @since 1.6.6
+ * @param int $attach_id The ID of the media we want to log
+ * @param int $source_id The blog id this media file resides.
+ * @param int $source_attachment_id The original ID of the image on the source site
+ * 
+ * @return null
+ *
+ */
 function mpd_log_media_file($attach_id, $source_id, $source_attachment_id){
 
     $meta_id = update_post_meta($attach_id, 'mpd_media_source_' . $source_id, $source_attachment_id);
@@ -1643,6 +1655,19 @@ function mpd_log_media_file($attach_id, $source_id, $source_attachment_id){
 
 add_action('mpd_media_image_added', 'mpd_log_media_file', 10, 3);
 
+/**
+ * 
+ * Check if a copy of a media file exists on another blog
+ * Uses the logging structure as set in mpd_log_media_file();
+ *
+ * @since 1.6.6
+ * @param int $source_file_id The ID of the media we want to check
+ * @param int $source_id The blog id this media file resides.
+ * @param int $destination_id The blog id to check if there is a copy on
+ * 
+ * @return booleon True if it does exist and false if it doesn't
+ *
+ */
 function mpd_does_file_exist($source_file_id, $source_id, $destination_id){
 
     //If source file id exists for source site on destination site

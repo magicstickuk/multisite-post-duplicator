@@ -254,7 +254,8 @@ function mpd_persist_over_multisite($persist_post) {
             'post_content'  => $mdp_post->post_content,
             'post_excerpt'  => $mdp_post->post_excerpt,
             'post_content_filtered' => $mdp_post->post_content_filtered,
-            'post_name' => $mdp_post->post_name
+            'post_name' => $mdp_post->post_name,
+            'post_status' => $mdp_post->post_status
 
     ), $persist_post);
 
