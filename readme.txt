@@ -3,7 +3,7 @@
 Contributors: MagicStick
 Tags: multisite, multi site, duplicate, copy, post, page, meta, individual, clone
 Requires at least: 3.7
-Tested up to: 4.7
+Tested up to: 4.8
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -84,6 +84,23 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 4. Duplication Tool
 
 == Changelog ==
+
+= 1.6.6 =
+* NEW: MPD now recognises previously copied media files to prevent duplicate media instances when copying the same page multiple times.
+* Fixed: Media files are no longer assigned the wrong post_mime_type in some senarios
+* Fixed: A linked post's 'status' will now be correctly replicated upon copy.
+
+= 1.6.5 =
+* NEW: Now copies ACF file field-type.
+* Now correctly copies post_slug if it has been updated by user.
+* Improved method of post content image collection.
+
+= 1.6.4 =
+* Users will now see if there is a linked post no matter their role or restrictions.
+
+= 1.6.3 =
+* NEW: You can now create multiple links to exisiting posts.
+* Improved validation on our 'create a link to existing post' metabox.
 
 = 1.6.2 =
 * Fixed: Issue with acf field group duplication not retaining the post heirarchy in some senarios.

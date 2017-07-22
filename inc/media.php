@@ -14,7 +14,7 @@ function mpd_set_media_post_type($source){
     return $source;
 
 }
-add_filter('mpd_source_data','mpd_set_media_post_type');
+//add_filter('mpd_source_data','mpd_set_media_post_type');
 
 function mpd_media_no_functions($choice){
 
@@ -29,5 +29,5 @@ function mpd_media_no_functions($choice){
     return $choice;
     
 }
-add_filter('mdp_copy_content_images', 'mpd_media_no_functions');
-add_filter('mdp_default_featured_image', 'mpd_media_no_functions');
+//add_filter('mdp_copy_content_images', 'mpd_media_no_functions');
+//add_filter('mdp_default_featured_image', 'mpd_media_no_functions');

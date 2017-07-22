@@ -247,6 +247,7 @@ function mpd_get_featured_image_from_source($post_id){
 
         $image_details = array(
 
+            'id'            => $thumbnail_id,
             'url'           => get_attached_file($thumbnail_id),
             'alt'           => get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true ),
             'post_title'    => get_post_field('post_title', $thumbnail_id),
@@ -274,7 +275,7 @@ function mpd_get_featured_image_from_source($post_id){
  * @return null
  *
  */
-function mpd_set_featured_image_to_destination($destination_id, $image_details){
+function mpd_set_featured_image_to_destination($destination_id, $image_details, $source_blog_id){
     
     // Get the upload directory for the current site
     $upload_dir = wp_upload_dir();
@@ -295,46 +296,84 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details){
     }
 
     // Add the file contents to the new path with the new filename
-    file_put_contents( $file, $image_data );
+    
 
-    // Get the mime type of the new file extension
-    $wp_filetype    = wp_check_filetype( $filename, null );
-    // Get the URL (not the URI) of the new file
-    $new_file_url   = $upload_dir['url'] . '/' . $filename;
+    if($the_original_id = mpd_does_file_exist($image_details['id'], $source_blog_id, get_current_blog_id())){
 
-    // Create the database information for this new image
-    $attachment = array(
+         // Get the mime type of the new file extension
+        $wp_filetype = wp_check_filetype( $filename, null );
 
-        'post_mime_type' => $wp_filetype['type'],
-        'post_title'     => $image_details['post_title'],
-        'post_content'   => $image_details['description'],
-        'post_status'    => 'inherit',
-        'post_excerpt'   => $image_details['caption'],
-        'post_name'      => $image_details['post_name']
+        $attachment = array(
+            'ID' => $the_original_id,
+            'post_parent' => $destination_id,
+            'post_mime_type' => $wp_filetype['type'],
+            'post_title'     => $image_details['post_title'],
+            'post_content'   => $image_details['description'],
+            'post_status'    => 'inherit',
+            'post_excerpt'   => $image_details['caption'],
+            'post_name'      => $image_details['post_name']
+        );
 
-    );
+        $attach_id = wp_insert_attachment( $attachment );
 
-    // Attach the new file and its information to the database
-    $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
+        // Include code to process functions below:
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
 
-    // Add alt text from the destination image
-    if($image_details['alt']){
+        // Define attachment metadata
+        $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
 
-         update_post_meta($attach_id,'_wp_attachment_image_alt', $image_details['alt']);
+        // Assign metadata to attachment
+        wp_update_attachment_metadata( $attach_id, $attach_data );
 
-    }
+        // And finally assign featured image to post
+        set_post_thumbnail( $destination_id, $attach_id );
 
-    // Include code to process functions below:
-    require_once(ABSPATH . 'wp-admin/includes/image.php');
+    }else{
 
-    // Define attachment metadata
-    $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+        file_put_contents( $file, $image_data );
 
-    // Assign metadata to attachment
-    wp_update_attachment_metadata( $attach_id, $attach_data );
+        // Get the mime type of the new file extension
+        $wp_filetype    = wp_check_filetype( $filename, null );
+        // Get the URL (not the URI) of the new file
+        $new_file_url   = $upload_dir['url'] . '/' . $filename;
 
-    // And finally assign featured image to post
-    set_post_thumbnail( $destination_id, $attach_id );
+        // Create the database information for this new image
+        $attachment = array(
+
+            'post_mime_type' => $wp_filetype['type'],
+            'post_title'     => $image_details['post_title'],
+            'post_content'   => $image_details['description'],
+            'post_status'    => 'inherit',
+            'post_excerpt'   => $image_details['caption'],
+            'post_name'      => $image_details['post_name']
+
+        );
+
+        // Attach the new file and its information to the database
+        $attach_id = wp_insert_attachment( $attachment, $file, $destination_id );
+
+        // Add alt text from the destination image
+        if($image_details['alt']){
+
+             update_post_meta($attach_id,'_wp_attachment_image_alt', $image_details['alt']);
+
+        }
+
+        // Include code to process functions below:
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+        // Define attachment metadata
+        $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+
+        // Assign metadata to attachment
+        wp_update_attachment_metadata( $attach_id, $attach_data );
+
+        do_action('mpd_media_image_added', $attach_id, $source_blog_id, $image_details['id'] );
+
+        // And finally assign featured image to post
+        set_post_thumbnail( $destination_id, $attach_id );
+
+    }  
 
 }
 
@@ -416,7 +455,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
             $image_data             = file_get_contents($the_file_name);
             // Break up the source URL into targetable sections
 
-            $image_URL_info         = pathinfo($post_media_attachment->guid);
+            $image_URL_info         = pathinfo(mpd_wp_get_attachment_url($post_media_attachment->ID, $source_id));
             //Just get the url without the filename extension...we are doing this because this will be the standard URL
             //for all the thumbnails attached to this image and we can therefore 'find and replace' all the possible
             //intermediate image sizes later down the line. See: https://codex.wordpress.org/Function_Reference/get_intermediate_image_sizes
@@ -442,49 +481,83 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
 
             }
 
-            // Get the URL (not the URI) of the new file
+             // Get the URL (not the URI) of the new file
             $new_file_url = $upload_dir['url'] . '/' . $filename;
             $new_file_url = str_replace(get_blog_details($source_id)->siteurl, get_blog_details($new_blog_id)->siteurl, $new_file_url);
 
-            // Add the file contents to the new path with the new filename
-            file_put_contents( $file, $image_data );
-            // Get the mime type of the new file extension
-            $wp_filetype = wp_check_filetype( $filename, null );
+            if($the_original_id = mpd_does_file_exist($post_media_attachment->ID, $source_id, $new_blog_id)){
+                
+                // Get the mime type of the new file extension
+                $wp_filetype = wp_check_filetype( $filename, null );
 
-            $attachment = apply_filters('mpd_post_media_attachments', array(
+                $attachment = array(
+                    'ID' => $the_original_id,
+                    'post_parent' => $destination_post_id,
+                    'post_mime_type' => $wp_filetype['type'],
+                    'post_title'     => sanitize_file_name( $filename ),
+                    'post_content'   => $post_media_attachment->post_content,
+                    'post_status'    => 'inherit',
+                    'post_excerpt'   => $post_media_attachment->post_excerpt,
+                    'post_name'      => $post_media_attachment->post_name,
+                    'guid'           => $new_file_url
+                );
 
-                'post_mime_type' => 'image/jpeg',
-                'post_title'     => sanitize_file_name( $filename ),
-                'post_content'   => $post_media_attachment->post_content,
-                'post_status'    => 'inherit',
-                'post_excerpt'   => $post_media_attachment->post_excerpt,
-                'post_name'      => $post_media_attachment->post_name,
-                'guid'           => $new_file_url
+                $attach_id = wp_insert_attachment( $attachment );
+
+                // Include code to process functions below:
+                require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+                // Define attachment metadata
+                $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+
+                // Assign metadata to attachment
+                wp_update_attachment_metadata( $attach_id, $attach_data );
+
+            }else{
+
+                // Add the file contents to the new path with the new filename
+                file_put_contents( $file, $image_data );
+                // Get the mime type of the new file extension
+                $wp_filetype = wp_check_filetype( $filename, null );
+
+                $attachment = apply_filters('mpd_post_media_attachments', array(
+
+                    'post_mime_type' => $wp_filetype['type'],
+                    'post_title'     => sanitize_file_name( $filename ),
+                    'post_content'   => $post_media_attachment->post_content,
+                    'post_status'    => 'inherit',
+                    'post_excerpt'   => $post_media_attachment->post_excerpt,
+                    'post_name'      => $post_media_attachment->post_name,
+                    'guid'           => $new_file_url
 
 
-            ), $post_media_attachment);
+                ), $post_media_attachment);
 
-            // Attach the new file and its information to the database
-            $attach_id = wp_insert_attachment( $attachment, $file, $destination_post_id );
+                // Attach the new file and its information to the database
+                $attach_id = wp_insert_attachment( $attachment, $file, $destination_post_id );
 
-            // Add alt text to the destination image
-            if($attached_images_alt_tags){
+                // Add alt text to the destination image
+                if($attached_images_alt_tags){
 
-                  update_post_meta($attach_id,'_wp_attachment_image_alt', $attached_images_alt_tags[$image_count]);
+                      update_post_meta($attach_id,'_wp_attachment_image_alt', $attached_images_alt_tags[$image_count]);
+
+                }
+
+                // Include code to process functions below:
+                require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+                // Define attachment metadata
+                $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+
+                // Assign metadata to attachment
+                wp_update_attachment_metadata( $attach_id, $attach_data );
+
+                do_action('mpd_media_image_added', $attach_id, $source_id, $post_media_attachment->ID);
+
 
             }
 
-            // Include code to process functions below:
-            require_once(ABSPATH . 'wp-admin/includes/image.php');
-
-            // Define attachment metadata
-            $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
-
-            // Assign metadata to attachment
-            wp_update_attachment_metadata( $attach_id, $attach_data );
-
-
-            // Now that we have all the data for the newly created file and its post we need to manipulate the old content so that
+             // Now that we have all the data for the newly created file and its post we need to manipulate the old content so that
             // it now reflects the destination post
             $new_image_URL_without_EXT  = mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_blog_id, $new_file_url);
             $old_content                = get_post_field('post_content', $destination_post_id);
@@ -1330,14 +1403,14 @@ function mpd_search($array, $key, $value){
  * Helper function process a duplication of an image file from the source to the destination. Has to be run while 'in' the destination site
  *
  * @since 1.3
- * @param $attachment Array Array of data about the attachment that will be written into the wp_posts table of the database.
+ * @param $attachment Array of data about the attachment that will be written into the wp_posts table of the database.
  * @param $img_url The URL of the image to be copied
  * @param $post_id The new post ID that the image has to be assigned to.
  * 
  * @return int The id of the newly created image
  *
  */
-function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
+function mpd_copy_file_to_destination($attachment, $img_url, $post_id, $source_id, $file_id){
 
     $info       = pathinfo($img_url);
     $file_name  = basename($img_url,'.'.$info['extension']);
@@ -1355,11 +1428,17 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
 
     }
     
+    if($the_original_id = mpd_does_file_exist($file_id, $source_id, get_current_blog_id())){
+        
+        return $the_original_id;
+
+    }
+    
     $filtered_url = mpd_fix_wordpress_urls($img_url);
 
     if($filtered_url && $filtered_url != ''){
 
-         $image_data = file_get_contents($filtered_url);
+        $image_data = file_get_contents($filtered_url);
 
         // Add the file contents to the new path with the new filename
         file_put_contents( $file, $image_data );
@@ -1372,6 +1451,8 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id){
         $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
 
         wp_update_attachment_metadata( $attach_id, $attach_data );
+
+        do_action('mpd_media_image_added', $attach_id, $source_id, $file_id);
         
     }
    
@@ -1526,3 +1607,113 @@ function mpd_enter_the_loop($choice, $post_global, $post_id){
 
 }
 add_filter('mpd_enter_the_loop', 'mpd_enter_the_loop', 10, 3);
+
+/**
+ * 
+ * Get media URL on any sub site by ID
+ *
+ * @since 1.6.5
+ * @param int $ID The ID of the media we want the URL of
+ * @param int $source_blog The blog id this media file resides.
+ * 
+ * @return string The URL of the media file
+ *
+ */
+function mpd_wp_get_attachment_url($ID, $source_blog){
+
+    switch_to_blog($source_blog);
+        $attachment_url = wp_get_attachment_url($ID);
+    restore_current_blog();
+
+    return $attachment_url;
+
+}
+
+/**
+ * 
+ * Log the duplication of a media file by creating two meta files
+ *
+ * @since 1.6.6
+ * @param int $attach_id The ID of the media we want to log
+ * @param int $source_id The blog id this media file resides.
+ * @param int $source_attachment_id The original ID of the image on the source site
+ * 
+ * @return null
+ *
+ */
+function mpd_log_media_file($attach_id, $source_id, $source_attachment_id){
+
+    $meta_id = update_post_meta($attach_id, 'mpd_media_source_' . $source_id, $source_attachment_id);
+
+    switch_to_blog($source_id);
+        $post_modified = get_post_field('post_modified', $source_attachment_id, 'raw');
+    restore_current_blog();
+
+    update_post_meta($attach_id, 'mpd_meta_id_' . $meta_id, $post_modified);
+}
+
+
+add_action('mpd_media_image_added', 'mpd_log_media_file', 10, 3);
+
+/**
+ * 
+ * Check if a copy of a media file exists on another blog
+ * Uses the logging structure as set in mpd_log_media_file();
+ *
+ * @since 1.6.6
+ * @param int $source_file_id The ID of the media we want to check
+ * @param int $source_id The blog id this media file resides.
+ * @param int $destination_id The blog id to check if there is a copy on
+ * 
+ * @return booleon True if it does exist and false if it doesn't
+ *
+ */
+function mpd_does_file_exist($source_file_id, $source_id, $destination_id){
+
+    //If source file id exists for source site on destination site
+    global $wpdb;
+
+    $destination_tablename = mpd_get_tablename($destination_id, 'postmeta');
+
+    $meta_id = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT meta_id FROM $destination_tablename  WHERE meta_key = %s AND meta_value = %d",
+            'mpd_media_source_' .$source_id, $source_file_id
+        )
+    );
+
+    //If there is a catch check if the current mod time matches the logged
+    if(null !== $meta_id){
+
+        $source_tablename = mpd_get_tablename($source_id);
+
+        $current_mod_time = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT post_modified FROM $source_tablename WHERE ID = %d",
+                $source_file_id
+            )
+        );
+
+        $row = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM $destination_tablename  WHERE meta_key = 'mpd_meta_id_%d'",
+                $meta_id
+            )
+        );
+
+        if(null !== $row){
+           $past_mod_time = $row->meta_value;
+
+            if($past_mod_time == $current_mod_time){
+                return $row->post_id;
+
+            }else{
+                return false;
+            } 
+        }
+        
+    }
+
+    return false;
+
+}
