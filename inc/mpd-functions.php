@@ -1413,7 +1413,7 @@ function mpd_search($array, $key, $value){
  * @return int The id of the newly created image
  *
  */
-function mpd_copy_file_to_destination($attachment, $img_url, $post_id, $source_id, $file_id){
+function mpd_copy_file_to_destination($attachment, $img_url, $post_id = 0, $source_id, $file_id){
 
     $info       = pathinfo($img_url);
     $file_name  = basename($img_url,'.'.$info['extension']);
