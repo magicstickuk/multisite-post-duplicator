@@ -85,6 +85,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.7 =
+* Improved and more compatable method of copying images to the destination sites. (no more put_file_contents()!!)
+
 = 1.6.6 =
 * NEW: MPD now recognises previously copied media files to prevent duplicate media instances when copying the same page multiple times.
 * Fixed: Media files are no longer assigned the wrong post_mime_type in some senarios

@@ -280,7 +280,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details, 
     // Get the upload directory for the current site
     $upload_dir = wp_upload_dir();
     // Get all the data inside a file and attach it to a variable
-    $image_data = file_get_contents(mpd_fix_wordpress_urls($image_details['url']));
+
     // Get the file name of the source file
     $filename   = apply_filters('mpd_featured_image_filename', basename($image_details['url']), $image_details);
 
@@ -330,7 +330,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details, 
 
     }else{
 
-        file_put_contents( $file, $image_data );
+        copy($image_details['url'], $file);
 
         // Get the mime type of the new file extension
         $wp_filetype    = wp_check_filetype( $filename, null );
@@ -457,7 +457,6 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
 
         if($file_fullpath && file_exists($file_fullpath)){
 
-            $image_data             = file_get_contents($file_fullpath);
             // Break up the source URL into targetable sections
             $image_URL_info         = pathinfo(mpd_wp_get_attachment_url($post_media_attachment->ID, $source_id));
             //Just get the url without the filename extension...we are doing this because this will be the standard URL
@@ -519,7 +518,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
             }else{
 
                 // Add the file contents to the new path with the new filename
-                copy($file_fullpath, $upload_dir['path']. '/' . $filename);
+                copy($file_fullpath, $file);
                 // Get the mime type of the new file extension
                 $wp_filetype = wp_check_filetype( $filename, null );
 
@@ -1442,10 +1441,7 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id, $source_i
 
     if($filtered_url && $filtered_url != ''){
 
-        $image_data = file_get_contents($filtered_url);
-
-        // Add the file contents to the new path with the new filename
-        file_put_contents( $file, $image_data );
+        copy($filtered_url, $file);
 
         $attach_id = wp_insert_attachment( $attachment, $file, $post_id );
         // Include code to process functions below:
