@@ -162,6 +162,7 @@ function mpd_bulk_action() {
 }
 
 add_action('load-edit.php', 'mpd_bulk_action');
+add_action('load-upload.php', 'mpd_bulk_action');
 
 /**
  * @ignore
