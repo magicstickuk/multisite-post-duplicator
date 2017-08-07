@@ -222,7 +222,7 @@ function mpd_bulk_admin_notices() {
  
   global $pagenow;
   
-  if($pagenow == 'edit.php'){
+  if($pagenow == 'edit.php' || $pagenow == 'upload.php'){
        
         if($notices = get_option('mpd_admin_bulk_notice')){
 
