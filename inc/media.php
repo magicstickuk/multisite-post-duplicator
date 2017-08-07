@@ -3,18 +3,18 @@
 
 function mpd_media_duplicate($post_id, $destination_id){
 
-    $the_media = get_post($post_id);
+    $the_media      = get_post($post_id);
+    $the_media_url  = wp_get_attachment_url( $post_id );
+    $wp_filetype    = wp_check_filetype( $the_media_url , null );
+    $image_alt      = get_post_meta( $post_id, '_wp_attachment_image_alt', true);
+    $source_id      = get_current_blog_id();
 
-    $the_media_url = wp_get_attachment_url( $post_id );
+    $info           = pathinfo($the_media_url);
+    $file_name      = basename($the_media_url,'.'.$info['extension']);
 
-    $wp_filetype = wp_check_filetype( $the_media_url , null );
+    $meta_values    = apply_filters('mpd_filter_media_meta', get_post_meta($post_id));
 
-    $info       = pathinfo($the_media_url);
-    $file_name  = basename($the_media_url,'.'.$info['extension']);
-
-    $meta_values  = apply_filters('mpd_filter_media_meta', get_post_meta($post_id));
-
-    $attachment = array(
+    $attachment     = array(
         'post_mime_type' => $wp_filetype['type'],
         'post_title'     => sanitize_file_name( $file_name ),
         'post_content'   => $the_media->post_content,
@@ -22,10 +22,6 @@ function mpd_media_duplicate($post_id, $destination_id){
         'post_excerpt'   => $the_media->post_excerpt,
         'post_name'      => $the_media->post_name,
     );
-
-    $image_alt = get_post_meta( $post_id, '_wp_attachment_image_alt', true);
-
-    $source_id = get_current_blog_id();
 
     switch_to_blog($destination_id);
 
@@ -48,51 +44,80 @@ function mpd_media_duplicate($post_id, $destination_id){
 
 function mpd_bulk_action_media(){
 
-  $wp_list_table  = _get_list_table('WP_Media_List_Table');
-  $action         = $wp_list_table->current_action();
+    $wp_list_table  = _get_list_table('WP_Media_List_Table');
+    $action         = $wp_list_table->current_action();
 
-  if (0 === strpos($action, 'dup')) {
+    if (0 === strpos($action, 'dup')) {
       
-      preg_match("/(?<=dup-)\d+/", $action, $get_site);
-      
-      if(isset($_REQUEST['media'])) {
-            $post_ids = array_map('intval', $_REQUEST['media']);
-      }
-
-      $results          = array();
-
-      foreach($post_ids as $post_id){
+        preg_match("/(?<=dup-)\d+/", $action, $get_site);
           
-          do_action('mpd_single_batch_before', $post_id, $get_site[0]);
+        if(isset($_REQUEST['media'])) {
+            $post_ids = array_map('intval', $_REQUEST['media']);
+        }
 
-          if(get_option('skip_standard_dup')){
-                  delete_option('skip_standard_dup' );
-                  continue;
-          }
+        $results = array();
 
-        $results[] = mpd_media_duplicate($post_id, intval($get_site[0]));
+        foreach($post_ids as $post_id){
+              
+            do_action('mpd_single_batch_before', $post_id, $get_site[0]);
 
-        do_action('mpd_single_batch_after', $post_id);
+            if(get_option('skip_standard_dup')){
+                delete_option('skip_standard_dup' );
+                continue;
+            }
 
-      }
-      
-      $countBatch           = count($results);
+            $results[] = mpd_media_duplicate($post_id, intval($get_site[0]));
 
-      if($countBatch){
-          $destination_name     = get_blog_details($get_site[0])->blogname;
-          $destination_edit_url = get_admin_url( $get_site[0], 'upload.php');
-          $the_ess              = $countBatch != 1 ? __('posts have', 'multisite-post-duplicator') : __('post has', 'multisite-post-duplicator');
-          $notice               = '<div class="updated"><p>'.$countBatch. " " . $the_ess . " " . __('been duplicated to', 'multisite-post-duplicator' ) ." '<a href='".$destination_edit_url."'>". $destination_name ."'</a></p></div>";
+            do_action('mpd_single_batch_after', $post_id);
 
-          update_option('mpd_admin_bulk_notice', $notice );
+        }
+          
+        $countBatch = count($results);
 
-      }
-     
-      do_action('mpd_batch_after', $results);
+        if($countBatch){
 
-  }
+            $destination_name     = get_blog_details($get_site[0])->blogname;
+            $destination_edit_url = get_admin_url( $get_site[0], 'upload.php');
+            $the_ess              = $countBatch != 1 ? __('media files have', 'multisite-post-duplicator') : __('media file has', 'multisite-post-duplicator');
+            $notice               = '<div class="updated"><p>'.$countBatch. " " . $the_ess . " " . __('been duplicated to', 'multisite-post-duplicator' ) ." '<a href='".$destination_edit_url."'>". $destination_name ."'</a></p></div>";
+
+            update_option('mpd_admin_bulk_notice', $notice );
+
+        }
+         
+        do_action('mpd_batch_after', $results);
+
+    }
 
 }
 
 add_action('load-edit.php', 'mpd_bulk_action_media');
 add_action('load-upload.php', 'mpd_bulk_action_media');
+
+function mpd_media_metabox_duplicate(){
+
+    if(isset($_POST['mpd_blogs'])){
+
+        foreach ($_POST['mpd_blogs'] as $key => $site) {
+            mpd_media_duplicate($_POST['post_ID'], intval($site));
+        }
+
+    }
+
+}
+add_action('edit_attachment', 'mpd_media_metabox_duplicate');
+
+function mpd_display_media_metabox_options(){
+    
+    global $post_type;
+
+    if($post_type == 'attachment'){
+
+        add_filter('mpd_show_metabox_prefix', '__return_false');
+        add_filter('mpd_show_metabox_post_status', '__return_false');
+        add_filter('mpd_show_metabox_persist', '__return_false');
+
+    }
+}
+
+add_filter('admin_head', 'mpd_display_media_metabox_options');
