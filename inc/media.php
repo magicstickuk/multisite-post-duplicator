@@ -12,6 +12,8 @@ function mpd_media_duplicate($post_id, $destination_id){
     $info       = pathinfo($the_media_url);
     $file_name  = basename($the_media_url,'.'.$info['extension']);
 
+    $meta_values  = apply_filters('mpd_filter_media_meta', get_post_meta($post_id));
+
     $attachment = array(
         'post_mime_type' => $wp_filetype['type'],
         'post_title'     => sanitize_file_name( $file_name ),
@@ -21,11 +23,22 @@ function mpd_media_duplicate($post_id, $destination_id){
         'post_name'      => $the_media->post_name,
     );
 
+    $image_alt = get_post_meta( $post_id, '_wp_attachment_image_alt', true);
+
     $source_id = get_current_blog_id();
 
     switch_to_blog($destination_id);
 
         $attach_id = mpd_copy_file_to_destination($attachment, $the_media_url, 0, $source_id, $the_media->ID);
+
+        mpd_process_meta($attach_id, $meta_values);
+
+         // Add alt text from the destination image
+        if($image_alt){
+
+             update_post_meta($attach_id,'_wp_attachment_image_alt', $image_alt);
+
+        }
 
     restore_current_blog();
 

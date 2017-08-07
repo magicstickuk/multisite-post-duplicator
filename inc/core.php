@@ -118,25 +118,10 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     //Make the new post
     $post_id = wp_insert_post($mdp_post);
     
+
     //Copy the meta data collected from the sourse post to the new post
-  	foreach ($meta_values as $key => $values) {
-
-       foreach ($values as $value) {
-            //If the data is serialised we need to unserialise it before adding or WordPress will serialise the serialised data
-            //...which is bad
-            if(is_serialized($value)){
-             
-                update_post_meta( $post_id, $key, unserialize($value));
-
-            }else{
-
-                update_post_meta( $post_id, $key, $value );
-
-            }
-           
-        }
-
-    }
+    mpd_process_meta($post_id, $meta_values);
+ 
     //If there were media attached to the source post content then copy that over
     if($attached_images){
         //Check that the users plugin settings actually want this process to happen
@@ -301,25 +286,9 @@ function mpd_persist_over_multisite($persist_post) {
         delete_metadata_by_mid( 'post', $mid );
     }
     
-    //Copy the meta data collected from the sourse post to the new post
-    foreach ($meta_values as $key => $values) {
+    //Copy the new meta data collected from the sourse post to existing post
+    mpd_process_meta($post_id, $meta_values);
 
-       foreach ($values as $value) {
-            //If the data is serialised we need to unserialise it before adding or WordPress will serialise the serialised data
-            //...which is bad
-            if(is_serialized($value)){
-             
-                update_post_meta( $post_id, $key, unserialize($value));
-
-            }else{
-
-                update_post_meta( $post_id, $key, $value );
-
-            }
-           
-        }
-
-    }
     //If there were media attached to the sourse post content then copy that over
     if($attached_images){
         //Check that the users plugin settings actually want this process to happen
