@@ -128,4 +128,4 @@ function mpd_display_media_metabox_options(){
     }
 }
 
-add_filter('admin_head', 'mpd_display_media_metabox_options');
+add_action('admin_head', 'mpd_display_media_metabox_options');
