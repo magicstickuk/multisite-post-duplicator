@@ -24,6 +24,7 @@ Duplicate/Copy/Clone any individual page, post or custom post type from one site
 	* Categories. (If the category doesn't exist in the destination site then the category is created and assigned to the post)
 	* Taxonomy terms. (make sure taxonomy is also registered on your destination site).
 	* Parent and child relationships (must use batch duplication option to achieve this).
+	* Site Media files to other sites on your network
 	* ACF Fields
 	* ACF Field Groups (sync field groups within your network!)
 
@@ -86,6 +87,7 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 == Changelog ==
 
 = 1.7 =
+* NEW: Now supports Media Post type. Copy single or batched files to different sites on your network!
 * Improved and more compatable method of copying images to the destination sites. (no more put_file_contents()!!)
 
 = 1.6.6 =

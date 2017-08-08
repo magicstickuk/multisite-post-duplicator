@@ -104,65 +104,70 @@ function mpd_bulk_action() {
       $results          = array();
       $map_family_tree  = array();
 
-      foreach($post_ids as $post_id){
-          
-          do_action('mpd_single_batch_before', $post_id, $get_site[0]);
+      if($post_ids){
 
-          if(get_option('skip_standard_dup')){
-                  delete_option('skip_standard_dup' );
-                  continue;
+          foreach($post_ids as $post_id){
+          
+            do_action('mpd_single_batch_before', $post_id, $get_site[0]);
+
+            if(get_option('skip_standard_dup')){
+                    delete_option('skip_standard_dup' );
+                    continue;
+            }
+
+            $results[] = mpd_duplicate_over_multisite(
+                
+                $post_id, 
+                $get_site[0],
+                $_REQUEST['post_type'],
+                get_current_user_id(),
+                mpd_get_prefix(),
+                mpd_get_status()
+
+            );
+
+            $highest_index = max(array_keys($results));
+
+            // Collect the results data to be used in assigning parent/child data in the destination site
+            $map_family_tree[] = array(
+
+                'old_post_id'  => $post_id,
+                'new_blog_id'  => $get_site[0],
+                'old_parent_id'=> wp_get_post_parent_id($post_id),
+                'new_post_id'  => $results[$highest_index]['id']
+
+            );
+
+            do_action('mpd_single_batch_after', $post_id);
+
           }
 
-          $results[] = mpd_duplicate_over_multisite(
-              
-              $post_id, 
-              $get_site[0],
-              $_REQUEST['post_type'],
-              get_current_user_id(),
-              mpd_get_prefix(),
-              mpd_get_status()
-
-          );
-
-          $highest_index = max(array_keys($results));
-
-          // Collect the results data to be used in assigning parent/child data in the destination site
-          $map_family_tree[] = array(
-
-              'old_post_id'  => $post_id,
-              'new_blog_id'  => $get_site[0],
-              'old_parent_id'=> wp_get_post_parent_id($post_id),
-              'new_post_id'  => $results[$highest_index]['id']
-
-          );
-
-          do_action('mpd_single_batch_after', $post_id);
-
-      }
-
-      //Assign any parent/child relationship that is available within the batch
-      $family_tree          = mpd_map_new_family_tree($map_family_tree);
       
-      $countBatch           = count($results);
 
-      if($countBatch){
-          $destination_name     = get_blog_details($get_site[0])->blogname;
-          $destination_edit_url = get_admin_url( $get_site[0], 'edit.php?post_type='.$_REQUEST['post_type']);
-          $the_ess              = $countBatch != 1 ? __('posts have', 'multisite-post-duplicator') : __('post has', 'multisite-post-duplicator');
-          $notice               = '<div class="updated"><p>'.$countBatch. " " . $the_ess . " " . __('been duplicated to', 'multisite-post-duplicator' ) ." '<a href='".$destination_edit_url."'>". $destination_name ."'</a></p></div>";
+        //Assign any parent/child relationship that is available within the batch
+        $family_tree          = mpd_map_new_family_tree($map_family_tree);
+        
+        $countBatch           = count($results);
 
-          update_option('mpd_admin_bulk_notice', $notice );
+        if($countBatch){
+            $destination_name     = get_blog_details($get_site[0])->blogname;
+            $destination_edit_url = get_admin_url( $get_site[0], 'edit.php?post_type='.$_REQUEST['post_type']);
+            $the_ess              = $countBatch != 1 ? __('posts have', 'multisite-post-duplicator') : __('post has', 'multisite-post-duplicator');
+            $notice               = '<div class="updated"><p>'.$countBatch. " " . $the_ess . " " . __('been duplicated to', 'multisite-post-duplicator' ) ." '<a href='".$destination_edit_url."'>". $destination_name ."'</a></p></div>";
+
+            update_option('mpd_admin_bulk_notice', $notice );
+
+        }
+       
+        do_action('mpd_batch_after', $results);
 
       }
-     
-      do_action('mpd_batch_after', $results);
 
   }
  
 }
 
 add_action('load-edit.php', 'mpd_bulk_action');
-add_action('load-upload.php', 'mpd_bulk_action');
 
 /**
  * @ignore

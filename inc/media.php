@@ -91,7 +91,6 @@ function mpd_bulk_action_media(){
 
 }
 
-add_action('load-edit.php', 'mpd_bulk_action_media');
 add_action('load-upload.php', 'mpd_bulk_action_media');
 
 function mpd_media_metabox_duplicate(){
@@ -99,7 +98,16 @@ function mpd_media_metabox_duplicate(){
     if(isset($_POST['mpd_blogs'])){
 
         foreach ($_POST['mpd_blogs'] as $key => $site) {
-            mpd_media_duplicate($_POST['post_ID'], intval($site));
+
+            $attach_id = mpd_media_duplicate($_POST['post_ID'], intval($site));
+
+            
+            $blog_details  = get_blog_details(intval($site));
+            $site_name     = $blog_details->blogname;
+            $site_edit_url = $blog_details->siteurl . "/wp-admin/" . "post.php?post=".$attach_id."&action=edit";
+
+            $notice = mdp_make_admin_notice($site_name, $site_edit_url, $blog_details);
+
         }
 
     }
