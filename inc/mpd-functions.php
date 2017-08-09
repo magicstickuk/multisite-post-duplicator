@@ -1723,7 +1723,7 @@ function mpd_process_meta($post_id, $meta_values){
     if($meta_values){
 
         foreach ($meta_values as $key => $values) {
-
+        
            if(substr( $key, 0, 3 ) !== "mpd_"){
 
                 foreach ($values as $value) {
