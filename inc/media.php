@@ -1,6 +1,15 @@
 <?php
 
-
+/**
+ * Setup and process duplication of a media file
+ *
+ *
+ * @since 1.7
+ * @param int $post_id The ID of the 'attachment' post.
+ * @param int $destination_id The ID of site to duplicate this to attachment to.
+ * @return int The ID of the newly created attachment
+ *
+*/
 function mpd_media_duplicate($post_id, $destination_id){
 
     $the_media      = get_post($post_id);
@@ -42,6 +51,13 @@ function mpd_media_duplicate($post_id, $destination_id){
 
 }
 
+/**
+ * Gets the actions from the Media Post list table and determines what to batch duplicate
+ *
+ * @since 1.7
+ * @return null
+ *
+*/
 function mpd_bulk_action_media(){
 
     $wp_list_table  = _get_list_table('WP_Media_List_Table');
@@ -93,6 +109,14 @@ function mpd_bulk_action_media(){
 
 add_action('load-upload.php', 'mpd_bulk_action_media');
 
+/**
+ * Hooks into the 'edit attachement' and duplictes the attachment to any sites that have been checked in the
+ * MPD metabox UI
+ *
+ * @since 1.7
+ * @return null
+ *
+*/
 function mpd_media_metabox_duplicate(){
 
     if(isset($_POST['mpd_blogs'])){
@@ -100,7 +124,6 @@ function mpd_media_metabox_duplicate(){
         foreach ($_POST['mpd_blogs'] as $key => $site) {
 
             $attach_id = mpd_media_duplicate($_POST['post_ID'], intval($site));
-
             
             $blog_details  = get_blog_details(intval($site));
             $site_name     = $blog_details->blogname;
@@ -115,6 +138,13 @@ function mpd_media_metabox_duplicate(){
 }
 add_action('edit_attachment', 'mpd_media_metabox_duplicate');
 
+/**
+ * Determines what UI elements to show on the MPD Metabox for Media Post type
+ *
+ * @since 1.7
+ * @return null
+ *
+*/
 function mpd_display_media_metabox_options(){
     
     global $post_type;
