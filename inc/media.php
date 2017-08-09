@@ -22,6 +22,7 @@ function mpd_media_duplicate($post_id, $destination_id){
     $file_name      = basename($the_media_url,'.'.$info['extension']);
 
     $meta_values    = apply_filters('mpd_filter_media_meta', get_post_meta($post_id));
+    update_site_option( 'meta_values', $meta_values );
 
     $attachment     = array(
         'post_mime_type' => $wp_filetype['type'],

@@ -1724,20 +1724,26 @@ function mpd_process_meta($post_id, $meta_values){
 
         foreach ($meta_values as $key => $values) {
 
-           foreach ($values as $value) {
-                //If the data is serialised we need to unserialise it before adding or WordPress will serialise the serialised data
-                //...which is bad
-                if(is_serialized($value)){
-                 
-                    update_post_meta( $post_id, $key, unserialize($value));
+           if(substr( $key, 0, 3 ) !== "mpd_"){
 
-                }else{
+                foreach ($values as $value) {
 
-                    update_post_meta( $post_id, $key, $value );
+                    //If the data is serialised we need to unserialise it before adding or WordPress will serialise the serialised data
+                    //...which is bad
 
-                }
+                    if(is_serialized($value)){
+                     
+                        update_post_meta( $post_id, $key, unserialize($value));
+
+                    }else{
+
+                        update_post_meta( $post_id, $key, $value );
+
+                    }
                
-            }
+                }
+
+           }
 
         }
         
