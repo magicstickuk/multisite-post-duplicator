@@ -28,7 +28,7 @@ function mpd_get_post_types_to_ignore(){
 
             'revision',
             'nav_menu_item',
-            'attachment',
+            //'attachment',
             
 
         )
@@ -280,7 +280,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details, 
     // Get the upload directory for the current site
     $upload_dir = wp_upload_dir();
     // Get all the data inside a file and attach it to a variable
-    $image_data = file_get_contents(mpd_fix_wordpress_urls($image_details['url']));
+
     // Get the file name of the source file
     $filename   = apply_filters('mpd_featured_image_filename', basename($image_details['url']), $image_details);
 
@@ -330,7 +330,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details, 
 
     }else{
 
-        file_put_contents( $file, $image_data );
+        copy($image_details['url'], $file);
 
         // Get the mime type of the new file extension
         $wp_filetype    = wp_check_filetype( $filename, null );
@@ -414,7 +414,11 @@ function mpd_get_images_from_the_content($post_id){
             //Get the post object for the collected ID
             $image_obj = get_post($matches[0]);
             //Push this object into an array.
-            $images_objects_from_post[$matches[0]] = $image_obj;
+            // Save all elements needed to the duplication process
+            $images_objects_from_post[ $matches[0] ] = [
+                'attached_file_path' => get_attached_file( $matches[0] ),
+                'object'             => $image_obj
+             ];
 
         }
         //Deliver the array of attachment objects to the core
@@ -445,16 +449,15 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
    $old_image_ids = array_keys($post_media_attachments);
 
    //Do stuff with each image from the source post content
-   foreach ($post_media_attachments as $post_media_attachment) {
+   foreach ($post_media_attachments as $post_media_img_data) {
 
         // Get all the data inside a file and attach it to a variable
-        $the_file_name = mpd_fix_wordpress_urls($post_media_attachment->guid);
+        $post_media_attachment  = $post_media_img_data['object'];
+        $file_fullpath          = $post_media_img_data['attached_file_path'];
 
-        if($the_file_name && !empty($the_file_name)){
+        if($file_fullpath && file_exists($file_fullpath)){
 
-            $image_data             = file_get_contents($the_file_name);
             // Break up the source URL into targetable sections
-
             $image_URL_info         = pathinfo(mpd_wp_get_attachment_url($post_media_attachment->ID, $source_id));
             //Just get the url without the filename extension...we are doing this because this will be the standard URL
             //for all the thumbnails attached to this image and we can therefore 'find and replace' all the possible
@@ -463,10 +466,9 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
             //Do the find and replace for the site path
             // ie   http://www.somesite.com/source_blog_path/uploads/10/10/file... will become
             //      http://www.somesite.com/destination_blog_path/uploads/10/10/file...
-
             $image_URL_without_EXT  = str_replace(get_blog_details($new_blog_id)->siteurl, get_blog_details($source_id)->siteurl, $image_URL_without_EXT);
 
-            $filename               = basename($post_media_attachment->guid);
+            $filename = basename($file_fullpath);
 
             // Get the upload directory for the current site
             $upload_dir = wp_upload_dir();
@@ -516,7 +518,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
             }else{
 
                 // Add the file contents to the new path with the new filename
-                file_put_contents( $file, $image_data );
+                copy($file_fullpath, $file);
                 // Get the mime type of the new file extension
                 $wp_filetype = wp_check_filetype( $filename, null );
 
@@ -560,8 +562,9 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
              // Now that we have all the data for the newly created file and its post we need to manipulate the old content so that
             // it now reflects the destination post
             $new_image_URL_without_EXT  = mpd_get_image_new_url_without_extension($attach_id, $source_id, $new_blog_id, $new_file_url);
+
             $old_content                = get_post_field('post_content', $destination_post_id);
-            $middle_content             = str_replace($image_URL_info['dirname'] ."/". $image_URL_info['filename'], $new_image_URL_without_EXT, $old_content);
+            $middle_content             = str_replace($image_URL_without_EXT, $new_image_URL_without_EXT, $old_content);
             $update_content             = str_replace('wp-image-'. $old_image_ids[$image_count], 'wp-image-' . $attach_id, $middle_content);
 
             $post_update = array(
@@ -1410,7 +1413,7 @@ function mpd_search($array, $key, $value){
  * @return int The id of the newly created image
  *
  */
-function mpd_copy_file_to_destination($attachment, $img_url, $post_id, $source_id, $file_id){
+function mpd_copy_file_to_destination($attachment, $img_url, $post_id = 0, $source_id, $file_id){
 
     $info       = pathinfo($img_url);
     $file_name  = basename($img_url,'.'.$info['extension']);
@@ -1438,10 +1441,7 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id, $source_i
 
     if($filtered_url && $filtered_url != ''){
 
-        $image_data = file_get_contents($filtered_url);
-
-        // Add the file contents to the new path with the new filename
-        file_put_contents( $file, $image_data );
+        copy($filtered_url, $file);
 
         $attach_id = wp_insert_attachment( $attachment, $file, $post_id );
         // Include code to process functions below:
@@ -1716,4 +1716,31 @@ function mpd_does_file_exist($source_file_id, $source_id, $destination_id){
 
     return false;
 
+}
+
+function mpd_process_meta($post_id, $meta_values){
+
+    if($meta_values){
+
+        foreach ($meta_values as $key => $values) {
+
+           foreach ($values as $value) {
+                //If the data is serialised we need to unserialise it before adding or WordPress will serialise the serialised data
+                //...which is bad
+                if(is_serialized($value)){
+                 
+                    update_post_meta( $post_id, $key, unserialize($value));
+
+                }else{
+
+                    update_post_meta( $post_id, $key, $value );
+
+                }
+               
+            }
+
+        }
+        
+    }
+    
 }
