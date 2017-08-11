@@ -305,7 +305,7 @@ function mpd_persist_over_multisite($persist_post) {
         //Check that the users plugin settings actually want this process to happen
         if((isset($options['mdp_default_featured_image']) || !$options) && apply_filters('mdp_default_featured_image', true) ){
 
-            mpd_set_featured_image_to_destination( $post_id, $featured_image ); 
+            mpd_set_featured_image_to_destination( $post_id, $featured_image, $source_blog_id ); 
 
         }
 

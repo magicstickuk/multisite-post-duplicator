@@ -330,8 +330,12 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details, 
 
     }else{
 
-        copy($image_details['url'], $file);
+        if($image_details['url'] && $file){
 
+            copy($image_details['url'], $file);
+
+        }
+        
         // Get the mime type of the new file extension
         $wp_filetype    = wp_check_filetype( $filename, null );
         // Get the URL (not the URI) of the new file
@@ -707,14 +711,17 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
     global $post;
 
     $parts = parse_url($site_url);
-    parse_str($parts['query'], $query);
+
+    if(isset($parts['query'])){
+        parse_str($parts['query'], $query);
+    }
     
     $args= array(
 
         'source_id'             => get_current_blog_id(),
         'destination_id'        => $destination_blog_details->blog_id,
         'source_post_id'        => $post->ID,
-        'destination_post_id'   => $query['post']
+        'destination_post_id'   => isset($query['post']) ? $query['post'] : 0
 
     );
 
