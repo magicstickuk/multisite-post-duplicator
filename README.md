@@ -86,6 +86,9 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.7.3 =
+* More robust approach to copying categories and tags (thanks to Iskren Ivov Chernev over at github)
+
 = 1.7.2 =
 * Bug Fixes
 * Removed php warnings received in debug mode

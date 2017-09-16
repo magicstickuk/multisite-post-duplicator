@@ -1147,21 +1147,32 @@ function &mpd_hash_obj_by($obj_array, $key) {
 }
 
 function mpd_add_term_recursively($post_term, &$orig_all_terms_by_id, &$all_terms_by_slug) {
+
     if (array_key_exists($post_term->slug, $all_terms_by_slug)) {
+
         return $all_terms_by_slug[$post_term->slug]->term_id;
+
     }
     // does not exist
+
     if ($post_term->parent != 0) {
-        $parent_id = mpd_add_term_recursively(
-            $orig_all_terms_by_id[$post_term->parent], $orig_all_terms_by_id, $all_terms_by_slug);
+
+        $parent_id = mpd_add_term_recursively($orig_all_terms_by_id[$post_term->parent], $orig_all_terms_by_id, $all_terms_by_slug);
+
     } else {
+
         $parent_id = 0;
+
     }
+
     $new_term = wp_insert_term($post_term->name, $post_term->taxonomy, array(
         'description' => $post_term->description,
         'slug' => $post_term->slug,
         'parent' => $parent_id
     ));
+
+    $all_terms_by_slug[$post_term->slug] = (object) $new_term;
+    
     return $new_term['term_id'];
 }
 
@@ -1179,8 +1190,11 @@ function mpd_add_term_recursively($post_term, &$orig_all_terms_by_id, &$all_term
  *
  */
 function mpd_set_post_taxonomy_terms($post_id, $source_taxonomy_terms_object) {
+
     foreach ($source_taxonomy_terms_object as $tax => &$tax_data) {
+
         $orig_post_terms = $tax_data[0];
+
         $orig_all_terms = array_key_exists(1, $tax_data) ? $tax_data[1] : array();
 
         $all_terms = get_terms($tax, array(
@@ -1188,18 +1202,23 @@ function mpd_set_post_taxonomy_terms($post_id, $source_taxonomy_terms_object) {
             'hide_empty' => 0
         ));
 
-        $orig_all_terms_by_id = &mpd_hash_obj_by($orig_all_terms, 'term_id');
-        $all_terms_by_slug = &mpd_hash_obj_by($all_terms, 'slug');
+        $orig_all_terms_by_id   = &mpd_hash_obj_by($orig_all_terms, 'term_id');
+        $all_terms_by_slug      = &mpd_hash_obj_by($all_terms, 'slug');
 
         $dest_post_term_ids = array();
+
         foreach ($orig_post_terms as &$post_term) {
-            array_push($dest_post_term_ids, mpd_add_term_recursively(
-                $post_term, $orig_all_terms_by_id, $all_terms_by_slug));
+
+            array_push($dest_post_term_ids, mpd_add_term_recursively($post_term, $orig_all_terms_by_id, $all_terms_by_slug));
+
         }
+
         unset($post_term);
 
         wp_set_object_terms($post_id, $dest_post_term_ids, $tax);
+
     }
+
     unset($tax_data);
 }
 
