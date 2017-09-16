@@ -56,7 +56,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     //Get the categories for the post
     $source_categories = mpd_get_objects_of_post_categories($mpd_process_info['source_post_id'], $mpd_process_info['post_type']);
     //Get the taxonomy terms for the post
-    $source_taxonomies = mpd_get_post_taxonomy_terms($mpd_process_info['source_post_id'], $mpd_process_info['destination_id']);
+    $source_taxonomies = mpd_get_post_taxonomy_terms($mpd_process_info['source_post_id'], false, $mpd_process_info['destination_id']);
 
     //Format the prefix into the correct format if the user adds their own whitespace
     if($mpd_process_info['prefix'] != ''){
@@ -168,7 +168,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
         if((isset($options['mdp_copy_post_taxonomies']) || !$options) && apply_filters('mdp_copy_post_taxonomies', true) ){
 
-            mpd_set_post_taxonomy_terms($source_taxonomies, $post_id);
+            mpd_set_post_taxonomy_terms($post_id, $source_taxonomies);
 
         }
 
@@ -226,7 +226,7 @@ function mpd_persist_over_multisite($persist_post) {
     //Get the categories for the post
     $source_categories = mpd_get_objects_of_post_categories($persist_post->source_post_id, get_post_type($persist_post->source_post_id));
     //Get the taxonomy terms for the post
-    $source_taxonomies = mpd_get_post_taxonomy_terms($persist_post->source_post_id, false);
+    $source_taxonomies = mpd_get_post_taxonomy_terms($persist_post->source_post_id, false, false);
 
     //Using the orgininal post object we now want to insert our any new data based on user settings for use
     //in the post object that we will be adding to the destination site
@@ -305,7 +305,7 @@ function mpd_persist_over_multisite($persist_post) {
         //Check that the users plugin settings actually want this process to happen
         if((isset($options['mdp_default_featured_image']) || !$options) && apply_filters('mdp_default_featured_image', true) ){
 
-            mpd_set_featured_image_to_destination( $post_id, $featured_image ); 
+            mpd_set_featured_image_to_destination( $post_id, $featured_image, $source_blog_id ); 
 
         }
 
@@ -336,7 +336,7 @@ function mpd_persist_over_multisite($persist_post) {
 
         if((isset($options['mdp_copy_post_taxonomies']) || !$options) && apply_filters('mdp_copy_post_taxonomies', true) ){
 
-            mpd_set_post_taxonomy_terms($source_taxonomies, $post_id, true);
+            mpd_set_post_taxonomy_terms($post_id, $source_taxonomies);
 
         }
 

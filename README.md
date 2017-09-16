@@ -86,9 +86,17 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
-= 1.7 =
+= 1.7.3 =
+* More robust approach to copying categories and tags (thanks to Iskren Ivov Chernev over at github)
+
+= 1.7.2 =
+* Bug Fixes
+* Removed php warnings received in debug mode
+
+= 1.7.1 =
 * NEW: Now supports Media Post type. Copy single or batched files to different sites on your network!
 * Improved and more compatable method of copying images to the destination sites. (no more put_file_contents()!!)
+* Bug Fixes
 
 = 1.6.6 =
 * NEW: MPD now recognises previously copied media files to prevent duplicate media instances when copying the same page multiple times.

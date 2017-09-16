@@ -330,8 +330,12 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details, 
 
     }else{
 
-        copy($image_details['url'], $file);
+        if($image_details['url'] && $file){
 
+            copy($image_details['url'], $file);
+
+        }
+        
         // Get the mime type of the new file extension
         $wp_filetype    = wp_check_filetype( $filename, null );
         // Get the URL (not the URI) of the new file
@@ -707,14 +711,17 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
     global $post;
 
     $parts = parse_url($site_url);
-    parse_str($parts['query'], $query);
+
+    if(isset($parts['query'])){
+        parse_str($parts['query'], $query);
+    }
     
     $args= array(
 
         'source_id'             => get_current_blog_id(),
         'destination_id'        => $destination_blog_details->blog_id,
         'source_post_id'        => $post->ID,
-        'destination_post_id'   => $query['post']
+        'destination_post_id'   => isset($query['post']) ? $query['post'] : 0
 
     );
 
@@ -1028,18 +1035,7 @@ function mpd_get_post_statuses(){
  */
 function mpd_get_objects_of_post_categories($post_id, $post_type){
 
-    $args = array(
-        'type' => $post_type,
-    );
-    $categories = wp_get_post_categories($post_id, $args);
-   
-    $array_of_category_objects = array();
-
-    foreach ($categories as $category) {
-        array_push($array_of_category_objects, get_category($category));
-    }
-
-    return $array_of_category_objects;
+    return mpd_get_post_taxonomy_terms($post_id, true, false);
 
 }
 
@@ -1082,52 +1078,18 @@ function mpd_get_objects_of_site_categories($post_type){
 *
 */
 function mpd_set_destination_categories($post_id, $source_categories, $post_type){
- 
-    $all_destination_categories = mpd_get_objects_of_site_categories($post_type);
- 
-    $destination_post_categories = array();
- 
-    foreach ($source_categories as $source_category) {
- 
-        $source_slug = $source_category->slug;
- 
-        if($source_slug != 'uncategorised'){
- 
-             foreach ($all_destination_categories as $destination_category) {
- 
-                if($destination_category->slug == $source_slug){
- 
-                    $category = get_category_by_slug( $destination_category->slug  );
- 
-                    array_push($destination_post_categories, $category->term_id);
- 
-                }else{
- 
-                    $catarr = array(
-                        'cat_name'              => esc_attr($source_category->name),
-                        'category_description'  => esc_attr($source_category->description),
-                        'category_nicename'     => $source_slug,
-                        'category_parent'       => ''
-                    );
- 
-                    $new_cat_id = wp_insert_category($catarr);
- 
-                  
- 
-                    array_push($destination_post_categories, $new_cat_id);
- 
-                }
- 
-            }
- 
-        }
- 
-    }
- 
-    wp_set_post_categories( $post_id, $destination_post_categories, false );
- 
+    mpd_set_post_taxonomy_terms($post_id, $source_categories);
     return;
- 
+}
+
+
+function mpd_has_parent_terms($terms) {
+    foreach ($terms as $term) {
+        if ($term->parent != 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 /**
@@ -1138,11 +1100,13 @@ function mpd_set_destination_categories($post_id, $source_categories, $post_type
  *
  * @since 0.9
  * @param $post_id The the ID of post being copied
+ * @param $category_only if true, only categories are handled, if false -- all
+ * other taxonomies (excluding tags)
  * @param $destination_id The the ID destination site (for validations)
  * @return array An array of term objects used in the post
  *
  */
-function mpd_get_post_taxonomy_terms($post_id, $destination_id){
+function mpd_get_post_taxonomy_terms($post_id, $category_only, $destination_id) {
 
     $source_taxonomy_terms_object = array();
 
@@ -1150,16 +1114,66 @@ function mpd_get_post_taxonomy_terms($post_id, $destination_id){
 
     foreach ($post_taxonomies as $post_taxonomy) {
 
-        if($post_taxonomy != 'category' && $post_taxonomy != 'post_tag'){
-
-            array_push($source_taxonomy_terms_object, wp_get_post_terms($post_id, $post_taxonomy));
-
+        if ($post_taxonomy == 'post_tag') {
+            continue;
         }
+        if (($post_taxonomy == 'category' && $category_only) || ($post_taxonomy != 'category' && !$category_only)) {
 
+            $post_terms = wp_get_post_terms($post_id, $post_taxonomy);
+
+            if (mpd_has_parent_terms($post_terms)) {
+                $all_terms = get_terms($post_taxonomy, array(
+                    'type' => get_post_type($post_id),
+                    'hide_empty' => 0
+                ));
+            } else {
+                $all_terms = null;
+            }
+
+            $source_taxonomy_terms_object[$post_taxonomy] = array($post_terms, $all_terms);
+        }
     }
 
     return apply_filters('mpd_post_taxonomy_terms', $source_taxonomy_terms_object, $destination_id);
+}
 
+function &mpd_hash_obj_by($obj_array, $key) {
+    $res = array();
+    foreach ($obj_array as &$obj) {
+        $res[$obj->$key] = $obj;
+    }
+    unset($obj);
+    return $res;
+}
+
+function mpd_add_term_recursively($post_term, &$orig_all_terms_by_id, &$all_terms_by_slug) {
+
+    if (array_key_exists($post_term->slug, $all_terms_by_slug)) {
+
+        return $all_terms_by_slug[$post_term->slug]->term_id;
+
+    }
+    // does not exist
+
+    if ($post_term->parent != 0) {
+
+        $parent_id = mpd_add_term_recursively($orig_all_terms_by_id[$post_term->parent], $orig_all_terms_by_id, $all_terms_by_slug);
+
+    } else {
+
+        $parent_id = 0;
+
+    }
+
+    $new_term = wp_insert_term($post_term->name, $post_term->taxonomy, array(
+        'description' => $post_term->description,
+        'slug' => $post_term->slug,
+        'parent' => $parent_id
+    ));
+
+    $all_terms_by_slug[$post_term->slug] = (object) $new_term;
+    
+    return $new_term['term_id'];
 }
 
 /**
@@ -1169,47 +1183,43 @@ function mpd_get_post_taxonomy_terms($post_id, $destination_id){
  * Works with mpd_get_post_taxonomy_terms();
  *
  * @since 0.9
- * @param $source_taxonomy_terms_object An array of term objects used in the source post
  * @param $post_id The ID of the newly created post
+ * @param $source_taxonomy_terms_object An array of term objects used in the source post
  * 
  * @return array An array of term objects used in the post
  *
  */
-function mpd_set_post_taxonomy_terms($source_taxonomy_terms_object, $post_id, $persist = null){
+function mpd_set_post_taxonomy_terms($post_id, $source_taxonomy_terms_object) {
 
-    if($persist){
+    foreach ($source_taxonomy_terms_object as $tax => &$tax_data) {
 
-        foreach ($source_taxonomy_terms_object as $source_taxonomy_terms) {
+        $orig_post_terms = $tax_data[0];
 
-            foreach ($source_taxonomy_terms as $term) {
+        $orig_all_terms = array_key_exists(1, $tax_data) ? $tax_data[1] : array();
 
-                wp_remove_object_terms( $post_id, $term->slug, $term->taxonomy );
+        $all_terms = get_terms($tax, array(
+            'type' => get_post_type($post_id),
+            'hide_empty' => 0
+        ));
 
-            }
+        $orig_all_terms_by_id   = &mpd_hash_obj_by($orig_all_terms, 'term_id');
+        $all_terms_by_slug      = &mpd_hash_obj_by($all_terms, 'slug');
+
+        $dest_post_term_ids = array();
+
+        foreach ($orig_post_terms as &$post_term) {
+
+            array_push($dest_post_term_ids, mpd_add_term_recursively($post_term, $orig_all_terms_by_id, $all_terms_by_slug));
 
         }
-        
+
+        unset($post_term);
+
+        wp_set_object_terms($post_id, $dest_post_term_ids, $tax);
+
     }
 
-    foreach ($source_taxonomy_terms_object as $source_taxonomy_terms) {
-
-        foreach ($source_taxonomy_terms as $term) {
-
-            $args = array(
-                'description'=> esc_attr($term->description),
-                'slug' => $term->slug,
-            );
-
-            wp_insert_term( $term->name, $term->taxonomy, $args);
-
-            wp_set_object_terms( $post_id, $term->slug, $term->taxonomy, true);
-            
-        }
-        
-    }
-
-    return; 
-
+    unset($tax_data);
 }
 
 /**
@@ -1723,21 +1733,27 @@ function mpd_process_meta($post_id, $meta_values){
     if($meta_values){
 
         foreach ($meta_values as $key => $values) {
+        
+           if(substr( $key, 0, 3 ) !== "mpd_"){
 
-           foreach ($values as $value) {
-                //If the data is serialised we need to unserialise it before adding or WordPress will serialise the serialised data
-                //...which is bad
-                if(is_serialized($value)){
-                 
-                    update_post_meta( $post_id, $key, unserialize($value));
+                foreach ($values as $value) {
 
-                }else{
+                    //If the data is serialised we need to unserialise it before adding or WordPress will serialise the serialised data
+                    //...which is bad
 
-                    update_post_meta( $post_id, $key, $value );
+                    if(is_serialized($value)){
+                     
+                        update_post_meta( $post_id, $key, unserialize($value));
 
-                }
+                    }else{
+
+                        update_post_meta( $post_id, $key, $value );
+
+                    }
                
-            }
+                }
+
+           }
 
         }
         
