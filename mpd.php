@@ -30,11 +30,19 @@ $fs = array(
 	'addons/bulkaction-mpd-addon',
 	'addons/restrictSites-mpd-addon',
 	'addons/roleAccess-mpd-addon',
-    'addons/posts-2-posts-addon',
 );
 
 foreach ($fs as $f) {
 	include($f.'.php');
+}
+
+// Load the posts-to-posts addon only if its network activated
+if (!function_exists('is_plugin_active_for_network')) {
+	require_once(ABSPATH . '/wp-admin/includes/plugin.php');
+}
+
+if (is_plugin_active_for_network('posts-to-posts/posts-to-posts.php')) {
+	include('addons/posts-2-posts-addon.php');
 }
 
 /**
