@@ -157,7 +157,7 @@ function _mpd_p2p_copy_link_raw($is_create, $p2p, $old_post_id, $new_post_id, $o
         $expected_p2p_meta = $p2p->meta;
 
         $are_same = true;
-        if (count($existing_p2p_meta) == count($expected_p2p_meta)) {
+        if (count($p2p_meta) == count($expected_p2p_meta)) {
             foreach ($expected_p2p_meta as $key => $val) {
                 if (!(array_key_exists($key, $p2p_meta) && $p2p_meta[$key] == $val)) {
                     $are_same = false;
