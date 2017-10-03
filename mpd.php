@@ -30,7 +30,6 @@ $fs = array(
 	'addons/bulkaction-mpd-addon',
 	'addons/restrictSites-mpd-addon',
 	'addons/roleAccess-mpd-addon',
-	'addons/posts-2-posts-addon',
 );
 
 foreach ($fs as $f) {
