@@ -419,10 +419,10 @@ function mpd_get_images_from_the_content($post_id){
             $image_obj = get_post($matches[0]);
             //Push this object into an array.
             // Save all elements needed to the duplication process
-            $images_objects_from_post[ $matches[0] ] = [
+            $images_objects_from_post[ $matches[0] ] = array(
                 'attached_file_path' => get_attached_file( $matches[0] ),
                 'object'             => $image_obj
-             ];
+             );
 
         }
         //Deliver the array of attachment objects to the core
@@ -1137,13 +1137,24 @@ function mpd_get_post_taxonomy_terms($post_id, $category_only, $destination_id) 
     return apply_filters('mpd_post_taxonomy_terms', $source_taxonomy_terms_object, $destination_id);
 }
 
-function &mpd_hash_obj_by($obj_array, $key) {
+function &mpd_hash_obj_by($obj_array = false, $key) {
+
     $res = array();
-    foreach ($obj_array as &$obj) {
-        $res[$obj->$key] = $obj;
+
+    if($obj_array){
+
+        foreach ($obj_array as &$obj) {
+
+            $res[$obj->$key] = $obj;
+
+        }
+
     }
+    
     unset($obj);
+
     return $res;
+
 }
 
 function mpd_add_term_recursively($post_term, &$orig_all_terms_by_id, &$all_terms_by_slug) {
