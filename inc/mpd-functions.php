@@ -1335,6 +1335,28 @@ function mpd_set_published_date($mdp_post, $mpd_process_info){
 add_filter('mpd_setup_destination_data', 'mpd_set_published_date', 10,2);
 
 /**
+ *
+ * If the user chooses to, this function will copy the publish date to the
+ * copied post.
+ *
+ * @param $mdp_post Array of the destination post info prior to post being created in database
+ * @param $persist_post Object of source post being duplicated
+ *
+ * @return array Modified $mpd_post that would be used for duplicate post creation
+ */
+function mpd_update_published_date($mpd_post, $persist_post) {
+  $options = get_option( 'mdp_settings' );
+
+  if(isset($options['mdp_retain_published_date'])){
+      $mpd_post['post_date'] = get_post_field('post_date', $persist_post->source_post_id);
+  }
+  return $mpd_post;
+}
+
+add_filter('mpd_setup_persist_destination_data', 'mpd_update_published_date', 10, 2);
+
+
+/**
  * 
  * Do the markup for a link to MDP setting page
  *
