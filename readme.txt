@@ -86,6 +86,13 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.7.5 =
+* Permlink stucture now behaves as expected when copying post to the same site
+* Publish date now persists on linked posts if requested (thanks again Iskren Ivov Chernev)
+
+= 1.7.4 =
+* Bug fixes
+
 = 1.7.3 =
 * More robust approach to copying categories and tags (thanks to Iskren Ivov Chernev over at github)
 
