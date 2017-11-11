@@ -65,6 +65,9 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     }
 
+    //Permalink Setup
+    $post_name = $mpd_process_info['destination_id'] == $source_blog_id ? null : $mdp_post->post_name;
+
     //Using the orgininal post object we now want to insert our any new data based on user settings for use
     //in the post object that we will be adding to the destination site
     $mdp_post = apply_filters('mpd_setup_destination_data', array(
@@ -76,7 +79,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
  			'post_content'  => $mdp_post->post_content,
             'post_excerpt'  => $mdp_post->post_excerpt,
             'post_content_filtered' => $mdp_post->post_content_filtered,
-            'post_name' => $mdp_post->post_name
+            'post_name'     => $post_name
 
     ), $mpd_process_info);
 
@@ -228,6 +231,9 @@ function mpd_persist_over_multisite($persist_post) {
     //Get the taxonomy terms for the post
     $source_taxonomies = mpd_get_post_taxonomy_terms($persist_post->source_post_id, false, false);
 
+    //Permalink Setup
+    $post_name = $persist_post->destination_id == $source_blog_id ? null : $mdp_post->post_name;
+
     //Using the orgininal post object we now want to insert our any new data based on user settings for use
     //in the post object that we will be adding to the destination site
     $mdp_post = apply_filters('mpd_setup_persist_destination_data', array(
@@ -239,7 +245,7 @@ function mpd_persist_over_multisite($persist_post) {
             'post_content'  => $mdp_post->post_content,
             'post_excerpt'  => $mdp_post->post_excerpt,
             'post_content_filtered' => $mdp_post->post_content_filtered,
-            'post_name' => $mdp_post->post_name,
+            'post_name' => $post_name,
             'post_status' => $mdp_post->post_status
 
     ), $persist_post);
