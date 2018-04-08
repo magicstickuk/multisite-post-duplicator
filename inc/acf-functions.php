@@ -249,9 +249,9 @@ function mpd_do_acf_images_to_destination($post_id, $mpd_post, $source_id){
 
         if($acf_gallerys){
 
-            $attach_ids = array();
-
             foreach ($acf_gallerys as $gallery_key => $acf_gallery) {
+
+                $attach_ids = array();
 
                 if(isset($acf_gallery['image_ids']) && $acf_gallery['image_ids'] !=''){
 

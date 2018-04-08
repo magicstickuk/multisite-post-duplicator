@@ -175,7 +175,7 @@ function mdp_global_categories_taxonomies_render(  ) {
 		<label>
 			<input type='checkbox' name='mdp_settings[mdp_global_categories_taxonomies]' <?php mpd_checked_lookup($options, 'mdp_global_categories_taxonomies', 'global') ;?> value='global'>
 			<span>
-				<?php mpd_information_icon('This plugin will make all sub-sites reference the master sites TERMS and TERM TAXONOMY tables. This allows for category IDs to be consistent across all sub-sites when posts are duplicated from the master site. When a post is duplicated from teh master site with this setting checked, it can be referenced universally by the same category ID. This comes in handy if you are feeding posts to areas of your site/ sub-sites by category ID. You can turn off this activity by unchecking the box.'); ?>
+				<?php mpd_information_icon('This plugin will make all sub-sites reference the master sites TERMS and TERM TAXONOMY tables. This allows for category IDs to be consistent across all sub-sites when posts are duplicated from the master site. When a post is duplicated from the master site with this setting checked, it can be referenced universally by the same category ID. This comes in handy if you are feeding posts to areas of your site/ sub-sites by category ID. You can turn off this activity by un-checking the box.'); ?>
 			</span>
 		</label>
 	</div>

@@ -34,7 +34,7 @@ Duplicate/Copy/Clone any individual page, post or custom post type from one site
 *	Tools
 	* Batch Duplication
 	* Metabox control within Post/page edit screen
-	* Activity Log. View information on all dulications performed within your network
+	* Activity Log. View information on all duplications performed within your network
 
 *	Settings
 	* Settings page to customise the default behaviour
@@ -75,7 +75,7 @@ Yes. However, you have to have the same custom fields defined in each of the sit
 
 = What about Multisites on Subdomain Configurations? =
 
-Unfortunately we don't support sub domain configuations at this time. You may use it to some extent, but a lot of this plugins features may produce unexpected results. Our plan is to introduce support for this in the near futute.
+Unfortunately we don't support sub domain configurations at this time. You may use it to some extent, but a lot of this plugins features may produce unexpected results. Our plan is to introduce support for this in the near future.
 
 == Screenshots ==
 
@@ -86,8 +86,13 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 == Changelog ==
 
+= 1.7.6 =
+* ACF fields registered via php are now copied
+* Clone fields containing media now correctly copied
+* Fixed issue with multiple ACF gallery fields on a single post
+
 = 1.7.5 =
-* Permlink stucture now behaves as expected when copying post to the same site
+* Permalink stucture now behaves as expected when copying post to the same site
 * Publish date now persists on linked posts if requested (thanks again Iskren Ivov Chernev)
 
 = 1.7.4 =
@@ -102,7 +107,7 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 
 = 1.7.1 =
 * NEW: Now supports Media Post type. Copy single or batched files to different sites on your network!
-* Improved and more compatable method of copying images to the destination sites. (no more put_file_contents()!!)
+* Improved and more compatible method of copying images to the destination sites. (no more put_file_contents()!!)
 * Bug Fixes
 
 = 1.6.6 =
@@ -133,7 +138,7 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 * NEW: Cool new checkboxes in the settings page (Thanks to http://kleinejan.github.io/titatoggle/)
 * Fixed: Issue with default 'post status' setting giving php notice in debug mode
 * Fixed: Issue with multiple duplicate messages showing the same details.
-* Fixed: Setting producing undesired behaviour for tags and taxonomies in some senarios.
+* Fixed: Setting producing undesired behaviour for tags and taxonomies in some scenarios.
 * Improved filters used to build the metabox markup
 
 = 1.5.5 =
@@ -143,10 +148,10 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 * Fixed issue with 'duplication link' checkbox remaining greyed out when some sites were checked.
 
 = 1.5.3 =
-* Fixed php warnings experienced in some senarios.
+* Fixed php warnings experienced in some scenarios.
 
 = 1.5.2 =
-* Fixed php warnings experienced in some senarios.
+* Fixed php warnings experienced in some scenarios.
 
 = 1.5.1 =
 * Fixed 'duplicating on publish' bug introduced in v1.5
@@ -156,13 +161,12 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 * Select all sites on your network quickly with our new 'select all button'
 * Improved performance
 * Improved access for developers with the addition of several new hooks.
-* Removed signposting added in previous release. Rethinking a better approach
 
 = 1.4 =
 * NEW: Signposting for networks where custom post types and taxonomies are not synced throughout.
 * NEW: Signposting for instances where user's 'Advanced Custom Fields Field Groups' don't exist in the destination site.
 * Improved performance of taxonomy duplication on linked posts.
-* Fixed issue where taxonomy terms would not copy in some senarios.
+* Fixed issue where taxonomy terms would not copy in some scenarios.
 * Removed some PHP warnings if running in debug mode.
 
 = 1.3.2 =
@@ -176,7 +180,7 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 * Fixed bug with post's ancestry not being copied to the root site on a network
 
 = 1.2 =
-* NEW: When using the batch duplication tool if a parent and child are in the duplicate batch then the relationship will be maintained in the desitination site
+* NEW: When using the batch duplication tool if a parent and child are in the duplicate batch then the relationship will be maintained in the desitination site.
 * UI Improvements
 * Corrected some typos
 
@@ -192,7 +196,7 @@ Unfortunately we don't support sub domain configuations at this time. You may us
 * Queries to our 'Linked Duplications' db table are now correctly wrapped in wpdb::prepare() to protect from injection hacks.
 * Fixed issue where networks with more than 100 sites would have some sites not listed in thier controls (for installs > 4.6)
 * Fixed issue where other plugin's meta data (that are using the 'save_post' action) might be missed during the duplication
-* General performanace improvements
+* General performance improvements
 
 = 1.1 =
 * NEW: Create a link to an existing post!
@@ -226,7 +230,7 @@ Bringing Multisite Post Duplicator into Version 1.0 with a massive update. Reall
 * Fixed critical error experienced by some users from update v0.9.5
 
 = 0.9.5 =
-* Subdomain warning message can now be dissmissed. Also has improved signposting.
+* Subdomain warning message can now be dismissed. Also has improved signposting.
 
 = 0.9.4 =
 * NEW: Added setting to let you retain the source post publish date if you wish.
@@ -238,7 +242,7 @@ Bringing Multisite Post Duplicator into Version 1.0 with a massive update. Reall
 = 0.9.3 =
 * NEW: Support for WordPress' new WP_Site_Query (get_sites()) class.
 * Fixed issue with featured images not copying over for some users (thanks joedev91).
-* Fixed issue with unwanted duplicated post meta upon duplication process (thanks joedev91).
+* Fixed issue with unwanted post meta upon duplication process (thanks joedev91).
 
 = 0.9.2 =
 * Fixed php warnings experienced by some users
