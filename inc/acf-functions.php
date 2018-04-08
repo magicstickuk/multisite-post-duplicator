@@ -33,19 +33,15 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                 //Indicates it could be a ACF Value
                 if(isset($meta_values["_" . $key])){
 
-                    global $wpdb;
+                     $acf_field_key  = $meta_values["_" . $key][0];
 
-                    $acf_field_key  = $meta_values["_" . $key][0];
-                    $tablename      = mpd_get_tablename($wpdb->blogid);
-                    $query          = $wpdb->prepare("
-                        SELECT post_content
-                        FROM $tablename 
-                        WHERE post_name = '%s'
-                        AND post_type = 'acf-field'", $acf_field_key
-                    );
+                     if(strlen($acf_field_key) > 20) {
+                        $multi_keys = explode( 'field_', $acf_field_key );
+                        $acf_field_key = "field_".end($multi_keys);
+                     }
 
-                    //Get the posssible ACF controller post for this image
-                    $result         = $wpdb->get_row($query);
+                     //Get the posssible ACF controller post for this image
+                     $result = get_field_object($acf_field_key);
                     
                     if($result){
 
@@ -53,7 +49,7 @@ function mpd_do_acf_images_from_source($mdp_post, $attached_images, $meta_values
                             do_action('mpd_acf_field_found', $result, $meta, $acf_field_key, $destination_blog_id);
                         }
 
-                        $acf_control    = unserialize($result->post_content);
+                        $acf_control    = $result;
                         $acf_type       = $acf_control['type'];
 
                         switch ($acf_type) {
