@@ -17,8 +17,12 @@ function restrict_addon_mpd_settings(){
 
 	mpd_settings_field('restrict_option_setting', '<i class="fa fa-user-times" aria-hidden="true"></i> ' . __( 'Restrict MPD to certain sites', 'multisite-post-duplicator' ), 'restrict_option_setting_render');
 	mpd_settings_field('restrict_some_option_setting', '<i class="fa fa-user-plus" aria-hidden="true"></i> ' . __( 'Restrict MPD on some sites', 'multisite-post-duplicator' ), 'restrict_some_option_setting_render');
-  mpd_settings_field('master_site_setting', '<i class="fa fa-bank" aria-hidden="true"></i> ' . __( 'Select a Master Site', 'multisite-post-duplicator' ), 'master_site_settings_render');
- 
+  	mpd_settings_field('master_site_setting', '<i class="fa fa-bank" aria-hidden="true"></i> ' . __( 'Select a Master Site', 'multisite-post-duplicator' ), 'master_site_settings_render');
+ 	mpd_settings_field('mdp_global_categories_taxonomies',
+		'<i class="fa fa-globe" aria-hidden="true"></i> ' . __( 'Make post categories and taxonomies global?', 'multisite-post-duplicator' ),
+		'mdp_global_categories_taxonomies_render'
+	);
+	
 }
 
 add_action( 'mdp_end_plugin_setting_page', 'restrict_addon_mpd_settings');
@@ -155,6 +159,31 @@ function master_site_settings_render(){
 }
 
 /**
+ * 
+ * Create the UI for the Global Category and Taxonomy Setting
+ * 
+ * @since 1.7
+ * @return null
+ * 
+ */
+function mdp_global_categories_taxonomies_render(  ) { 
+
+	$options = get_option( 'mdp_settings' ); ?>
+	
+	<div class="checkbox checkbox-slider--b-flat global-terms">
+		
+		<label>
+			<input type='checkbox' name='mdp_settings[mdp_global_categories_taxonomies]' <?php mpd_checked_lookup($options, 'mdp_global_categories_taxonomies', 'global') ;?> value='global'>
+			<span>
+				<?php mpd_information_icon('This plugin will make all sub-sites reference the master sites TERMS and TERM TAXONOMY tables. This allows for category IDs to be consistent across all sub-sites when posts are duplicated from the master site. When a post is duplicated from teh master site with this setting checked, it can be referenced universally by the same category ID. This comes in handy if you are feeding posts to areas of your site/ sub-sites by category ID. You can turn off this activity by unchecking the box.'); ?>
+			</span>
+		</label>
+	</div>
+	<?php
+
+}
+
+/**
  * @ignore
  */
 function mpd_add_addon_script_to_settings_page(){
@@ -167,11 +196,13 @@ function mpd_add_addon_script_to_settings_page(){
 		jQuery(document).ready(function() {
 
 			var masterSiteLvl 	= jQuery(".mpd-master-site").parent().parent();
+			var gTerms 			= jQuery(".global-terms").parent().parent();
 			var restrictSomeLvl = jQuery(".restrict-some-checkbox").parent().parent();
 			var rcb 			= jQuery('.restrict-some-checkbox:not(:checked)');
 			
 			masterSiteLvl.hide();
 			restrictSomeLvl.hide();
+			gTerms.hide();
 
 			if(rcb.length == 1){
 				rcb.attr("disabled", true);
@@ -185,6 +216,7 @@ function mpd_add_addon_script_to_settings_page(){
 
 			if(jQuery('#mpd_restrict_set_master').is(':checked') ){
       			masterSiteLvl.show();
+      			gTerms.show();
   			}
   			if(jQuery('#mpd_restrict_some').is(':checked') ){
       			restrictSomeLvl.show();
@@ -194,8 +226,10 @@ function mpd_add_addon_script_to_settings_page(){
   		
   				if (jQuery(this).val() == 'master') {
   					masterSiteLvl.show('fast');
+  					gTerms.show('fast');
   				}else{
   					masterSiteLvl.hide('fast');
+  					gTerms.hide('fast');
   				};
 
   				if (jQuery(this).val() == 'some') {
@@ -280,3 +314,24 @@ function mpd_is_site_active(){
 }
 
 add_filter( 'mpd_is_active', 'mpd_is_site_active');
+
+add_action( 'init', 'change_tax_terms_table', 0 );
+
+add_action( 'switch_blog', 'change_tax_terms_table', 0 );
+
+function change_tax_terms_table(){
+
+	$options 		= get_option( 'mdp_settings' );
+	$master_id 		= $options['master_site_setting'];
+
+	if((isset($options['mdp_global_categories_taxonomies']) || !$options) && apply_filters('mdp_global_categories_taxonomies', true) ){
+
+            global $wpdb;
+    
+		    $wpdb->terms = $wpdb->get_blog_prefix($master_id) . 'terms';
+		   
+		    $wpdb->term_taxonomy = $wpdb->get_blog_prefix($master_id) . 'term_taxonomy';
+
+        }
+    
+}
