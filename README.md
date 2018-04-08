@@ -87,12 +87,13 @@ Unfortunately we don't support sub domain configurations at this time. You may u
 == Changelog ==
 
 = 1.7.6 =
-* ACF fields registered via php are now copied
-* Clone fields containing media now correctly copied
-* Fixed issue with multiple ACF gallery fields on a single post
+* ACF fields registered via php are now copied (thanks WillyMichel)
+* Clone fields containing media now correctly copied (thanks WillyMichel)
+* Fixed issue with multiple ACF gallery fields on a single post (thanks WillyMichel)
+* Added settings option to make master site terms and term_taxonomy tables global for persistent category id. This way posts that are fed to site and sub-site pages by category ID will always generate based on master site posts. (thanks SpeechlessWick)
 
 = 1.7.5 =
-* Permalink stucture now behaves as expected when copying post to the same site
+* Permalink structure now behaves as expected when copying post to the same site
 * Publish date now persists on linked posts if requested (thanks again Iskren Ivov Chernev)
 
 = 1.7.4 =
