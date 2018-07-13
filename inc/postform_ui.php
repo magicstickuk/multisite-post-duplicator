@@ -36,7 +36,7 @@ function mpd_metaboxes(){
 
         foreach ($post_types as $page ){
 
-            if ($active_mpd && current_user_can(mpd_get_required_cap()))  {
+            if ($active_mpd && current_user_can('mpd_can_use'))  {
 
                 $priority = apply_filters( 'mpd_metabox_priority', 'high' );
 
@@ -186,7 +186,7 @@ function mpd_do_metabox_site_list(){
 
             <?php foreach ($sites as $site): ?>
 
-                <?php if (current_user_can_for_blog($site->blog_id, mpd_get_required_cap()) && !in_array($site->blog_id, mpd_get_restrict_some_sites_options())) : ?>
+                <?php if (current_user_can_for_blog($site->blog_id, 'mpd_can_use') && !in_array($site->blog_id, mpd_get_restrict_some_sites_options())) : ?>
 
                     <?php $blog_details = get_blog_details($site->blog_id); ?>
 

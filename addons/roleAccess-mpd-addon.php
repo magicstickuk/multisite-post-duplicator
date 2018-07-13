@@ -73,6 +73,7 @@ function mpd_get_required_cap(){
 
 	switch ($mdp_restrict_role) {
 		case 'Super-Admin':
+			
 			$cap = 'manage_sites';
 			break;
 		case 'Administrator':
@@ -99,3 +100,66 @@ function mpd_get_required_cap(){
 	return $cap;
 
 }
+
+function mpd_setup_capabilities(){
+
+	global $wp_roles;
+
+	$options = get_option( 'mdp_settings' );
+	// 	$mdp_restrict_role = !empty($options['role_option_setting']) ? $options['role_option_setting'] : 'Administrator';
+	// }else{
+	// 	$mdp_restrict_role = 'Administrator';
+	// };
+
+	// $all_roles 		= $wp_roles->roles;
+
+	// $role = get_role(sanitize_title($mdp_restrict_role));
+	
+	// $roles = array(
+	// 	'Subscriber',
+	// 	'Author',
+	// 	'Contributor',
+	// 	'Editor',
+	// 	'Administrator',
+
+	// );
+    // // add a new capability
+	// $role->add_cap('mpd_can_use', true);
+
+	// If the user has old data saved and hasn't used new setting yet
+	if(!empty($options['role_option_setting']) && empty($options['role_selection_setting'])){
+		
+		$mdp_restrict_role = $options['role_option_setting'];
+
+		$roles = array(
+			'Subscriber',
+			'Contributor',
+			'Author',
+			'Editor',
+			'Administrator',
+			'Super-Admin'
+		);
+
+		$level_of_role = array_search($mdp_restrict_role, $roles);
+
+		foreach ($roles as $key => $role) {
+			
+			$role = get_role(sanitize_title($mdp_restrict_role));
+
+			if($key >= $level_of_role){
+
+				$role->add_cap('mpd_can_use', true);
+
+			}else{
+
+				$role->remove_cap('mpd_can_use');
+
+			}
+
+		}
+
+	}
+
+}
+
+add_action('init', 'mpd_setup_capabilities', 20);

@@ -518,7 +518,7 @@ function mdp_options_page(  ) {
     }
 
     $options 		= get_option( 'mdp_settings' );
-	$settingsLogic 	= current_user_can( mpd_get_required_cap() );
+	$settingsLogic 	= current_user_can( 'mpd_can_use' );
 	$settingsLogic 	= apply_filters( 'mpd_show_settings_page', $settingsLogic );
 
 	if($logic = $settingsLogic):?>
