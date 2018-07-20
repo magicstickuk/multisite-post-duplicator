@@ -155,7 +155,7 @@ add_action('mpd_before_metabox_content', 'mpd_metabox_prefix', 10);
 */
 function mpd_do_metabox_site_list(){
 
-    $sites = mpd_wp_get_sites();
+    $allowed_sites = mpd_get_allowed_sites();
 
     ?>
     <script>
@@ -184,41 +184,37 @@ function mpd_do_metabox_site_list(){
 
             <?php $current_blog_id = get_current_blog_id(); ?>
 
-            <?php foreach ($sites as $site): ?>
+            <?php foreach ($allowed_sites as $site): ?>
 
-                <?php if (current_user_can_for_blog($site->blog_id, mpd_get_required_cap()) && !in_array($site->blog_id, mpd_get_restrict_some_sites_options())) : ?>
+                <?php $blog_details = get_blog_details($site->blog_id); ?>
 
-                    <?php $blog_details = get_blog_details($site->blog_id); ?>
+                <li id="mpd_blog_<?php echo $site->blog_id; ?>" class="mpd-site-checkbox">
 
-                    <li id="mpd_blog_<?php echo $site->blog_id; ?>" class="mpd-site-checkbox">
+                    <label class="selectit">
 
-                        <label class="selectit">
+                        <input
 
-                            <input
+                            class="<?php echo $site->blog_id == $current_blog_id ? 'mpd-current-site' : '';?>"
 
-                                class="<?php echo $site->blog_id == $current_blog_id ? 'mpd-current-site' : '';?>"
+                            value="<?php echo $site->blog_id; ?>"
 
-                                value="<?php echo $site->blog_id; ?>"
+                            type="checkbox"
 
-                                type="checkbox"
+                            name="mpd_blogs[]"
 
-                                name="mpd_blogs[]"
+                            id="in_blog_<?php echo $site->blog_id; ?>">
 
-                                id="in_blog_<?php echo $site->blog_id; ?>">
+                            <?php
 
-                                <?php
+                                echo $site->blog_id == $current_blog_id ? '<em>' : '';
+                                echo $blog_details->blogname . " ";
+                                echo $site->blog_id == $current_blog_id ? ' <small>(' . __('Current Site', 'multisite-post-duplicator' ) . ')</small></em>' : '';
 
-                                    echo $site->blog_id == $current_blog_id ? '<em>' : '';
-                                    echo $blog_details->blogname . " ";
-                                    echo $site->blog_id == $current_blog_id ? ' <small>(' . __('Current Site', 'multisite-post-duplicator' ) . ')</small></em>' : '';
+                            ?>
 
-                                ?>
+                    </label>
 
-                        </label>
-
-                    </li>
-
-                <?php endif; ?>
+                </li>
 
             <?php endforeach; ?>
 

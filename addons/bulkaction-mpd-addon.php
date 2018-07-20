@@ -43,7 +43,7 @@ function mpd_bulk_admin_script() {
 
     if( is_multisite() ){
         $defaultoptions = mdp_get_default_options();
-        $sites          = mpd_wp_get_sites();
+        $allowed_sites  = mpd_get_allowed_sites();
         $options        = get_option('mdp_settings');
         $post_status    = isset($_REQUEST["post_status"]) ? $_REQUEST["post_status"] : '';
 
@@ -57,16 +57,12 @@ function mpd_bulk_admin_script() {
 
               jQuery(document).ready(function() {
 
-                <?php foreach ($sites as $site) :?>
+                <?php foreach ($allowed_sites as $site) :?>
 
                   <?php $blog_details = get_blog_details($site->blog_id); ?> 
 
-                    <?php if($site->blog_id != get_current_blog_id() && current_user_can_for_blog($site->blog_id, mpd_get_required_cap())):?> 
-
-                      jQuery('<option>').val("dup-<?php echo $site->blog_id ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action']");
-                      jQuery('<option>').val("dup-<?php echo $site->blog_id ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action2']");
-
-                    <?php endif; ?>
+                    jQuery('<option>').val("dup-<?php echo $site->blog_id ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action']");
+                    jQuery('<option>').val("dup-<?php echo $site->blog_id ?>").text('<?php _e('Duplicate to ')?><?php echo $blog_details->blogname; ?>').appendTo("select[name='action2']");
                     
                   <?php endforeach; ?>
 

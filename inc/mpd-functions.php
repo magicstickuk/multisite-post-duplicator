@@ -848,6 +848,21 @@ function mpd_settings_field($tag, $settings_title, $callback_function_to_markup,
 
 }
 
+function mpd_get_allowed_sites() {
+
+    $sites = mpd_wp_get_sites();
+
+    $current_blog_id = get_current_blog_id();
+
+    $valid_sites = array_filter($sites, function($site) {
+
+        return $site->blog_id != $current_blog_id
+               && current_user_can_for_blog($site->blog_id, mpd_get_required_cap());
+    });
+
+    return apply_filters('mpd_allowed_sites', $valid_sites);
+}
+
 /**
  * This function allows for hooking into the sites returned in the WP core wp_get_sites() function.
  *
