@@ -84,7 +84,8 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     ), $mpd_process_info);
 
     //Get all the meta data associated with the source post
-    $meta_values       = apply_filters('mpd_filter_post_meta', get_post_meta($mpd_process_info['source_post_id']));
+	$meta_values	 = apply_filters( 'mpd_filter_post_meta', get_post_meta( $mpd_process_info[ 'source_post_id' ] )
+	, $post_id_to_copy, 0, $source_blog_id, $new_blog_id );
     //Get array of data associated with the featured image for this post
     $featured_image    = mpd_get_featured_image_from_source($mpd_process_info['source_post_id']);
 
@@ -182,7 +183,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $blog_details  = get_blog_details($mpd_process_info['destination_id']);
     $site_name     = $blog_details->blogname;
 
-    do_action('mpd_end_of_core_before_return', $post_id, $mdp_post, $source_blog_id);
+	do_action( 'mpd_end_of_core_before_return', $post_id, $mdp_post, $source_blog_id, $mpd_process_info[ 'source_post_id' ] );
 
     //////////////////////////////////////
     //Go back to the current blog so we can update information about the action that just took place
@@ -251,7 +252,9 @@ function mpd_persist_over_multisite($persist_post) {
     ), $persist_post);
 
     //Get all the meta data associated with the sourse post
-    $meta_values       = apply_filters('mpd_filter_persist_post_meta', get_post_meta($persist_post->source_post_id)) ;
+	$meta_values = apply_filters( 'mpd_filter_persist_post_meta', get_post_meta( $persist_post->source_post_id )
+	, $persist_post->source_post_id, $persist_post->destination_post_id, $source_blog_id, $persist_post->destination_id );
+
     //Get array of data associated with the featured image for this post
     $featured_image    = mpd_get_featured_image_from_source($persist_post->source_post_id);
 
@@ -353,7 +356,7 @@ function mpd_persist_over_multisite($persist_post) {
     $blog_details  = get_blog_details($persist_post->destination_id);
     $site_name     = $blog_details->blogname;
 
-    do_action('mpd_persist_end_of_core_before_return', $post_id, $mdp_post, $source_blog_id);
+	do_action( 'mpd_persist_end_of_core_before_return', $post_id, $mdp_post, $source_blog_id, $persist_post->source_post_id );
 
     //////////////////////////////////////
     //Go back to the current blog so we can update information about the action that just took place

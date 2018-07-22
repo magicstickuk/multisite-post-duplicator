@@ -720,7 +720,7 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
 
         'source_id'             => get_current_blog_id(),
         'destination_id'        => $destination_blog_details->blog_id,
-        'source_post_id'        => $post->ID,
+		'source_post_id'		 => ($post) ? $post->ID : 0,
         'destination_post_id'   => isset($query['post']) ? $query['post'] : 0
 
     );
@@ -1462,19 +1462,18 @@ function mpd_search($array, $key, $value){
 function mpd_copy_file_to_destination($attachment, $img_url, $post_id = 0, $source_id, $file_id){
 
     $info       = pathinfo($img_url);
-    $file_name  = basename($img_url,'.'.$info['extension']);
+	$ext		 = (isset( $info[ 'extension' ] )) ? '.' . $info[ 'extension' ] : '';
+	$file_name	 = basename( $img_url, $ext );
 
      // Get the upload directory for the current site
     $upload_dir = wp_upload_dir();
     // Make the path to the desired path to the new file we are about to create
     if( wp_mkdir_p( $upload_dir['path'] ) ) {
 
-        $file = $upload_dir['path'] . '/' . $file_name .'.'. $info['extension'];
-
+		$file = $upload_dir[ 'path' ] . '/' . $file_name . $ext;
     } else {
 
-        $file = $upload_dir['basedir'] . '/' . $file_name .'.'. $info['extension'];
-
+		$file = $upload_dir[ 'basedir' ] . '/' . $file_name . $ext;
     }
     
     if($the_original_id = mpd_does_file_exist($file_id, $source_id, get_current_blog_id())){
@@ -1500,12 +1499,11 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id = 0, $sour
 
         do_action('mpd_media_image_added', $attach_id, $source_id, $file_id);
         
-    }
-   
-
     return $attach_id;
 
 }
+}
+
 /**
  * 
  * Helper function to get the table name of a perticular table on a specific site
@@ -1790,7 +1788,9 @@ function mpd_process_meta($post_id, $meta_values){
                 }
 
            }
-
+			} else {
+				update_post_meta( $post_id, $key, $value );
+			}
         }
         
     }
