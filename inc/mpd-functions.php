@@ -854,7 +854,7 @@ function mpd_get_allowed_sites() {
 
     $current_blog_id = get_current_blog_id();
 
-    $valid_sites = array_filter($sites, function($site) {
+    $valid_sites = array_filter($sites, function($site) use ($current_blog_id) {
 
         return $site->blog_id != $current_blog_id
                && current_user_can_for_blog($site->blog_id, mpd_get_required_cap());
