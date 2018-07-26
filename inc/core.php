@@ -47,6 +47,11 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $options    = get_option( 'mdp_settings' );
     //Get the object of the post we are copying
     $mdp_post   = get_post($mpd_process_info['source_post_id']);
+	//if there is no valid post, we can't duplicate it
+	if ( ! $mdp_post ) {
+		error_log( 'id passed to mpd_duplicate_over_multisite could not be recognised as a valid post id:' . $post_id_to_copy );
+		return false;
+	}
     //Get the title of the post we are copying
     $title      = get_the_title($mdp_post);
     //Get the tags from the post we are copying
@@ -187,7 +192,10 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
     //////////////////////////////////////
     //Go back to the current blog so we can update information about the action that just took place
-    restore_current_blog();
+	/* Contrary to the function's name, this does NOT restore the original blog but the previous blog. Calling `switch_to_blog()` twice in a row and then calling this function will result in being on the blog set by the first `switch_to_blog()` call...
+	 * so, restore_current_blog could lead to unexpected results if blog switching happens in any of the filter */
+	//restore_current_blog();
+	switch_to_blog( $source_blog_id );
     //////////////////////////////////////
 
     //Use the collected information about the new post to generate a status notice and a link for the user
@@ -360,7 +368,8 @@ function mpd_persist_over_multisite($persist_post) {
 
     //////////////////////////////////////
     //Go back to the current blog so we can update information about the action that just took place
-    restore_current_blog();
+	//restore_current_blog();
+	switch_to_blog( $persist_post->destination_id );
     //////////////////////////////////////
 
     //Use the collected information about the new post to generate a status notice and a link for the user
