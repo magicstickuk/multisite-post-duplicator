@@ -139,7 +139,7 @@ function mpd_bulk_action() {
 
             );
 
-				do_action( 'mpd_single_batch_after', $post_id, $source_blog_id, $results[ $highest_index ][ 'id' ], $get_site[ 0 ]
+				do_action( 'mpd_single_batch_after', $post_id, $source_blog_id, $results[ $highest_index ][ 'id' ], $get_site[ 0 ]);
 
           }
 
