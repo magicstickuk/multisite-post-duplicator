@@ -52,12 +52,22 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 		error_log( 'id passed to mpd_duplicate_over_multisite could not be recognised as a valid post id:' . $post_id_to_copy );
 		return false;
 	}
+
+	//if the post is already duplicated to target blog, skip instead of duplicating again
+	$source_blog_id	 = get_current_blog_id();
+	$args			 = array(
+		'source_id'		 => $source_blog_id,
+		'destination_id' => $new_blog_id,
+		'source_post_id' => $post_id_to_copy,
+	);
+	if ( mpd_is_there_a_persist( $args ) ) {
+		return;
+	}
+
     //Get the title of the post we are copying
     $title      = get_the_title($mdp_post);
     //Get the tags from the post we are copying
     $sourcetags = wp_get_post_tags( $mpd_process_info['source_post_id'], array( 'fields' => 'names' ) );
-    //Get the ID of the sourse blog
-    $source_blog_id  = get_current_blog_id();
     //Get the categories for the post
     $source_categories = mpd_get_objects_of_post_categories($mpd_process_info['source_post_id'], $mpd_process_info['post_type']);
     //Get the taxonomy terms for the post

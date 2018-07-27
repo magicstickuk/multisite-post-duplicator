@@ -90,6 +90,7 @@ add_action('admin_footer-upload.php', 'mpd_bulk_admin_script');
  */
 function mpd_bulk_action() {
  
+	$source_blog_id	 = get_current_blog_id();
   $wp_list_table  = _get_list_table('WP_Posts_List_Table');
   $action         = $wp_list_table->current_action();
 
@@ -138,7 +139,7 @@ function mpd_bulk_action() {
 
             );
 
-            do_action('mpd_single_batch_after', $post_id);
+				do_action( 'mpd_single_batch_after', $post_id, $source_blog_id, $results[ $highest_index ][ 'id' ], $get_site[ 0 ]
 
           }
 
