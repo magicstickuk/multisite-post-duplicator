@@ -638,6 +638,13 @@ function mpd_get_image_alt_tags($post_media_attachments){
 
         foreach ($post_media_attachments as $post_media_attachment) {
 
+
+            //pull request fix error in mpd_get_image_alt_tags #54
+            if ( array_key_exists( "object", $post_media_attachment ) ) {
+              $post_id = $post_media_attachment[ "object" ]->ID;
+            } else {
+              $post_id = $post_media_attachment->ID;
+            }
             $alt_tag = get_post_meta($post_media_attachment->ID, '_wp_attachment_image_alt', true);
 
             $alt_tags_to_be_copied[$attachement_count] = $alt_tag;
