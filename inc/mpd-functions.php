@@ -1164,7 +1164,7 @@ function &mpd_hash_obj_by($obj_array = false, $key) {
 
 }
 
-function mpd_add_term_recursively($post_term, &$orig_all_terms_by_id, &$all_terms_by_slug) {
+function mpd_add_term_recursively( $post_term, &$orig_all_terms_by_id, &$all_terms_by_slug, $source_blog_id ) {
 
     if (array_key_exists($post_term->slug, $all_terms_by_slug)) {
 
@@ -1175,8 +1175,7 @@ function mpd_add_term_recursively($post_term, &$orig_all_terms_by_id, &$all_term
 
     if ($post_term->parent != 0) {
 
-        $parent_id = mpd_add_term_recursively($orig_all_terms_by_id[$post_term->parent], $orig_all_terms_by_id, $all_terms_by_slug);
-
+		$parent_id = mpd_add_term_recursively( $orig_all_terms_by_id[ $post_term->parent ], $orig_all_terms_by_id, $all_terms_by_slug, $source_blog_id );
     } else {
 
         $parent_id = 0;
@@ -1190,6 +1189,7 @@ function mpd_add_term_recursively($post_term, &$orig_all_terms_by_id, &$all_term
     ));
 
     $all_terms_by_slug[$post_term->slug] = (object) $new_term;
+	do_action( 'mpd_after_insert_term', $new_term, $post_term, $source_blog_id );
     
     return $new_term['term_id'];
 }
@@ -1207,7 +1207,7 @@ function mpd_add_term_recursively($post_term, &$orig_all_terms_by_id, &$all_term
  * @return array An array of term objects used in the post
  *
  */
-function mpd_set_post_taxonomy_terms($post_id, $source_taxonomy_terms_object) {
+function mpd_set_post_taxonomy_terms( $post_id, $source_taxonomy_terms_object, $source_blog_id ) {
 
     foreach ($source_taxonomy_terms_object as $tax => &$tax_data) {
 
@@ -1227,8 +1227,7 @@ function mpd_set_post_taxonomy_terms($post_id, $source_taxonomy_terms_object) {
 
         foreach ($orig_post_terms as &$post_term) {
 
-            array_push($dest_post_term_ids, mpd_add_term_recursively($post_term, $orig_all_terms_by_id, $all_terms_by_slug));
-
+			array_push( $dest_post_term_ids, mpd_add_term_recursively( $post_term, $orig_all_terms_by_id, $all_terms_by_slug, $source_blog_id ) );
         }
 
         unset($post_term);

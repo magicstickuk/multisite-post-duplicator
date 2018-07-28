@@ -187,8 +187,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
         if((isset($options['mdp_copy_post_taxonomies']) || !$options) && apply_filters('mdp_copy_post_taxonomies', true) ){
 
-            mpd_set_post_taxonomy_terms($post_id, $source_taxonomies);
-
+			mpd_set_post_taxonomy_terms( $post_id, $source_taxonomies, $source_blog_id );
         }
 
     }
@@ -363,8 +362,7 @@ function mpd_persist_over_multisite($persist_post) {
 
         if((isset($options['mdp_copy_post_taxonomies']) || !$options) && apply_filters('mdp_copy_post_taxonomies', true) ){
 
-            mpd_set_post_taxonomy_terms($post_id, $source_taxonomies);
-
+			mpd_set_post_taxonomy_terms( $post_id, $source_taxonomies, $source_blog_id );
         }
 
     }
