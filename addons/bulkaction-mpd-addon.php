@@ -97,9 +97,18 @@ function mpd_bulk_action() {
   if (0 === strpos($action, 'dup')) {
       
       preg_match("/(?<=dup-)\d+/", $action, $get_site);
+      //JM fix for no $get_site and abort function for when not a site copy
+      if ( ! $get_site || count( $get_site ) == 0 ) {
+        return;
+      }
       
       if(isset($_REQUEST['post'])) {
-            $post_ids = array_map('intval', $_REQUEST['post']);
+          //JM: fix for when not array
+          if ( is_array( $_REQUEST[ 'post' ] ) ) {
+              $post_ids = array_map('intval', $_REQUEST['post']);
+          } else {
+              $post_ids[] = $_REQUEST[ 'post' ];
+          }
       }
 
       $results          = array();
