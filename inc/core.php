@@ -193,6 +193,7 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     }
     
     //Collect information about the new post 
+	switch_to_blog( $mpd_process_info[ 'destination_id' ] );
     $site_edit_url = get_edit_post_link( $post_id );
     $blog_details  = get_blog_details($mpd_process_info['destination_id']);
     $site_name     = $blog_details->blogname;
@@ -368,6 +369,7 @@ function mpd_persist_over_multisite($persist_post) {
     }
     
     //Collect information about the new post 
+	switch_to_blog( $persist_post->destination_id );
     $site_edit_url = get_edit_post_link( $post_id );
     $blog_details  = get_blog_details($persist_post->destination_id);
     $site_name     = $blog_details->blogname;
@@ -377,7 +379,7 @@ function mpd_persist_over_multisite($persist_post) {
     //////////////////////////////////////
     //Go back to the current blog so we can update information about the action that just took place
 	//restore_current_blog();
-	switch_to_blog( $persist_post->destination_id );
+	switch_to_blog( $source_blog_id );
     //////////////////////////////////////
 
     //Use the collected information about the new post to generate a status notice and a link for the user

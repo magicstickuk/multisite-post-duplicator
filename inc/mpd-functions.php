@@ -1188,10 +1188,17 @@ function mpd_add_term_recursively( $post_term, &$orig_all_terms_by_id, &$all_ter
         'parent' => $parent_id
     ));
 
-    $all_terms_by_slug[$post_term->slug] = (object) $new_term;
-	do_action( 'mpd_after_insert_term', $new_term, $post_term, $source_blog_id );
+	//wp_insert_term can return WP_Error for invalid taxonomy
+	//which then causes fatal error if attempting to check term properties on the error object
+	if ( is_wp_error( $new_term ) ) {
+		error_log( 'Could not create term "' . $post_term->name . '" in tax "' . $post_term->taxonomy . '" due to error: ' . $new_term->get_error_message() );
+	} else {
+
+      $all_terms_by_slug[$post_term->slug] = (object) $new_term;
+    do_action( 'mpd_after_insert_term', $new_term, $post_term, $source_blog_id );
     
-    return $new_term['term_id'];
+      return $new_term['term_id'];
+  }
 }
 
 /**
