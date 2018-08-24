@@ -131,9 +131,10 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     //Tell WordPress to work in the destination site
     switch_to_blog($mpd_process_info['destination_id']);
     ////////////////////////////////////////////////
-
-
-
+	//suppress excess save hooks from other plugins which may not apply in the destination blog
+	if ( ! defined( 'DOING_AUTOSAVE' ) ) {
+		define( 'DOING_AUTOSAVE', true );
+	}
     //Make the new post
     $post_id = wp_insert_post($mdp_post);
     
@@ -303,7 +304,10 @@ function mpd_persist_over_multisite($persist_post) {
     ////////////////////////////////////////////////
 
     global $wpdb;
-
+	//suppress excess save hooks from other plugins which may not apply in the destination blog
+	if ( ! defined( 'DOING_AUTOSAVE' ) ) {
+		define( 'DOING_AUTOSAVE', true );
+	}
     //Make the new post
     $post_id = wp_update_post($mdp_post);
 
