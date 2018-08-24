@@ -1195,7 +1195,8 @@ function mpd_add_term_recursively( $post_term, &$orig_all_terms_by_id, &$all_ter
 	//which then causes fatal error if attempting to check term properties on the error object
 	if ( is_wp_error( $new_term ) ) {
 		error_log( 'Could not create term "' . $post_term->name . '" in tax "' . $post_term->taxonomy . '" due to error: ' . $new_term->get_error_message() );
-		return false;
+		return $new_term->get_error_data( 'term_exists' );
+		//if term already exists, return the term id from the error data
 	} else {
 
       $all_terms_by_slug[$post_term->slug] = (object) $new_term;
