@@ -1129,10 +1129,13 @@ function mpd_get_post_taxonomy_terms($post_id, $category_only, $destination_id) 
             $post_terms = wp_get_post_terms($post_id, $post_taxonomy);
 
             if (mpd_has_parent_terms($post_terms)) {
+                $all_terms = get_terms( $post_taxonomy );
+                /* JM: remove deprecated parameter
                 $all_terms = get_terms($post_taxonomy, array(
                     'type' => get_post_type($post_id),
                     'hide_empty' => 0
                 ));
+      				 */
             } else {
                 $all_terms = null;
             }
@@ -1192,6 +1195,7 @@ function mpd_add_term_recursively( $post_term, &$orig_all_terms_by_id, &$all_ter
 	//which then causes fatal error if attempting to check term properties on the error object
 	if ( is_wp_error( $new_term ) ) {
 		error_log( 'Could not create term "' . $post_term->name . '" in tax "' . $post_term->taxonomy . '" due to error: ' . $new_term->get_error_message() );
+		return false;
 	} else {
 
       $all_terms_by_slug[$post_term->slug] = (object) $new_term;
@@ -1222,11 +1226,13 @@ function mpd_set_post_taxonomy_terms( $post_id, $source_taxonomy_terms_object, $
 
         $orig_all_terms = array_key_exists(1, $tax_data) ? $tax_data[1] : array();
 
+        $all_terms = get_terms( $tax );
+        /* JM: remove deprecated parameter
         $all_terms = get_terms($tax, array(
             'type' => get_post_type($post_id),
             'hide_empty' => 0
         ));
-
+        */
         $orig_all_terms_by_id   = &mpd_hash_obj_by($orig_all_terms, 'term_id');
         $all_terms_by_slug      = &mpd_hash_obj_by($all_terms, 'slug');
 
