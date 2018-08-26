@@ -645,13 +645,13 @@ function mpd_get_image_alt_tags($post_media_attachments){
             } else {
               $post_id = $post_media_attachment->ID;
             }
-            $alt_tag = get_post_meta($post_media_attachment->ID, '_wp_attachment_image_alt', true);
+			      if ( $post_id ) {
+                $alt_tag = get_post_meta($post_media_attachment->ID, '_wp_attachment_image_alt', true);
 
-            $alt_tags_to_be_copied[$attachement_count] = $alt_tag;
+                $alt_tags_to_be_copied[$attachement_count] = $alt_tag;
 
-            $attachement_count++;
-
-
+                $attachement_count++;
+			      }
         }
 
         $alt_tags_to_be_copied = apply_filters('mpd_alt_tag_array_from_post_content', $alt_tags_to_be_copied, $post_media_attachments);
