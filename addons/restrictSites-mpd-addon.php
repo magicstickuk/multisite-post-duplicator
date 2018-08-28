@@ -188,7 +188,7 @@ function mdp_global_categories_taxonomies_render(  ) {
  */
 function mpd_add_addon_script_to_settings_page(){
 	
-	$screenid = get_current_screen()->id;
+	$screenid = (get_current_screen()) ? get_current_screen()->id : '';
 
 	if($screenid == 'settings_page_multisite_post_duplicator'){
 	?>
