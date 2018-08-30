@@ -13,6 +13,10 @@
 function mpd_media_duplicate($post_id, $destination_id){
 
     $the_media      = get_post($post_id);
+	if ( ! $the_media ) {
+		return false;
+	}
+
     $the_media_url  = wp_get_attachment_url( $post_id );
     $wp_filetype    = wp_check_filetype( $the_media_url , null );
     $image_alt      = get_post_meta( $post_id, '_wp_attachment_image_alt', true);
@@ -26,10 +30,10 @@ function mpd_media_duplicate($post_id, $destination_id){
     $attachment     = array(
         'post_mime_type' => $wp_filetype['type'],
         'post_title'     => sanitize_file_name( $file_name ),
-        'post_content'   => $the_media->post_content,
+		'post_content'	 => ( isset( $the_media->post_content ) ) ? $the_media->post_content : '',
         'post_status'    => 'inherit',
-        'post_excerpt'   => $the_media->post_excerpt,
-        'post_name'      => $the_media->post_name,
+		'post_excerpt'	 => ( isset( $the_media->post_excerpt )) ? $the_media->post_excerpt : '',
+		'post_name'		 => ( isset( $the_media->post_name ) ) ? $the_media->post_name : sanitize_file_name( $file_name ),
     );
 
     switch_to_blog($destination_id);

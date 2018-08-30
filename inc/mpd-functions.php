@@ -638,13 +638,20 @@ function mpd_get_image_alt_tags($post_media_attachments){
 
         foreach ($post_media_attachments as $post_media_attachment) {
 
-            $alt_tag = get_post_meta($post_media_attachment->ID, '_wp_attachment_image_alt', true);
 
-            $alt_tags_to_be_copied[$attachement_count] = $alt_tag;
+            //pull request fix error in mpd_get_image_alt_tags #54
+            if ( array_key_exists( "object", $post_media_attachment ) ) {
+              $post_id = $post_media_attachment[ "object" ]->ID;
+            } else {
+              $post_id = $post_media_attachment->ID;
+            }
+			      if ( $post_id ) {
+				$alt_tag = get_post_meta( $post_id, '_wp_attachment_image_alt', true );
 
-            $attachement_count++;
+                $alt_tags_to_be_copied[$attachement_count] = $alt_tag;
 
-
+                $attachement_count++;
+			      }
         }
 
         $alt_tags_to_be_copied = apply_filters('mpd_alt_tag_array_from_post_content', $alt_tags_to_be_copied, $post_media_attachments);
@@ -720,7 +727,7 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
 
         'source_id'             => get_current_blog_id(),
         'destination_id'        => $destination_blog_details->blog_id,
-        'source_post_id'        => $post->ID,
+		'source_post_id'		 => ($post) ? $post->ID : 0,
         'destination_post_id'   => isset($query['post']) ? $query['post'] : 0
 
     );
@@ -1122,10 +1129,13 @@ function mpd_get_post_taxonomy_terms($post_id, $category_only, $destination_id) 
             $post_terms = wp_get_post_terms($post_id, $post_taxonomy);
 
             if (mpd_has_parent_terms($post_terms)) {
+                $all_terms = get_terms( $post_taxonomy );
+                /* JM: remove deprecated parameter
                 $all_terms = get_terms($post_taxonomy, array(
                     'type' => get_post_type($post_id),
                     'hide_empty' => 0
                 ));
+      				 */
             } else {
                 $all_terms = null;
             }
@@ -1157,7 +1167,7 @@ function &mpd_hash_obj_by($obj_array = false, $key) {
 
 }
 
-function mpd_add_term_recursively($post_term, &$orig_all_terms_by_id, &$all_terms_by_slug) {
+function mpd_add_term_recursively( $post_term, &$orig_all_terms_by_id, &$all_terms_by_slug, $source_blog_id ) {
 
     if (array_key_exists($post_term->slug, $all_terms_by_slug)) {
 
@@ -1168,8 +1178,7 @@ function mpd_add_term_recursively($post_term, &$orig_all_terms_by_id, &$all_term
 
     if ($post_term->parent != 0) {
 
-        $parent_id = mpd_add_term_recursively($orig_all_terms_by_id[$post_term->parent], $orig_all_terms_by_id, $all_terms_by_slug);
-
+		$parent_id = mpd_add_term_recursively( $orig_all_terms_by_id[ $post_term->parent ], $orig_all_terms_by_id, $all_terms_by_slug, $source_blog_id );
     } else {
 
         $parent_id = 0;
@@ -1182,9 +1191,19 @@ function mpd_add_term_recursively($post_term, &$orig_all_terms_by_id, &$all_term
         'parent' => $parent_id
     ));
 
-    $all_terms_by_slug[$post_term->slug] = (object) $new_term;
+	//wp_insert_term can return WP_Error for invalid taxonomy
+	//which then causes fatal error if attempting to check term properties on the error object
+	if ( is_wp_error( $new_term ) ) {
+		error_log( 'Could not create term "' . $post_term->name . '" in tax "' . $post_term->taxonomy . '" due to error: ' . $new_term->get_error_message() );
+		return $new_term->get_error_data( 'term_exists' );
+		//if term already exists, return the term id from the error data
+	} else {
+
+      $all_terms_by_slug[$post_term->slug] = (object) $new_term;
+    do_action( 'mpd_after_insert_term', $new_term, $post_term, $source_blog_id );
     
-    return $new_term['term_id'];
+      return $new_term['term_id'];
+  }
 }
 
 /**
@@ -1200,7 +1219,7 @@ function mpd_add_term_recursively($post_term, &$orig_all_terms_by_id, &$all_term
  * @return array An array of term objects used in the post
  *
  */
-function mpd_set_post_taxonomy_terms($post_id, $source_taxonomy_terms_object) {
+function mpd_set_post_taxonomy_terms( $post_id, $source_taxonomy_terms_object, $source_blog_id ) {
 
     foreach ($source_taxonomy_terms_object as $tax => &$tax_data) {
 
@@ -1208,11 +1227,13 @@ function mpd_set_post_taxonomy_terms($post_id, $source_taxonomy_terms_object) {
 
         $orig_all_terms = array_key_exists(1, $tax_data) ? $tax_data[1] : array();
 
+        $all_terms = get_terms( $tax );
+        /* JM: remove deprecated parameter
         $all_terms = get_terms($tax, array(
             'type' => get_post_type($post_id),
             'hide_empty' => 0
         ));
-
+        */
         $orig_all_terms_by_id   = &mpd_hash_obj_by($orig_all_terms, 'term_id');
         $all_terms_by_slug      = &mpd_hash_obj_by($all_terms, 'slug');
 
@@ -1220,8 +1241,7 @@ function mpd_set_post_taxonomy_terms($post_id, $source_taxonomy_terms_object) {
 
         foreach ($orig_post_terms as &$post_term) {
 
-            array_push($dest_post_term_ids, mpd_add_term_recursively($post_term, $orig_all_terms_by_id, $all_terms_by_slug));
-
+			array_push( $dest_post_term_ids, mpd_add_term_recursively( $post_term, $orig_all_terms_by_id, $all_terms_by_slug, $source_blog_id ) );
         }
 
         unset($post_term);
@@ -1462,19 +1482,18 @@ function mpd_search($array, $key, $value){
 function mpd_copy_file_to_destination($attachment, $img_url, $post_id = 0, $source_id, $file_id){
 
     $info       = pathinfo($img_url);
-    $file_name  = basename($img_url,'.'.$info['extension']);
+	$ext		 = (isset( $info[ 'extension' ] )) ? '.' . $info[ 'extension' ] : '';
+	$file_name	 = basename( $img_url, $ext );
 
      // Get the upload directory for the current site
     $upload_dir = wp_upload_dir();
     // Make the path to the desired path to the new file we are about to create
     if( wp_mkdir_p( $upload_dir['path'] ) ) {
 
-        $file = $upload_dir['path'] . '/' . $file_name .'.'. $info['extension'];
-
+		$file = $upload_dir[ 'path' ] . '/' . $file_name . $ext;
     } else {
 
-        $file = $upload_dir['basedir'] . '/' . $file_name .'.'. $info['extension'];
-
+		$file = $upload_dir[ 'basedir' ] . '/' . $file_name . $ext;
     }
     
     if($the_original_id = mpd_does_file_exist($file_id, $source_id, get_current_blog_id())){
@@ -1500,12 +1519,11 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id = 0, $sour
 
         do_action('mpd_media_image_added', $attach_id, $source_id, $file_id);
         
-    }
-   
-
     return $attach_id;
 
 }
+}
+
 /**
  * 
  * Helper function to get the table name of a perticular table on a specific site
@@ -1764,36 +1782,31 @@ function mpd_does_file_exist($source_file_id, $source_id, $destination_id){
 
 }
 
-function mpd_process_meta($post_id, $meta_values){
+function mpd_process_meta( $post_id, $meta_values ) {
 
-    if($meta_values){
+	if ( $meta_values ) {
 
-        foreach ($meta_values as $key => $values) {
-        
-           if(substr( $key, 0, 3 ) !== "mpd_"){
+		foreach ( $meta_values as $key => $values ) {
 
-                foreach ($values as $value) {
+			if ( substr( $key, 0, 3 ) !== "mpd_" ) {
+				if ( is_array( $values ) ) {
+					foreach ( $values as $value ) {
 
-                    //If the data is serialised we need to unserialise it before adding or WordPress will serialise the serialised data
-                    //...which is bad
+						//If the data is serialised we need to unserialise it before adding or WordPress will serialise the serialised data
+						//...which is bad
 
-                    if(is_serialized($value)){
-                     
-                        update_post_meta( $post_id, $key, unserialize($value));
+						if ( is_serialized( $value ) ) {
 
-                    }else{
+							update_post_meta( $post_id, $key, unserialize( $value ) );
+						} else {
 
-                        update_post_meta( $post_id, $key, $value );
-
-                    }
-               
-                }
-
-           }
-
-        }
-        
-    }
-    
+							update_post_meta( $post_id, $key, $value );
+						}
+					}
+				} else {
+					update_post_meta( $post_id, $key, $values );
+				}
+			}
+		}
+	}
 }
-

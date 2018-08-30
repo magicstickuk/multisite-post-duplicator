@@ -90,15 +90,25 @@ add_action('admin_footer-upload.php', 'mpd_bulk_admin_script');
  */
 function mpd_bulk_action() {
  
+	$source_blog_id	 = get_current_blog_id();
   $wp_list_table  = _get_list_table('WP_Posts_List_Table');
   $action         = $wp_list_table->current_action();
 
   if (0 === strpos($action, 'dup')) {
       
       preg_match("/(?<=dup-)\d+/", $action, $get_site);
+      //JM fix for no $get_site and abort function for when not a site copy
+      if ( ! $get_site || count( $get_site ) == 0 ) {
+        return;
+      }
       
       if(isset($_REQUEST['post'])) {
-            $post_ids = array_map('intval', $_REQUEST['post']);
+          //JM: fix for when not array
+          if ( is_array( $_REQUEST[ 'post' ] ) ) {
+              $post_ids = array_map('intval', $_REQUEST['post']);
+          } else {
+              $post_ids[] = $_REQUEST[ 'post' ];
+          }
       }
 
       $results          = array();
@@ -138,7 +148,7 @@ function mpd_bulk_action() {
 
             );
 
-            do_action('mpd_single_batch_after', $post_id);
+				do_action( 'mpd_single_batch_after', $post_id, $source_blog_id, $results[ $highest_index ][ 'id' ], $get_site[ 0 ]);
 
           }
 
