@@ -47,12 +47,27 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     $options    = get_option( 'mdp_settings' );
     //Get the object of the post we are copying
     $mdp_post   = get_post($mpd_process_info['source_post_id']);
+	//if there is no valid post, we can't duplicate it
+	if ( ! $mdp_post ) {
+		error_log( 'id passed to mpd_duplicate_over_multisite could not be recognised as a valid post id:' . $post_id_to_copy );
+		return false;
+	}
+
+	//if the post is already duplicated to target blog, skip instead of duplicating again
+	$source_blog_id	 = get_current_blog_id();
+	$args			 = array(
+		'source_id'		 => $source_blog_id,
+		'destination_id' => $new_blog_id,
+		'source_post_id' => $post_id_to_copy,
+	);
+	if ( mpd_is_there_a_persist( $args ) ) {
+		return;
+	}
+
     //Get the title of the post we are copying
     $title      = get_the_title($mdp_post);
     //Get the tags from the post we are copying
     $sourcetags = wp_get_post_tags( $mpd_process_info['source_post_id'], array( 'fields' => 'names' ) );
-    //Get the ID of the sourse blog
-    $source_blog_id  = get_current_blog_id();
     //Get the categories for the post
     $source_categories = mpd_get_objects_of_post_categories($mpd_process_info['source_post_id'], $mpd_process_info['post_type']);
     //Get the taxonomy terms for the post
@@ -84,7 +99,8 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     ), $mpd_process_info);
 
     //Get all the meta data associated with the source post
-    $meta_values       = apply_filters('mpd_filter_post_meta', get_post_meta($mpd_process_info['source_post_id']));
+	$meta_values	 = apply_filters( 'mpd_filter_post_meta', get_post_meta( $mpd_process_info[ 'source_post_id' ] )
+	, $post_id_to_copy, 0, $source_blog_id, $new_blog_id );
     //Get array of data associated with the featured image for this post
     $featured_image    = mpd_get_featured_image_from_source($mpd_process_info['source_post_id']);
 
@@ -115,9 +131,10 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
     //Tell WordPress to work in the destination site
     switch_to_blog($mpd_process_info['destination_id']);
     ////////////////////////////////////////////////
-
-
-
+	//suppress excess save hooks from other plugins which may not apply in the destination blog
+	if ( ! defined( 'DOING_AUTOSAVE' ) ) {
+		define( 'DOING_AUTOSAVE', true );
+	}
     //Make the new post
     $post_id = wp_insert_post($mdp_post);
     
@@ -171,22 +188,25 @@ function mpd_duplicate_over_multisite($post_id_to_copy, $new_blog_id, $post_type
 
         if((isset($options['mdp_copy_post_taxonomies']) || !$options) && apply_filters('mdp_copy_post_taxonomies', true) ){
 
-            mpd_set_post_taxonomy_terms($post_id, $source_taxonomies);
-
+			mpd_set_post_taxonomy_terms( $post_id, $source_taxonomies, $source_blog_id );
         }
 
     }
     
     //Collect information about the new post 
+	switch_to_blog( $mpd_process_info[ 'destination_id' ] );
     $site_edit_url = get_edit_post_link( $post_id );
     $blog_details  = get_blog_details($mpd_process_info['destination_id']);
     $site_name     = $blog_details->blogname;
 
-    do_action('mpd_end_of_core_before_return', $post_id, $mdp_post, $source_blog_id);
+	do_action( 'mpd_end_of_core_before_return', $post_id, $mdp_post, $source_blog_id, $mpd_process_info[ 'source_post_id' ] );
 
     //////////////////////////////////////
     //Go back to the current blog so we can update information about the action that just took place
-    restore_current_blog();
+	/* Contrary to the function's name, this does NOT restore the original blog but the previous blog. Calling `switch_to_blog()` twice in a row and then calling this function will result in being on the blog set by the first `switch_to_blog()` call...
+	 * so, restore_current_blog could lead to unexpected results if blog switching happens in any of the filter */
+	//restore_current_blog();
+	switch_to_blog( $source_blog_id );
     //////////////////////////////////////
 
     //Use the collected information about the new post to generate a status notice and a link for the user
@@ -251,7 +271,9 @@ function mpd_persist_over_multisite($persist_post) {
     ), $persist_post);
 
     //Get all the meta data associated with the sourse post
-    $meta_values       = apply_filters('mpd_filter_persist_post_meta', get_post_meta($persist_post->source_post_id)) ;
+	$meta_values = apply_filters( 'mpd_filter_persist_post_meta', get_post_meta( $persist_post->source_post_id )
+	, $persist_post->source_post_id, $persist_post->destination_post_id, $source_blog_id, $persist_post->destination_id );
+
     //Get array of data associated with the featured image for this post
     $featured_image    = mpd_get_featured_image_from_source($persist_post->source_post_id);
 
@@ -282,7 +304,10 @@ function mpd_persist_over_multisite($persist_post) {
     ////////////////////////////////////////////////
 
     global $wpdb;
-
+	//suppress excess save hooks from other plugins which may not apply in the destination blog
+	if ( ! defined( 'DOING_AUTOSAVE' ) ) {
+		define( 'DOING_AUTOSAVE', true );
+	}
     //Make the new post
     $post_id = wp_update_post($mdp_post);
 
@@ -342,22 +367,23 @@ function mpd_persist_over_multisite($persist_post) {
 
         if((isset($options['mdp_copy_post_taxonomies']) || !$options) && apply_filters('mdp_copy_post_taxonomies', true) ){
 
-            mpd_set_post_taxonomy_terms($post_id, $source_taxonomies);
-
+			mpd_set_post_taxonomy_terms( $post_id, $source_taxonomies, $source_blog_id );
         }
 
     }
     
     //Collect information about the new post 
+	switch_to_blog( $persist_post->destination_id );
     $site_edit_url = get_edit_post_link( $post_id );
     $blog_details  = get_blog_details($persist_post->destination_id);
     $site_name     = $blog_details->blogname;
 
-    do_action('mpd_persist_end_of_core_before_return', $post_id, $mdp_post, $source_blog_id);
+	do_action( 'mpd_persist_end_of_core_before_return', $post_id, $mdp_post, $source_blog_id, $persist_post->source_post_id );
 
     //////////////////////////////////////
     //Go back to the current blog so we can update information about the action that just took place
-    restore_current_blog();
+	//restore_current_blog();
+	switch_to_blog( $source_blog_id );
     //////////////////////////////////////
 
     //Use the collected information about the new post to generate a status notice and a link for the user

@@ -133,7 +133,7 @@ function master_site_settings_render(){
   $sites   = mpd_wp_get_sites();
 
    if($options = get_option( 'mdp_settings' )){
-		$mdp_restrict_master_label_value = $options['master_site_setting'];
+		$mdp_restrict_master_label_value = isset( $options[ 'master_site_setting' ] ) ? $options[ 'master_site_setting' ] : '';
 	};
   ?>
   
@@ -188,7 +188,7 @@ function mdp_global_categories_taxonomies_render(  ) {
  */
 function mpd_add_addon_script_to_settings_page(){
 	
-	$screenid = get_current_screen()->id;
+	$screenid = (get_current_screen()) ? get_current_screen()->id : '';
 
 	if($screenid == 'settings_page_multisite_post_duplicator'){
 	?>
@@ -322,6 +322,7 @@ add_action( 'switch_blog', 'change_tax_terms_table', 0 );
 function change_tax_terms_table(){
 
 	$options 		= get_option( 'mdp_settings' );
+	if ( isset( $options[ 'master_site_setting' ] ) ) {
 	$master_id 		= $options['master_site_setting'];
 
 	if((isset($options['mdp_global_categories_taxonomies']) || !$options) && apply_filters('mdp_global_categories_taxonomies', true) ){
@@ -333,5 +334,5 @@ function change_tax_terms_table(){
 		    $wpdb->term_taxonomy = $wpdb->get_blog_prefix($master_id) . 'term_taxonomy';
 
         }
-    
+	}
 }
