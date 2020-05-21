@@ -1,3 +1,7 @@
+# Editor-specific #
+###################
+.vscode/
+
 # Compiled source #
 ###################
 *.com

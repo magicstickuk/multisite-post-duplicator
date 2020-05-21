@@ -45,15 +45,15 @@ function restrict_option_setting_render(){
 		<div class="mdp-inputcontainer">
 			<input type="radio" class="mdp_radio" name='mdp_settings[restrict_option_setting]' id="mpd_restrict_none" <?php checked($mdp_restrict_radio_label_value, 'none'); ?> value="none">
 		
-			<label class="mdp_radio_label" for="radio-choice-1"><?php _e('No Restrictions', 'multisite-post-duplicator' ) ?></label>
+			<label class="mdp_radio_label" for="mpd_restrict_none"><?php _e('No Restrictions', 'multisite-post-duplicator' ) ?></label>
 			    
 			<input type="radio" class="mdp_radio" name='mdp_settings[restrict_option_setting]' id="mpd_restrict_some" <?php checked($mdp_restrict_radio_label_value, 'some'); ?> value="some">
 		
-			<label class="mdp_radio_label" for="radio-choice-2"><?php _e('Restrict Some Sites', 'multisite-post-duplicator' ) ?></label>
+			<label class="mdp_radio_label" for="mpd_restrict_some"><?php _e('Restrict Some Sites', 'multisite-post-duplicator' ) ?></label>
 		
 			<input type="radio" class="mdp_radio" name='mdp_settings[restrict_option_setting]' id="mpd_restrict_set_master" <?php checked($mdp_restrict_radio_label_value, 'master'); ?> value="master">
 		
-			<label class="mdp_radio_label" for="radio-choice-3"><?php _e('Select a Master Site', 'multisite-post-duplicator') ?></label>
+			<label class="mdp_radio_label" for="mpd_restrict_set_master"><?php _e('Select a Master Site', 'multisite-post-duplicator') ?></label>
 			
 			<?php mpd_information_icon('You can, if you want, limit MPD functionality to only certain sites.'); ?>
 			
@@ -64,6 +64,18 @@ function restrict_option_setting_render(){
   <?php
 
 }
+
+function mpd_filter_restricted_sites($sites) {
+
+	$restricted_ids = mpd_get_restrict_some_sites_options();
+
+	return array_filter($sites, function($site) use ($restricted_ids) {
+
+		return !in_array($site->blog_id, $restricted_ids);
+	});
+}
+add_filter('mpd_allowed_sites', 'mpd_filter_restricted_sites');
+
 /**
  * @ignore
  */

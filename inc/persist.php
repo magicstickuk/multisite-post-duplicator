@@ -402,7 +402,7 @@ function persist_option_setting_render(){
  */
 function persist_functionality_setting_render(){
   
-  $options = get_option( 'mdp_settings' ); ?>
+  $options = get_option( 'mdp_settings' ) || mdp_get_default_options(); ?>
 
  	<div class="checkbox checkbox-slider--b-flat">
 		
