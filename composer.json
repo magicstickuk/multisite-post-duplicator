@@ -1,0 +1,18 @@
+{
+  "name": "wpackagist-plugin/multisite-post-duplicator",
+  "authors": [
+    {
+      "name": "King & Partners",
+      "email": "technology@kingandpartners.com"
+    }
+  ],
+  "require": {
+    "composer/installers": "~1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.6",
+    "brain/monkey": "1.*",
+    "squizlabs/php_codesniffer": "~2.0"
+  },
+  "type": "wordpress-plugin"
+}
