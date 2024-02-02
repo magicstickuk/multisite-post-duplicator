@@ -29,7 +29,7 @@ function mpd_get_post_types_to_ignore(){
             'revision',
             'nav_menu_item',
             //'attachment',
-            
+
 
         )
     );
@@ -53,7 +53,7 @@ function mpd_information_icon($c){
     $u = uniqid(); ?>
 
     <script>
-    
+
         jQuery(document).ready(function() {
 
             accordionClick('.<?php echo $u; ?>-click', '.<?php echo $u; ?>-content', 'fast');
@@ -65,7 +65,7 @@ function mpd_information_icon($c){
     <i class="fa fa-info-circle <?php echo $u; ?>-click accord" aria-hidden="true"></i>
 
     <p class="mpdtip <?php echo $u; ?>-content" style="display:none"><?php _e($c, 'multisite-post-duplicator' )?></p>
-    
+
     <?php
 }
 
@@ -156,7 +156,7 @@ function mpd_get_prefix(){
 
       if($options = get_option( 'mdp_settings' )){
 
-            
+
 
             $prefix   = isset($options['mdp_default_prefix']) ? $options['mdp_default_prefix'] : $default_opps['mdp_default_prefix'];
 
@@ -276,7 +276,7 @@ function mpd_get_featured_image_from_source($post_id){
  *
  */
 function mpd_set_featured_image_to_destination($destination_id, $image_details, $source_blog_id){
-    
+
     // Get the upload directory for the current site
     $upload_dir = wp_upload_dir();
     // Get all the data inside a file and attach it to a variable
@@ -296,7 +296,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details, 
     }
 
     // Add the file contents to the new path with the new filename
-    
+
 
     if($the_original_id = mpd_does_file_exist($image_details['id'], $source_blog_id, get_current_blog_id())){
 
@@ -335,7 +335,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details, 
             copy($image_details['url'], $file);
 
         }
-        
+
         // Get the mime type of the new file extension
         $wp_filetype    = wp_check_filetype( $filename, null );
         // Get the URL (not the URI) of the new file
@@ -377,7 +377,7 @@ function mpd_set_featured_image_to_destination($destination_id, $image_details, 
         // And finally assign featured image to post
         set_post_thumbnail( $destination_id, $attach_id );
 
-    }  
+    }
 
 }
 
@@ -492,7 +492,7 @@ function mpd_process_post_media_attachements($destination_post_id, $post_media_a
             $new_file_url = str_replace(get_blog_details($source_id)->siteurl, get_blog_details($new_blog_id)->siteurl, $new_file_url);
 
             if($the_original_id = mpd_does_file_exist($post_media_attachment->ID, $source_id, $new_blog_id)){
-                
+
                 // Get the mime type of the new file extension
                 $wp_filetype = wp_check_filetype( $filename, null );
 
@@ -722,7 +722,7 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
     if(isset($parts['query'])){
         parse_str($parts['query'], $query);
     }
-    
+
     $args= array(
 
         'source_id'             => get_current_blog_id(),
@@ -747,7 +747,7 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
     }
 
     $message        = '<div class="updated"><p>';
-    
+
     $message       .= apply_filters(
                         $filter,
                         __($editText, 'multisite-post-duplicator'),
@@ -760,7 +760,7 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
                         ' <a href="'.$site_url.'">'.
                         __($editLink, 'multisite-post-duplicator' ).
                         '</a>';
-    
+
     $message       .= '</p></div>';
 
     if(!$option_value){
@@ -771,8 +771,8 @@ function mdp_make_admin_notice($site_name, $site_url, $destination_blog_details)
             'blog_object' =>  $destination_blog_details->blogname
         );
 
-        $option_value   = array('message' => $message, 'data' => array($notice_data) );  
-        
+        $option_value   = array('message' => $message, 'data' => array($notice_data) );
+
     }else{
 
         $notice_data_new = array(
@@ -825,7 +825,7 @@ function mpd_plugin_admin_notices(){
     }
 
     do_action('mpd_after_notices');
-    
+
 }
 
 /**
@@ -888,7 +888,7 @@ function mpd_wp_get_sites(){
             $sites = $new_sites;
 
       }else{
-        
+
             $args['number'] = null;
             $args = apply_filters('mpd_get_sites_args', $args);
             $sites = get_sites($args);
@@ -927,7 +927,7 @@ function mpd_fix_wordpress_urls($url_input) {
  *
  */
 function mpd_non_multisite_admin_notice() {
-    
+
     if (!is_multisite()) {
 
         ?>
@@ -938,18 +938,18 @@ function mpd_non_multisite_admin_notice() {
         </div>
 
         <?php
-        
+
     }
 
     if(mpd_is_subdomain_install() && !get_site_option('mpd_has_dismissed_subdomain_error')){
-            
+
         ?>
-            
+
         <div class='not-subdomain error notice is-dismissible'><p>
             <?php _e('You have activated Multisite Post Duplicator on this WordPress Installation however this network has the subdomain configuration enabled. This plugin is untested on subdomain configurations. While it should work fine for most functions you may notice issues with images being copied over to destination sites. We are working to bring full subdmain support as soon as possible.', 'multisite-post-duplicator' ); ?>
             </p>
         </div>
-        
+
         <?php
 
     }
@@ -984,7 +984,7 @@ function mpd_notices_javascript(){
                 });
 
              });
-          
+
         });
     </script>
     <?php
@@ -1025,7 +1025,7 @@ add_action('wp_ajax_mpd_dismiss_subdomain_notice','mpd_dismiss_subdomain_notice'
 function mpd_get_post_statuses(){
 
     $available_statuses = apply_filters('mpd_available_post_statuses', get_post_statuses());
-    
+
     return $available_statuses;
 
 }
@@ -1047,7 +1047,7 @@ function mpd_get_objects_of_post_categories($post_id, $post_type){
 }
 
 /**
- * 
+ *
  * This function gets all the categories currently available on the site
  *
  *
@@ -1100,7 +1100,7 @@ function mpd_has_parent_terms($terms) {
 }
 
 /**
- * 
+ *
  * This function performs the action of taking the taxonomies of the source post and
  * collecting them into an array of objects for use when duplicating to the destination.
  * Works with mpd_set_post_taxonomy_terms();
@@ -1147,7 +1147,7 @@ function mpd_get_post_taxonomy_terms($post_id, $category_only, $destination_id) 
     return apply_filters('mpd_post_taxonomy_terms', $source_taxonomy_terms_object, $destination_id);
 }
 
-function &mpd_hash_obj_by($obj_array = false, $key) {
+function &mpd_hash_obj_by($obj_array, $key) {
 
     $res = array();
 
@@ -1160,7 +1160,7 @@ function &mpd_hash_obj_by($obj_array = false, $key) {
         }
 
     }
-    
+
     unset($obj);
 
     return $res;
@@ -1201,13 +1201,13 @@ function mpd_add_term_recursively( $post_term, &$orig_all_terms_by_id, &$all_ter
 
       $all_terms_by_slug[$post_term->slug] = (object) $new_term;
     do_action( 'mpd_after_insert_term', $new_term, $post_term, $source_blog_id );
-    
+
       return $new_term['term_id'];
   }
 }
 
 /**
- * 
+ *
  * This function performs the action of setting the taxonomies of the source post and
  * to the destination post.
  * Works with mpd_get_post_taxonomy_terms();
@@ -1215,7 +1215,7 @@ function mpd_add_term_recursively( $post_term, &$orig_all_terms_by_id, &$all_ter
  * @since 0.9
  * @param $post_id The ID of the newly created post
  * @param $source_taxonomy_terms_object An array of term objects used in the source post
- * 
+ *
  * @return array An array of term objects used in the post
  *
  */
@@ -1254,49 +1254,49 @@ function mpd_set_post_taxonomy_terms( $post_id, $source_taxonomy_terms_object, $
 }
 
 /**
- * 
+ *
  * This function filters out post meta keys from the post meta as requested in the 'keys to ignore' mpd settings page.
  *
  * @since 0.9
  * @param $post_meta_array The source post post_meta
- * 
+ *
  * @return array A filtered array without the keys as specified in 'keys to ignore' in mpd settings
  *
  */
 function mpd_ignore_custom_meta_keys($post_meta_array){
-	
+
 	$options = get_option( 'mdp_settings' );
-	
+
 	$meta_to_ignore_raw = str_replace(' ', '', $options['mdp_ignore_custom_meta']);
 	$meta_to_ignore 	= explode(',', $meta_to_ignore_raw);
 
 	$new_post_meta 	= array();
-	
+
 	foreach($post_meta_array as $meta_key => $meta_value){
-		
+
 		if(!in_array($meta_key, $meta_to_ignore)){
 
 			$new_post_meta[$meta_key] = $meta_value;
-            		
+
 		}
-		
+
 	}
-	
+
 	return $new_post_meta;
-	
+
 }
 
 add_filter('mpd_filter_post_meta', 'mpd_ignore_custom_meta_keys');
 add_filter('mpd_filter_persist_post_meta', 'mpd_ignore_custom_meta_keys');
 
 /**
- * 
+ *
  * This function gets An 'edit url' for a post.
  *
  * @since 1.0
  * @param $blog_id The blog_id where the post is
  * @param $post_id The post_id you want to link to
- * 
+ *
  * @return string An edit url for a post
  *
  */
@@ -1316,13 +1316,13 @@ function mpd_get_version(){
 }
 
 /**
- * 
+ *
  * If the user chooses to, this function will collect the post date to of the source post to be used later
  * in mpd_set_published_date() to assign the published date to be the same as the destination.
  *
  * @since 0.9.4
  * @param $mpd_process_info Array of the source post information
- * 
+ *
  * @return array A filtered array of source post information
  *
  */
@@ -1333,7 +1333,7 @@ function mpd_get_published_date($mpd_process_info){
  if(isset($options['mdp_retain_published_date'])){
     $mpd_process_info['post_date'] = get_post_field('post_date', $mpd_process_info['source_post_id']);
  }
- 
+
  return $mpd_process_info;
 
 }
@@ -1341,13 +1341,13 @@ function mpd_get_published_date($mpd_process_info){
 add_filter('mpd_source_data', 'mpd_get_published_date');
 
 /**
- * 
+ *
  * If the user chooses to, this function will set the post date to of the source post to the destination post. Note we have to set the post_status to publish for this activity as no published date would be assigned otherwise.
  *
  * @since 0.9.4
  * @param $mdp_post Array of the destination post info prior to post being created in database
  * @param $mpd_process_info Array of the source post information
- * 
+ *
  * @return array A filtered array of destination post information prior to post being saved in database
  *
  */
@@ -1361,7 +1361,7 @@ function mpd_set_published_date($mdp_post, $mpd_process_info){
     $mdp_post['post_status'] = 'publish';
 
   }
- 
+
   return $mdp_post;
 
 }
@@ -1387,14 +1387,14 @@ function mpd_update_published_date($mpd_post, $persist_post) {
   }
 
   return $mpd_post;
-  
+
 }
 
 add_filter('mpd_setup_persist_destination_data', 'mpd_update_published_date', 10, 2);
 
 
 /**
- * 
+ *
  * Do the markup for a link to MDP setting page
  *
  * @since 1.0
@@ -1407,7 +1407,7 @@ function mpd_do_settings_link(){
             <small>
                 <a class="no-dec" target="_blank" title="Multisite Post Duplicator Settings" href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=multisite_post_duplicator') ); ?>"> Settings <i class="fa fa-sliders fa-lg" aria-hidden="true"></i></a>
             </small>
-                
+
         </p>
 
     <?php
@@ -1416,21 +1416,21 @@ function mpd_do_settings_link(){
 add_action('mpd_after_metabox_content', 'mpd_do_settings_link');
 
 /**
- * 
+ *
  * Custom wraper for WordPress' core is_subdomain_install. Need to wrap this so we don't get errors if the plugin is installed
  * on a non-multisite istallation
  *
  * @since 1.1
- * 
+ *
  * @return boolean True if this is a multisite network.
  *
  */
 function mpd_is_subdomain_install(){
 
     if(function_exists('is_subdomain_install')){
-        
+
         return is_subdomain_install();
-        
+
     }else{
 
         return false;
@@ -1439,7 +1439,7 @@ function mpd_is_subdomain_install(){
 
 }
 /**
- * 
+ *
  * Helper function to search a multidimentional array and return results for a matching key/value pair.
  * Got it from: http://stackoverflow.com/questions/1019076/how-to-search-by-key-value-in-a-multidimensional-array-in-php
  *
@@ -1447,7 +1447,7 @@ function mpd_is_subdomain_install(){
  * @param $array Array to be searched
  * @param $key The key we are looking at
  * @param $value The value we want to return results for
- * 
+ *
  * @return array An array of reults matching the criteria
  *
  */
@@ -1468,18 +1468,18 @@ function mpd_search($array, $key, $value){
 }
 
 /**
- * 
+ *
  * Helper function process a duplication of an image file from the source to the destination. Has to be run while 'in' the destination site
  *
  * @since 1.3
  * @param $attachment Array of data about the attachment that will be written into the wp_posts table of the database.
  * @param $img_url The URL of the image to be copied
  * @param $post_id The new post ID that the image has to be assigned to.
- * 
+ *
  * @return int The id of the newly created image
  *
  */
-function mpd_copy_file_to_destination($attachment, $img_url, $post_id = 0, $source_id, $file_id){
+function mpd_copy_file_to_destination($attachment, $img_url, $post_id, $source_id, $file_id){
 
     $info       = pathinfo($img_url);
 	$ext		 = (isset( $info[ 'extension' ] )) ? '.' . $info[ 'extension' ] : '';
@@ -1495,13 +1495,13 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id = 0, $sour
 
 		$file = $upload_dir[ 'basedir' ] . '/' . $file_name . $ext;
     }
-    
+
     if($the_original_id = mpd_does_file_exist($file_id, $source_id, get_current_blog_id())){
-        
+
         return $the_original_id;
 
     }
-    
+
     $filtered_url = mpd_fix_wordpress_urls($img_url);
 
     if($filtered_url && $filtered_url != ''){
@@ -1518,46 +1518,46 @@ function mpd_copy_file_to_destination($attachment, $img_url, $post_id = 0, $sour
         wp_update_attachment_metadata( $attach_id, $attach_data );
 
         do_action('mpd_media_image_added', $attach_id, $source_id, $file_id);
-        
+
     return $attach_id;
 
 }
 }
 
 /**
- * 
+ *
  * Helper function to get the table name of a perticular table on a specific site
  *
  * @since 1.5
  * @param int $blogid The id of the blog to want the table name from
  * @param string $table The standard table name without prefix. Default is posts
- * 
+ *
  * @return string The rtable name with appropriate prefix
  *
  */
 function mpd_get_tablename($blogid, $table = 'posts'){
-    
+
     global $wpdb;
 
-    $siteid         = $blogid != 1 ? $blogid . "_" : ''; 
+    $siteid         = $blogid != 1 ? $blogid . "_" : '';
     $tablename      = $wpdb->base_prefix . $siteid . $table;
 
     return $tablename;
 }
 
 /**
- * 
+ *
  * UI Function which provides a button to select all checkboxes in the MPD post metabox
  *
  * @since 1.5
- * 
+ *
  * @return null
  *
  */
 function  mpd_select_all_checkboxes(){
 
     if(apply_filters('mpd_show_select_all_checkboxes', true)) :?>
-        
+
         <?php
             $first_text     = __('Select all except current', 'multisite-post-duplicator');
             $second_text    = __('Select none', 'multisite-post-duplicator');
@@ -1568,33 +1568,33 @@ function  mpd_select_all_checkboxes(){
             jQuery(document).ready(function() {
 
                 jQuery("#mpd-select-all").click(function(){
-                    
-                    if(jQuery(this).html() == '<?php echo $first_text; ?>'){ 
+
+                    if(jQuery(this).html() == '<?php echo $first_text; ?>'){
                         jQuery('#mpd_blogschecklist input:checkbox:not(.mpd-current-site)').prop('checked', 'checked');
                         jQuery(this).html('<?php echo $second_text; ?>');
                     }else{
                         jQuery(this).html('<?php echo $first_text; ?>');
                         jQuery('#mpd_blogschecklist input:checkbox').removeProp('checked');
                     }
-                    
-                    jQuery('#mpd_blogschecklist .mpd-site-checkbox input').trigger('change');  
+
+                    jQuery('#mpd_blogschecklist .mpd-site-checkbox input').trigger('change');
                 });
 
             });
         </script>
 
-    <?php endif; 
+    <?php endif;
 
 }
 
 add_action('mpd_after_metabox_content', 'mpd_select_all_checkboxes', 5);
 
 /**
- * 
+ *
  * Function to control the possibility of infinite loops when duplicating.
  *
  * @since 1.5
- * 
+ *
  * @return null
  *
  */
@@ -1610,7 +1610,7 @@ add_action('shutdown', 'mpd_weve_seen_the_page');
 function mpd_process_persist( $post_id, $destination_id, $created_post = false){
 
     if(isset($_POST['persist'])){
-                    
+
         $args = array(
 
             'source_id'      => get_current_blog_id(),
@@ -1619,7 +1619,7 @@ function mpd_process_persist( $post_id, $destination_id, $created_post = false){
             'destination_post_id' => $created_post['id']
 
         );
-                    
+
         mpd_add_persist($args);
 
     }
@@ -1630,9 +1630,9 @@ add_action('mpd_single_metabox_after', 'mpd_process_persist', 10, 3);
 function mpd_skip_standard_duplication($choice){
 
     if(get_option('skip_standard_dup')){
-                
+
         delete_option('skip_standard_dup' );
-        
+
         return $choice = false;
 
     }
@@ -1644,7 +1644,7 @@ function mpd_skip_standard_duplication($choice){
 add_filter('mpd_do_single_metabox_duplication', 'mpd_skip_standard_duplication', 20); //Note priority higher than mpd_copy_acf_field_group()
 
 /**
- * 
+ *
  * Hooks into mpd_enter_the_loop funciton and set the conditions in which the multisite
  * post duplication processes can be accessed
  *
@@ -1652,13 +1652,13 @@ add_filter('mpd_do_single_metabox_duplication', 'mpd_skip_standard_duplication',
  * @param boolean $choice The initial state if we are allowed into the loop
  * @param array $post_global the global post object on the form submit
  * @param int $post_id the ID of the post being saved
- * 
+ *
  * @return boolean The desision to continue or not
  *
  */
 function mpd_enter_the_loop($choice, $post_global, $post_id){
 
-    if(( isset($post_global["post_status"] ) ) 
+    if(( isset($post_global["post_status"] ) )
             && ( $post_global["post_status"] != "auto-draft" )
             && ( isset($post_global['mpd_blogs'] ) )
             && ( count( $post_global['mpd_blogs'] ) )
@@ -1673,13 +1673,13 @@ function mpd_enter_the_loop($choice, $post_global, $post_id){
 add_filter('mpd_enter_the_loop', 'mpd_enter_the_loop', 10, 3);
 
 /**
- * 
+ *
  * Get media URL on any sub site by ID
  *
  * @since 1.6.5
  * @param int $ID The ID of the media we want the URL of
  * @param int $source_blog The blog id this media file resides.
- * 
+ *
  * @return string The URL of the media file
  *
  */
@@ -1694,14 +1694,14 @@ function mpd_wp_get_attachment_url($ID, $source_blog){
 }
 
 /**
- * 
+ *
  * Log the duplication of a media file by creating two meta files
  *
  * @since 1.6.6
  * @param int $attach_id The ID of the media we want to log
  * @param int $source_id The blog id this media file resides.
  * @param int $source_attachment_id The original ID of the image on the source site
- * 
+ *
  * @return null
  *
  */
@@ -1720,7 +1720,7 @@ function mpd_log_media_file($attach_id, $source_id, $source_attachment_id){
 add_action('mpd_media_image_added', 'mpd_log_media_file', 10, 3);
 
 /**
- * 
+ *
  * Check if a copy of a media file exists on another blog
  * Uses the logging structure as set in mpd_log_media_file();
  *
@@ -1728,7 +1728,7 @@ add_action('mpd_media_image_added', 'mpd_log_media_file', 10, 3);
  * @param int $source_file_id The ID of the media we want to check
  * @param int $source_id The blog id this media file resides.
  * @param int $destination_id The blog id to check if there is a copy on
- * 
+ *
  * @return booleon True if it does exist and false if it doesn't
  *
  */
@@ -1773,9 +1773,9 @@ function mpd_does_file_exist($source_file_id, $source_id, $destination_id){
 
             }else{
                 return false;
-            } 
+            }
         }
-        
+
     }
 
     return false;
